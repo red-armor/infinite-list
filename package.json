@@ -15,6 +15,7 @@
     "lint": "eslint --ext js,ts,tsx .",
     "publish": "pnpm publish -r --access public"
   },
+  "private": true,
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
