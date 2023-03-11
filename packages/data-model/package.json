@@ -12,6 +12,6 @@
     "rimraf": "~4.4.0"
   },
   "dependencies": {
-    "@x-oasis/noop": "^0.0.1"
+    "@x-oasis/noop": "^0.0.3"
   }
 }

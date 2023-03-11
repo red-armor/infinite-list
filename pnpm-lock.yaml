@@ -40,10 +40,10 @@ importers:
 
   packages/data-model:
     specifiers:
-      '@x-oasis/noop': ^0.0.1
+      '@x-oasis/noop': ^0.0.3
       rimraf: ~4.4.0
     dependencies:
-      '@x-oasis/noop': 0.0.1
+      '@x-oasis/noop': 0.0.3
     devDependencies:
       rimraf: 4.4.0
 
@@ -848,8 +848,8 @@ packages:
       '@types/yargs-parser': 21.0.0
     dev: true
 
-  /@x-oasis/noop/0.0.1:
-    resolution: {integrity: sha512-Yv3HXIqCDWhVUarhcPzJgoDzSiK8Tw6jqSL1BvW6DFAZVTBmCqOms0gQPQhu7utCI0V9knG0f/XkhRNpOdiN/w==}
+  /@x-oasis/noop/0.0.3:
+    resolution: {integrity: sha512-99CbsVJAdaAOWObMa5b6es72XYQlVXvNOAax8y3LiTCD5FdmoWmYO95k2uQlxo+N9bnvaK5zWLpREdA2k9pHDQ==}
     dev: false
 
   /JSONStream/1.3.5:
