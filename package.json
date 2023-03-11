@@ -2,14 +2,10 @@
   "name": "infinite-list",
   "version": "0.0.1",
   "description": "Data model for list rendering",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/red-armor/infinite-list.git"
   },
-  "workspaces": [
-    "packages/**"
-  ],
   "scripts": {
     "clean": "pnpm run -r clean",
     "build": "pnpm run -r build",
