@@ -1,3 +1,4 @@
+import noop from '@x-oasis/noop'
 import Batchinator from './batcher/Batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
@@ -11,7 +12,6 @@ import {
   omit,
   resolveChanged,
   shallowDiffers,
-  noop,
 } from './common';
 import manager from './manager';
 import createStore from './state/createStore';
