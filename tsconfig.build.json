@@ -1,0 +1,32 @@
+{
+  "include": ["**/packages/**/src", "**/packages/**/types"],
+  "exclude": ["**/__test__/*.js", "**/**/*.test.ts"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "types": [
+      // ... other types
+      // "./node_modules/@types",
+      "node",
+      "jest"
+    ],
+    "removeComments": true,
+    "composite": true,
+    "declaration": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-native",
+    "lib": ["esnext", "dom"],
+    "module": "ESnext",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "esnext",
+    "allowJs": true
+  }
+}

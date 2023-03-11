@@ -1,0 +1,14 @@
+{
+  "name": "@infinite-list/data-model",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "pnpm run clean && pnpm run compile",
+    "clean": "rimraf ./dist",
+    "test": "jest --verbose",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build"
+  },
+  "devDependencies": {
+    "rimraf": "~4.4.0"
+  }
+}

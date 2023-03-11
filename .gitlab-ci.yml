@@ -1,0 +1,79 @@
+image: docker-reg.devops.xiaohongshu.com/fe/fe-ci:$FE_CI_IMAGE_LATEST
+
+variables:
+  REMOTES: 'static01,static02'
+  BROWSER_OUTOUT_FOLDER: './public'
+  REMOTES_FOLDER: '/data/formula-static/$CI_PROJECT_NAME'
+  DOC_DIR: './wbesite'
+  BROWSER_OUTPUT_FOLDER: './wbesite/public'
+
+.cache: &common_cache
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - packages/*/node_modules/
+  policy: pull-push
+
+.artifacts: &common_artifacts
+  expire_in: 10 mins
+  paths:
+    - $BROWSER_OUTPUT_FOLDER
+
+.job_template: &build_definition
+  stage: build
+  cache:
+    <<: *common_cache
+    policy: pull
+  artifacts:
+    <<: *common_artifacts
+  allow_failure: false
+
+before_script:
+  - node -v
+  - formula -V
+  - npm i -g pnpm@7
+  - rm -rf /builds/0/react-native-spectrum/node_modules/
+  - pnpm i
+  - echo $CI_COMMIT_TAG
+  - export PKGLEFT=${CI_COMMIT_TAG%@*}
+  - export PKGNAME=${PKGLEFT/@xhs\/}
+  - export PKGVERSION=${CI_COMMIT_TAG##*@}
+  - echo $PKGNAME
+
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  script:
+    - formula test
+  cache:
+    untracked: true
+    paths:
+      - node_modules/
+
+deploy:
+  stage: deploy
+  script:
+    - npm run build
+    - pnpm publish --no-git-checks -r
+  only:
+    - tags
+
+deploy:docs:
+  stage: deploy
+  when: manual
+  cache:
+    <<: *common_cache
+    policy: pull
+  script:
+    - npm run build-website
+    - "if [[ $CI_COMMIT_TAG != '' ]]; then formula deploy --dir $DOC_DIR -s $BROWSER_OUTPUT_FOLDER -d $REMOTES_FOLDER; fi" # deploy static
+    - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_NAME # deploy image
+    - docker build -t $REGISTRY_NAME/$CI_PROJECT_PATH:$PKGVERSION-${CI_COMMIT_SHA:0:8} .
+    - docker push $REGISTRY_NAME/$CI_PROJECT_PATH:$PKGVERSION-${CI_COMMIT_SHA:0:8}
+    - docker rmi $REGISTRY_NAME/$CI_PROJECT_PATH:$PKGVERSION-${CI_COMMIT_SHA:0:8}
+  only:
+    - tags
+    - branches
