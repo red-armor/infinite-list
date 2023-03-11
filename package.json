@@ -8,7 +8,7 @@
     "url": "git+https://github.com/red-armor/infinite-list.git"
   },
   "workspaces": [
-    "packages/*"
+    "packages/**"
   ],
   "scripts": {
     "clean": "pnpm run -r clean",
