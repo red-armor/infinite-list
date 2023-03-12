@@ -1,13 +1,18 @@
 {
-  "include": ["**/packages/**/src", "**/packages/**/types"],
-  "exclude": ["**/__test__/*.js", "**/**/*.test.ts"],
+  "include": [
+    "**/packages/**/src",
+    "**/packages/**/types"
+  ],
+  "exclude": [
+    "**/__test__/*.js",
+    "**/**/*.test.ts"
+  ],
   "compilerOptions": {
     "baseUrl": ".",
     "types": [
       // ... other types
       // "./node_modules/@types",
       "node",
-      "jest"
     ],
     "removeComments": true,
     "composite": true,
@@ -17,7 +22,10 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-native",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "module": "ESnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
