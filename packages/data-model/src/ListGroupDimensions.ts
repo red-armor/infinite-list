@@ -5,14 +5,11 @@ import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensions from './ListDimensions';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import {
-  isNotEmpty,
-  removeItemsKeyword,
-} from './common';
-import isClamped from '@x-oasis/is-clamped'
+import { isNotEmpty, removeItemsKeyword } from './common';
+import isClamped from '@x-oasis/is-clamped';
 import noop from '@x-oasis/noop';
-import shallowArrayEqual from '@x-oasis/shallow-array-equal'
-import resolveChanged from '@x-oasis/resolve-changed'
+import shallowArrayEqual from '@x-oasis/shallow-array-equal';
+import resolveChanged from '@x-oasis/resolve-changed';
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
 import manager from './manager';
 import createStore from './state/createStore';
@@ -30,11 +27,13 @@ import {
   StateListener,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
+import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 
 // TODO: indexRange should be another intervalTree
 class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private indexKeys: Array<string> = [];
+  private _selector = new EnabledSelector();
   private keyToListDimensionsMap: Map<string, ListDimensions | Dimension> =
     new Map();
   private _itemsDimensions: ItemsDimensions;
@@ -55,6 +54,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _heartBeatingIndexKeys: Array<string> = [];
   private _heartBeatResolveChangedBatchinator: Batchinator;
   private _inspectingListener: InspectingListener;
+  private _dispatchScrollMetricsEnabled = true;
 
   private _rangeResult: {
     bufferedMetaRanges: ListRangeResult;
@@ -66,12 +66,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   );
 
   private registeredKeys: Array<string> = [];
-  private _inspectingTimes: number = 0;
+  private _inspectingTimes = 0;
   private _inspectingTime: number = +Date.now();
   private _heartBeatingIndexKeysSentCommit: Array<string> = [];
   private _startInspectBatchinator: Batchinator;
 
-  private _reflowItemsLength: number = 0;
+  private _reflowItemsLength = 0;
   private _dimensionsIndexRange: Array<{
     dimensions: Dimension | ListDimensions;
     startIndex: number;
@@ -151,7 +151,11 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.startInspection = this.startInspection.bind(this);
   }
 
-  ensureDimension(key: string) {}
+  get selector() {
+    return this._selector;
+  }
+
+  ensureDimension() {}
 
   cleanup() {
     this._removeList?.();
@@ -341,7 +345,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return -1;
   }
 
-  getDimensionStartIndex(listKey: string, ignoreDimension: boolean = false) {
+  getDimensionStartIndex(listKey: string, ignoreDimension = false) {
     const listKeyIndex = this.indexKeys.findIndex((key) => key === listKey);
     if (!listKeyIndex) return 0;
 
@@ -1084,6 +1088,13 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
   }
 
+  dispatchScrollMetricsEnabled() {
+    return (
+      this.selector.getDispatchScrollMetricsStatus() &&
+      ListSpyUtils.selector.getDispatchScrollMetricsStatus()
+    );
+  }
+
   updateScrollMetrics(
     _scrollMetrics?: ScrollMetrics | boolean,
     _useCache?: boolean
@@ -1108,7 +1119,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
     ) {
       this._scrollMetrics = scrollMetrics;
-      if (ListSpyUtils.getEnableDispatchOnScroll()) {
+      if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
         this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       }
     } else if (this._rangeResult && this._dispatchedMetricsResult) {
@@ -1118,7 +1129,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       if (!this._dispatchMetricsBatchinator.inSchedule()) {
         this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
       } else {
-        if (ListSpyUtils.getEnableDispatchOnScroll()) {
+        if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
           // 刷新scrollMetrics的值
           this._dispatchMetricsBatchinator.schedule(scrollMetrics);
         }
@@ -1141,6 +1152,14 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   cleanRenderStateListeners() {
     this._renderStateListenersCleaner.forEach((cleaner) => cleaner());
+  }
+
+  enableDispatchScrollMetrics() {
+    this._dispatchScrollMetricsEnabled = true;
+  }
+
+  disableDispatchScrollMetrics() {
+    this._dispatchScrollMetricsEnabled = false;
   }
 }
 

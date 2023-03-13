@@ -33,6 +33,7 @@ import {
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
+import EnabledSelector from './utils/EnabledSelector';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -78,6 +79,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _onBatchLayoutFinished: () => boolean;
 
   public updateStateBatchinator: Batchinator;
+
+  private _selector = new EnabledSelector()
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -162,6 +165,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   get length() {
     return this._data.length;
+  }
+
+  get selector() {
+    return this._selector
   }
 
   set offsetInListGroup(offset: number) {
@@ -670,11 +677,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     if (!meta) return false;
 
-    // const startIndexInListGroup = this._listGroupDimension
-    //   ? this._listGroupDimension.getDimensionStartIndex(this.id)
-    //   : 0;
-    // const finalIndex = startIndexInListGroup + index;
-
     if (typeof info === 'number') {
       let length = info;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
@@ -684,9 +686,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           length = meta.getSeparatorLength() + length;
         }
         if (_update) {
-          // if (this._listGroupDimension) {
-          //   this._listGroupDimension.setIntervalTreeValue(finalIndex, length);
-          // }
           this.setIntervalTreeValue(index, length);
           return true;
         }
@@ -844,26 +843,33 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
   }
 
+  dispatchScrollMetricsEnabled() {
+    return this.selector.getDispatchScrollMetricsStatus() && ListSpyUtils.selector.getDispatchScrollMetricsStatus() && (this._listGroupDimension ? this._listGroupDimension.dispatchScrollMetricsEnabled() : true)
+  }
+
   updateScrollMetrics(
     scrollMetrics: ScrollMetrics = this._scrollMetrics,
     useCache = true
   ) {
     if (!scrollMetrics) return;
-    if (
-      !this._scrollMetrics ||
-      scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
-      scrollMetrics.offset !== this._scrollMetrics.offset ||
-      scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
-    ) {
-      this._scrollMetrics = scrollMetrics;
-      if (ListSpyUtils.getEnableDispatchOnScroll()) {
-        this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+
+    if (this.dispatchScrollMetricsEnabled()) {
+      if (
+        !this._scrollMetrics ||
+        scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
+        scrollMetrics.offset !== this._scrollMetrics.offset ||
+        scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
+      ) {
+        this._scrollMetrics = scrollMetrics;
+        if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
+          this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+        }
+      } else if (this._state) {
+        this._dispatchMetricsBatchinator.dispose({
+          abort: true,
+        });
+        this.updateState(this._state, scrollMetrics, false);
       }
-    } else if (this._state) {
-      this._dispatchMetricsBatchinator.dispose({
-        abort: true,
-      });
-      this.updateState(this._state, scrollMetrics, false);
     }
 
     this._scrollMetrics = scrollMetrics;

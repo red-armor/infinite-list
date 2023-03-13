@@ -13,6 +13,7 @@
     "version": "bump",
     "alpha": "bump --branch",
     "lint": "eslint --ext js,ts,tsx .",
+    "prepare": "husky install",
     "publish": "pnpm publish -r --access public"
   },
   "private": true,

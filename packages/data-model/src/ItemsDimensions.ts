@@ -115,7 +115,7 @@ class ItemsDimensions extends BaseDimensions {
       scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
     ) {
       this._scrollMetrics = scrollMetrics;
-      if (ListSpyUtils.getEnableDispatchOnScroll()) {
+      if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
         this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       }
       // } else if (this._state) {
