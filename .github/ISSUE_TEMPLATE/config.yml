@@ -1,5 +1,6 @@
 blank_issues_enabled: false
+
 contact_links:
-  - name: GitHub Community Support
-    url: https://github.com/orgs/community/discussions
-    about: Please ask and answer questions here.
+    - name: 📃 Documentation Issue
+      url: https://github.com/red-armor/infinite-list/issues/new
+      about: This issue tracker is not for documentation issues. Please file documentation issues here.
