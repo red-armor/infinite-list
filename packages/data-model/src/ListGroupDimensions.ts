@@ -467,7 +467,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     }, []);
   }
 
-  onItemsCountChanged(useCache: boolean = false) {
+  onItemsCountChanged(useCache = false) {
     this.calculateDimensionsIndexRange();
     this.calculateReflowItemsLength();
     this.updateChildDimensionsOffsetInContainer();
@@ -500,7 +500,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     this.updateChildDimensionsOffsetInContainer();
-    this.calculateReflowItemsLength();
   }
 
   removeItem(key: string) {

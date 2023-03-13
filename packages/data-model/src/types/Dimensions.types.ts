@@ -142,7 +142,16 @@ export type PreStateResult = {
 export type ListStateResult<ItemT extends {} = {}> = {
   data: Array<ItemT>;
   itemKeys: Array<string>;
+  spaceState?: ListSpaceStateResult<ItemT>;
 } & PreStateResult;
+
+export type ListSpaceStateResult<ItemT extends {} = {}> = {
+  startIndex: number;
+  endIndex: number;
+  spaceLength: number;
+  data: Array<ItemT>;
+  itemKeys: Array<string>;
+};
 
 export type StateListener = (
   newState: PreStateResult,

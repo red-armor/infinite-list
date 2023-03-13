@@ -738,6 +738,39 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._stateListener(state, this._state);
   }
 
+  resolveSpaceState(state: ListStateResult<ItemT>) {
+    const { data, bufferedEndIndex, bufferedStartIndex, itemKeys } = state;
+    const afterStartIndex = bufferedEndIndex + 1;
+    const beforeData = data.slice(0, bufferedStartIndex);
+    const afterData = data.slice(afterStartIndex);
+    const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
+    const remainingDataKeys = itemKeys.slice(
+      bufferedStartIndex,
+      bufferedEndIndex + 1
+    );
+
+    const beforeSpace = beforeData.reduce((acc, item, index) => {
+      const itemMeta = this.getItemMeta(item, index);
+      const itemLayout = itemMeta?.getLayout();
+      return (
+        (itemLayout?.height || 0) + acc + (itemMeta.getSeparatorLength() || 0)
+      );
+    }, 0);
+    const afterSpace = afterData.reduce((acc, item, index) => {
+      const itemMeta = this.getItemMeta(item, index);
+      const itemLayout = itemMeta?.getLayout();
+      return (
+        (itemLayout?.height || 0) + acc + (itemMeta.getSeparatorLength() || 0)
+      );
+    }, 0);
+    return {
+      beforeSpace,
+      afterSpace,
+      remainingData,
+      remainingDataKeys,
+    };
+  }
+
   updateState(
     newState: PreStateResult,
     scrollMetrics: ScrollMetrics,
