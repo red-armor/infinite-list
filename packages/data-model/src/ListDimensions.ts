@@ -1,4 +1,4 @@
-import noop from '@x-oasis/noop'
+import { noop } from '@x-oasis/noop'
 import Batchinator from './batcher/Batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
@@ -61,7 +61,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _offsetInListGroup: number;
 
-  private _isActive: boolean = true;
+  private _isActive = true;
 
   private _renderState: ListRenderState;
   private _renderStateListeners: Array<Function> = [];
@@ -73,7 +73,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _onUpdateItemsMetaChangeBatchinator: Batchinator;
 
-  private _initializeMode: boolean = false;
+  private _initializeMode = false;
 
   private _onBatchLayoutFinished: () => boolean;
 
@@ -452,7 +452,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.id,
       true
     );
-    let initialNumToRender = this._listGroupDimension.initialNumToRender;
+    const initialNumToRender = this._listGroupDimension.initialNumToRender;
     if (startIndex < initialNumToRender) {
       const step = initialNumToRender - startIndex;
       this.initialNumToRender = data.length >= step ? step : data.length;
@@ -597,7 +597,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   pump(
     data: Array<ItemT>,
-    baseIndex: number = 0,
+    baseIndex = 0,
     keyToMetaMap: Map<string, ItemMeta>,
     intervalTree: PrefixIntervalTree
   ) {
@@ -741,7 +741,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   updateState(
     newState: PreStateResult,
     scrollMetrics: ScrollMetrics,
-    performItemsMetaChange: boolean = true
+    performItemsMetaChange = true
   ) {
     const {
       bufferedStartIndex: nextBufferedStartIndex,
@@ -813,7 +813,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   updateScrollMetrics(
     scrollMetrics: ScrollMetrics = this._scrollMetrics,
-    useCache: boolean = true
+    useCache = true
   ) {
     if (!scrollMetrics) return;
     if (

@@ -1,11 +1,17 @@
 {
   "name": "@infinite-list/react-native",
   "version": "0.0.1",
+  "main": "src/index.ts",
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.js"
+  },
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "pnpm run clean && pnpm run compile",
     "clean": "rimraf ./dist",
-    "compile": "tsc -p tsconfig.build.json",
-    "prepublishOnly": "pnpm run build"
+    "compile": "tsup"
   },
   "devDependencies": {
     "rimraf": "~4.4.0"
