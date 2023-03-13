@@ -1,5 +1,5 @@
 import ListDimensions from '../ListDimensions';
-import Batchinator from '../batcher/Batchinator';
+import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { KeysChangedType } from '../types';
 import { vi, describe, it, expect } from 'vitest';

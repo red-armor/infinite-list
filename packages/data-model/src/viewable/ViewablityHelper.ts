@@ -1,6 +1,7 @@
 import BaseDimensions from '../BaseDimensions';
 import ItemMeta from '../ItemMeta';
-import { capitalize, removeItemsKeyword, resolveChanged } from '../common';
+import { removeItemsKeyword, resolveChanged } from '../common';
+import capitalize from '@x-oasis/capitalize';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,

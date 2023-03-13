@@ -1,4 +1,4 @@
-import Batchinator from './batcher/Batchinator';
+import Batchinator from '@x-oasis/batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import SortedItems from './SortedItems';
