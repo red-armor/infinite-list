@@ -36,3 +36,9 @@ npm run test
 # in root dir
 npm run version
 ```
+
+## How to add module to specified workspace
+
+```bash
+$ pnpm add @x-oasis/select-value --filter @infinite-list/data-model
+```

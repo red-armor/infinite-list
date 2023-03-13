@@ -13,7 +13,7 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "pnpm run clean && pnpm run compile",
+    "build": "pnpm run clean && npm run compile",
     "clean": "rimraf ./dist",
     "compile": "tsup",
     "test": "vitest"
@@ -22,6 +22,12 @@
     "rimraf": "~4.4.0"
   },
   "dependencies": {
-    "@x-oasis/noop": "^0.0.3"
+    "@x-oasis/batchinator": "^0.0.6",
+    "@x-oasis/capitalize": "^0.0.6",
+    "@x-oasis/noop": "^0.0.6",
+    "@x-oasis/resolve-changed": "^0.0.6",
+    "@x-oasis/select-value": "^0.0.6",
+    "@x-oasis/shallow-array-equal": "^0.0.6",
+    "@x-oasis/shallow-equal": "^0.0.6"
   }
 }
