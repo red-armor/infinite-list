@@ -10,8 +10,8 @@ import {
   isNotEmpty,
   noop,
   removeItemsKeyword,
-  shallowArrayEqual,
 } from './common';
+import shallowArrayEqual from '@x-oasis/shallow-array-equal'
 import resolveChanged from '@x-oasis/resolve-changed'
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
 import manager from './manager';
