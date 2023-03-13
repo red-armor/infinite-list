@@ -22,11 +22,11 @@
     "rimraf": "~4.4.0"
   },
   "dependencies": {
-    "@x-oasis/batchinator": "^0.0.5",
-    "@x-oasis/capitalize": "^0.0.5",
-    "@x-oasis/noop": "^0.0.5",
-    "@x-oasis/resolve-changed": "^0.0.5",
-    "@x-oasis/shallow-array-equal": "^0.0.5",
-    "@x-oasis/shallow-equal": "^0.0.5"
+    "@x-oasis/batchinator": "^0.0.6",
+    "@x-oasis/capitalize": "^0.0.6",
+    "@x-oasis/noop": "^0.0.6",
+    "@x-oasis/resolve-changed": "^0.0.6",
+    "@x-oasis/shallow-array-equal": "^0.0.6",
+    "@x-oasis/shallow-equal": "^0.0.6"
   }
 }
