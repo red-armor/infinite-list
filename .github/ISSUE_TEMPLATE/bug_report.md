@@ -6,36 +6,22 @@ labels: 'Status: Unconfirmed'
 
 ---
 
-<!--
-  Please provide a clear and concise description of what the bug is. Include
-  screenshots if needed. Please test using the latest version of the relevant
-  React packages to make sure your issue has not already been fixed.
--->
+### To Reproduce
 
-React version:
+Steps to reproduce the behavior
 
-## Steps To Reproduce
+#### screenshot
 
-1.
-2.
+### Expected Behavior
 
-<!--
-  Your bug will get fixed much faster if we can run your code and it doesn't
-  have dependencies other than React. Issues without reproduction steps or
-  code examples may be immediately closed as not actionable.
--->
+A description of what behavior you observed and why you consider it faulty.
 
-Link to code example:
+### Actual Behavior
 
-<!--
-  Please provide a CodeSandbox (https://codesandbox.io/s/new), a link to a
-  repository on GitHub, or provide a minimal code example that reproduces the
-  problem. You may provide a screenshot of the application if you think it is
-  relevant to your bug report. Here are some tips for providing a minimal
-  example: https://stackoverflow.com/help/mcve.
--->
+A clear and concise description of what you expected to happen instead.
 
-## The current behavior
+**Possible Solution**
+<!--- If you have suggestions on a fix for the bug -->
 
-
-## The expected behavior
+**Additional context**
+Add any other context about the problem here. Or a screenshot if applicable
