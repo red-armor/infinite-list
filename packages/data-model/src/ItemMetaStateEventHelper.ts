@@ -3,11 +3,11 @@ import { StateEventListener } from './types';
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;
-  private _value: boolean = false;
+  private _value = false;
   readonly _eventName: string;
   private _listeners: Array<StateEventListener> = [];
   private _triggerBatchinator: Batchinator;
-  private _handleCount: number = 0;
+  private _handleCount = 0;
   private _once: boolean;
   readonly _key: string;
 

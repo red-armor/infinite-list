@@ -2,7 +2,7 @@ import shallowEqual from '@x-oasis/shallow-equal';
 import ItemMeta from './ItemMeta';
 import SelectValue from '@x-oasis/select-value';
 
-class SortedItems {
+export default class SortedItems {
   readonly selectValue: SelectValue;
   private _items: Array<ItemMeta> = [];
   private _headValues: Array<ItemMeta> = [];
@@ -160,8 +160,8 @@ class SortedItems {
     const len = data.length;
     if (!len) return [];
 
-    let min = 0;
-    let max = data.length - 1;
+    const min = 0;
+    const max = data.length - 1;
 
     const minValue = getValue(data[min]);
     const maxValue = getValue(data[max]);
@@ -216,5 +216,3 @@ class SortedItems {
     return min;
   }
 }
-
-export default SortedItems;

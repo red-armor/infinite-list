@@ -13,7 +13,7 @@ class OnEndReachedHelper {
   readonly onEndReachedHandlerBatchinator: Batchinator;
 
   private onEndReached: OnEndReached;
-  private _waitingForDataChangedSinceEndReached: boolean = false;
+  private _waitingForDataChangedSinceEndReached = false;
   private _onEndReachedTimeoutHandler: NodeJS.Timeout;
 
   constructor(props: OnEndReachedHelperProps) {

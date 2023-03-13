@@ -23,6 +23,7 @@ module.exports = {
         argsIgnorePattern: '^_',
       },
     ],
+    'import/no-default-export': 'off',
   },
   overrides: [
     {

@@ -37,7 +37,7 @@ class ItemsDimensions extends BaseDimensions {
     if (!meta) return false;
 
     if (typeof info === 'number') {
-      let length = info;
+      const length = info;
       if (this._selectValue.selectLength(meta.getLayout()) !== length) {
         this._selectValue.setLength(meta.getLayout(), length);
 

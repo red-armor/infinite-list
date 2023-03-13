@@ -1,5 +1,5 @@
 class ListSpyUtils {
-  private _enableDispatchOnScroll: boolean = true;
+  private _enableDispatchOnScroll = true;
   constructor() {}
 
   public getEnableDispatchOnScroll() {
