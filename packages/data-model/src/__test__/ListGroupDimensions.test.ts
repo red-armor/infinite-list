@@ -1,6 +1,7 @@
 import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '../batcher/Batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
+import { describe, expect, it, test, vi } from 'vitest';
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index,
@@ -8,11 +9,12 @@ const buildData = (count: number) =>
 
 describe('basic', () => {
   // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
-  jest
-    .spyOn(Batchinator.prototype, 'schedule')
-    .mockImplementation(function(...args) {
-      this._callback.apply(this, args);
-    });
+  vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
+    ...args
+  ) {
+    // eslint-disable-next-line prefer-spread
+    this._callback.apply(this, args);
+  });
 
   it('constructor', () => {
     const listGroupDimensions = new ListGroupDimensions({
@@ -58,9 +60,8 @@ describe('basic', () => {
       data: buildData(13),
       keyExtractor: defaultKeyExtractor,
     });
-    const { remover: removeBanner2 } = listGroupDimensions.registerItem(
-      'banner2'
-    );
+    const { remover: removeBanner2 } =
+      listGroupDimensions.registerItem('banner2');
     listGroupDimensions.registerList('list_4', {
       data: buildData(20),
       keyExtractor: defaultKeyExtractor,
@@ -154,9 +155,8 @@ describe('basic', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
     });
-    const { remover: removeBanner } = listGroupDimensions.registerItem(
-      'banner'
-    );
+    const { remover: removeBanner } =
+      listGroupDimensions.registerItem('banner');
     listGroupDimensions.registerList('list_1', {
       data: buildData(10),
       keyExtractor: defaultKeyExtractor,
@@ -198,9 +198,8 @@ describe('basic', () => {
       id: 'list_group',
     });
 
-    const { remover: removeBanner } = listGroupDimensions.registerItem(
-      'banner'
-    );
+    const { remover: removeBanner } =
+      listGroupDimensions.registerItem('banner');
     listGroupDimensions.registerList('list_1', {
       data: buildData(10),
       keyExtractor: defaultKeyExtractor,
@@ -559,7 +558,7 @@ describe('test dimensionsIndexRange', () => {
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
 
     expect(
-      listGroupDimensions.dimensionsIndexRange.map(item => ({
+      listGroupDimensions.dimensionsIndexRange.map((item) => ({
         startIndex: item.startIndex,
         endIndex: item.endIndex,
         dimensionsKey: item.dimensions.id,
@@ -632,9 +631,8 @@ describe('test dimensionsIndexRange', () => {
         getItemLayout: (item, index) => ({ length: 500, index }),
       }
     );
-    const { remover: banner2_remover } = listGroupDimensions.registerItem(
-      'banner2'
-    );
+    const { remover: banner2_remover } =
+      listGroupDimensions.registerItem('banner2');
     listGroupDimensions.registerList('list_4', {
       data: buildData(20),
       keyExtractor: defaultKeyExtractor,
@@ -646,7 +644,7 @@ describe('test dimensionsIndexRange', () => {
     list_2_remover();
 
     expect(
-      listGroupDimensions.dimensionsIndexRange.map(item => ({
+      listGroupDimensions.dimensionsIndexRange.map((item) => ({
         startIndex: item.startIndex,
         endIndex: item.endIndex,
         dimensionsKey: item.dimensions.id,
@@ -682,7 +680,7 @@ describe('test dimensionsIndexRange', () => {
     banner2_remover();
 
     expect(
-      listGroupDimensions.dimensionsIndexRange.map(item => ({
+      listGroupDimensions.dimensionsIndexRange.map((item) => ({
         startIndex: item.startIndex,
         endIndex: item.endIndex,
         dimensionsKey: item.dimensions.id,
@@ -713,7 +711,7 @@ describe('test dimensionsIndexRange', () => {
     list3Dimensions.setData(buildData(5));
 
     expect(
-      listGroupDimensions.dimensionsIndexRange.map(item => ({
+      listGroupDimensions.dimensionsIndexRange.map((item) => ({
         startIndex: item.startIndex,
         endIndex: item.endIndex,
         dimensionsKey: item.dimensions.id,
@@ -754,9 +752,8 @@ describe('test dimensionsIndexRange', () => {
       }),
     });
 
-    const { dimensions: bannerDimensions } = listGroupDimensions.registerItem(
-      'banner'
-    );
+    const { dimensions: bannerDimensions } =
+      listGroupDimensions.registerItem('banner');
     listGroupDimensions.registerList('list_1', {
       data: buildData(10),
       keyExtractor: defaultKeyExtractor,
@@ -775,9 +772,8 @@ describe('test dimensionsIndexRange', () => {
         getItemLayout: (item, index) => ({ length: 500, index }),
       }
     );
-    const { dimensions: banner2Dimensions } = listGroupDimensions.registerItem(
-      'banner2'
-    );
+    const { dimensions: banner2Dimensions } =
+      listGroupDimensions.registerItem('banner2');
     listGroupDimensions.registerList('list_4', {
       data: buildData(20),
       keyExtractor: defaultKeyExtractor,

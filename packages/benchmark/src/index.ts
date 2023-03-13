@@ -1,1 +1,1 @@
-const fn = (count: number) => count++
+const fn = (count: number) => count++;

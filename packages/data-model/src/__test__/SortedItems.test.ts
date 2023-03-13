@@ -2,12 +2,14 @@ import SortedItems from '../SortedItems';
 import SelectValue from '../selectValue/SelectValue';
 import ItemMeta from '../ItemMeta';
 import Batchinator from '../batcher/Batchinator';
+import { vi, describe, expect, it } from 'vitest';
 
-jest
-  .spyOn(Batchinator.prototype, 'schedule')
-  .mockImplementation(function(...args) {
-    this._callback.apply(this, args);
-  });
+vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
+  ...args
+) {
+  // eslint-disable-next-line prefer-spread
+  this._callback.apply(this, args);
+});
 
 const createSortedItems = () => {
   const selectValue = new SelectValue({ horizontal: false });
@@ -15,7 +17,7 @@ const createSortedItems = () => {
 };
 
 const getKeys = (items: Array<ItemMeta>) => {
-  return items.map(item => item.getKey());
+  return items.map((item) => item.getKey());
 };
 
 describe('basic', () => {
@@ -217,7 +219,8 @@ describe('test `greatestLowerBound`', () => {
 
     const index = sortedItems.greatestLowerBound({
       value: 50,
-      getValue: item => sortedItems.selectValue.selectOffset(item.getLayout()),
+      getValue: (item) =>
+        sortedItems.selectValue.selectOffset(item.getLayout()),
       data: sortedItems.getHeadItems(),
     });
 
@@ -249,7 +252,8 @@ describe('test `greatestLowerBound`', () => {
 
     const index = sortedItems.greatestLowerBound({
       value: 701,
-      getValue: item => sortedItems.selectValue.selectOffset(item.getLayout()),
+      getValue: (item) =>
+        sortedItems.selectValue.selectOffset(item.getLayout()),
       data: sortedItems.getHeadItems(),
     });
 
