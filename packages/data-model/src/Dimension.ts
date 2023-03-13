@@ -4,7 +4,7 @@ import { INVALID_LENGTH, layoutEqual } from './common';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
-} from './selectValue/SelectValue';
+} from '@x-oasis/select-value';
 import { DimensionProps, IndexInfo, ItemLayout } from './types';
 
 class Dimension {
