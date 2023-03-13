@@ -1,4 +1,4 @@
-import { noop } from '@x-oasis/noop'
+import { noop } from '@x-oasis/noop';
 import Batchinator from './batcher/Batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
