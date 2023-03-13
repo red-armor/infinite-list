@@ -8,7 +8,7 @@ import {
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
-} from './selectValue/SelectValue';
+} from '@x-oasis/select-value'
 import { ContainerLayoutGetter, ItemLayout } from './types';
 
 class BaseLayout {

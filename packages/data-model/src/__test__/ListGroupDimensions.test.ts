@@ -1,5 +1,5 @@
 import ListGroupDimensions from '../ListGroupDimensions';
-import Batchinator from '../batcher/Batchinator';
+import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { describe, expect, it, test, vi } from 'vitest';
 const buildData = (count: number) =>

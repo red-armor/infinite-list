@@ -1,4 +1,4 @@
-import Batchinator from './batcher/Batchinator';
+import Batchinator from '@x-oasis/batchinator';
 import BaseLayout from './BaseLayout';
 import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
@@ -6,13 +6,13 @@ import ItemsDimensions from './ItemsDimensions';
 import ListDimensions from './ListDimensions';
 import PrefixIntervalTree from './PrefixIntervalTree';
 import {
-  isClamped,
   isNotEmpty,
-  noop,
   removeItemsKeyword,
-  resolveChanged,
-  shallowArrayEqual,
 } from './common';
+import isClamped from '@x-oasis/is-clamped'
+import noop from '@x-oasis/noop';
+import shallowArrayEqual from '@x-oasis/shallow-array-equal'
+import resolveChanged from '@x-oasis/resolve-changed'
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
 import manager from './manager';
 import createStore from './state/createStore';

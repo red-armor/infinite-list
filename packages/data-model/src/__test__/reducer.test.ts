@@ -1,6 +1,6 @@
 import createStore from '../state/createStore';
 import ListGroupDimensions from '../ListGroupDimensions';
-import Batchinator from '../batcher/Batchinator';
+import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { vi, describe, it, expect } from 'vitest';
 const buildData = (count: number) =>

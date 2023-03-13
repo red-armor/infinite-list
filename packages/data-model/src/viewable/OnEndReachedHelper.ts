@@ -1,4 +1,4 @@
-import Batchinator from '../batcher/Batchinator';
+import Batchinator from '@x-oasis/batchinator';
 import {
   ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD,
   ON_END_REACHED_THRESHOLD,

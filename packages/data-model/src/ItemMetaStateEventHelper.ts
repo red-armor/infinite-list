@@ -1,4 +1,4 @@
-import Batchinator from './batcher/Batchinator';
+import Batchinator from '@x-oasis/batchinator';
 import { StateEventListener } from './types';
 
 class ItemMetaStateEventHelper {

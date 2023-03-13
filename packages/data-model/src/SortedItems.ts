@@ -1,6 +1,6 @@
-import shallowEqual from './utils/shallowEqual';
+import shallowEqual from '@x-oasis/shallow-equal';
 import ItemMeta from './ItemMeta';
-import SelectValue from './selectValue/SelectValue';
+import SelectValue from '@x-oasis/select-value';
 
 class SortedItems {
   readonly selectValue: SelectValue;

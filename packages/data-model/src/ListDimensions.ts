@@ -1,18 +1,18 @@
-import { noop } from '@x-oasis/noop';
-import Batchinator from './batcher/Batchinator';
+import noop from '@x-oasis/noop';
+import Batchinator from '@x-oasis/batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListGroupDimensions from './ListGroupDimensions';
 import PrefixIntervalTree from './PrefixIntervalTree';
+import layoutEqual from '@x-oasis/layout-equal'
+import omit from '@x-oasis/omit'
 import {
   INVALID_LENGTH,
   isNotEmpty,
-  layoutEqual,
-  omit,
-  resolveChanged,
   shallowDiffers,
 } from './common';
+import resolveChanged from '@x-oasis/resolve-changed'
 import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';

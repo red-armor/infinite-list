@@ -1,13 +1,14 @@
 import BaseDimensions from './BaseDimensions';
 import Dimension from './Dimension';
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
-import { DEFAULT_LAYOUT, noop } from './common';
+import { DEFAULT_LAYOUT } from './common';
 import {
   ItemLayout,
   ItemMetaOwner,
   ItemMetaState,
   StateEventListener,
 } from './types';
+import noop from '@x-oasis/noop'
 
 class ItemMeta {
   private _isListItem: boolean;

@@ -1,7 +1,8 @@
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import PrefixIntervalTree from './PrefixIntervalTree';
-import { layoutEqual } from './common';
+import layoutEqual from '@x-oasis/layout-equal'
+
 import {
   IndexInfo,
   ItemLayout,
