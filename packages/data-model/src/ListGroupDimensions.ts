@@ -4,7 +4,7 @@ import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensions from './ListDimensions';
-import PrefixIntervalTree from './PrefixIntervalTree';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import {
   isNotEmpty,
   removeItemsKeyword,

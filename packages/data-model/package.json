@@ -28,6 +28,7 @@
     "@x-oasis/layout-equal": "^0.0.8",
     "@x-oasis/noop": "^0.0.6",
     "@x-oasis/omit": "^0.0.8",
+    "@x-oasis/prefix-interval-tree": "^0.0.10",
     "@x-oasis/resolve-changed": "^0.0.6",
     "@x-oasis/select-value": "^0.0.6",
     "@x-oasis/shallow-array-equal": "^0.0.6",

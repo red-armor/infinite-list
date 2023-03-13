@@ -4,7 +4,7 @@ import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListGroupDimensions from './ListGroupDimensions';
-import PrefixIntervalTree from './PrefixIntervalTree';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import layoutEqual from '@x-oasis/layout-equal'
 import omit from '@x-oasis/omit'
 import {

@@ -1,6 +1,6 @@
 import BaseLayout from './BaseLayout';
 import ItemMeta from './ItemMeta';
-import PrefixIntervalTree from './PrefixIntervalTree';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import { removeItemsKeyword } from './common';
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
 import {
