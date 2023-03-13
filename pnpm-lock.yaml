@@ -40,7 +40,10 @@ importers:
     specifiers:
       '@x-oasis/batchinator': ^0.0.6
       '@x-oasis/capitalize': ^0.0.6
+      '@x-oasis/is-clamped': ^0.0.8
+      '@x-oasis/layout-equal': ^0.0.8
       '@x-oasis/noop': ^0.0.6
+      '@x-oasis/omit': ^0.0.8
       '@x-oasis/resolve-changed': ^0.0.6
       '@x-oasis/select-value': ^0.0.6
       '@x-oasis/shallow-array-equal': ^0.0.6
@@ -49,7 +52,10 @@ importers:
     dependencies:
       '@x-oasis/batchinator': 0.0.6
       '@x-oasis/capitalize': 0.0.6
+      '@x-oasis/is-clamped': 0.0.8
+      '@x-oasis/layout-equal': 0.0.8
       '@x-oasis/noop': 0.0.6
+      '@x-oasis/omit': 0.0.8
       '@x-oasis/resolve-changed': 0.0.6
       '@x-oasis/select-value': 0.0.6
       '@x-oasis/shallow-array-equal': 0.0.6
@@ -842,8 +848,20 @@ packages:
     resolution: {integrity: sha512-KJsO8c8KJudBFxyf4Njbv0/WdLy3MC4TqkAiRaG3KUBR7XCn/GhsFLxmPna3OU+DIrW0DB8EE5EBxf2CJBWOHw==}
     dev: false
 
+  /@x-oasis/is-clamped/0.0.8:
+    resolution: {integrity: sha512-ILm0FRXhV2ndlwrgz0ITW5XbWrc3fNbFx1UQ3TxpZQUJ7E+7nychQJAWQmkxs0cZ2Cz6UD1jP/CRy6j6GwyFcw==}
+    dev: false
+
+  /@x-oasis/layout-equal/0.0.8:
+    resolution: {integrity: sha512-9MTksVnMGEQxSnUV7SrSkDWZebFOFSTwa3/1sI2P566DhiZfEKpAdHJKTQnDVuwNTWoIfGgphcwjfYatx/IguA==}
+    dev: false
+
   /@x-oasis/noop/0.0.6:
     resolution: {integrity: sha512-RfIyeiUIq0qrQhqPNzYM3bl95Z3gP5ehWtMowmPCA5nN7P+bfpZkeybJRm+IxHbdAd4EAMHsRObj8eRqx7ihDA==}
+    dev: false
+
+  /@x-oasis/omit/0.0.8:
+    resolution: {integrity: sha512-y1p8Vd9DBD1oh2uhdahHx2cEtLQlk/NAUAspbsTfVIkQQh1Ajs29NNsg8IKMtg3cFv04P4SbOyhHSm7l/7W+YA==}
     dev: false
 
   /@x-oasis/resolve-changed/0.0.6:

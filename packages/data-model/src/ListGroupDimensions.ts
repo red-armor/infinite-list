@@ -6,11 +6,11 @@ import ItemsDimensions from './ItemsDimensions';
 import ListDimensions from './ListDimensions';
 import PrefixIntervalTree from './PrefixIntervalTree';
 import {
-  isClamped,
   isNotEmpty,
-  noop,
   removeItemsKeyword,
 } from './common';
+import isClamped from '@x-oasis/is-clamped'
+import noop from '@x-oasis/noop';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal'
 import resolveChanged from '@x-oasis/resolve-changed'
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';

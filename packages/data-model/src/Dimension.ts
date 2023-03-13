@@ -1,6 +1,7 @@
 import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
-import { INVALID_LENGTH, layoutEqual } from './common';
+import { INVALID_LENGTH } from './common';
+import layoutEqual from '@x-oasis/layout-equal'
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,

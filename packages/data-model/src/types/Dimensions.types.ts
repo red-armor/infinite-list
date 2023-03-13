@@ -76,12 +76,6 @@ export type ItemLayout = {
   height: number;
 };
 
-// export type InternalItemMeta = {
-//   key: string;
-//   separatorLength: number;
-//   layout: ItemLayout;
-// };
-
 export enum KeysChangedType {
   'Initial' = 'initial',
   'Equal' = 'equal',

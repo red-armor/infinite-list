@@ -1,6 +1,3 @@
-import { ItemLayout } from './types';
-
-export const noop = () => {};
 export const DEFAULT_LAYOUT = {
   x: 0,
   y: 0,
@@ -22,31 +19,6 @@ export const INITIAL_NUM_TO_RENDER = 0;
 
 export const INVALID_LENGTH = 'invalid_length';
 
-export function layoutEqual(oldLayout: ItemLayout, newLayout: ItemLayout) {
-  const oldLayoutType = Object.prototype.toString.call(oldLayout);
-  const newLayoutType = Object.prototype.toString.call(newLayout);
-
-  if (oldLayoutType === newLayoutType && newLayoutType === '[object Object]') {
-    const keys = ['x', 'y', 'height', 'width'];
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
-      if (oldLayout[key] !== newLayout[key]) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-export function isClamped(min: number, value: number, max: number) {
-  if (value >= min && value <= max) return true;
-  return false;
-}
-
-
 export const removeItemsKeyword = (configKey) =>
   (configKey.match(/(.*)[iI]tems/) || [])[1] || configKey;
 
@@ -65,23 +37,6 @@ export function shallowDiffers(prev: Object, next: Object): boolean {
   }
   return false;
 }
-
-export const omit = (
-  obj: {
-    [key: string]: any;
-  },
-  keys: Array<string>
-) => {
-  if (Object.prototype.toString.call(obj) === '[object Object]') {
-    return Object.keys(obj).reduce((acc, cur) => {
-      if (keys.indexOf(cur) !== -1) return acc;
-      acc[cur] = obj[cur];
-      return acc;
-    }, {});
-  }
-
-  return obj;
-};
 
 export const isNotEmpty = (obj: any) => {
   if (Object.prototype.toString.call(obj) === '[object Object]') {
