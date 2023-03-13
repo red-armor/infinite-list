@@ -1,21 +1,21 @@
 class EnabledSelector {
   private _dispatchScrollMetricsEnabled = true;
 
-  getDispatchScrollMetricsStatus() {
-    return this._dispatchScrollMetricsEnabled
+  getDispatchScrollMetricsEnabledStatus() {
+    return this._dispatchScrollMetricsEnabled;
   }
 
-  setDispatchScrollMetricsStatus(value: boolean) {
+  setDispatchScrollMetricsEnabledStatus(value: boolean) {
     this._dispatchScrollMetricsEnabled = value;
   }
 
   enableDispatchScrollMetrics() {
-    this._dispatchScrollMetricsEnabled = true
+    this._dispatchScrollMetricsEnabled = true;
   }
 
   disableDispatchScrollMetrics() {
-    this._dispatchScrollMetricsEnabled = false
+    this._dispatchScrollMetricsEnabled = false;
   }
 }
 
-export default EnabledSelector
+export default EnabledSelector;

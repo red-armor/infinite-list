@@ -1090,8 +1090,8 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   dispatchScrollMetricsEnabled() {
     return (
-      this.selector.getDispatchScrollMetricsStatus() &&
-      ListSpyUtils.selector.getDispatchScrollMetricsStatus()
+      this.selector.getDispatchScrollMetricsEnabledStatus() &&
+      ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()
     );
   }
 
@@ -1119,7 +1119,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
     ) {
       this._scrollMetrics = scrollMetrics;
-      if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
+      if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
         this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       }
     } else if (this._rangeResult && this._dispatchedMetricsResult) {
@@ -1129,7 +1129,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       if (!this._dispatchMetricsBatchinator.inSchedule()) {
         this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
       } else {
-        if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
+        if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
           // 刷新scrollMetrics的值
           this._dispatchMetricsBatchinator.schedule(scrollMetrics);
         }

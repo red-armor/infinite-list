@@ -2,7 +2,7 @@ import Batchinator from '@x-oasis/batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import SortedItems from './SortedItems';
-import layoutEqual from '@x-oasis/layout-equal'
+import layoutEqual from '@x-oasis/layout-equal';
 
 import {
   IndexInfo,
@@ -115,7 +115,7 @@ class ItemsDimensions extends BaseDimensions {
       scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
     ) {
       this._scrollMetrics = scrollMetrics;
-      if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
+      if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
         this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       }
       // } else if (this._state) {

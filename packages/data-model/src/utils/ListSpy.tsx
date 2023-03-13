@@ -20,7 +20,7 @@
 
 // const ListSpy = () => {
 //   const [enableDispatchOnScroll, setEnableDispatchOnScroll] = useState(
-//     ListSpyUtils.getDispatchScrollMetricsStatus()
+//     ListSpyUtils.getDispatchScrollMetricsEnabledStatus()
 //   );
 
 //   const onPress = useCallback(() => {

@@ -5,14 +5,10 @@ import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListGroupDimensions from './ListGroupDimensions';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal'
-import omit from '@x-oasis/omit'
-import {
-  INVALID_LENGTH,
-  isNotEmpty,
-  shallowDiffers,
-} from './common';
-import resolveChanged from '@x-oasis/resolve-changed'
+import layoutEqual from '@x-oasis/layout-equal';
+import omit from '@x-oasis/omit';
+import { INVALID_LENGTH, isNotEmpty, shallowDiffers } from './common';
+import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
@@ -80,7 +76,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   public updateStateBatchinator: Batchinator;
 
-  private _selector = new EnabledSelector()
+  private _selector = new EnabledSelector();
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -168,7 +164,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   get selector() {
-    return this._selector
+    return this._selector;
   }
 
   set offsetInListGroup(offset: number) {
@@ -844,7 +840,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   dispatchScrollMetricsEnabled() {
-    return this.selector.getDispatchScrollMetricsStatus() && ListSpyUtils.selector.getDispatchScrollMetricsStatus() && (this._listGroupDimension ? this._listGroupDimension.dispatchScrollMetricsEnabled() : true)
+    return (
+      this.selector.getDispatchScrollMetricsEnabledStatus() &&
+      ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus() &&
+      (this._listGroupDimension
+        ? this._listGroupDimension.dispatchScrollMetricsEnabled()
+        : true)
+    );
   }
 
   updateScrollMetrics(
@@ -861,7 +863,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
       ) {
         this._scrollMetrics = scrollMetrics;
-        if (ListSpyUtils.selector.getDispatchScrollMetricsStatus()) {
+        if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
           this._dispatchMetricsBatchinator.schedule(scrollMetrics);
         }
       } else if (this._state) {
