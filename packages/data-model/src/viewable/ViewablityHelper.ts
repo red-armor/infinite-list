@@ -1,11 +1,12 @@
 import BaseDimensions from '../BaseDimensions';
+import resolveChanged from '@x-oasis/resolve-changed'
 import ItemMeta from '../ItemMeta';
-import { removeItemsKeyword, resolveChanged } from '../common';
+import { removeItemsKeyword } from '../common';
 import capitalize from '@x-oasis/capitalize';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
-} from '../selectValue/SelectValue';
+} from '@x-oasis/select-value';
 import {
   ScrollMetrics,
   ViewAreaModeConfig,

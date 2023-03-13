@@ -10,9 +10,9 @@ import {
   isNotEmpty,
   layoutEqual,
   omit,
-  resolveChanged,
   shallowDiffers,
 } from './common';
+import resolveChanged from '@x-oasis/resolve-changed'
 import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';

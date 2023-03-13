@@ -10,9 +10,9 @@ import {
   isNotEmpty,
   noop,
   removeItemsKeyword,
-  resolveChanged,
   shallowArrayEqual,
 } from './common';
+import resolveChanged from '@x-oasis/resolve-changed'
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
 import manager from './manager';
 import createStore from './state/createStore';

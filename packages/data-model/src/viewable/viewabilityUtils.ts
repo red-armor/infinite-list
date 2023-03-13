@@ -1,5 +1,5 @@
 import ItemMeta from '../ItemMeta';
-import SelectValue from '../selectValue/SelectValue';
+import SelectValue from '@x-oasis/select-value';
 import { ScrollEventMetrics, ScrollMetrics } from '../types';
 
 export function resolveMeasureMetrics(

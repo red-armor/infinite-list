@@ -1,5 +1,5 @@
 import SortedItems from '../SortedItems';
-import SelectValue from '../selectValue/SelectValue';
+import SelectValue from '@x-oasis/select-value';
 import ItemMeta from '../ItemMeta';
 import Batchinator from '@x-oasis/batchinator';
 import { vi, describe, expect, it } from 'vitest';
