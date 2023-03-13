@@ -16,7 +16,8 @@
     "build": "pnpm run clean && npm run compile",
     "clean": "rimraf ./dist",
     "compile": "tsup",
-    "test": "vitest"
+    "test": "vitest run --reporter=verbose",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "rimraf": "~4.4.0"

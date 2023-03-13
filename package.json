@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "pnpm run -r clean",
     "build": "pnpm run -r build",
-    "test": "CI=true pnpm run -r test",
+    "test": "pnpm run -r test",
     "version": "bump",
     "alpha": "bump --branch",
     "lint": "eslint --ext js,ts,tsx .",
