@@ -4,9 +4,9 @@
   "scripts": {
     "build": "pnpm run clean && pnpm run compile",
     "clean": "rimraf ./dist",
-    "test": "jest --verbose",
     "compile": "tsc -p tsconfig.build.json",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "test": "vitest"
   },
   "devDependencies": {
     "rimraf": "~4.4.0"
