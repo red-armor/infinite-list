@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [0.0.3](https://github.com/red-armor/infinite-list/compare/v0.0.2...v0.0.3) (2023-03-13)
+
+
+### Features
+
+* update ([99d482e](https://github.com/red-armor/infinite-list/commit/99d482efa411a15c371562dff409ffe70bdf50cb))
+* update ([a8ccbb5](https://github.com/red-armor/infinite-list/commit/a8ccbb5fa2a603c332398028db9e93080417c266))
+* update ([19fed97](https://github.com/red-armor/infinite-list/commit/19fed9734d1aa6c5b54d90a49101b7aa2a925752))
+
+
+
 ## [0.0.2](https://github.com/red-armor/infinite-list/compare/53a76441ad01a4ad76ca38688cb80515ab8f12d9...v0.0.2) (2023-03-13)
 
 
