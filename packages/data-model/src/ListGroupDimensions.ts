@@ -54,7 +54,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _heartBeatingIndexKeys: Array<string> = [];
   private _heartBeatResolveChangedBatchinator: Batchinator;
   private _inspectingListener: InspectingListener;
-  private _dispatchScrollMetricsEnabled = true;
 
   private _rangeResult: {
     bufferedMetaRanges: ListRangeResult;
@@ -1110,6 +1109,10 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     if (typeof useCache === 'undefined') useCache = true;
 
     if (!scrollMetrics) return;
+    if (this.dispatchScrollMetricsEnabled()) {
+      this._scrollMetrics = scrollMetrics;
+      return;
+    }
     if (
       !useCache ||
       // 刚开始时，this._scrollMetrics是不存在的
@@ -1119,9 +1122,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
     ) {
       this._scrollMetrics = scrollMetrics;
-      if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
-        this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-      }
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
     } else if (this._rangeResult && this._dispatchedMetricsResult) {
       this._scrollMetrics = scrollMetrics;
       // 缓存的优先级，永远不如不使用缓存的；比如前面的list data发生了变化，
@@ -1129,10 +1130,8 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       if (!this._dispatchMetricsBatchinator.inSchedule()) {
         this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
       } else {
-        if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
-          // 刷新scrollMetrics的值
-          this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-        }
+        // 刷新scrollMetrics的值
+        this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       }
     }
   }
@@ -1152,14 +1151,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   cleanRenderStateListeners() {
     this._renderStateListenersCleaner.forEach((cleaner) => cleaner());
-  }
-
-  enableDispatchScrollMetrics() {
-    this._dispatchScrollMetricsEnabled = true;
-  }
-
-  disableDispatchScrollMetrics() {
-    this._dispatchScrollMetricsEnabled = false;
   }
 }
 

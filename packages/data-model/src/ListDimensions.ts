@@ -854,24 +854,24 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     useCache = true
   ) {
     if (!scrollMetrics) return;
+    if (!this.dispatchScrollMetricsEnabled()) {
+      this._scrollMetrics = scrollMetrics;
+      return;
+    }
 
-    if (this.dispatchScrollMetricsEnabled()) {
-      if (
-        !this._scrollMetrics ||
-        scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
-        scrollMetrics.offset !== this._scrollMetrics.offset ||
-        scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
-      ) {
-        this._scrollMetrics = scrollMetrics;
-        if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
-          this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-        }
-      } else if (this._state) {
-        this._dispatchMetricsBatchinator.dispose({
-          abort: true,
-        });
-        this.updateState(this._state, scrollMetrics, false);
-      }
+    if (
+      !this._scrollMetrics ||
+      scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
+      scrollMetrics.offset !== this._scrollMetrics.offset ||
+      scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
+    ) {
+      this._scrollMetrics = scrollMetrics;
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+    } else if (this._state) {
+      this._dispatchMetricsBatchinator.dispose({
+        abort: true,
+      });
+      this.updateState(this._state, scrollMetrics, false);
     }
 
     this._scrollMetrics = scrollMetrics;
