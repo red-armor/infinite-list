@@ -17,11 +17,6 @@
     "publish": "pnpm publish -r --access public"
   },
   "private": true,
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run test"
-    }
-  },
   "bump": {
     "changelog": {
       "enable": true,
