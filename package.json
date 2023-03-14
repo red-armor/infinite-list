@@ -19,7 +19,7 @@
   "private": true,
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm run test"
+      "pre-commit": "lint-staged && set CI=true&&npm test"
     }
   },
   "bump": {
