@@ -64,7 +64,8 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --cache --fix",
-      "prettier --ignore-path ./.gitignore --write "
+      "prettier --ignore-path ./.gitignore --write ",
+      "npm run test"
     ]
   },
   "prettier": {
