@@ -1,13 +1,10 @@
+import EnabledSelector from './EnabledSelector'
+
 class ListSpyUtils {
-  private _enableDispatchOnScroll = true;
-  constructor() {}
+  private _selector: EnabledSelector = new EnabledSelector()
 
-  public getEnableDispatchOnScroll() {
-    return this._enableDispatchOnScroll;
-  }
-
-  public setEnableDispatchOnScorll(enableDispatchOnScroll: boolean) {
-    this._enableDispatchOnScroll = enableDispatchOnScroll;
+  get selector() {
+    return this._selector
   }
 }
 

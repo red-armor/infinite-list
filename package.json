@@ -13,14 +13,10 @@
     "version": "bump",
     "alpha": "bump --branch",
     "lint": "eslint --ext js,ts,tsx .",
+    "prepare": "husky install",
     "publish": "pnpm publish -r --access public"
   },
   "private": true,
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "bump": {
     "changelog": {
       "enable": true,

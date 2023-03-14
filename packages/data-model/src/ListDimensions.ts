@@ -5,14 +5,10 @@ import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListGroupDimensions from './ListGroupDimensions';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal'
-import omit from '@x-oasis/omit'
-import {
-  INVALID_LENGTH,
-  isNotEmpty,
-  shallowDiffers,
-} from './common';
-import resolveChanged from '@x-oasis/resolve-changed'
+import layoutEqual from '@x-oasis/layout-equal';
+import omit from '@x-oasis/omit';
+import { INVALID_LENGTH, isNotEmpty, shallowDiffers } from './common';
+import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
@@ -33,6 +29,7 @@ import {
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
+import EnabledSelector from './utils/EnabledSelector';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -78,6 +75,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _onBatchLayoutFinished: () => boolean;
 
   public updateStateBatchinator: Batchinator;
+
+  private _selector = new EnabledSelector();
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -162,6 +161,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   get length() {
     return this._data.length;
+  }
+
+  get selector() {
+    return this._selector;
   }
 
   set offsetInListGroup(offset: number) {
@@ -670,11 +673,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     if (!meta) return false;
 
-    // const startIndexInListGroup = this._listGroupDimension
-    //   ? this._listGroupDimension.getDimensionStartIndex(this.id)
-    //   : 0;
-    // const finalIndex = startIndexInListGroup + index;
-
     if (typeof info === 'number') {
       let length = info;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
@@ -684,9 +682,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           length = meta.getSeparatorLength() + length;
         }
         if (_update) {
-          // if (this._listGroupDimension) {
-          //   this._listGroupDimension.setIntervalTreeValue(finalIndex, length);
-          // }
           this.setIntervalTreeValue(index, length);
           return true;
         }
@@ -844,11 +839,26 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
   }
 
+  dispatchScrollMetricsEnabled() {
+    return (
+      this.selector.getDispatchScrollMetricsEnabledStatus() &&
+      ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus() &&
+      (this._listGroupDimension
+        ? this._listGroupDimension.dispatchScrollMetricsEnabled()
+        : true)
+    );
+  }
+
   updateScrollMetrics(
     scrollMetrics: ScrollMetrics = this._scrollMetrics,
     useCache = true
   ) {
     if (!scrollMetrics) return;
+    if (!this.dispatchScrollMetricsEnabled()) {
+      this._scrollMetrics = scrollMetrics;
+      return;
+    }
+
     if (
       !this._scrollMetrics ||
       scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
@@ -856,9 +866,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
     ) {
       this._scrollMetrics = scrollMetrics;
-      if (ListSpyUtils.getEnableDispatchOnScroll()) {
-        this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-      }
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
     } else if (this._state) {
       this._dispatchMetricsBatchinator.dispose({
         abort: true,

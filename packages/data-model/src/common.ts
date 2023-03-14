@@ -5,8 +5,8 @@ export const DEFAULT_LAYOUT = {
   width: 0,
 };
 
-export const ON_END_REACHED_TIMEOUT_THRESHOLD = 200;
 export const INTERVAL_TREE_INITIAL_SIZE = 16;
+export const ON_END_REACHED_TIMEOUT_THRESHOLD = 200;
 export const ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD = 1000;
 
 // 建议 ON_END_REACHED_THRESHOLD * VisibleLength > MAX_TO_RENDER_PER_BATCH * itemLength
@@ -14,9 +14,8 @@ export const ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD = 1000;
 export const ON_END_REACHED_THRESHOLD = 2;
 
 export const WINDOW_SIZE = 5;
-export const MAX_TO_RENDER_PER_BATCH = 10;
 export const INITIAL_NUM_TO_RENDER = 0;
-
+export const MAX_TO_RENDER_PER_BATCH = 10;
 export const INVALID_LENGTH = 'invalid_length';
 
 export const removeItemsKeyword = (configKey) =>
