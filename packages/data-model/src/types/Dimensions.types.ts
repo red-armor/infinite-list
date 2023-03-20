@@ -45,6 +45,7 @@ export type ListGroupDimensionsProps = {
   maxToRenderPerBatch?: number;
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
   onBatchLayoutFinished?: () => boolean;
+  persistanceIndices?: Array<number>;
 } & OnEndReachedHelperProps;
 
 export type ListDimensionsProps<ItemT> = {
@@ -63,6 +64,7 @@ export type ListDimensionsProps<ItemT> = {
 
   active?: boolean;
   initialNumToRender?: number;
+  persistanceIndices?: Array<number>;
   onBatchLayoutFinished?: () => boolean;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;

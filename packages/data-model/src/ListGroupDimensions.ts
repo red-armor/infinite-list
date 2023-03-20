@@ -92,6 +92,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
       onBatchLayoutFinished,
+      persistanceIndices,
       onEndReachedHandlerTimeoutThreshold,
     } = props;
 

@@ -97,6 +97,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       getItemSeparatorLength,
       onBatchLayoutFinished,
       initialNumToRender,
+      persistanceIndices,
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
     } = props;
@@ -128,6 +129,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           'by `ListGroup` commander. So value is reset to `0`.'
       );
       this.initialNumToRender = 0;
+    }
+
+    if (this._listGroupDimension && persistanceIndices) {
+      console.warn(
+        '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+          ' persistanceIndices value should be controlled' +
+          'by `ListGroup` commander. So value is reset to `[]`.'
+      );
+      this.persistanceIndices = [];
     }
 
     this.updateInitialNumDueToListGroup(data);
@@ -449,6 +459,21 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   // 临时提供data，不然的话，data.length会一直返回0
   updateInitialNumDueToListGroup(data: Array<ItemT>) {
+    if (!this._listGroupDimension) return;
+    if (!data.length) return;
+    const startIndex = this._listGroupDimension.getDimensionStartIndex(
+      this.id,
+      true
+    );
+    const initialNumToRender = this._listGroupDimension.initialNumToRender;
+    if (startIndex < initialNumToRender) {
+      const step = initialNumToRender - startIndex;
+      this.initialNumToRender = data.length >= step ? step : data.length;
+    }
+  }
+
+  // 临时提供data，不然的话，data.length会一直返回0
+  updatePersistanceIndicesDueToListGroup(data: Array<ItemT>) {
     if (!this._listGroupDimension) return;
     if (!data.length) return;
     const startIndex = this._listGroupDimension.getDimensionStartIndex(

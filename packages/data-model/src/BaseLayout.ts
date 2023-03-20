@@ -8,7 +8,7 @@ import {
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
-} from '@x-oasis/select-value'
+} from '@x-oasis/select-value';
 import { ContainerLayoutGetter, ItemLayout } from './types';
 
 class BaseLayout {
@@ -21,6 +21,7 @@ class BaseLayout {
   readonly _windowSize: number;
   readonly _maxToRenderPerBatch: number;
   private _initialNumToRender: number;
+  private _persistanceIndices = [];
   readonly _onEndReachedThreshold: number;
 
   constructor(props: {
@@ -31,9 +32,11 @@ class BaseLayout {
     windowSize?: number;
     maxToRenderPerBatch?: number;
     initialNumToRender?: number;
+    persistanceIndices?: Array<number>;
   }) {
     const {
       id,
+      persistanceIndices,
       horizontal = false,
       getContainerLayout,
       windowSize = WINDOW_SIZE,
@@ -52,6 +55,7 @@ class BaseLayout {
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
+    this._persistanceIndices = persistanceIndices;
   }
 
   get initialNumToRender() {
@@ -60,6 +64,14 @@ class BaseLayout {
 
   set initialNumToRender(num: number) {
     this._initialNumToRender = num;
+  }
+
+  get persistanceIndices() {
+    return this._persistanceIndices;
+  }
+
+  set persistanceIndices(indices: Array<number>) {
+    this._persistanceIndices = indices;
   }
 
   getHorizontal() {
