@@ -30,6 +30,7 @@ import {
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
+import isClamped from '@x-oasis/is-clamped';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -472,18 +473,33 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
-  // 临时提供data，不然的话，data.length会一直返回0
-  updatePersistanceIndicesDueToListGroup(data: Array<ItemT>) {
+  updatePersistanceIndicesDueToListGroup(data: Array<ItemT> = this._data) {
     if (!this._listGroupDimension) return;
     if (!data.length) return;
+    const persistanceIndices = this._listGroupDimension.persistanceIndices;
+    if (!persistanceIndices.length) return;
+
     const startIndex = this._listGroupDimension.getDimensionStartIndex(
       this.id,
       true
     );
-    const initialNumToRender = this._listGroupDimension.initialNumToRender;
-    if (startIndex < initialNumToRender) {
-      const step = initialNumToRender - startIndex;
-      this.initialNumToRender = data.length >= step ? step : data.length;
+    const endIndex = startIndex + data.length;
+
+    const first = persistanceIndices[0];
+    const last = persistanceIndices[persistanceIndices.length - 1];
+
+    if (
+      isClamped(first, startIndex, last) ||
+      isClamped(first, endIndex, last)
+    ) {
+      const indices = [];
+      for (let index = 0; index < persistanceIndices.length; index++) {
+        const currentIndex = persistanceIndices[index];
+        if (isClamped(startIndex, currentIndex, endIndex)) {
+          indices.push(currentIndex - startIndex);
+        }
+      }
+      if (indices.length) this.persistanceIndices = indices;
     }
   }
 

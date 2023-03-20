@@ -55,7 +55,7 @@ class BaseLayout {
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
-    this._persistanceIndices = persistanceIndices;
+    this._persistanceIndices = (persistanceIndices || []).sort();
   }
 
   get initialNumToRender() {
@@ -71,7 +71,7 @@ class BaseLayout {
   }
 
   set persistanceIndices(indices: Array<number>) {
-    this._persistanceIndices = indices;
+    this._persistanceIndices = indices.sort();
   }
 
   getHorizontal() {
