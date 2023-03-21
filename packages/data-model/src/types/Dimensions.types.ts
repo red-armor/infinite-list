@@ -209,3 +209,11 @@ export type InspectingAPI = {
 };
 
 export type InspectingListener = (props: InspectingAPI) => void;
+
+export type SpaceStateToken<ItemT> = {
+  item: ItemT;
+  key: string;
+  length: number;
+  isSpace: boolean;
+  position: 'before' | 'buffered' | 'after';
+};

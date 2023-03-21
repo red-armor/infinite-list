@@ -13,6 +13,7 @@ import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
+  SpaceStateToken,
   GetItemLayout,
   GetItemSeparatorLength,
   IndexInfo,
@@ -785,13 +786,105 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       bufferedEndIndex + 1
     );
 
-    const beforeSpace = beforeData.reduce((acc, item, index) => {
+    const list = [];
+
+    const createToken = (options?: Partial<SpaceStateToken<ItemT>>) => ({
+      item: null,
+      key: '',
+      length: 0,
+      isSpace: false,
+      position: 'before',
+      ...options,
+    });
+
+    beforeData.forEach((item, index) => {
+      const itemMeta = this.getItemMeta(item, index);
+      const { index: currentIndex } = itemMeta.getIndexInfo();
+      const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
+      const lastTokenIndex = list.length - 1;
+      const lastToken = list[lastTokenIndex];
+      const itemKey = itemMeta.getKey();
+      const itemLayout = itemMeta?.getLayout();
+      const itemLength =
+        (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
+      if (isSpace && lastToken && lastToken.isSpace) {
+        const key = `${lastToken.key}_${itemKey}`;
+        list[lastTokenIndex] = {
+          ...lastToken,
+          key,
+          length: lastToken.length + itemLength,
+        };
+      } else if (isSpace) {
+        const token = createToken({
+          key: itemKey,
+          length: itemLength,
+          isSpace,
+        });
+        list.push(token);
+      } else {
+        const token = createToken({
+          key: itemKey,
+          length: itemLength,
+          isSpace,
+          item,
+        });
+        list.push(token);
+      }
+    });
+
+    remainingData.forEach((item, _index) => {
+      const index = bufferedStartIndex + _index;
       const itemMeta = this.getItemMeta(item, index);
       const itemLayout = itemMeta?.getLayout();
-      return (
-        (itemLayout?.height || 0) + acc + (itemMeta.getSeparatorLength() || 0)
-      );
-    }, 0);
+      const itemLength =
+        (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
+      const itemKey = itemMeta.getKey();
+      const token = createToken({
+        key: itemKey,
+        length: itemLength,
+        item,
+      });
+      list.push(token);
+    });
+
+    afterData.forEach((item, _index) => {
+      const index = afterStartIndex + _index;
+      const itemMeta = this.getItemMeta(item, index);
+      const { index: currentIndex } = itemMeta.getIndexInfo();
+      const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
+      const lastTokenIndex = list.length - 1;
+      const lastToken = list[lastTokenIndex];
+      const itemKey = itemMeta.getKey();
+      const itemLayout = itemMeta?.getLayout();
+      const itemLength =
+        (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
+      if (isSpace && lastToken && lastToken.isSpace) {
+        const key = `${lastToken.key}_${itemKey}`;
+        list[lastTokenIndex] = {
+          ...lastToken,
+          key,
+          length: lastToken.length + itemLength,
+        };
+      } else if (isSpace) {
+        const token = createToken({
+          key: itemKey,
+          length: itemLength,
+          isSpace,
+        });
+        list.push(token);
+      } else {
+        const token = createToken({
+          key: itemKey,
+          length: itemLength,
+          isSpace,
+          item,
+        });
+        list.push(token);
+      }
+    });
+
+    return;
+
     const afterSpace = afterData.reduce((acc, item, index) => {
       const itemMeta = this.getItemMeta(item, index);
       const itemLayout = itemMeta?.getLayout();
