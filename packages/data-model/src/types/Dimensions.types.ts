@@ -141,10 +141,10 @@ export type PreStateResult = {
   distanceFromEnd: number;
 };
 
-export type ListStateResult<ItemT extends {} = {}> = {
+export type ListState<ItemT extends {} = {}> = {
   data: Array<ItemT>;
-  itemKeys: Array<string>;
-  spaceState?: ListSpaceStateResult<ItemT>;
+  // itemKeys: Array<string>;
+  // spaceState?: ListSpaceStateResult<ItemT>;
 } & PreStateResult;
 
 export type ListSpaceStateResult<ItemT extends {} = {}> = {
@@ -217,3 +217,7 @@ export type SpaceStateToken<ItemT> = {
   isSpace: boolean;
   position: 'before' | 'buffered' | 'after';
 };
+
+export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
+
+export type ListStateResult<ItemT> = SpaceStateResult<ItemT>;

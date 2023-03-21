@@ -22,6 +22,7 @@ import {
   KeysChangedType,
   ListDimensionsProps,
   ListRenderState,
+  ListState,
   ListStateResult,
   OnEndReached,
   PreStateResult,
@@ -45,7 +46,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
   private _stateListener: StateListener;
-  private _state: ListStateResult<ItemT>;
+  private _state: ListState<ItemT>;
 
   private _listGroupDimension: ListGroupDimensions;
   private _parentItemsDimensions: ItemsDimensions;
@@ -237,7 +238,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isEndReached: false,
         distanceFromEnd: 0,
         data: [],
-        itemKeys: [],
+        // itemKeys: [],
       };
 
     if (this._state && this._state.bufferedEndIndex > 0) return this._state;
@@ -251,7 +252,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isEndReached: false,
       distanceFromEnd: 0,
       data: this._data.slice(0, maxIndex + 1),
-      itemKeys: this._indexKeys.slice(0, maxIndex + 1),
+      // itemKeys: this._indexKeys.slice(0, maxIndex + 1),
     };
   }
 
@@ -775,18 +776,18 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._stateListener(state, this._state);
   }
 
-  resolveSpaceState(state: ListStateResult<ItemT>) {
-    const { data, bufferedEndIndex, bufferedStartIndex, itemKeys } = state;
+  resolveSpaceState(state: ListState<ItemT>) {
+    const { data, bufferedEndIndex, bufferedStartIndex } = state;
     const afterStartIndex = bufferedEndIndex + 1;
     const beforeData = data.slice(0, bufferedStartIndex);
     const afterData = data.slice(afterStartIndex);
     const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
-    const remainingDataKeys = itemKeys.slice(
-      bufferedStartIndex,
-      bufferedEndIndex + 1
-    );
+    // const remainingDataKeys = itemKeys.slice(
+    //   bufferedStartIndex,
+    //   bufferedEndIndex + 1
+    // );
 
-    const list = [];
+    const spaceStateResult = [];
 
     const createToken = (options?: Partial<SpaceStateToken<ItemT>>) => ({
       item: null,
@@ -801,15 +802,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const itemMeta = this.getItemMeta(item, index);
       const { index: currentIndex } = itemMeta.getIndexInfo();
       const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
-      const lastTokenIndex = list.length - 1;
-      const lastToken = list[lastTokenIndex];
+      const lastTokenIndex = spaceStateResult.length - 1;
+      const lastToken = spaceStateResult[lastTokenIndex];
       const itemKey = itemMeta.getKey();
       const itemLayout = itemMeta?.getLayout();
       const itemLength =
         (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
       if (isSpace && lastToken && lastToken.isSpace) {
         const key = `${lastToken.key}_${itemKey}`;
-        list[lastTokenIndex] = {
+        spaceStateResult[lastTokenIndex] = {
           ...lastToken,
           key,
           length: lastToken.length + itemLength,
@@ -820,7 +821,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           length: itemLength,
           isSpace,
         });
-        list.push(token);
+        spaceStateResult.push(token);
       } else {
         const token = createToken({
           key: itemKey,
@@ -828,7 +829,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSpace,
           item,
         });
-        list.push(token);
+        spaceStateResult.push(token);
       }
     });
 
@@ -844,7 +845,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         length: itemLength,
         item,
       });
-      list.push(token);
+      spaceStateResult.push(token);
     });
 
     afterData.forEach((item, _index) => {
@@ -852,15 +853,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const itemMeta = this.getItemMeta(item, index);
       const { index: currentIndex } = itemMeta.getIndexInfo();
       const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
-      const lastTokenIndex = list.length - 1;
-      const lastToken = list[lastTokenIndex];
+      const lastTokenIndex = spaceStateResult.length - 1;
+      const lastToken = spaceStateResult[lastTokenIndex];
       const itemKey = itemMeta.getKey();
       const itemLayout = itemMeta?.getLayout();
       const itemLength =
         (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
       if (isSpace && lastToken && lastToken.isSpace) {
         const key = `${lastToken.key}_${itemKey}`;
-        list[lastTokenIndex] = {
+        spaceStateResult[lastTokenIndex] = {
           ...lastToken,
           key,
           length: lastToken.length + itemLength,
@@ -871,7 +872,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           length: itemLength,
           isSpace,
         });
-        list.push(token);
+        spaceStateResult.push(token);
       } else {
         const token = createToken({
           key: itemKey,
@@ -879,25 +880,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSpace,
           item,
         });
-        list.push(token);
+        spaceStateResult.push(token);
       }
     });
 
-    return;
-
-    const afterSpace = afterData.reduce((acc, item, index) => {
-      const itemMeta = this.getItemMeta(item, index);
-      const itemLayout = itemMeta?.getLayout();
-      return (
-        (itemLayout?.height || 0) + acc + (itemMeta.getSeparatorLength() || 0)
-      );
-    }, 0);
-    return {
-      beforeSpace,
-      afterSpace,
-      remainingData,
-      remainingDataKeys,
-    };
+    return spaceStateResult;
   }
 
   updateState(
@@ -910,7 +897,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       bufferedEndIndex: nextBufferedEndIndex,
     } = newState;
 
-    const omitKeys = ['data', 'distanceFromEnd', 'itemKeys', 'isEndReached'];
+    const omitKeys = ['data', 'distanceFromEnd', 'isEndReached'];
+    // const omitKeys = ['data', 'distanceFromEnd', 'itemKeys', 'isEndReached'];
     const nextDataLength = Math.max(
       nextBufferedEndIndex + 1,
       this.getReflowItemsLength()
@@ -931,7 +919,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (shouldSetState) {
       const state = {
         ...newState,
-        itemKeys: this._indexKeys.slice(0, nextDataLength),
+        // itemKeys: this._indexKeys.slice(0, nextDataLength),
         data: this._data.slice(0, nextDataLength),
       };
 
