@@ -210,6 +210,7 @@ export type SpaceStateToken<ItemT> = {
   key: string;
   length: number;
   isSpace: boolean;
+  isSticky: boolean;
   position: 'before' | 'buffered' | 'after';
 };
 

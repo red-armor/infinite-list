@@ -22,6 +22,7 @@ class BaseLayout {
   readonly _maxToRenderPerBatch: number;
   private _initialNumToRender: number;
   private _persistanceIndices = [];
+  private _stickyHeaderIndices = [];
   readonly _onEndReachedThreshold: number;
 
   constructor(props: {
@@ -33,12 +34,14 @@ class BaseLayout {
     maxToRenderPerBatch?: number;
     initialNumToRender?: number;
     persistanceIndices?: Array<number>;
+    stickyHeaderIndices?: Array<number>;
   }) {
     const {
       id,
       persistanceIndices,
       horizontal = false,
       getContainerLayout,
+      stickyHeaderIndices,
       windowSize = WINDOW_SIZE,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
@@ -52,9 +55,11 @@ class BaseLayout {
       : selectVerticalValue;
     this._getContainerLayout = getContainerLayout;
     this._windowSize = windowSize;
+    this._stickyHeaderIndices = stickyHeaderIndices;
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
+    this._stickyHeaderIndices = (stickyHeaderIndices || []).sort();
     this._persistanceIndices = (persistanceIndices || []).sort();
   }
 
@@ -72,6 +77,14 @@ class BaseLayout {
 
   set persistanceIndices(indices: Array<number>) {
     this._persistanceIndices = indices.sort();
+  }
+
+  get stickyHeaderIndices() {
+    return this._stickyHeaderIndices;
+  }
+
+  set stickyHeaderIndices(indices: Array<number>) {
+    this._stickyHeaderIndices = indices.sort();
   }
 
   getHorizontal() {

@@ -796,6 +796,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       length: 0,
       isSpace: false,
       position: 'before',
+      isSticky: false,
       ...options,
     });
 
@@ -807,20 +808,31 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const lastToken = spaceStateResult[lastTokenIndex];
       const itemKey = itemMeta.getKey();
       const itemLayout = itemMeta?.getLayout();
+      const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
       const itemLength =
         (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
-      if (isSpace && lastToken && lastToken.isSpace) {
+      // 不能够吸顶
+      if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
         const key = `${lastToken.key}_${itemKey}`;
         spaceStateResult[lastTokenIndex] = {
           ...lastToken,
           key,
           length: lastToken.length + itemLength,
         };
+      } else if (isSticky) {
+        const token = createToken({
+          key: itemKey,
+          length: itemLength,
+          isSpace,
+          isSticky,
+        });
+        spaceStateResult.push(token);
       } else if (isSpace) {
         const token = createToken({
           key: itemKey,
           length: itemLength,
           isSpace,
+          isSticky,
         });
         spaceStateResult.push(token);
       } else {
@@ -845,6 +857,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         key: itemKey,
         length: itemLength,
         item,
+        isSticky: this.stickyHeaderIndices.indexOf(index) !== -1,
       });
       spaceStateResult.push(token);
     });
