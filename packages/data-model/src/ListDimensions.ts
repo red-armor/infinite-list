@@ -23,11 +23,11 @@ import {
   ListDimensionsProps,
   ListRenderState,
   ListState,
-  ListStateResult,
   OnEndReached,
   PreStateResult,
   ScrollMetrics,
   StateListener,
+  ListStateResult,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -45,8 +45,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
-  private _stateListener: StateListener;
+  private _stateListener: StateListener<ItemT>;
+
   private _state: ListState<ItemT>;
+  private _stateResult: ListStateResult<ItemT>;
 
   private _listGroupDimension: ListGroupDimensions;
   private _parentItemsDimensions: ItemsDimensions;
@@ -764,16 +766,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return returnValue;
   }
 
-  addStateListener(listener: StateListener) {
+  addStateListener(listener: StateListener<ItemT>) {
     if (typeof listener === 'function') this._stateListener = listener;
     return () => {
       if (typeof listener === 'function') this._stateListener = null;
     };
   }
 
-  setState(state: ListStateResult<ItemT>) {
-    if (typeof this._stateListener === 'function')
-      this._stateListener(state, this._state);
+  setState(state: ListState<ItemT>) {
+    if (typeof this._stateListener === 'function') {
+      const stateResult = this.resolveSpaceState(state);
+      this._stateListener(stateResult, this._stateResult);
+      this._stateResult = stateResult;
+    }
   }
 
   resolveSpaceState(state: ListState<ItemT>) {
@@ -782,10 +787,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const beforeData = data.slice(0, bufferedStartIndex);
     const afterData = data.slice(afterStartIndex);
     const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
-    // const remainingDataKeys = itemKeys.slice(
-    //   bufferedStartIndex,
-    //   bufferedEndIndex + 1
-    // );
 
     const spaceStateResult = [];
 

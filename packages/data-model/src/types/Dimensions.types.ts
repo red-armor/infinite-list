@@ -155,11 +155,6 @@ export type ListSpaceStateResult<ItemT extends {} = {}> = {
   itemKeys: Array<string>;
 };
 
-export type StateListener = (
-  newState: PreStateResult,
-  oldState: PreStateResult
-) => void;
-
 export interface StateSubscriptions {
   [key: string]: ((viewable: boolean) => void)[];
 }
@@ -221,3 +216,8 @@ export type SpaceStateToken<ItemT> = {
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
 
 export type ListStateResult<ItemT> = SpaceStateResult<ItemT>;
+
+export type StateListener<ItemT> = (
+  newState: ListStateResult<ItemT>,
+  oldState: ListStateResult<ItemT>
+) => void;
