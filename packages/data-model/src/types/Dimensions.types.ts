@@ -205,13 +205,15 @@ export type InspectingAPI = {
 
 export type InspectingListener = (props: InspectingAPI) => void;
 
+export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
+
 export type SpaceStateToken<ItemT> = {
   item: ItemT;
   key: string;
   length: number;
   isSpace: boolean;
   isSticky: boolean;
-  position: 'before' | 'buffered' | 'after';
+  position: SpaceStateTokenPosition;
 };
 
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;

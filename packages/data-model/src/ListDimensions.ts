@@ -28,6 +28,7 @@ import {
   ScrollMetrics,
   StateListener,
   ListStateResult,
+  SpaceStateTokenPosition,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -781,6 +782,69 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
+  createSpaceStateToken(options?: Partial<SpaceStateToken<ItemT>>) {
+    return {
+      item: null,
+      key: '',
+      length: 0,
+      isSpace: false,
+      position: 'before',
+      isSticky: false,
+      ...options,
+    };
+  }
+
+  hydrateSpaceStateToken(
+    spaceStateResult: Array<SpaceStateToken<ItemT>>,
+    item: ItemT,
+    index: number,
+    position: SpaceStateTokenPosition
+  ) {
+    const itemMeta = this.getItemMeta(item, index);
+    const { index: currentIndex } = itemMeta.getIndexInfo();
+    const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
+    const lastTokenIndex = spaceStateResult.length - 1;
+    const lastToken = spaceStateResult[lastTokenIndex];
+    const itemKey = itemMeta.getKey();
+    const itemLayout = itemMeta?.getLayout();
+    const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
+    const itemLength =
+      (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
+    // 不能够吸顶
+    if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
+      const key = `${lastToken.key}_${itemKey}`;
+      spaceStateResult[lastTokenIndex] = {
+        ...lastToken,
+        key,
+        length: lastToken.length + itemLength,
+      };
+    } else if (isSticky) {
+      const token = this.createSpaceStateToken({
+        key: itemKey,
+        length: itemLength,
+        isSpace,
+        isSticky,
+      });
+      spaceStateResult.push(token);
+    } else if (isSpace) {
+      const token = this.createSpaceStateToken({
+        key: itemKey,
+        length: itemLength,
+        isSpace,
+        isSticky,
+      });
+      spaceStateResult.push(token);
+    } else {
+      const token = this.createSpaceStateToken({
+        key: itemKey,
+        length: itemLength,
+        isSpace,
+        item,
+      });
+      spaceStateResult.push(token);
+    }
+  }
+
   resolveSpaceState(state: ListState<ItemT>) {
     const { data, bufferedEndIndex, bufferedStartIndex } = state;
     const afterStartIndex = bufferedEndIndex + 1;
@@ -790,61 +854,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const spaceStateResult = [];
 
-    const createToken = (options?: Partial<SpaceStateToken<ItemT>>) => ({
-      item: null,
-      key: '',
-      length: 0,
-      isSpace: false,
-      position: 'before',
-      isSticky: false,
-      ...options,
-    });
-
-    beforeData.forEach((item, index) => {
-      const itemMeta = this.getItemMeta(item, index);
-      const { index: currentIndex } = itemMeta.getIndexInfo();
-      const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
-      const lastTokenIndex = spaceStateResult.length - 1;
-      const lastToken = spaceStateResult[lastTokenIndex];
-      const itemKey = itemMeta.getKey();
-      const itemLayout = itemMeta?.getLayout();
-      const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
-      // 不能够吸顶
-      if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
-        const key = `${lastToken.key}_${itemKey}`;
-        spaceStateResult[lastTokenIndex] = {
-          ...lastToken,
-          key,
-          length: lastToken.length + itemLength,
-        };
-      } else if (isSticky) {
-        const token = createToken({
-          key: itemKey,
-          length: itemLength,
-          isSpace,
-          isSticky,
-        });
-        spaceStateResult.push(token);
-      } else if (isSpace) {
-        const token = createToken({
-          key: itemKey,
-          length: itemLength,
-          isSpace,
-          isSticky,
-        });
-        spaceStateResult.push(token);
-      } else {
-        const token = createToken({
-          key: itemKey,
-          length: itemLength,
-          isSpace,
-          item,
-        });
-        spaceStateResult.push(token);
-      }
-    });
+    beforeData.forEach((item, index) =>
+      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'before')
+    );
 
     remainingData.forEach((item, _index) => {
       const index = bufferedStartIndex + _index;
@@ -853,7 +865,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const itemLength =
         (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
       const itemKey = itemMeta.getKey();
-      const token = createToken({
+      const token = this.createSpaceStateToken({
         key: itemKey,
         length: itemLength,
         item,
@@ -881,14 +893,14 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           length: lastToken.length + itemLength,
         };
       } else if (isSpace) {
-        const token = createToken({
+        const token = this.createSpaceStateToken({
           key: itemKey,
           length: itemLength,
           isSpace,
         });
         spaceStateResult.push(token);
       } else {
-        const token = createToken({
+        const token = this.createSpaceStateToken({
           key: itemKey,
           length: itemLength,
           isSpace,
