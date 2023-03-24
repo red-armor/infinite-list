@@ -802,7 +802,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   ) {
     const itemMeta = this.getItemMeta(item, index);
     const { index: currentIndex } = itemMeta.getIndexInfo();
-    const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
+    const isSpace =
+      position === 'buffered' &&
+      this.persistanceIndices.indexOf(currentIndex) === -1;
     const lastTokenIndex = spaceStateResult.length - 1;
     const lastToken = spaceStateResult[lastTokenIndex];
     const itemKey = itemMeta.getKey();
