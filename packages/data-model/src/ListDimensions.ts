@@ -891,7 +891,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (shouldSetState) {
       const state = {
         ...newState,
-        // itemKeys: this._indexKeys.slice(0, nextDataLength),
         data: this._data.slice(0, nextDataLength),
       };
 
