@@ -32,6 +32,7 @@
     "@x-oasis/resolve-changed": "^0.0.6",
     "@x-oasis/select-value": "^0.0.6",
     "@x-oasis/shallow-array-equal": "^0.0.6",
-    "@x-oasis/shallow-equal": "^0.0.6"
+    "@x-oasis/shallow-equal": "^0.0.6",
+    "memoize-one": "^6.0.0"
   }
 }

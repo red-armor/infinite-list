@@ -49,6 +49,7 @@ importers:
       '@x-oasis/select-value': ^0.0.6
       '@x-oasis/shallow-array-equal': ^0.0.6
       '@x-oasis/shallow-equal': ^0.0.6
+      memoize-one: ^6.0.0
       rimraf: ~4.4.0
     dependencies:
       '@x-oasis/batchinator': 0.0.6
@@ -62,6 +63,7 @@ importers:
       '@x-oasis/select-value': 0.0.6
       '@x-oasis/shallow-array-equal': 0.0.6
       '@x-oasis/shallow-equal': 0.0.6
+      memoize-one: 6.0.0
     devDependencies:
       rimraf: 4.4.0
 
@@ -2728,6 +2730,10 @@ packages:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
     dev: true
+
+  /memoize-one/6.0.0:
+    resolution: {integrity: sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==}
+    dev: false
 
   /meow/8.1.2:
     resolution: {integrity: sha512-r85E3NdZ+mpYk1C6RjPFEMSE+s1iZMuHtsHAqY0DT3jZczl0diWUZ8g6oU7h0M9cD2EL+PzaYghhCLzR0ZNn5Q==}

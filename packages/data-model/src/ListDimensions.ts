@@ -34,6 +34,7 @@ import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
+import memoizeOne from 'memoize-one';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -83,6 +84,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   public updateStateBatchinator: Batchinator;
 
   private _selector = new EnabledSelector();
+
+  private memoizedResolveSpaceState: (
+    state: ListState<ItemT>
+  ) => Array<SpaceStateToken<ItemT>>;
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -172,6 +177,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this.updateStateBatchinator = new Batchinator(
       this.updateState.bind(this),
       50
+    );
+    this.memoizedResolveSpaceState = memoizeOne(
+      this.resolveSpaceState.bind(this)
     );
   }
 
@@ -776,7 +784,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   setState(state: ListState<ItemT>) {
     if (typeof this._stateListener === 'function') {
-      const stateResult = this.resolveSpaceState(state);
+      const stateResult = this.memoizedResolveSpaceState(state);
       this._stateListener(stateResult, this._stateResult);
       this._stateResult = stateResult;
     }
@@ -841,7 +849,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const afterData = data.slice(afterStartIndex);
     const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
 
-    const spaceStateResult = [];
+    const spaceStateResult = [] as Array<SpaceStateToken<ItemT>>;
 
     beforeData.forEach((item, index) =>
       this.hydrateSpaceStateToken(spaceStateResult, item, index, 'before')
