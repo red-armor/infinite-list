@@ -5,21 +5,22 @@
     "dist",
     "src"
   ],
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "module": "dist/batchinator.esm.js",
   "publishConfig": {
     "access": "public",
     "main": "dist/index.js"
   },
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "pnpm run clean && npm run compile",
+    "build": "tsdx build --tsconfig tsconfig.build.json",
     "clean": "rimraf ./dist",
     "compile": "tsup",
     "test": "vitest"
   },
   "devDependencies": {
-    "rimraf": "~4.4.0"
+    "rimraf": "~4.4.0",
+    "tsdx": "^0.14.1"
   },
   "dependencies": {
     "@x-oasis/batchinator": "^0.0.13",

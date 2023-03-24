@@ -563,7 +563,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实
         // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
         // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
-        this._listGroupDimension.updateScrollMetrics(false);
+        this._listGroupDimension.updateScrollMetrics(this._scrollMetrics, {
+          flush: true,
+          useCache: false,
+        });
       }
     } else {
       this.updateScrollMetrics();
