@@ -38,7 +38,8 @@ importers:
 
   packages/data-model:
     specifiers:
-      '@x-oasis/batchinator': ^0.0.6
+      '@x-oasis/batchinator': ^0.0.13
+      '@x-oasis/boolean-with-default': ^0.0.13
       '@x-oasis/capitalize': ^0.0.6
       '@x-oasis/is-clamped': ^0.0.8
       '@x-oasis/layout-equal': ^0.0.8
@@ -50,10 +51,10 @@ importers:
       '@x-oasis/shallow-array-equal': ^0.0.6
       '@x-oasis/shallow-equal': ^0.0.6
       memoize-one: ^6.0.0
-      nextr: ^0.3.0
       rimraf: ~4.4.0
     dependencies:
-      '@x-oasis/batchinator': 0.0.6
+      '@x-oasis/batchinator': 0.0.13
+      '@x-oasis/boolean-with-default': 0.0.13
       '@x-oasis/capitalize': 0.0.6
       '@x-oasis/is-clamped': 0.0.8
       '@x-oasis/layout-equal': 0.0.8
@@ -65,7 +66,6 @@ importers:
       '@x-oasis/shallow-array-equal': 0.0.6
       '@x-oasis/shallow-equal': 0.0.6
       memoize-one: 6.0.0
-      nextr: 0.3.0
     devDependencies:
       rimraf: 4.4.0
 
@@ -846,8 +846,12 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@x-oasis/batchinator/0.0.6:
-    resolution: {integrity: sha512-Ey3MbGicmQ0LCLWSWLpgpct+G2j1In3l8jJSepoT2UYUsPV0VcB9ozGdHPIP8W5HBe/yjW5YZmJJz446w4ZkHQ==}
+  /@x-oasis/batchinator/0.0.13:
+    resolution: {integrity: sha512-roGBZ9KR9YcQCwYiLtmCJeg3NyUifnwGcGQutfx51s8x5FUWAtyAqOw5u0HwLcm0dm2BJKW6MpQiB2RduaafyA==}
+    dev: false
+
+  /@x-oasis/boolean-with-default/0.0.13:
+    resolution: {integrity: sha512-nAkKDWEGcwGNDDWnLTjWVxEmnwcXavUpqOfAfQeK2HTj9kniOEMOez0YA+9G2PQCD05tLDJyBPsK1jIEYtJWVA==}
     dev: false
 
   /@x-oasis/capitalize/0.0.6:
@@ -2860,11 +2864,6 @@ packages:
   /neo-async/2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
-
-  /nextr/0.3.0:
-    resolution: {integrity: sha512-15eaoRTSdp5uBvjqyDs1cROQ6WjM0Nme1sgrektI2Em99xSFHDqEGREsqarOv7soW2nD0SSD1dNZozbrBYoc7A==}
-    engines: {node: '>=10'}
-    dev: false
 
   /normalize-package-data/2.5.0:
     resolution: {integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==}

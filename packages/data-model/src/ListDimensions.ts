@@ -51,7 +51,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
-  private _stateResult: ListStateResult<ItemT>;
+  private _stateResult: ListStateResult<ItemT> = [];
 
   private _listGroupDimension: ListGroupDimensions;
   private _parentItemsDimensions: ItemsDimensions;
@@ -190,6 +190,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   get selector() {
     return this._selector;
+  }
+
+  get stateResult() {
+    return this._stateResult;
   }
 
   set offsetInListGroup(offset: number) {
@@ -784,13 +788,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   setState(state: ListState<ItemT>) {
-    if (typeof this._stateListener === 'function') {
-      if (this.fillingMode === FillingMode.SPACE) {
-        console.log('state ', state);
-        const stateResult = this.memoizedResolveSpaceState(state);
+    if (this.fillingMode === FillingMode.SPACE) {
+      const stateResult = this.memoizedResolveSpaceState(state);
+      if (typeof this._stateListener === 'function') {
         this._stateListener(stateResult, this._stateResult);
-        this._stateResult = stateResult;
       }
+      this._stateResult = stateResult;
     }
   }
 
@@ -814,14 +817,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   ) {
     const itemMeta = this.getItemMeta(item, index);
     const { index: currentIndex } = itemMeta.getIndexInfo();
-    const isSpace =
-      position !== 'buffered' &&
-      this.persistanceIndices.indexOf(currentIndex) === -1;
     const lastTokenIndex = spaceStateResult.length - 1;
     const lastToken = spaceStateResult[lastTokenIndex];
     const itemKey = itemMeta.getKey();
     const itemLayout = itemMeta?.getLayout();
     const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
+    const isSpace =
+      !isSticky &&
+      position !== 'buffered' &&
+      this.persistanceIndices.indexOf(currentIndex) === -1;
     const itemLength =
       (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
 

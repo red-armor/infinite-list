@@ -64,6 +64,7 @@ export type ListDimensionsProps<ItemT> = {
 
   active?: boolean;
   initialNumToRender?: number;
+  stickyHeaderIndices?: Array<number>;
   persistanceIndices?: Array<number>;
   onBatchLayoutFinished?: () => boolean;
 } & BaseDimensionsProps &
@@ -220,7 +221,7 @@ export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
 
 export type ListStateResult<ItemT> = SpaceStateResult<ItemT>;
 
-export type StateListener<ItemT> = (
+export type StateListener<ItemT = {}> = (
   newState: ListStateResult<ItemT>,
   oldState: ListStateResult<ItemT>
 ) => void;
