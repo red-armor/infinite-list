@@ -788,7 +788,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       key: '',
       length: 0,
       isSpace: false,
-      position: 'before',
+      position: 'before' as SpaceStateTokenPosition,
       isSticky: false,
       ...options,
     };
@@ -810,36 +810,23 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
     const itemLength =
       (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
-    // 不能够吸顶
+
     if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
       const key = `${lastToken.key}_${itemKey}`;
       spaceStateResult[lastTokenIndex] = {
         ...lastToken,
+        item: null,
         key,
         length: lastToken.length + itemLength,
       };
-    } else if (isSticky) {
-      const token = this.createSpaceStateToken({
-        key: itemKey,
-        length: itemLength,
-        isSpace,
-        isSticky,
-      });
-      spaceStateResult.push(token);
-    } else if (isSpace) {
-      const token = this.createSpaceStateToken({
-        key: itemKey,
-        length: itemLength,
-        isSpace,
-        isSticky,
-      });
-      spaceStateResult.push(token);
     } else {
       const token = this.createSpaceStateToken({
         key: itemKey,
         length: itemLength,
         isSpace,
+        isSticky,
         item,
+        position,
       });
       spaceStateResult.push(token);
     }
@@ -860,54 +847,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     remainingData.forEach((item, _index) => {
       const index = bufferedStartIndex + _index;
-      const itemMeta = this.getItemMeta(item, index);
-      const itemLayout = itemMeta?.getLayout();
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
-      const itemKey = itemMeta.getKey();
-      const token = this.createSpaceStateToken({
-        key: itemKey,
-        length: itemLength,
-        item,
-        isSticky: this.stickyHeaderIndices.indexOf(index) !== -1,
-      });
-      spaceStateResult.push(token);
+      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'buffered');
     });
 
     afterData.forEach((item, _index) => {
       const index = afterStartIndex + _index;
-      const itemMeta = this.getItemMeta(item, index);
-      const { index: currentIndex } = itemMeta.getIndexInfo();
-      const isSpace = this.persistanceIndices.indexOf(currentIndex) === -1;
-      const lastTokenIndex = spaceStateResult.length - 1;
-      const lastToken = spaceStateResult[lastTokenIndex];
-      const itemKey = itemMeta.getKey();
-      const itemLayout = itemMeta?.getLayout();
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
-      if (isSpace && lastToken && lastToken.isSpace) {
-        const key = `${lastToken.key}_${itemKey}`;
-        spaceStateResult[lastTokenIndex] = {
-          ...lastToken,
-          key,
-          length: lastToken.length + itemLength,
-        };
-      } else if (isSpace) {
-        const token = this.createSpaceStateToken({
-          key: itemKey,
-          length: itemLength,
-          isSpace,
-        });
-        spaceStateResult.push(token);
-      } else {
-        const token = this.createSpaceStateToken({
-          key: itemKey,
-          length: itemLength,
-          isSpace,
-          item,
-        });
-        spaceStateResult.push(token);
-      }
+      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'after');
     });
 
     return spaceStateResult;
@@ -924,7 +869,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     } = newState;
 
     const omitKeys = ['data', 'distanceFromEnd', 'isEndReached'];
-    // const omitKeys = ['data', 'distanceFromEnd', 'itemKeys', 'isEndReached'];
     const nextDataLength = Math.max(
       nextBufferedEndIndex + 1,
       this.getReflowItemsLength()
