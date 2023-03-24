@@ -1,8 +1,9 @@
-import { ActionPayload, ReducerResult } from '../types';
+import { ActionPayload, Ctx, ReducerResult } from '../types';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
-  payload: ActionPayload
+  payload: ActionPayload,
+  ctx: Ctx
 ) => {
   const { scrollMetrics } = payload;
   const { contentLength, visibleLength } = scrollMetrics;

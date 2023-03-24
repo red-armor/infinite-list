@@ -8,7 +8,7 @@ function createStore<State extends ReducerResult = ReducerResult>(
   _reducer: Reducer<State> = reducer
 ) {
   let currentState: State = {} as any as State;
-  let currentReducer = _reducer;
+  const currentReducer = _reducer;
 
   const dispatch = (action) => {
     currentState = currentReducer(currentState, action);

@@ -6,6 +6,7 @@ import makeIndexMeaningful from './middleware/makeIndexMeaningful';
 import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
 import resolveUnLayoutLimitation from './middleware/resolveUnLayoutLimitation';
+import preCheck from './middleware/preCheck';
 import { Action, ActionPayload, Ctx, ReducerResult } from './types';
 
 const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
@@ -13,6 +14,7 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
+  preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
@@ -48,6 +50,7 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
+  preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
@@ -82,6 +85,7 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
+  preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
@@ -116,6 +120,7 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
+  preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);

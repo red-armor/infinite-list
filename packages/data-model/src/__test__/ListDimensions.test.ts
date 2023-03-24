@@ -116,7 +116,7 @@ describe('resolve space state', () => {
     });
 
     listDimensions.addStateListener((newState) => {
-      console.log('new state ', newState);
+      // console.log('new state ', newState);
     });
 
     // @ts-ignore
