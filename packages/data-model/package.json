@@ -15,7 +15,6 @@
   "scripts": {
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "clean": "rimraf ./dist",
-    "compile": "tsup",
     "test": "vitest"
   },
   "devDependencies": {

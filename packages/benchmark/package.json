@@ -2,11 +2,11 @@
   "name": "@infinite-list/benchmark",
   "version": "0.0.3",
   "scripts": {
-    "build": "pnpm run clean && pnpm run compile",
-    "clean": "rimraf ./dist",
-    "compile": "tsup"
+    "build": "tsdx build --tsconfig tsconfig.build.json",
+    "clean": "rimraf ./dist"
   },
   "devDependencies": {
-    "rimraf": "~4.4.0"
+    "rimraf": "~4.4.0",
+    "tsdx": "^0.14.1"
   }
 }
