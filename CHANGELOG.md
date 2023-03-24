@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## [0.0.4](https://github.com/red-armor/infinite-list/compare/v0.0.3...v0.0.4) (2023-03-24)
+
+
+### Features
+
+* rename ([8524bd1](https://github.com/red-armor/infinite-list/commit/8524bd14e93f31f883f02037c46eee972f63c696))
+* update ([a6fbadf](https://github.com/red-armor/infinite-list/commit/a6fbadfaa9c1221db0842cea14e75e6959b0164a))
+* update ([e371dc4](https://github.com/red-armor/infinite-list/commit/e371dc4fd5f7dd8ed9b386d97b3b58920f1a47b7))
+* update ([886b249](https://github.com/red-armor/infinite-list/commit/886b249855723010cebe35dcce69e013ba683a82))
+* update ([51eb581](https://github.com/red-armor/infinite-list/commit/51eb581bfec1d2495107ebf7da3f80195b2db8ed))
+* update ([8540442](https://github.com/red-armor/infinite-list/commit/8540442da7a8ea36104f4bdd5052fef878bf7fa3))
+* update ([7f6e3b6](https://github.com/red-armor/infinite-list/commit/7f6e3b6027ea2301bdf51ca9720f7d5b5939f90f))
+* update ([f999c32](https://github.com/red-armor/infinite-list/commit/f999c321a09b203c689ba03bce8115ebeb609b91))
+* update ([51ead0e](https://github.com/red-armor/infinite-list/commit/51ead0eae55f8ce400b6b3046b6dfceb9dc19de9))
+* update ([a09ed36](https://github.com/red-armor/infinite-list/commit/a09ed36f461aa958ac58a0387bf679c362339b0a))
+* update ([83c69fa](https://github.com/red-armor/infinite-list/commit/83c69fadd27163b846d2dae47d99de7d24eaca3c))
+
+
+
 ## [0.0.3](https://github.com/red-armor/infinite-list/compare/v0.0.2...v0.0.3) (2023-03-13)
 
 
