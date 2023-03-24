@@ -8,8 +8,8 @@ import {
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
-} from '@x-oasis/select-value'
-import { ContainerLayoutGetter, ItemLayout } from './types';
+} from '@x-oasis/select-value';
+import { ContainerLayoutGetter, ItemLayout, FillingMode } from './types';
 
 class BaseLayout {
   private _layout: ItemLayout = DEFAULT_LAYOUT;
@@ -21,22 +21,31 @@ class BaseLayout {
   readonly _windowSize: number;
   readonly _maxToRenderPerBatch: number;
   private _initialNumToRender: number;
+  private _persistanceIndices = [];
+  private _stickyHeaderIndices = [];
   readonly _onEndReachedThreshold: number;
+  readonly _fillingMode: FillingMode;
 
   constructor(props: {
     id: string;
+    fillingMode?: FillingMode;
     horizontal?: boolean;
     getContainerLayout?: ContainerLayoutGetter;
     onEndReachedThreshold?: number;
     windowSize?: number;
     maxToRenderPerBatch?: number;
     initialNumToRender?: number;
+    persistanceIndices?: Array<number>;
+    stickyHeaderIndices?: Array<number>;
   }) {
     const {
       id,
+      persistanceIndices,
       horizontal = false,
       getContainerLayout,
+      stickyHeaderIndices,
       windowSize = WINDOW_SIZE,
+      fillingMode = FillingMode.SPACE,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
       onEndReachedThreshold = ON_END_REACHED_THRESHOLD,
@@ -49,9 +58,13 @@ class BaseLayout {
       : selectVerticalValue;
     this._getContainerLayout = getContainerLayout;
     this._windowSize = windowSize;
+    this._fillingMode = fillingMode;
+    this._stickyHeaderIndices = stickyHeaderIndices;
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
+    this._stickyHeaderIndices = (stickyHeaderIndices || []).sort();
+    this._persistanceIndices = (persistanceIndices || []).sort();
   }
 
   get initialNumToRender() {
@@ -60,6 +73,22 @@ class BaseLayout {
 
   set initialNumToRender(num: number) {
     this._initialNumToRender = num;
+  }
+
+  get persistanceIndices() {
+    return this._persistanceIndices;
+  }
+
+  set persistanceIndices(indices: Array<number>) {
+    this._persistanceIndices = indices.sort();
+  }
+
+  get stickyHeaderIndices() {
+    return this._stickyHeaderIndices;
+  }
+
+  set stickyHeaderIndices(indices: Array<number>) {
+    this._stickyHeaderIndices = indices.sort();
   }
 
   getHorizontal() {
@@ -80,6 +109,10 @@ class BaseLayout {
 
   get onEndReachedThreshold() {
     return this._onEndReachedThreshold;
+  }
+
+  get fillingMode() {
+    return this._fillingMode;
   }
 
   /**

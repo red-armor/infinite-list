@@ -10,6 +10,7 @@ import isClamped from '@x-oasis/is-clamped';
 import noop from '@x-oasis/noop';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import resolveChanged from '@x-oasis/resolve-changed';
+import booleanWithDefault from '@x-oasis/boolean-with-default';
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
 import manager from './manager';
 import createStore from './state/createStore';
@@ -474,7 +475,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.calculateDimensionsIndexRange();
     this.calculateReflowItemsLength();
     this.updateChildDimensionsOffsetInContainer();
-    this.updateScrollMetrics(useCache);
+    this.updateScrollMetrics(this._scrollMetrics, { useCache });
   }
 
   /**
@@ -1095,18 +1096,15 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   updateScrollMetrics(
-    _scrollMetrics?: ScrollMetrics | boolean,
-    _useCache?: boolean
-  ) {
-    let scrollMetrics = _scrollMetrics;
-    let useCache = _useCache;
-
-    if (typeof scrollMetrics === 'boolean') {
-      useCache = scrollMetrics;
-      scrollMetrics = this._scrollMetrics;
+    _scrollMetrics?: ScrollMetrics,
+    _options?: {
+      useCache?: boolean;
+      flush?: boolean;
     }
-
-    if (typeof useCache === 'undefined') useCache = true;
+  ) {
+    const scrollMetrics = _scrollMetrics || this._scrollMetrics;
+    const useCache = booleanWithDefault(_options.useCache, true);
+    const flush = booleanWithDefault(_options.flush, false);
 
     if (!scrollMetrics) return;
     if (this.dispatchScrollMetricsEnabled()) {
@@ -1122,16 +1120,28 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
     ) {
       this._scrollMetrics = scrollMetrics;
-      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+      if (flush) {
+        this._dispatchMetricsBatchinator.flush(scrollMetrics);
+      } else {
+        this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+      }
     } else if (this._rangeResult && this._dispatchedMetricsResult) {
       this._scrollMetrics = scrollMetrics;
       // 缓存的优先级，永远不如不使用缓存的；比如前面的list data发生了变化，
       // 但是后续的list并没有发生变化，这个时候要自行自定义的
       if (!this._dispatchMetricsBatchinator.inSchedule()) {
-        this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
+        if (flush) {
+          this._updateScrollMetricsWithCacheBatchinator.flush(scrollMetrics);
+        } else {
+          this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
+        }
       } else {
         // 刷新scrollMetrics的值
-        this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+        if (flush) {
+          this._dispatchMetricsBatchinator.flush(scrollMetrics);
+        } else {
+          this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+        }
       }
     }
   }

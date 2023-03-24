@@ -13,6 +13,7 @@ import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
+  SpaceStateToken,
   GetItemLayout,
   GetItemSeparatorLength,
   IndexInfo,
@@ -21,15 +22,20 @@ import {
   KeysChangedType,
   ListDimensionsProps,
   ListRenderState,
-  ListStateResult,
+  ListState,
   OnEndReached,
   PreStateResult,
   ScrollMetrics,
   StateListener,
+  ListStateResult,
+  SpaceStateTokenPosition,
+  FillingMode,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
+import isClamped from '@x-oasis/is-clamped';
+import memoizeOne from 'memoize-one';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -42,8 +48,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
-  private _stateListener: StateListener;
-  private _state: ListStateResult<ItemT>;
+  private _stateListener: StateListener<ItemT>;
+
+  private _state: ListState<ItemT>;
+  private _stateResult: ListStateResult<ItemT> = [];
 
   private _listGroupDimension: ListGroupDimensions;
   private _parentItemsDimensions: ItemsDimensions;
@@ -78,6 +86,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _selector = new EnabledSelector();
 
+  private memoizedResolveSpaceState: (
+    state: ListState<ItemT>
+  ) => Array<SpaceStateToken<ItemT>>;
+
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
       ...props,
@@ -97,6 +109,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       getItemSeparatorLength,
       onBatchLayoutFinished,
       initialNumToRender,
+      persistanceIndices,
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
     } = props;
@@ -130,6 +143,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.initialNumToRender = 0;
     }
 
+    if (this._listGroupDimension && persistanceIndices) {
+      console.warn(
+        '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+          ' persistanceIndices value should be controlled' +
+          'by `ListGroup` commander. So value is reset to `[]`.'
+      );
+      this.persistanceIndices = [];
+    }
+
     this.updateInitialNumDueToListGroup(data);
     if (!this._isActive) {
       this._softData = data;
@@ -157,6 +179,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.updateState.bind(this),
       50
     );
+    this.memoizedResolveSpaceState = memoizeOne(
+      this.resolveSpaceState.bind(this)
+    );
   }
 
   get length() {
@@ -165,6 +190,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   get selector() {
     return this._selector;
+  }
+
+  get stateResult() {
+    return this._stateResult;
   }
 
   set offsetInListGroup(offset: number) {
@@ -225,7 +254,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isEndReached: false,
         distanceFromEnd: 0,
         data: [],
-        itemKeys: [],
+        // itemKeys: [],
       };
 
     if (this._state && this._state.bufferedEndIndex > 0) return this._state;
@@ -239,7 +268,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isEndReached: false,
       distanceFromEnd: 0,
       data: this._data.slice(0, maxIndex + 1),
-      itemKeys: this._indexKeys.slice(0, maxIndex + 1),
+      // itemKeys: this._indexKeys.slice(0, maxIndex + 1),
     };
   }
 
@@ -462,6 +491,36 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
+  updatePersistanceIndicesDueToListGroup(data: Array<ItemT> = this._data) {
+    if (!this._listGroupDimension) return;
+    if (!data.length) return;
+    const persistanceIndices = this._listGroupDimension.persistanceIndices;
+    if (!persistanceIndices.length) return;
+
+    const startIndex = this._listGroupDimension.getDimensionStartIndex(
+      this.id,
+      true
+    );
+    const endIndex = startIndex + data.length;
+
+    const first = persistanceIndices[0];
+    const last = persistanceIndices[persistanceIndices.length - 1];
+
+    if (
+      isClamped(first, startIndex, last) ||
+      isClamped(first, endIndex, last)
+    ) {
+      const indices = [];
+      for (let index = 0; index < persistanceIndices.length; index++) {
+        const currentIndex = persistanceIndices[index];
+        if (isClamped(startIndex, currentIndex, endIndex)) {
+          indices.push(currentIndex - startIndex);
+        }
+      }
+      if (indices.length) this.persistanceIndices = indices;
+    }
+  }
+
   attemptToHandleEndReached() {
     if (!this._listGroupDimension) {
       if (this.initialNumToRender)
@@ -504,7 +563,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实
         // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
         // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
-        this._listGroupDimension.updateScrollMetrics(false);
+        this._listGroupDimension.updateScrollMetrics(this._scrollMetrics, {
+          flush: true,
+          useCache: false,
+        });
       }
     } else {
       this.updateScrollMetrics();
@@ -721,49 +783,100 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return returnValue;
   }
 
-  addStateListener(listener: StateListener) {
+  addStateListener(listener: StateListener<ItemT>) {
     if (typeof listener === 'function') this._stateListener = listener;
     return () => {
       if (typeof listener === 'function') this._stateListener = null;
     };
   }
 
-  setState(state: ListStateResult<ItemT>) {
-    if (typeof this._stateListener === 'function')
-      this._stateListener(state, this._state);
+  setState(state: ListState<ItemT>) {
+    if (this.fillingMode === FillingMode.SPACE) {
+      const stateResult = this.memoizedResolveSpaceState(state);
+      if (typeof this._stateListener === 'function') {
+        this._stateListener(stateResult, this._stateResult);
+      }
+      this._stateResult = stateResult;
+    }
   }
 
-  resolveSpaceState(state: ListStateResult<ItemT>) {
-    const { data, bufferedEndIndex, bufferedStartIndex, itemKeys } = state;
+  createSpaceStateToken(options?: Partial<SpaceStateToken<ItemT>>) {
+    return {
+      item: null,
+      key: '',
+      length: 0,
+      isSpace: false,
+      position: 'before' as SpaceStateTokenPosition,
+      isSticky: false,
+      ...options,
+    };
+  }
+
+  hydrateSpaceStateToken(
+    spaceStateResult: Array<SpaceStateToken<ItemT>>,
+    item: ItemT,
+    index: number,
+    position: SpaceStateTokenPosition
+  ) {
+    const itemMeta = this.getItemMeta(item, index);
+    const { index: currentIndex } = itemMeta.getIndexInfo();
+    const lastTokenIndex = spaceStateResult.length - 1;
+    const lastToken = spaceStateResult[lastTokenIndex];
+    const itemKey = itemMeta.getKey();
+    const itemLayout = itemMeta?.getLayout();
+    const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
+    const isSpace =
+      !isSticky &&
+      position !== 'buffered' &&
+      this.persistanceIndices.indexOf(currentIndex) === -1;
+    const itemLength =
+      (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
+
+    if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
+      const key = `${lastToken.key}_${itemKey}`;
+      spaceStateResult[lastTokenIndex] = {
+        ...lastToken,
+        item: null,
+        key,
+        length: lastToken.length + itemLength,
+      };
+    } else {
+      const token = this.createSpaceStateToken({
+        key: itemKey,
+        length: itemLength,
+        isSpace,
+        isSticky,
+        item,
+        position,
+      });
+      spaceStateResult.push(token);
+    }
+  }
+
+  resolveSpaceState(state: ListState<ItemT>) {
+    const { data, bufferedEndIndex, bufferedStartIndex } = state;
     const afterStartIndex = bufferedEndIndex + 1;
     const beforeData = data.slice(0, bufferedStartIndex);
     const afterData = data.slice(afterStartIndex);
     const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
-    const remainingDataKeys = itemKeys.slice(
-      bufferedStartIndex,
-      bufferedEndIndex + 1
+
+    const spaceStateResult = [] as Array<SpaceStateToken<ItemT>>;
+
+    beforeData.forEach((item, index) =>
+      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'before')
     );
 
-    const beforeSpace = beforeData.reduce((acc, item, index) => {
-      const itemMeta = this.getItemMeta(item, index);
-      const itemLayout = itemMeta?.getLayout();
-      return (
-        (itemLayout?.height || 0) + acc + (itemMeta.getSeparatorLength() || 0)
-      );
-    }, 0);
-    const afterSpace = afterData.reduce((acc, item, index) => {
-      const itemMeta = this.getItemMeta(item, index);
-      const itemLayout = itemMeta?.getLayout();
-      return (
-        (itemLayout?.height || 0) + acc + (itemMeta.getSeparatorLength() || 0)
-      );
-    }, 0);
-    return {
-      beforeSpace,
-      afterSpace,
-      remainingData,
-      remainingDataKeys,
-    };
+    remainingData.forEach((item, _index) => {
+      const index = bufferedStartIndex + _index;
+      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'buffered');
+    });
+
+    afterData.forEach((item, _index) => {
+      const index = afterStartIndex + _index;
+      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'after');
+    });
+
+    return spaceStateResult;
   }
 
   updateState(
@@ -776,7 +889,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       bufferedEndIndex: nextBufferedEndIndex,
     } = newState;
 
-    const omitKeys = ['data', 'distanceFromEnd', 'itemKeys', 'isEndReached'];
+    const omitKeys = ['data', 'distanceFromEnd', 'isEndReached'];
     const nextDataLength = Math.max(
       nextBufferedEndIndex + 1,
       this.getReflowItemsLength()
@@ -797,7 +910,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (shouldSetState) {
       const state = {
         ...newState,
-        itemKeys: this._indexKeys.slice(0, nextDataLength),
         data: this._data.slice(0, nextDataLength),
       };
 

@@ -24,6 +24,7 @@ module.exports = {
       },
     ],
     'import/no-default-export': 'off',
+    '@typescript-eslint/consistent-type-imports': 'off'
   },
   overrides: [
     {

@@ -16,6 +16,10 @@ class EnabledSelector {
   disableDispatchScrollMetrics() {
     this._dispatchScrollMetricsEnabled = false;
   }
+
+  toggleDispatchScrollMetrics() {
+    this._dispatchScrollMetricsEnabled = !this._dispatchScrollMetricsEnabled;
+  }
 }
 
 export default EnabledSelector;

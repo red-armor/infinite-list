@@ -45,6 +45,7 @@ export type ListGroupDimensionsProps = {
   maxToRenderPerBatch?: number;
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
   onBatchLayoutFinished?: () => boolean;
+  persistanceIndices?: Array<number>;
 } & OnEndReachedHelperProps;
 
 export type ListDimensionsProps<ItemT> = {
@@ -63,6 +64,8 @@ export type ListDimensionsProps<ItemT> = {
 
   active?: boolean;
   initialNumToRender?: number;
+  stickyHeaderIndices?: Array<number>;
+  persistanceIndices?: Array<number>;
   onBatchLayoutFinished?: () => boolean;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
@@ -139,10 +142,10 @@ export type PreStateResult = {
   distanceFromEnd: number;
 };
 
-export type ListStateResult<ItemT extends {} = {}> = {
+export type ListState<ItemT extends {} = {}> = {
   data: Array<ItemT>;
-  itemKeys: Array<string>;
-  spaceState?: ListSpaceStateResult<ItemT>;
+  // itemKeys: Array<string>;
+  // spaceState?: ListSpaceStateResult<ItemT>;
 } & PreStateResult;
 
 export type ListSpaceStateResult<ItemT extends {} = {}> = {
@@ -152,11 +155,6 @@ export type ListSpaceStateResult<ItemT extends {} = {}> = {
   data: Array<ItemT>;
   itemKeys: Array<string>;
 };
-
-export type StateListener = (
-  newState: PreStateResult,
-  oldState: PreStateResult
-) => void;
 
 export interface StateSubscriptions {
   [key: string]: ((viewable: boolean) => void)[];
@@ -207,3 +205,28 @@ export type InspectingAPI = {
 };
 
 export type InspectingListener = (props: InspectingAPI) => void;
+
+export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
+
+export type SpaceStateToken<ItemT> = {
+  item: ItemT;
+  key: string;
+  length: number;
+  isSpace: boolean;
+  isSticky: boolean;
+  position: SpaceStateTokenPosition;
+};
+
+export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
+
+export type ListStateResult<ItemT> = SpaceStateResult<ItemT>;
+
+export type StateListener<ItemT = {}> = (
+  newState: ListStateResult<ItemT>,
+  oldState: ListStateResult<ItemT>
+) => void;
+
+export enum FillingMode {
+  SPACE = 'space',
+  RECYCLE = 'recycle',
+}

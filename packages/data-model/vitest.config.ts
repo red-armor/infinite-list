@@ -5,7 +5,7 @@ import tsPath from 'vite-tsconfig-paths';
 export default defineConfig({
   test: {
     globals: true,
-    include: ['src/__test__/**/*.(spec|test).ts'],
+    include: ['src/__test__/**/*.test.ts'],
   },
 
   // @ts-ignore
