@@ -29,6 +29,7 @@ import {
   StateListener,
   ListStateResult,
   SpaceStateTokenPosition,
+  FillingMode,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -784,9 +785,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   setState(state: ListState<ItemT>) {
     if (typeof this._stateListener === 'function') {
-      const stateResult = this.memoizedResolveSpaceState(state);
-      this._stateListener(stateResult, this._stateResult);
-      this._stateResult = stateResult;
+      if (this.fillingMode === FillingMode.SPACE) {
+        console.log('state ', state);
+        const stateResult = this.memoizedResolveSpaceState(state);
+        this._stateListener(stateResult, this._stateResult);
+        this._stateResult = stateResult;
+      }
     }
   }
 
@@ -811,7 +815,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const itemMeta = this.getItemMeta(item, index);
     const { index: currentIndex } = itemMeta.getIndexInfo();
     const isSpace =
-      position === 'buffered' &&
+      position !== 'buffered' &&
       this.persistanceIndices.indexOf(currentIndex) === -1;
     const lastTokenIndex = spaceStateResult.length - 1;
     const lastToken = spaceStateResult[lastTokenIndex];

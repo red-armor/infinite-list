@@ -224,3 +224,8 @@ export type StateListener<ItemT> = (
   newState: ListStateResult<ItemT>,
   oldState: ListStateResult<ItemT>
 ) => void;
+
+export enum FillingMode {
+  SPACE = 'space',
+  RECYCLE = 'recycle',
+}
