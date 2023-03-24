@@ -18,7 +18,7 @@ importers:
       vitest: 0.29.2
     devDependencies:
       '@innei/bump-version': 1.5.9
-      '@innei/eslint-config-ts': 0.9.7_typescript@4.8.3
+      '@innei/eslint-config-ts': 0.9.7
       '@types/node': 16.18.14
       husky: 8.0.3
       lint-staged: 13.2.0
@@ -33,8 +33,10 @@ importers:
   packages/benchmark:
     specifiers:
       rimraf: ~4.4.0
+      tsdx: ^0.14.1
     devDependencies:
       rimraf: 4.4.0
+      tsdx: 0.14.1
 
   packages/data-model:
     specifiers:
@@ -74,14 +76,18 @@ importers:
   packages/react:
     specifiers:
       rimraf: ~4.4.0
+      tsdx: ^0.14.1
     devDependencies:
       rimraf: 4.4.0
+      tsdx: 0.14.1
 
   packages/react-native:
     specifiers:
       rimraf: ~4.4.0
+      tsdx: ^0.14.1
     devDependencies:
       rimraf: 4.4.0
+      tsdx: 0.14.1
 
 packages:
 
@@ -1754,10 +1760,8 @@ packages:
       slugify: 1.6.5
     dev: true
 
-  /@innei/eslint-config-ts/0.9.7_typescript@4.8.3:
+  /@innei/eslint-config-ts/0.9.7:
     resolution: {integrity: sha512-bgAni+rhvw+bxHKAcMg8CDEqTOsu5LoCPWkwLTSYApNEhWgnCfvZVU7w4Dc4BiFCc7mgHeUQIVqhqHtwTQBYDg==}
-    peerDependencies:
-      typescript: '>=4'
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.48.0_4nze5ffgk44facegjqgt6hfpla
       '@typescript-eslint/parser': 5.54.1_gtwhxxwdajerixwgo55s62heyu
