@@ -504,6 +504,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     this.updateChildDimensionsOffsetInContainer();
+    this.calculateReflowItemsLength();
   }
 
   removeItem(key: string) {

@@ -153,6 +153,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     this.updateInitialNumDueToListGroup(data);
+    this.updatePersistanceIndicesDueToListGroup(data);
     if (!this._isActive) {
       this._softData = data;
     } else {
