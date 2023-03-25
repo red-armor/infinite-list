@@ -159,6 +159,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._setData(data);
     }
     this._state = this.resolveInitialState();
+    this._stateResult = this.resolveSpaceState(this._state);
 
     this._store = createStore<ReducerResult>() || store;
 
@@ -201,7 +202,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getState() {
-    return this._state;
+    // return this._state;
+    return this._stateResult;
   }
 
   cleanup() {
