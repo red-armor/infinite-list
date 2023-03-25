@@ -1103,11 +1103,11 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     }
   ) {
     const scrollMetrics = _scrollMetrics || this._scrollMetrics;
-    const useCache = booleanWithDefault(_options.useCache, true);
-    const flush = booleanWithDefault(_options.flush, false);
+    const useCache = booleanWithDefault(_options?.useCache, true);
+    const flush = booleanWithDefault(_options?.flush, false);
 
     if (!scrollMetrics) return;
-    if (this.dispatchScrollMetricsEnabled()) {
+    if (!this.dispatchScrollMetricsEnabled()) {
       this._scrollMetrics = scrollMetrics;
       return;
     }
