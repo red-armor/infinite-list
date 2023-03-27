@@ -991,6 +991,6 @@ describe('persistanceIndices', () => {
 
     expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
     expect(list_2_dimensions.persistanceIndices).toEqual([4]);
-    // expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
+    expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
   });
 });

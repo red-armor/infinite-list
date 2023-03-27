@@ -103,7 +103,7 @@ describe('basic', () => {
 });
 
 describe('resolve space state', () => {
-  it('basic format', () => {
+  it('basic output state', () => {
     const data = buildData(100);
 
     const listDimensions = new ListDimensions({
@@ -205,6 +205,45 @@ describe('resolve space state', () => {
     });
 
     const stateResult = listDimensions.stateResult;
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 995,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    expect(stateResult).toBe(listDimensions.stateResult);
+  });
+
+  it('persistanceIndices', () => {
+    const data = buildData(100);
+
+    const listDimensions = new ListDimensions({
+      id: 'list_1',
+      data,
+      persistanceIndices: [1, 2, 10, 20],
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({
+        index,
+        length: 100,
+      }),
+    });
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 990,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    const stateResult = listDimensions.stateResult;
+
+    expect(stateResult.length).toBe(39);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(false);
+    expect(stateResult[38].length).toBe(6200);
+    expect(stateResult[38].isSpace).toBe(true);
 
     // @ts-ignore
     listDimensions.updateScrollMetrics({
