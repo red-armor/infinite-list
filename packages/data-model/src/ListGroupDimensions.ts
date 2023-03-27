@@ -33,7 +33,7 @@ import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 
 // TODO: indexRange should be another intervalTree
 class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
-  private indexKeys: Array<string> = [];
+  public indexKeys: Array<string> = [];
   private _selector = new EnabledSelector();
   private keyToListDimensionsMap: Map<string, ListDimensions | Dimension> =
     new Map();
@@ -393,6 +393,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
       this.onItemsCountChanged();
+      this._startInspectBatchinator.schedule();
     }
   }
 
@@ -514,6 +515,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(key);
       this.onItemsCountChanged();
+      this._startInspectBatchinator.schedule();
     }
   }
 

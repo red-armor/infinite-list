@@ -1,21 +1,33 @@
 import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
-import { describe, expect, it, test, vi } from 'vitest';
+import { describe, expect, it, test, vi, afterEach } from 'vitest';
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index,
   }));
 
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
+  ...args
+) {
+  // eslint-disable-next-line prefer-spread
+  this._callback.apply(this, args);
+});
+
+const startInspection = ListGroupDimensions.prototype.startInspection;
+// https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
+vi.spyOn(ListGroupDimensions.prototype, 'startInspection').mockImplementation(
+  function (...args) {
+    startInspection.call(this);
+  }
+);
+
 describe('basic', () => {
   // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
-  vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
-    ...args
-  ) {
-    // eslint-disable-next-line prefer-spread
-    this._callback.apply(this, args);
-  });
-
   it('constructor', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
@@ -992,5 +1004,124 @@ describe('persistanceIndices', () => {
     expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
     expect(list_2_dimensions.persistanceIndices).toEqual([4]);
     expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
+  });
+});
+
+describe('heartBeat', () => {
+  const buildListGroup = (props = {}) => {
+    const listGroupDimensions = new ListGroupDimensions({
+      id: 'list_group',
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+      ...props,
+    });
+
+    const { dimensions: list_1_dimensions } = listGroupDimensions.registerList(
+      'list_1',
+      {
+        data: buildData(3),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 100, index }),
+      }
+    );
+    const { dimensions: list_2_dimensions } = listGroupDimensions.registerList(
+      'list_2',
+      {
+        data: buildData(5),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 20, index }),
+      }
+    );
+    const { dimensions: list_3_dimensions } = listGroupDimensions.registerList(
+      'list_3',
+      {
+        data: buildData(13),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 500, index }),
+      }
+    );
+    const { dimensions: banner2_dimensions } =
+      listGroupDimensions.registerItem('banner2');
+    const { dimensions: list_4_dimensions } = listGroupDimensions.registerList(
+      'list_4',
+      {
+        data: buildData(20),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 150, index }),
+      }
+    );
+
+    return {
+      listGroupDimensions,
+      list_1_dimensions,
+      list_2_dimensions,
+      list_3_dimensions,
+      banner2_dimensions,
+      list_4_dimensions,
+    };
+  };
+
+  it('start inspection', () => {
+    const { listGroupDimensions } = buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+    listGroupDimensions.startInspection();
+    const { heartBeat } = listGroupDimensions.getInspectAPI();
+    const inspectingTime = Date.now() + 1;
+    heartBeat({ listKey: 'list_1', inspectingTime });
+    heartBeat({ listKey: 'banner2', inspectingTime });
+    heartBeat({ listKey: 'list_2', inspectingTime });
+    heartBeat({ listKey: 'list_3', inspectingTime });
+    heartBeat({ listKey: 'list_4', inspectingTime });
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'banner2',
+      'list_2',
+      'list_3',
+      'list_4',
+    ]);
+  });
+
+  it('registerList will trigger startInspection', () => {
+    const { listGroupDimensions } = buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+
+    listGroupDimensions.registerList('list_5', {
+      data: buildData(10),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 500, index }),
+    });
+
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      6
+    );
+
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+      'list_5',
+    ]);
   });
 });
