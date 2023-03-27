@@ -1,21 +1,33 @@
 import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
-import { describe, expect, it, test, vi } from 'vitest';
+import { describe, expect, it, test, vi, afterEach } from 'vitest';
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index,
   }));
 
+afterEach(() => {
+  vi.clearAllMocks();
+});
+
+vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
+  ...args
+) {
+  // eslint-disable-next-line prefer-spread
+  this._callback.apply(this, args);
+});
+
+const startInspection = ListGroupDimensions.prototype.startInspection;
+// https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
+vi.spyOn(ListGroupDimensions.prototype, 'startInspection').mockImplementation(
+  function (...args) {
+    startInspection.call(this);
+  }
+);
+
 describe('basic', () => {
   // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
-  vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
-    ...args
-  ) {
-    // eslint-disable-next-line prefer-spread
-    this._callback.apply(this, args);
-  });
-
   it('constructor', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
@@ -840,5 +852,369 @@ describe('test dimensionsIndexRange', () => {
     expect(listGroupDimensions.getDimensionStartIndex('list_3')).toBe(16);
     expect(listGroupDimensions.getDimensionStartIndex('banner2')).toBe(29);
     expect(listGroupDimensions.getDimensionStartIndex('list_4')).toBe(30);
+  });
+});
+
+describe('initialNumToRender', () => {
+  test('updateInitialNumDueToListGroup', () => {
+    const listGroupDimensions = new ListGroupDimensions({
+      id: 'list_group',
+      maxToRenderPerBatch: 10,
+      initialNumToRender: 10,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    const { dimensions: list_1_dimensions } = listGroupDimensions.registerList(
+      'list_1',
+      {
+        data: buildData(3),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 100, index }),
+      }
+    );
+    const { dimensions: list_2_dimensions } = listGroupDimensions.registerList(
+      'list_2',
+      {
+        data: buildData(5),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 20, index }),
+      }
+    );
+    const { dimensions: list_3_dimensions } = listGroupDimensions.registerList(
+      'list_3',
+      {
+        data: buildData(13),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 500, index }),
+      }
+    );
+    listGroupDimensions.registerItem('banner2');
+    listGroupDimensions.registerList('list_4', {
+      data: buildData(20),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 150, index }),
+    });
+
+    expect(list_1_dimensions.initialNumToRender).toBe(3);
+    expect(list_2_dimensions.initialNumToRender).toBe(5);
+    expect(list_3_dimensions.initialNumToRender).toBe(2);
+  });
+
+  test('updateInitialNumDueToListGroup - banner occupy position', () => {
+    const listGroupDimensions = new ListGroupDimensions({
+      id: 'list_group',
+      maxToRenderPerBatch: 10,
+      initialNumToRender: 10,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    listGroupDimensions.registerItem('banner');
+    const { dimensions: list_1_dimensions } = listGroupDimensions.registerList(
+      'list_1',
+      {
+        data: buildData(3),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 100, index }),
+      }
+    );
+    const { dimensions: list_2_dimensions } = listGroupDimensions.registerList(
+      'list_2',
+      {
+        data: buildData(5),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 20, index }),
+      }
+    );
+    listGroupDimensions.registerItem('banner2');
+    const { dimensions: list_3_dimensions } = listGroupDimensions.registerList(
+      'list_3',
+      {
+        data: buildData(13),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 500, index }),
+      }
+    );
+    listGroupDimensions.registerList('list_4', {
+      data: buildData(20),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 150, index }),
+    });
+
+    expect(list_1_dimensions.initialNumToRender).toBe(3);
+    expect(list_2_dimensions.initialNumToRender).toBe(5);
+    expect(list_3_dimensions.initialNumToRender).toBe(0);
+  });
+});
+
+describe('persistanceIndices', () => {
+  test('updatePersistanceIndicesDueToListGroup', () => {
+    const listGroupDimensions = new ListGroupDimensions({
+      id: 'list_group',
+      maxToRenderPerBatch: 10,
+      persistanceIndices: [1, 2, 7, 10, 20],
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    const { dimensions: list_1_dimensions } = listGroupDimensions.registerList(
+      'list_1',
+      {
+        data: buildData(3),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 100, index }),
+      }
+    );
+    const { dimensions: list_2_dimensions } = listGroupDimensions.registerList(
+      'list_2',
+      {
+        data: buildData(5),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 20, index }),
+      }
+    );
+    const { dimensions: list_3_dimensions } = listGroupDimensions.registerList(
+      'list_3',
+      {
+        data: buildData(13),
+        keyExtractor: defaultKeyExtractor,
+        getItemLayout: (item, index) => ({ length: 500, index }),
+      }
+    );
+    listGroupDimensions.registerItem('banner2');
+    listGroupDimensions.registerList('list_4', {
+      data: buildData(20),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 150, index }),
+    });
+
+    expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
+    expect(list_2_dimensions.persistanceIndices).toEqual([4]);
+    expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
+  });
+});
+
+describe('heartBeat', () => {
+  const buildListGroup = (props = {}) => {
+    const listGroupDimensions = new ListGroupDimensions({
+      id: 'list_group',
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+      ...props,
+    });
+
+    const {
+      dimensions: list_1_dimensions,
+      remover: list_1_dimensions_remover,
+    } = listGroupDimensions.registerList('list_1', {
+      data: buildData(3),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 100, index }),
+    });
+    const {
+      dimensions: list_2_dimensions,
+      remover: list_2_dimensions_remover,
+    } = listGroupDimensions.registerList('list_2', {
+      data: buildData(5),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 20, index }),
+    });
+    const {
+      dimensions: list_3_dimensions,
+      remover: list_3_dimensions_remover,
+    } = listGroupDimensions.registerList('list_3', {
+      data: buildData(13),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 500, index }),
+    });
+    const {
+      dimensions: banner2_dimensions,
+      remover: banner2_dimensions_remover,
+    } = listGroupDimensions.registerItem('banner2');
+    const {
+      dimensions: list_4_dimensions,
+      remover: list_4_dimensions_remover,
+    } = listGroupDimensions.registerList('list_4', {
+      data: buildData(20),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 150, index }),
+    });
+
+    return {
+      listGroupDimensions,
+      list_1_dimensions,
+      list_2_dimensions,
+      list_3_dimensions,
+      banner2_dimensions,
+      list_4_dimensions,
+      list_1_dimensions_remover,
+      list_2_dimensions_remover,
+      list_3_dimensions_remover,
+      banner2_dimensions_remover,
+      list_4_dimensions_remover,
+    };
+  };
+
+  it('start inspection', () => {
+    const { listGroupDimensions } = buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+    listGroupDimensions.startInspection();
+    const { heartBeat } = listGroupDimensions.getInspectAPI();
+    const inspectingTime = Date.now() + 1;
+    heartBeat({ listKey: 'list_1', inspectingTime });
+    heartBeat({ listKey: 'banner2', inspectingTime });
+    heartBeat({ listKey: 'list_2', inspectingTime });
+    heartBeat({ listKey: 'list_3', inspectingTime });
+    heartBeat({ listKey: 'list_4', inspectingTime });
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'banner2',
+      'list_2',
+      'list_3',
+      'list_4',
+    ]);
+  });
+
+  it('registerList should trigger startInspection', () => {
+    const { listGroupDimensions } = buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+
+    listGroupDimensions.registerList('list_5', {
+      data: buildData(10),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 500, index }),
+    });
+
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      6
+    );
+
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+      'list_5',
+    ]);
+  });
+
+  it('removeList should not trigger startInspection', () => {
+    const { listGroupDimensions, list_2_dimensions_remover } = buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    list_2_dimensions_remover();
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      // 'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+  });
+
+  it('removeItem should not trigger startInspection', () => {
+    const { listGroupDimensions, banner2_dimensions_remover } =
+      buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    banner2_dimensions_remover();
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'list_4',
+    ]);
+  });
+
+  it('update persistanceIndices after inspection', () => {
+    const {
+      listGroupDimensions,
+      list_1_dimensions,
+      list_2_dimensions,
+      list_3_dimensions,
+      list_4_dimensions,
+    } = buildListGroup({
+      id: 'list_group',
+      maxToRenderPerBatch: 10,
+      persistanceIndices: [1, 2, 7, 10, 20],
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
+    expect(list_2_dimensions.persistanceIndices).toEqual([4]);
+    expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
+
+    const { heartBeat } = listGroupDimensions.getInspectAPI();
+    const inspectingTime = Date.now() + 1;
+    heartBeat({ listKey: 'list_1', inspectingTime });
+    heartBeat({ listKey: 'banner2', inspectingTime });
+    heartBeat({ listKey: 'list_4', inspectingTime });
+    heartBeat({ listKey: 'list_3', inspectingTime });
+    heartBeat({ listKey: 'list_2', inspectingTime });
+    expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
+    expect(list_2_dimensions.persistanceIndices).toEqual([]);
+    expect(list_3_dimensions.persistanceIndices).toEqual([]);
+    expect(list_4_dimensions.persistanceIndices).toEqual([3, 6, 16]);
   });
 });

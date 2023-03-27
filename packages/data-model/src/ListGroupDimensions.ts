@@ -33,7 +33,7 @@ import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 
 // TODO: indexRange should be another intervalTree
 class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
-  private indexKeys: Array<string> = [];
+  public indexKeys: Array<string> = [];
   private _selector = new EnabledSelector();
   private keyToListDimensionsMap: Map<string, ListDimensions | Dimension> =
     new Map();
@@ -51,6 +51,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _onBatchLayoutFinished: () => boolean;
   private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
   private _updateScrollMetricsWithCacheBatchinator: Batchinator;
+  private _updateChildPersistanceIndicesBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   private _heartBeatingIndexKeys: Array<string> = [];
   private _heartBeatResolveChangedBatchinator: Batchinator;
@@ -133,6 +134,11 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
     this._heartBeatResolveChangedBatchinator = new Batchinator(
       this.heartBeatResolveChanged.bind(this),
+      50
+    );
+
+    this._updateChildPersistanceIndicesBatchinator = new Batchinator(
+      this.updateChildPersistanceIndices.bind(this),
       50
     );
 
@@ -476,6 +482,16 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.calculateReflowItemsLength();
     this.updateChildDimensionsOffsetInContainer();
     this.updateScrollMetrics(this._scrollMetrics, { useCache });
+    this._updateChildPersistanceIndicesBatchinator.schedule();
+  }
+
+  updateChildPersistanceIndices() {
+    this.indexKeys.forEach((key) => {
+      const dimension = this.getDimension(key);
+      if (dimension instanceof ListDimensions) {
+        dimension?.updatePersistanceIndicesDueToListGroup();
+      }
+    });
   }
 
   /**

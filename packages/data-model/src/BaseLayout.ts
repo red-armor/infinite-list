@@ -64,7 +64,7 @@ class BaseLayout {
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
     this._stickyHeaderIndices = (stickyHeaderIndices || []).sort();
-    this._persistanceIndices = (persistanceIndices || []).sort();
+    this._persistanceIndices = (persistanceIndices || []).sort((a, b) => a - b);
   }
 
   get initialNumToRender() {
@@ -80,7 +80,7 @@ class BaseLayout {
   }
 
   set persistanceIndices(indices: Array<number>) {
-    this._persistanceIndices = indices.sort();
+    this._persistanceIndices = indices.sort((a, b) => a - b);
   }
 
   get stickyHeaderIndices() {
@@ -88,7 +88,7 @@ class BaseLayout {
   }
 
   set stickyHeaderIndices(indices: Array<number>) {
-    this._stickyHeaderIndices = indices.sort();
+    this._stickyHeaderIndices = indices.sort((a, b) => a - b);
   }
 
   getHorizontal() {
