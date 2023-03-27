@@ -521,6 +521,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         }
       }
       if (indices.length) this.persistanceIndices = indices;
+    } else {
+      this.persistanceIndices = [];
     }
   }
 

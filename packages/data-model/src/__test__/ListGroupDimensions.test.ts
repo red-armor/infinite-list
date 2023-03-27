@@ -1020,40 +1020,42 @@ describe('heartBeat', () => {
       ...props,
     });
 
-    const { dimensions: list_1_dimensions } = listGroupDimensions.registerList(
-      'list_1',
-      {
-        data: buildData(3),
-        keyExtractor: defaultKeyExtractor,
-        getItemLayout: (item, index) => ({ length: 100, index }),
-      }
-    );
-    const { dimensions: list_2_dimensions } = listGroupDimensions.registerList(
-      'list_2',
-      {
-        data: buildData(5),
-        keyExtractor: defaultKeyExtractor,
-        getItemLayout: (item, index) => ({ length: 20, index }),
-      }
-    );
-    const { dimensions: list_3_dimensions } = listGroupDimensions.registerList(
-      'list_3',
-      {
-        data: buildData(13),
-        keyExtractor: defaultKeyExtractor,
-        getItemLayout: (item, index) => ({ length: 500, index }),
-      }
-    );
-    const { dimensions: banner2_dimensions } =
-      listGroupDimensions.registerItem('banner2');
-    const { dimensions: list_4_dimensions } = listGroupDimensions.registerList(
-      'list_4',
-      {
-        data: buildData(20),
-        keyExtractor: defaultKeyExtractor,
-        getItemLayout: (item, index) => ({ length: 150, index }),
-      }
-    );
+    const {
+      dimensions: list_1_dimensions,
+      remover: list_1_dimensions_remover,
+    } = listGroupDimensions.registerList('list_1', {
+      data: buildData(3),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 100, index }),
+    });
+    const {
+      dimensions: list_2_dimensions,
+      remover: list_2_dimensions_remover,
+    } = listGroupDimensions.registerList('list_2', {
+      data: buildData(5),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 20, index }),
+    });
+    const {
+      dimensions: list_3_dimensions,
+      remover: list_3_dimensions_remover,
+    } = listGroupDimensions.registerList('list_3', {
+      data: buildData(13),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 500, index }),
+    });
+    const {
+      dimensions: banner2_dimensions,
+      remover: banner2_dimensions_remover,
+    } = listGroupDimensions.registerItem('banner2');
+    const {
+      dimensions: list_4_dimensions,
+      remover: list_4_dimensions_remover,
+    } = listGroupDimensions.registerList('list_4', {
+      data: buildData(20),
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({ length: 150, index }),
+    });
 
     return {
       listGroupDimensions,
@@ -1062,6 +1064,11 @@ describe('heartBeat', () => {
       list_3_dimensions,
       banner2_dimensions,
       list_4_dimensions,
+      list_1_dimensions_remover,
+      list_2_dimensions_remover,
+      list_3_dimensions_remover,
+      banner2_dimensions_remover,
+      list_4_dimensions_remover,
     };
   };
 
@@ -1091,7 +1098,7 @@ describe('heartBeat', () => {
     ]);
   });
 
-  it('registerList will trigger startInspection', () => {
+  it('registerList should trigger startInspection', () => {
     const { listGroupDimensions } = buildListGroup();
     expect(listGroupDimensions.indexKeys).toEqual([
       'list_1',
@@ -1123,5 +1130,91 @@ describe('heartBeat', () => {
       'list_4',
       'list_5',
     ]);
+  });
+
+  it('removeList should not trigger startInspection', () => {
+    const { listGroupDimensions, list_2_dimensions_remover } = buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    list_2_dimensions_remover();
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      // 'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+  });
+
+  it('removeItem should not trigger startInspection', () => {
+    const { listGroupDimensions, banner2_dimensions_remover } =
+      buildListGroup();
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'banner2',
+      'list_4',
+    ]);
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    banner2_dimensions_remover();
+    expect(ListGroupDimensions.prototype.startInspection).toHaveBeenCalledTimes(
+      5
+    );
+    expect(listGroupDimensions.indexKeys).toEqual([
+      'list_1',
+      'list_2',
+      'list_3',
+      'list_4',
+    ]);
+  });
+
+  it('update persistanceIndices after inspection', () => {
+    const {
+      listGroupDimensions,
+      list_1_dimensions,
+      list_2_dimensions,
+      list_3_dimensions,
+      list_4_dimensions,
+    } = buildListGroup({
+      id: 'list_group',
+      maxToRenderPerBatch: 10,
+      persistanceIndices: [1, 2, 7, 10, 20],
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
+    expect(list_2_dimensions.persistanceIndices).toEqual([4]);
+    expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
+
+    const { heartBeat } = listGroupDimensions.getInspectAPI();
+    const inspectingTime = Date.now() + 1;
+    heartBeat({ listKey: 'list_1', inspectingTime });
+    heartBeat({ listKey: 'banner2', inspectingTime });
+    heartBeat({ listKey: 'list_4', inspectingTime });
+    heartBeat({ listKey: 'list_3', inspectingTime });
+    heartBeat({ listKey: 'list_2', inspectingTime });
+    expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
+    expect(list_2_dimensions.persistanceIndices).toEqual([]);
+    expect(list_3_dimensions.persistanceIndices).toEqual([]);
+    expect(list_4_dimensions.persistanceIndices).toEqual([3, 6, 16]);
   });
 });
