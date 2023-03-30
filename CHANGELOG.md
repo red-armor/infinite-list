@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [0.1.0](https://github.com/red-armor/infinite-list/compare/v0.0.7...v0.1.0) (2023-03-30)
+
+
+### Bug Fixes
+
+* Sorteditems sort not work issue ([97e8c85](https://github.com/red-armor/infinite-list/commit/97e8c8563bc5574d44a3b8ac8d24235f84b52f3d))
+
+
+
 ## [0.0.7](https://github.com/red-armor/infinite-list/compare/v0.0.6...v0.0.7) (2023-03-27)
 
 
