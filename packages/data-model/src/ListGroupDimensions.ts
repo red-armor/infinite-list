@@ -1,16 +1,16 @@
 import Batchinator from '@x-oasis/batchinator';
-import BaseLayout from './BaseLayout';
-import Dimension from './Dimension';
-import ItemMeta from './ItemMeta';
-import ItemsDimensions from './ItemsDimensions';
-import ListDimensions from './ListDimensions';
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import { isNotEmpty, removeItemsKeyword } from './common';
 import isClamped from '@x-oasis/is-clamped';
 import noop from '@x-oasis/noop';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import resolveChanged from '@x-oasis/resolve-changed';
 import booleanWithDefault from '@x-oasis/boolean-with-default';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+import BaseLayout from './BaseLayout';
+import Dimension from './Dimension';
+import ItemMeta from './ItemMeta';
+import ItemsDimensions from './ItemsDimensions';
+import ListDimensions from './ListDimensions';
+import { isNotEmpty, removeItemsKeyword } from './common';
 import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
 import manager from './manager';
 import createStore from './state/createStore';
@@ -272,7 +272,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._renderStateListeners = [];
   }
 
-  getDefaultState(listKey: string) {
+  getState(listKey: string) {
     const dimensions = this.getDimension(listKey);
     if (dimensions instanceof ListDimensions) return dimensions.getState();
     return {};
@@ -681,10 +681,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
         containerOffset
       );
     }
-    // const finalIndex = this.getFinalIndex(key, listKey);
-    // // TODO: when to include list group container offset.
-    // if (finalIndex !== -1)
-    //   return this._intervalTree.sumUntil(finalIndex) + containerOffset;
     return null;
   }
 
@@ -915,14 +911,8 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     endIndex: number;
   }): ListRangeResult {
     const { startIndex, endIndex } = props;
-    // const { bufferedStartIndex, bufferedEndIndex } = state;
     return this.findListRange(startIndex, endIndex);
   }
-
-  // computeIndexRangeMeta(state: PreStateResult): ListRangeResult {
-  //   const { bufferedStartIndex, bufferedEndIndex } = state;
-  //   return this.findListRange(bufferedStartIndex, bufferedEndIndex);
-  // }
 
   getKeyMeta(key: string, listKey: string) {
     const dimensions = this.getDimension(listKey);
@@ -977,7 +967,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       bufferedMetaRanges,
       (a, b) => a.listKey === b.listKey
     );
-    const groupListItemMetas = [];
+    const groupListItemsMeta = [];
 
     // trigger ListDimensions viewable config
     bufferedMetaRanges.forEach((range) => {
@@ -1009,14 +999,14 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       } else {
         dimension.render();
         if (dimension.getMeta().getLayout()) {
-          groupListItemMetas.push(dimension.getMeta());
+          groupListItemsMeta.push(dimension.getMeta());
         }
       }
     });
 
     // trigger Dimensions viewable config
     this._onUpdateDimensionItemsMetaChangeBatchinator.schedule(
-      groupListItemMetas,
+      groupListItemsMeta,
       scrollMetrics
     );
 
@@ -1044,6 +1034,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       visibleMetaRanges,
     };
     this._dispatchedMetricsResult = state;
+    this._itemsDimensions.dispatchMetrics(scrollMetrics);
   }
 
   onUpdateDimensionItemsMetaChange(

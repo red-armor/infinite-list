@@ -1,4 +1,3 @@
-import shallowEqual from '@x-oasis/shallow-equal';
 import ItemMeta from './ItemMeta';
 import SelectValue from '@x-oasis/select-value';
 
@@ -31,11 +30,6 @@ export default class SortedItems {
       this._items.push(itemMeta);
       this._headValues.push(itemMeta);
       this._tailValues.push(itemMeta);
-    } else {
-      const currentItem = this._items[index];
-      const oldLayout = currentItem.getLayout();
-      const newLayout = itemMeta.getLayout();
-      if (shallowEqual(oldLayout, newLayout)) return false;
     }
 
     this.sortValues();
@@ -117,8 +111,8 @@ export default class SortedItems {
     const data = this._headValues;
     if (!data.length) return [];
 
-    let min = 0;
-    let max = data.length - 1;
+    const min = 0;
+    const max = data.length - 1;
 
     const minValue = getValue(data[min]);
     const maxValue = getValue(data[max]);

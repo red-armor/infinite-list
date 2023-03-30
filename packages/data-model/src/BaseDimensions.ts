@@ -257,19 +257,6 @@ abstract class BaseDimensions extends BaseLayout {
     return state;
   }
 
-  /**
-   * configTuples checking should
-   * @param scrollEventMetrics
-   */
-  onUpdate(scrollMetrics: ScrollMetrics) {
-    // this._configTuples.getViewabilityHelpers().forEach(helper => {
-    //   helper.onUpdateMetrics({
-    //     dimensions: this,
-    //     scrollMetrics,
-    //   });
-    // });
-  }
-
   abstract getIndexInfo(key: string): IndexInfo;
 
   onUpdateItemsMetaChange(

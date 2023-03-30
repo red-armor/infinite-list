@@ -40,7 +40,6 @@ class ItemsDimensions extends BaseDimensions {
       const length = info;
       if (this._selectValue.selectLength(meta.getLayout()) !== length) {
         this._selectValue.setLength(meta.getLayout(), length);
-
         this._sortedItems.add(meta);
         return true;
       }
@@ -118,10 +117,6 @@ class ItemsDimensions extends BaseDimensions {
       if (ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()) {
         this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       }
-      // } else if (this._state) {
-      //   this._dispatchMetricsBatchinator.dispose({
-      //     abort: true,
-      //   });
     }
 
     this._scrollMetrics = scrollMetrics;

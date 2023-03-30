@@ -1,12 +1,13 @@
-import BaseDimensions from '../BaseDimensions';
-import resolveChanged from '@x-oasis/resolve-changed'
-import ItemMeta from '../ItemMeta';
-import { removeItemsKeyword } from '../common';
+import resolveChanged from '@x-oasis/resolve-changed';
 import capitalize from '@x-oasis/capitalize';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
+
+import BaseDimensions from '../BaseDimensions';
+import ItemMeta from '../ItemMeta';
+import { removeItemsKeyword } from '../common';
 import {
   ScrollMetrics,
   ViewAreaModeConfig,
@@ -297,7 +298,7 @@ class ViewablityHelper {
       });
     });
 
-    for (let [itemMeta, state] of itemMetaStateMap) {
+    for (const [itemMeta, state] of itemMetaStateMap) {
       itemMeta.setItemMetaState(state);
     }
   }

@@ -1,7 +1,7 @@
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal'
+import layoutEqual from '@x-oasis/layout-equal';
 
 import {
   IndexInfo,
@@ -56,7 +56,7 @@ class PseudoListDimensions extends BaseDimensions {
 
   pump(
     keys: Array<string>,
-    baseIndex: number = 0,
+    baseIndex = 0,
     keyToIndexMap: Map<string, number>,
     keyToIndexArray: Array<string>,
     keyToMetaMap: Map<string, ItemMeta>,
@@ -139,7 +139,7 @@ class PseudoListDimensions extends BaseDimensions {
     if (!meta) return false;
 
     if (typeof info === 'number') {
-      let length = info;
+      const length = info;
       if (meta && this._selectValue.selectLength(meta.getLayout()) !== length) {
         this._selectValue.setLength(meta.getLayout(), length);
         if (_update) {
@@ -151,7 +151,7 @@ class PseudoListDimensions extends BaseDimensions {
 
     if (!layoutEqual(meta.getLayout(), info as ItemLayout)) {
       meta.setLayout(info as ItemLayout);
-      let length = this._selectValue.selectLength(info as ItemLayout);
+      const length = this._selectValue.selectLength(info as ItemLayout);
       if (_update) {
         this.setIntervalTreeValue(index, length);
         return true;

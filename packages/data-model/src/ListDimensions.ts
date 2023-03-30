@@ -160,7 +160,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._setData(data);
     }
     this._state = this.resolveInitialState();
-    this._stateResult = this.resolveSpaceState(this._state);
+    this.memoizedResolveSpaceState = memoizeOne(
+      this.resolveSpaceState.bind(this)
+    );
+    this._stateResult = this.memoizedResolveSpaceState(this._state);
 
     this._store = createStore<ReducerResult>() || store;
 
@@ -181,9 +184,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.updateState.bind(this),
       50
     );
-    this.memoizedResolveSpaceState = memoizeOne(
-      this.resolveSpaceState.bind(this)
-    );
   }
 
   get length() {
@@ -203,7 +203,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getState() {
-    // return this._state;
     return this._stateResult;
   }
 
