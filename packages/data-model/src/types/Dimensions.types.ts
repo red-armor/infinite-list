@@ -2,6 +2,7 @@ import BaseDimensions from '../BaseDimensions';
 import Dimension from '../Dimension';
 import ItemsDimensions from '../ItemsDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
+import { ActionType } from '../state/types';
 import { OnEndReachedHelperProps } from './onEndReachedHelper';
 import {
   OnViewableItemsChanged,
@@ -67,6 +68,8 @@ export type ListDimensionsProps<ItemT> = {
   stickyHeaderIndices?: Array<number>;
   persistanceIndices?: Array<number>;
   onBatchLayoutFinished?: () => boolean;
+
+  recycleEnabled?: boolean;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
 
@@ -140,12 +143,11 @@ export type PreStateResult = {
   bufferedEndIndex: number;
   isEndReached: boolean;
   distanceFromEnd: number;
+  actionType: ActionType;
 };
 
 export type ListState<ItemT extends {} = {}> = {
   data: Array<ItemT>;
-  // itemKeys: Array<string>;
-  // spaceState?: ListSpaceStateResult<ItemT>;
 } & PreStateResult;
 
 export type ListSpaceStateResult<ItemT extends {} = {}> = {
@@ -218,8 +220,14 @@ export type SpaceStateToken<ItemT> = {
 };
 
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
+export type RecycleStateResult<ItemT> = {
+  spaceState: SpaceStateResult<ItemT>;
+  recycleState: SpaceStateResult<ItemT>;
+};
 
-export type ListStateResult<ItemT> = SpaceStateResult<ItemT>;
+export type ListStateResult<ItemT> =
+  | SpaceStateResult<ItemT>
+  | RecycleStateResult<ItemT>;
 
 export type StateListener<ItemT = {}> = (
   newState: ListStateResult<ItemT>,

@@ -11,7 +11,7 @@ import { INVALID_LENGTH, isNotEmpty, shallowDiffers } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
 import createStore from './state/createStore';
-import { ReducerResult, Store } from './state/types';
+import { ActionType, ReducerResult, Store } from './state/types';
 import {
   SpaceStateToken,
   GetItemLayout,
@@ -30,12 +30,15 @@ import {
   ListStateResult,
   SpaceStateTokenPosition,
   FillingMode,
+  RecycleStateResult,
+  SpaceStateResult,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
 import memoizeOne from 'memoize-one';
+import IntegerBufferSet from './struct/IntegerBufferSet';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -86,9 +89,14 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _selector = new EnabledSelector();
 
+  private _bufferSet = new IntegerBufferSet();
+
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
-  ) => Array<SpaceStateToken<ItemT>>;
+  ) => SpaceStateResult<ItemT>;
+  private memoizedResolveRecycleState: (
+    state: ListState<ItemT>
+  ) => RecycleStateResult<ItemT>;
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -163,7 +171,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
     );
-    this._stateResult = this.memoizedResolveSpaceState(this._state);
+    this.memoizedResolveRecycleState = memoizeOne(
+      this.resolveRecycleState.bind(this)
+    );
+    this._stateResult =
+      this.fillingMode === FillingMode.RECYCLE
+        ? this.memoizedResolveRecycleState(this._state)
+        : this.memoizedResolveSpaceState(this._state);
 
     this._store = createStore<ReducerResult>() || store;
 
@@ -256,6 +270,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isEndReached: false,
         distanceFromEnd: 0,
         data: [],
+        actionType: ActionType.Initial,
         // itemKeys: [],
       };
 
@@ -270,6 +285,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isEndReached: false,
       distanceFromEnd: 0,
       data: this._data.slice(0, maxIndex + 1),
+      actionType: ActionType.Initial,
       // itemKeys: this._indexKeys.slice(0, maxIndex + 1),
     };
   }
@@ -801,6 +817,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         this._stateListener(stateResult, this._stateResult);
       }
       this._stateResult = stateResult;
+    } else if (this.fillingMode === FillingMode.RECYCLE) {
+      const stateResult = this.memoizedResolveRecycleState(state);
+      if (typeof this._stateListener === 'function') {
+        this._stateListener(stateResult, this._stateResult);
+      }
+      this._stateResult = stateResult;
     }
   }
 
@@ -834,7 +856,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       position !== 'buffered' &&
       this.persistanceIndices.indexOf(currentIndex) === -1;
     const itemLength =
-      (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
+      (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
     if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
       const key = `${lastToken.key}_${itemKey}`;
@@ -855,6 +877,158 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       });
       spaceStateResult.push(token);
     }
+  }
+
+  getPosition(rowIndex: number, startIndex: number, endIndex: number) {
+    let position = this._bufferSet.getValuePosition(rowIndex);
+
+    if (
+      position === null &&
+      this._bufferSet.getSize() >= this.maxToRenderPerBatch * 2
+    ) {
+      position = this._bufferSet.replaceFurthestValuePosition(
+        startIndex,
+        endIndex,
+        rowIndex
+      );
+    }
+
+    if (position === null) {
+      position = this._bufferSet.getNewPositionForValue(rowIndex);
+    }
+
+    return position;
+  }
+
+  resolveRecycleState(state: ListState<ItemT>) {
+    const {
+      visibleEndIndex,
+      bufferedEndIndex,
+      visibleStartIndex,
+      bufferedStartIndex,
+      actionType,
+      data,
+    } = state;
+
+    const targetIndices = [];
+
+    for (let index = bufferedStartIndex; index < visibleStartIndex; index++) {
+      const position = this.getPosition(
+        index,
+        bufferedStartIndex,
+        visibleStartIndex
+      );
+      if (position !== null) targetIndices[position] = index;
+    }
+
+    for (let index = visibleEndIndex + 1; index <= bufferedEndIndex; index++) {
+      const position = this.getPosition(
+        index,
+        visibleEndIndex + 1,
+        bufferedEndIndex
+      );
+      if (position !== null) targetIndices[position] = index;
+    }
+
+    for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+      const position = this.getPosition(
+        index,
+        visibleStartIndex,
+        visibleEndIndex
+      );
+      if (position !== null) targetIndices[position] = index;
+    }
+
+    let startOffset = this.getIndexKeyOffset(bufferedStartIndex);
+    const indexToOffsetMap = {};
+    for (let index = bufferedStartIndex; index <= bufferedEndIndex; index++) {
+      indexToOffsetMap[index] = startOffset;
+      const item = data[index];
+      const itemMeta = this.getItemMeta(item, index);
+      startOffset =
+        (itemMeta?.getLayout()?.height || 0) +
+        (itemMeta?.getSeparatorLength() || 0);
+    }
+
+    const recycleStateResult = [];
+
+    targetIndices.forEach((targetIndex, index) => {
+      const item = data[targetIndex];
+      const itemKey = this.getItemKey(item, targetIndex);
+      const itemMeta = this.getItemMeta(item, targetIndex);
+
+      const itemLayout = itemMeta?.getLayout();
+      const itemLength =
+        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+      recycleStateResult.push({
+        key: `recycle_${index}`,
+        targetKey: itemKey,
+        length: itemLength,
+        isSpace: false,
+        isSticky: false,
+        item,
+        position: 'buffered',
+      });
+    });
+
+    const spaceStateResult = [];
+
+    // 滚动中
+    if (actionType === 'scrollDown' || actionType === 'scrollUp') {
+      spaceStateResult.push({
+        key: 'spacer',
+        length: this.getTotalLength(),
+        isSpace: true,
+        isSticky: false,
+        item: null,
+        position: 'buffered',
+      });
+    } else {
+      if (visibleStartIndex > 0) {
+        spaceStateResult.push({
+          key: 'spacer_before',
+          length: this.getIndexKeyOffset(visibleStartIndex),
+          isSpace: true,
+          isSticky: false,
+          item: null,
+          position: 'buffered',
+        });
+      }
+
+      for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+        const item = data[index];
+        if (item)
+          this.hydrateSpaceStateToken(
+            spaceStateResult,
+            item,
+            index,
+            'buffered'
+          );
+      }
+
+      if (
+        visibleEndIndex < data.length - 1 &&
+        typeof this.getTotalLength() === 'number'
+      ) {
+        spaceStateResult.push({
+          key: 'spacer_after',
+          length:
+            (this.getTotalLength() as number) -
+            this.getIndexKeyOffset(visibleEndIndex + 1),
+          isSpace: true,
+          isSticky: false,
+          item: null,
+          position: 'buffered',
+        });
+      }
+    }
+
+    const stateResult = {
+      recycleState: recycleStateResult,
+      spaceState: spaceStateResult,
+    };
+
+    return stateResult;
   }
 
   resolveSpaceState(state: ListState<ItemT>) {

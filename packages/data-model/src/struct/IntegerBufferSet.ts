@@ -138,7 +138,7 @@ class IntegerBufferSet {
       this._largeValues.size()
     );
     if (maxHeapSize > 10 * minHeapSize) {
-      // There are many old values in one of heaps. We nned to get rid of them
+      // There are many old values in one of heaps. We need to get rid of them
       // to not use too avoid memory leaks
       this._recreateHeaps();
     }

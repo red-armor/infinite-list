@@ -1,6 +1,6 @@
 import ListDimensions from '../ListDimensions';
 import { ScrollMetrics } from '../types';
-import { Action, ReducerResult } from './types';
+import { Action, ActionType, ReducerResult } from './types';
 
 export const resolveAction = <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -18,7 +18,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
 
   if (isEndReached) {
     return {
-      type: 'hydrationWithBatchUpdate',
+      type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension,
         scrollMetrics,
@@ -30,7 +30,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
 
   if (velocity > 0) {
     return {
-      type: 'scrollDown',
+      type: ActionType.ScrollDown,
       payload: {
         dimension,
         scrollMetrics,
@@ -42,7 +42,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
 
   if (velocity < 0) {
     return {
-      type: 'scrollUp',
+      type: ActionType.ScrollUp,
       payload: {
         dimension,
         scrollMetrics,
@@ -54,7 +54,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
 
   // 主要是解决，当动态删除item时，重新计算buffer逻辑
   return {
-    type: 'recalculate',
+    type: ActionType.Recalculate,
     payload: {
       dimension,
       scrollMetrics,

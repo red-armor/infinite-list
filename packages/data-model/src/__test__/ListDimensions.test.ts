@@ -20,7 +20,7 @@ describe('basic', () => {
     const listDimensions = new ListDimensions({
       id: 'list_group',
       keyExtractor: defaultKeyExtractor,
-      data: buildData(20),
+      data: buildData(50),
       maxToRenderPerBatch: 7,
       windowSize: 9,
       initialNumToRender: 20,

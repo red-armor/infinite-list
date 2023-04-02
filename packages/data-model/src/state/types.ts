@@ -9,6 +9,7 @@ export type ReducerResult = {
   bufferedEndIndex: number;
   isEndReached: boolean;
   distanceFromEnd: number;
+  actionType: ActionType;
 };
 
 export type ActionPayload = {
@@ -18,9 +19,16 @@ export type ActionPayload = {
   distanceFromEnd: number;
 };
 
+export enum ActionType {
+  HydrationWithBatchUpdate = 'hydrationWithBatchUpdate',
+  ScrollDown = 'scrollDown',
+  ScrollUp = 'scrollUp',
+  Recalculate = 'recalculate',
+  Initial = 'initial',
+}
+
 export type Action = {
-  type: // 应用触底了，但是List仍旧有数据没有渲染
-  'hydrationWithBatchUpdate' | 'scrollDown' | 'scrollUp' | 'recalculate';
+  type: ActionType; // 应用触底了，但是List仍旧有数据没有渲染
   payload: ActionPayload;
 };
 

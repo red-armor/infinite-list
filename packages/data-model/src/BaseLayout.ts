@@ -28,7 +28,6 @@ class BaseLayout {
 
   constructor(props: {
     id: string;
-    fillingMode?: FillingMode;
     horizontal?: boolean;
     getContainerLayout?: ContainerLayoutGetter;
     onEndReachedThreshold?: number;
@@ -37,15 +36,18 @@ class BaseLayout {
     initialNumToRender?: number;
     persistanceIndices?: Array<number>;
     stickyHeaderIndices?: Array<number>;
+
+    recycleEnabled?: boolean;
   }) {
     const {
       id,
       persistanceIndices,
+      recycleEnabled = false,
       horizontal = false,
       getContainerLayout,
       stickyHeaderIndices,
       windowSize = WINDOW_SIZE,
-      fillingMode = FillingMode.SPACE,
+      // fillingMode = FillingMode.SPACE,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
       onEndReachedThreshold = ON_END_REACHED_THRESHOLD,
@@ -58,7 +60,9 @@ class BaseLayout {
       : selectVerticalValue;
     this._getContainerLayout = getContainerLayout;
     this._windowSize = windowSize;
-    this._fillingMode = fillingMode;
+    this._fillingMode = recycleEnabled
+      ? FillingMode.RECYCLE
+      : FillingMode.SPACE;
     this._stickyHeaderIndices = stickyHeaderIndices;
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;

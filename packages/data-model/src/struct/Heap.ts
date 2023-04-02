@@ -29,7 +29,7 @@ class Heap<T extends HeapBasicItem = HeapBasicItem> {
    */
   pop() {
     if (this._size === 0) {
-      return;
+      return null;
     }
 
     const elt = this._items[0];
@@ -65,7 +65,7 @@ class Heap<T extends HeapBasicItem = HeapBasicItem> {
    */
   peek() {
     if (this._size === 0) {
-      return;
+      return null;
     }
 
     return this._items[0];
