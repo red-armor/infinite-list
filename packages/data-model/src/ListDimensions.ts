@@ -271,7 +271,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         distanceFromEnd: 0,
         data: [],
         actionType: ActionType.Initial,
-        // itemKeys: [],
       };
 
     if (this._state && this._state.bufferedEndIndex > 0) return this._state;
@@ -286,7 +285,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       distanceFromEnd: 0,
       data: this._data.slice(0, maxIndex + 1),
       actionType: ActionType.Initial,
-      // itemKeys: this._indexKeys.slice(0, maxIndex + 1),
     };
   }
 
@@ -921,22 +919,30 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       if (position !== null) targetIndices[position] = index;
     }
 
-    for (let index = visibleEndIndex + 1; index <= bufferedEndIndex; index++) {
-      const position = this.getPosition(
-        index,
-        visibleEndIndex + 1,
-        bufferedEndIndex
-      );
-      if (position !== null) targetIndices[position] = index;
+    if (bufferedEndIndex >= 0) {
+      for (
+        let index = visibleEndIndex + 1;
+        index <= bufferedEndIndex;
+        index++
+      ) {
+        const position = this.getPosition(
+          index,
+          visibleEndIndex + 1,
+          bufferedEndIndex
+        );
+        if (position !== null) targetIndices[position] = index;
+      }
     }
 
-    for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
-      const position = this.getPosition(
-        index,
-        visibleStartIndex,
-        visibleEndIndex
-      );
-      if (position !== null) targetIndices[position] = index;
+    if (visibleEndIndex >= 0) {
+      for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+        const position = this.getPosition(
+          index,
+          visibleStartIndex,
+          visibleEndIndex
+        );
+        if (position !== null) targetIndices[position] = index;
+      }
     }
 
     let startOffset = this.getIndexKeyOffset(bufferedStartIndex);

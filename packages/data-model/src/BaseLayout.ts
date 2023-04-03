@@ -47,7 +47,6 @@ class BaseLayout {
       getContainerLayout,
       stickyHeaderIndices,
       windowSize = WINDOW_SIZE,
-      // fillingMode = FillingMode.SPACE,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
       onEndReachedThreshold = ON_END_REACHED_THRESHOLD,
