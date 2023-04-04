@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## [0.1.1-recycle-alpha.0](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1-recycle-alpha.0) (2023-04-04)
+
+
+
+## 0.1.1-recycle-alpha.0 (2023-04-04)
+
+
+### Features
+
+* add recycle structure ([dfa42e4](https://github.com/red-armor/infinite-list/commit/dfa42e4b718dd1e59c2c6df5cc39bc888239131b))
+* filter -1 value ([aaed705](https://github.com/red-armor/infinite-list/commit/aaed7059377f37794a9b93e1525f932dee332733))
+* return recycle state with strategy ([b7204df](https://github.com/red-armor/infinite-list/commit/b7204dff7d466d70508f848a190a7428e318bc08))
+* update ([85658ef](https://github.com/red-armor/infinite-list/commit/85658eff56896f461411cd380b44332d785028eb))
+* update ([a9ed5d3](https://github.com/red-armor/infinite-list/commit/a9ed5d3430da31a054e106a7418b526c38605ba4))
+
+
+
 # [0.1.0](https://github.com/red-armor/infinite-list/compare/v0.0.7...v0.1.0) (2023-03-30)
 
 
