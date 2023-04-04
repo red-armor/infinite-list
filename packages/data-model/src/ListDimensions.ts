@@ -908,7 +908,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
 
     const originalPositionSize = this._bufferSet.getSize();
-    const recycleEnabled = originalPositionSize > this.recycleThreshold;
+    const recycleEnabled = originalPositionSize >= this.recycleThreshold;
 
     for (let index = bufferedStartIndex; index < visibleStartIndex; index++) {
       const position = this.getPosition(
@@ -988,7 +988,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     let spaceStateResult = [];
 
     // 滚动中
-    if (scrolling) {
+    if (scrolling && recycleEnabled) {
       spaceStateResult.push({
         key: 'spacer',
         length: this.getTotalLength(),
