@@ -69,6 +69,8 @@ export type ListDimensionsProps<ItemT> = {
   persistanceIndices?: Array<number>;
   onBatchLayoutFinished?: () => boolean;
 
+  recycleThreshold?: number;
+
   recycleEnabled?: boolean;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;

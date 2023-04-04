@@ -23,6 +23,7 @@ class BaseLayout {
   private _initialNumToRender: number;
   private _persistanceIndices = [];
   private _stickyHeaderIndices = [];
+  private _recycleThreshold: number;
   readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
 
@@ -37,10 +38,12 @@ class BaseLayout {
     persistanceIndices?: Array<number>;
     stickyHeaderIndices?: Array<number>;
 
+    recycleThreshold?: number;
     recycleEnabled?: boolean;
   }) {
     const {
       id,
+      recycleThreshold,
       persistanceIndices,
       recycleEnabled = false,
       horizontal = false,
@@ -62,6 +65,9 @@ class BaseLayout {
     this._fillingMode = recycleEnabled
       ? FillingMode.RECYCLE
       : FillingMode.SPACE;
+    this._recycleThreshold = recycleEnabled
+      ? recycleThreshold || maxToRenderPerBatch * 2
+      : 0;
     this._stickyHeaderIndices = stickyHeaderIndices;
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
@@ -92,6 +98,10 @@ class BaseLayout {
 
   set stickyHeaderIndices(indices: Array<number>) {
     this._stickyHeaderIndices = indices.sort((a, b) => a - b);
+  }
+
+  get recycleThreshold() {
+    return this._recycleThreshold;
   }
 
   getHorizontal() {

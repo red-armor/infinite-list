@@ -708,10 +708,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
-  intersect() {}
-
-  restart() {}
-
   append(data: Array<ItemT>) {
     const baseIndex = this._indexKeys.length;
     const appended = data.slice(baseIndex);
@@ -882,7 +878,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     if (
       position === null &&
-      this._bufferSet.getSize() >= this.maxToRenderPerBatch * 2
+      this._bufferSet.getSize() >= this.recycleThreshold
     ) {
       position = this._bufferSet.replaceFurthestValuePosition(
         startIndex,
@@ -909,6 +905,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     } = state;
 
     const targetIndices = [];
+    const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
+
+    const originalPositionSize = this._bufferSet.getSize();
+    const recycleEnabled = originalPositionSize > this.recycleThreshold;
 
     for (let index = bufferedStartIndex; index < visibleStartIndex; index++) {
       const position = this.getPosition(
@@ -934,7 +934,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     }
 
-    if (visibleEndIndex >= 0) {
+    if (visibleEndIndex >= 0 && scrolling) {
       for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
         const position = this.getPosition(
           index,
@@ -945,42 +945,50 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     }
 
-    let startOffset = this.getIndexKeyOffset(bufferedStartIndex);
-    const indexToOffsetMap = {};
-    for (let index = bufferedStartIndex; index <= bufferedEndIndex; index++) {
-      indexToOffsetMap[index] = startOffset;
-      const item = data[index];
-      const itemMeta = this.getItemMeta(item, index);
-      startOffset =
-        (itemMeta?.getLayout()?.height || 0) +
-        (itemMeta?.getSeparatorLength() || 0);
-    }
-
     const recycleStateResult = [];
 
-    targetIndices.forEach((targetIndex, index) => {
-      const item = data[targetIndex];
-      const itemKey = this.getItemKey(item, targetIndex);
-      const itemMeta = this.getItemMeta(item, targetIndex);
+    if (recycleEnabled) {
+      const indexToOffsetMap = {};
+      const minValue = this._bufferSet.getMinValue();
+      const maxValue = this._bufferSet.getMaxValue();
+      let startOffset = this.getIndexKeyOffset(minValue);
 
-      const itemLayout = itemMeta?.getLayout();
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-      recycleStateResult.push({
-        key: `recycle_${index}`,
-        targetKey: itemKey,
-        length: itemLength,
-        isSpace: false,
-        isSticky: false,
-        item,
-        position: 'buffered',
+      for (let index = minValue; index <= maxValue; index++) {
+        indexToOffsetMap[index] = startOffset;
+        const item = data[index];
+        const itemMeta = this.getItemMeta(item, index);
+        startOffset +=
+          (itemMeta?.getLayout()?.height || 0) +
+          (itemMeta?.getSeparatorLength() || 0);
+      }
+
+      targetIndices.forEach((targetIndex, index) => {
+        const item = data[targetIndex];
+        if (!item) return;
+
+        const itemKey = this.getItemKey(item, targetIndex);
+        const itemMeta = this.getItemMeta(item, targetIndex);
+
+        const itemLayout = itemMeta?.getLayout();
+        const itemLength =
+          (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+        recycleStateResult.push({
+          key: `recycle_${index}`,
+          targetKey: itemKey,
+          length: itemLength,
+          isSpace: false,
+          isSticky: false,
+          item,
+          offset: indexToOffsetMap[targetIndex],
+          position: 'buffered',
+        });
       });
-    });
+    }
 
-    const spaceStateResult = [];
+    let spaceStateResult = [];
 
     // 滚动中
-    if (actionType === 'scrollDown' || actionType === 'scrollUp') {
+    if (scrolling) {
       spaceStateResult.push({
         key: 'spacer',
         length: this.getTotalLength(),
@@ -990,42 +998,46 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         position: 'buffered',
       });
     } else {
-      if (visibleStartIndex > 0) {
-        spaceStateResult.push({
-          key: 'spacer_before',
-          length: this.getIndexKeyOffset(visibleStartIndex),
-          isSpace: true,
-          isSticky: false,
-          item: null,
-          position: 'buffered',
-        });
-      }
+      if (recycleEnabled) {
+        if (visibleStartIndex > 0) {
+          spaceStateResult.push({
+            key: 'spacer_before',
+            length: this.getIndexKeyOffset(visibleStartIndex),
+            isSpace: true,
+            isSticky: false,
+            item: null,
+            position: 'buffered',
+          });
+        }
 
-      for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
-        const item = data[index];
-        if (item)
-          this.hydrateSpaceStateToken(
-            spaceStateResult,
-            item,
-            index,
-            'buffered'
-          );
-      }
+        for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+          const item = data[index];
+          if (item)
+            this.hydrateSpaceStateToken(
+              spaceStateResult,
+              item,
+              index,
+              'buffered'
+            );
+        }
 
-      if (
-        visibleEndIndex < data.length - 1 &&
-        typeof this.getTotalLength() === 'number'
-      ) {
-        spaceStateResult.push({
-          key: 'spacer_after',
-          length:
-            (this.getTotalLength() as number) -
-            this.getIndexKeyOffset(visibleEndIndex + 1),
-          isSpace: true,
-          isSticky: false,
-          item: null,
-          position: 'buffered',
-        });
+        if (
+          visibleEndIndex < data.length - 1 &&
+          typeof this.getTotalLength() === 'number'
+        ) {
+          spaceStateResult.push({
+            key: 'spacer_after',
+            length:
+              (this.getTotalLength() as number) -
+              this.getIndexKeyOffset(visibleEndIndex + 1),
+            isSpace: true,
+            isSticky: false,
+            item: null,
+            position: 'buffered',
+          });
+        }
+      } else {
+        spaceStateResult = this.resolveSpaceState(state);
       }
     }
 

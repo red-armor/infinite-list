@@ -66,6 +66,14 @@ class IntegerBufferSet {
     return newPosition;
   }
 
+  getMinValue() {
+    return this._smallValues.peek()?.value;
+  }
+
+  getMaxValue() {
+    return this._largeValues.peek()?.value;
+  }
+
   replaceFurthestValuePosition(
     lowValue: number,
     highValue: number,
