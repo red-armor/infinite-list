@@ -934,7 +934,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     }
 
-    if (visibleEndIndex >= 0 && scrolling) {
+    if (visibleEndIndex >= 0) {
       for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
         const position = this.getPosition(
           index,
@@ -988,7 +988,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     let spaceStateResult = [];
 
     // 滚动中
-    if (scrolling && recycleEnabled) {
+    if (recycleEnabled) {
       spaceStateResult.push({
         key: 'spacer',
         length: this.getTotalLength(),
