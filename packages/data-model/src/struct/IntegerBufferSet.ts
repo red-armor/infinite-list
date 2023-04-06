@@ -42,6 +42,15 @@ class IntegerBufferSet {
     return this._size;
   }
 
+  get indices() {
+    const indices = [];
+    for (const key in this._valueToPositionMap) {
+      const value = this._valueToPositionMap[key];
+      indices[value] = key;
+    }
+    return indices;
+  }
+
   getValuePosition(value: number): null | number {
     if (this._valueToPositionMap[value] === undefined) {
       return null;

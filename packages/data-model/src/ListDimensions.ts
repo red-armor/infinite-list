@@ -904,35 +904,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       data,
     } = state;
 
-    const targetIndices = [];
+    const targetIndices = this._bufferSet.indices;
+
     const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
 
     const originalPositionSize = this._bufferSet.getSize();
     const recycleEnabled = originalPositionSize >= this.recycleThreshold;
-
-    for (let index = bufferedStartIndex; index < visibleStartIndex; index++) {
-      const position = this.getPosition(
-        index,
-        bufferedStartIndex,
-        visibleStartIndex
-      );
-      if (position !== null) targetIndices[position] = index;
-    }
-
-    if (bufferedEndIndex >= 0) {
-      for (
-        let index = visibleEndIndex + 1;
-        index <= bufferedEndIndex;
-        index++
-      ) {
-        const position = this.getPosition(
-          index,
-          visibleEndIndex + 1,
-          bufferedEndIndex
-        );
-        if (position !== null) targetIndices[position] = index;
-      }
-    }
 
     if (visibleEndIndex >= 0) {
       for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
@@ -940,6 +917,42 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           index,
           visibleStartIndex,
           visibleEndIndex
+        );
+        if (position !== null) targetIndices[position] = index;
+      }
+    }
+
+    const bufferSize = Math.floor(
+      (this.recycleThreshold -
+        Math.max(visibleEndIndex - visibleStartIndex, 0)) /
+        2
+    );
+
+    for (
+      let index = visibleStartIndex, size = bufferSize;
+      size >= 0;
+      size--, index--
+    ) {
+      if (index >= 0) {
+        const position = this.getPosition(
+          index,
+          bufferedStartIndex,
+          visibleStartIndex
+        );
+        if (position !== null) targetIndices[position] = index;
+      }
+    }
+
+    for (
+      let index = visibleEndIndex + 1, size = bufferSize;
+      size >= 0;
+      size--, index++
+    ) {
+      if (index >= 0) {
+        const position = this.getPosition(
+          index,
+          visibleEndIndex + 1,
+          bufferedEndIndex
         );
         if (position !== null) targetIndices[position] = index;
       }
