@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.1.1-recycle-alpha.3](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1-recycle-alpha.3) (2023-04-06)
+## [0.1.1-recycle-alpha.4](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1-recycle-alpha.4) (2023-04-08)
+
+
+
+## 0.1.1-recycle-alpha.4 (2023-04-08)
+
+
+### Features
+
+* update interval tree value only if cared value change ([b5bb266](https://github.com/red-armor/infinite-list/commit/b5bb26645f98e2845de67227e9c017f792113582))
 
 
 
