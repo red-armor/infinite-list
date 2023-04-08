@@ -765,12 +765,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     if (!layoutEqual(meta.getLayout(), info as ItemLayout)) {
+      const currentLength = this._selectValue.selectLength(
+        meta.getLayout() || {}
+      );
+      let length = this._selectValue.selectLength((info as ItemLayout) || {});
       meta.setLayout(info as ItemLayout);
-      let length = this._selectValue.selectLength(info as ItemLayout);
-      if (index !== this._data.length - 1) {
-        length = meta.getSeparatorLength() + length;
-      }
-      if (_update) {
+      // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
+      if (currentLength !== length && _update) {
+        if (index !== this._data.length - 1) {
+          length = meta.getSeparatorLength() + length;
+        }
         this.setIntervalTreeValue(index, length);
         return true;
       }

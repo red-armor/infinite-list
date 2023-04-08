@@ -150,9 +150,13 @@ class PseudoListDimensions extends BaseDimensions {
     }
 
     if (!layoutEqual(meta.getLayout(), info as ItemLayout)) {
+      const currentLength = this._selectValue.selectLength(
+        meta.getLayout() || {}
+      );
+      const length = this._selectValue.selectLength((info as ItemLayout) || {});
       meta.setLayout(info as ItemLayout);
-      const length = this._selectValue.selectLength(info as ItemLayout);
-      if (_update) {
+
+      if (currentLength !== length && _update) {
         this.setIntervalTreeValue(index, length);
         return true;
       }
