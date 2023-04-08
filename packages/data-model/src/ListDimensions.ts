@@ -37,8 +37,8 @@ import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
+import IntegerBufferSet from '@x-oasis/integer-buffer-set';
 import memoizeOne from 'memoize-one';
-import IntegerBufferSet from './struct/IntegerBufferSet';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];

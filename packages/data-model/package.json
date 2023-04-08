@@ -26,6 +26,7 @@
     "@x-oasis/batchinator": "^0.0.13",
     "@x-oasis/boolean-with-default": "^0.0.13",
     "@x-oasis/capitalize": "^0.0.6",
+    "@x-oasis/integer-buffer-set": "^0.0.19",
     "@x-oasis/is-clamped": "^0.0.8",
     "@x-oasis/layout-equal": "^0.0.8",
     "@x-oasis/noop": "^0.0.6",
