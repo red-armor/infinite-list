@@ -373,6 +373,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this.intervalTree;
   }
 
+  _recycleEnabled() {
+    if (this.fillingMode !== FillingMode.RECYCLE) return false;
+    const originalPositionSize = this._bufferSet.getSize();
+    return originalPositionSize >= this.recycleThreshold;
+  }
+
   // 一旦当前的length 发生了变化，判断一下自己总的高度是否变化，如果
   // 变了，那么就去更新
   setIntervalTreeValue(index: number, length: number) {
@@ -392,6 +398,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const falsy = this._onBatchLayoutFinished();
         if (falsy) this.notifyRenderFinished();
       }
+    }
+
+    if (this._recycleEnabled()) {
     }
   }
 
@@ -910,10 +919,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const targetIndices = this._bufferSet.indices;
 
-    const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
+    // const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
+    // const originalPositionSize = this._bufferSet.getSize();
 
-    const originalPositionSize = this._bufferSet.getSize();
-    const recycleEnabled = originalPositionSize >= this.recycleThreshold;
+    const recycleEnabled = this._recycleEnabled();
 
     if (visibleEndIndex >= 0) {
       for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
