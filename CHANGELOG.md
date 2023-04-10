@@ -1,6 +1,16 @@
 # CHANGELOG
 
-## [0.1.1-recycle-alpha.5](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1-recycle-alpha.5) (2023-04-08)
+## [0.1.1-recycle-alpha.6](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1-recycle-alpha.6) (2023-04-10)
+
+
+
+## 0.1.1-recycle-alpha.6 (2023-04-10)
+
+
+### Features
+
+* calculate batch ([42ad5d3](https://github.com/red-armor/infinite-list/commit/42ad5d33b00835983026c7aac283f3fade8f54d6))
+* update ([fa51437](https://github.com/red-armor/infinite-list/commit/fa514372bb172c7c111a91c3d490267923c7a55a))
 
 
 
