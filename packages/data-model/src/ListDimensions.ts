@@ -86,6 +86,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _onBatchLayoutFinished: () => boolean;
 
   public updateStateBatchinator: Batchinator;
+  private _recalculateRecycleResultStateBatchinator: Batchinator;
 
   private _selector = new EnabledSelector();
 
@@ -196,6 +197,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._removeList = this._listGroupDimension ? noop : manager.addList(this);
     this.updateStateBatchinator = new Batchinator(
       this.updateState.bind(this),
+      50
+    );
+    this._recalculateRecycleResultStateBatchinator = new Batchinator(
+      this.recalculateRecycleResultState.bind(this),
       50
     );
   }
@@ -379,6 +384,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return originalPositionSize >= this.recycleThreshold;
   }
 
+  recalculateRecycleResultState() {
+    this.setState(this._state);
+  }
+
   // 一旦当前的length 发生了变化，判断一下自己总的高度是否变化，如果
   // 变了，那么就去更新
   setIntervalTreeValue(index: number, length: number) {
@@ -401,6 +410,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     if (this._recycleEnabled()) {
+      this._recalculateRecycleResultStateBatchinator.schedule();
     }
   }
 
@@ -913,7 +923,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       bufferedEndIndex,
       visibleStartIndex,
       bufferedStartIndex,
-      actionType,
+      // actionType,
       data,
     } = state;
 
@@ -1016,7 +1026,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // 滚动中
     if (recycleEnabled) {
       spaceStateResult.push({
-        key: 'spacer',
+        key: `spacer_${this.getTotalLength()}`,
         length: this.getTotalLength(),
         isSpace: true,
         isSticky: false,
