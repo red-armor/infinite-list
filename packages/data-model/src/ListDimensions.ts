@@ -608,7 +608,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         });
       }
     } else {
-      this.updateScrollMetrics();
+      this.updateScrollMetrics(this._scrollMetrics, false);
     }
 
     return changedType;
@@ -1202,6 +1202,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (!scrollMetrics) return;
     if (!this.dispatchScrollMetricsEnabled()) {
       this._scrollMetrics = scrollMetrics;
+      return;
+    }
+
+    if (!useCache) {
+      this._scrollMetrics = scrollMetrics;
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       return;
     }
 
