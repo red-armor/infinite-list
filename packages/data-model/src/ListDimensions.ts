@@ -92,6 +92,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _bufferSet = new IntegerBufferSet();
 
+  private _offsetTriggerCachedState = 0;
+
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
   ) => SpaceStateResult<ItemT>;
@@ -385,7 +387,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   recalculateRecycleResultState() {
-    this.setState(this._state);
+    this.setState(this._state, true);
   }
 
   // 一旦当前的length 发生了变化，判断一下自己总的高度是否变化，如果
@@ -674,8 +676,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
    * @returns void
    */
   updateTheLastItemIntervalValue() {
-    const index = this._data.length;
-    const item = this._data[index - 1];
+    const len = this._data.length;
+    const index = len - 1;
+    const item = this._data[index];
     if (!item) return;
 
     const meta = this.getItemMeta(item, index);
@@ -827,15 +830,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     };
   }
 
-  setState(state: ListState<ItemT>) {
+  setState(state: ListState<ItemT>, force = false) {
     if (this.fillingMode === FillingMode.SPACE) {
-      const stateResult = this.memoizedResolveSpaceState(state);
+      const stateResult = force
+        ? this.resolveSpaceState(state)
+        : this.memoizedResolveSpaceState(state);
       if (typeof this._stateListener === 'function') {
         this._stateListener(stateResult, this._stateResult);
       }
       this._stateResult = stateResult;
     } else if (this.fillingMode === FillingMode.RECYCLE) {
-      const stateResult = this.memoizedResolveRecycleState(state);
+      const stateResult = force
+        ? this.resolveRecycleState(state)
+        : this.memoizedResolveRecycleState(state);
       if (typeof this._stateListener === 'function') {
         this._stateListener(stateResult, this._stateResult);
       }
@@ -927,7 +934,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       data,
     } = state;
 
-    const targetIndices = this._bufferSet.indices;
+    const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
 
     // const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
     // const originalPositionSize = this._bufferSet.getSize();
@@ -945,40 +952,34 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     }
 
-    const bufferSize = Math.floor(
-      (this.recycleThreshold -
-        Math.max(visibleEndIndex - visibleStartIndex, 0)) /
-        2
-    );
+    const visibleSize = Math.max(visibleEndIndex - visibleStartIndex + 1, 0);
+    const beforeSize = Math.floor((this.recycleThreshold - visibleSize) / 2);
+    const afterSize = this.recycleThreshold - visibleSize - beforeSize;
 
     for (
-      let index = visibleStartIndex, size = bufferSize;
-      size >= 0;
+      let index = visibleStartIndex, size = beforeSize;
+      size > 0 && index >= 0;
       size--, index--
     ) {
-      if (index >= 0) {
-        const position = this.getPosition(
-          index,
-          bufferedStartIndex,
-          visibleStartIndex
-        );
-        if (position !== null) targetIndices[position] = index;
-      }
+      const position = this.getPosition(
+        index,
+        bufferedStartIndex,
+        visibleStartIndex
+      );
+      if (position !== null) targetIndices[position] = index;
     }
 
     for (
-      let index = visibleEndIndex + 1, size = bufferSize;
-      size >= 0;
+      let index = visibleEndIndex + 1, size = afterSize;
+      size > 0 && index <= bufferedEndIndex;
       size--, index++
     ) {
-      if (index >= 0) {
-        const position = this.getPosition(
-          index,
-          visibleEndIndex + 1,
-          bufferedEndIndex
-        );
-        if (position !== null) targetIndices[position] = index;
-      }
+      const position = this.getPosition(
+        index,
+        visibleEndIndex + 1,
+        bufferedEndIndex
+      );
+      if (position !== null) targetIndices[position] = index;
     }
 
     const recycleStateResult = [];
@@ -1147,6 +1148,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
       this.setState(state);
       this._state = state;
+      this._offsetTriggerCachedState = scrollMetrics.offset;
 
       if (performItemsMetaChange) {
         const bufferedItems = this._data.slice(
@@ -1211,7 +1213,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     ) {
       this._scrollMetrics = scrollMetrics;
       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-    } else if (this._state) {
+    } else if (scrollMetrics.offset !== this._offsetTriggerCachedState) {
+      this._scrollMetrics = scrollMetrics;
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+    } else {
       this._dispatchMetricsBatchinator.dispose({
         abort: true,
       });
