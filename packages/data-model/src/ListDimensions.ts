@@ -1016,7 +1016,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSpace: false,
           isSticky: false,
           item,
-          offset: indexToOffsetMap[targetIndex],
+          offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
           position: 'buffered',
         });
       });
