@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/data-model",
-  "version": "0.1.1-recycle-alpha.7",
+  "version": "0.1.1-recycle-alpha.8",
   "files": [
     "dist",
     "src"
