@@ -988,7 +988,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const indexToOffsetMap = {};
       const minValue = this._bufferSet.getMinValue();
       const maxValue = this._bufferSet.getMaxValue();
-      let startOffset = this.getIndexKeyOffset(minValue, false);
+      let startOffset = this.getIndexKeyOffset(minValue, true);
 
       for (let index = minValue; index <= maxValue; index++) {
         indexToOffsetMap[index] = startOffset;
@@ -1039,7 +1039,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         if (visibleStartIndex > 0) {
           spaceStateResult.push({
             key: 'spacer_before',
-            length: this.getIndexKeyOffset(visibleStartIndex, false),
+            length: this.getIndexKeyOffset(visibleStartIndex, true),
             isSpace: true,
             isSticky: false,
             item: null,
@@ -1066,7 +1066,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             key: 'spacer_after',
             length:
               (this.getTotalLength() as number) -
-              this.getIndexKeyOffset(visibleEndIndex + 1, false),
+              this.getIndexKeyOffset(visibleEndIndex + 1, true),
             isSpace: true,
             isSticky: false,
             item: null,
