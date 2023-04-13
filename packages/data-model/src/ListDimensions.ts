@@ -54,7 +54,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
-  private _stateResult: ListStateResult<ItemT> = [];
+  private _stateResult:
+    | ListStateResult<ItemT>
+    | {
+        recycleState: Array<SpaceStateToken<ItemT>>;
+        spaceState: Array<SpaceStateToken<ItemT>>;
+      };
 
   private _listGroupDimension: ListGroupDimensions;
   private _parentItemsDimensions: ItemsDimensions;
@@ -1151,21 +1156,36 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._offsetTriggerCachedState = scrollMetrics.offset;
 
       if (performItemsMetaChange) {
-        const bufferedItems = this._data.slice(
-          nextBufferedStartIndex,
-          nextBufferedEndIndex + 1
-        );
+        if (this._recycleEnabled()) {
+          const bufferedItemsMeta = (
+            this._stateResult as {
+              recycleState: Array<SpaceStateToken<ItemT>>;
+            }
+          ).recycleState
+            .map((item) => this.getKeyMeta(item.key))
+            .filter((v) => v);
 
-        const bufferedItemsMeta = bufferedItems
-          .map((item, index) =>
-            this.getItemMeta(item, nextBufferedStartIndex + index)
-          )
-          .filter((v) => v);
+          this._onUpdateItemsMetaChangeBatchinator.schedule(
+            bufferedItemsMeta,
+            scrollMetrics
+          );
+        } else {
+          const bufferedItems = this._data.slice(
+            nextBufferedStartIndex,
+            nextBufferedEndIndex + 1
+          );
 
-        this._onUpdateItemsMetaChangeBatchinator.schedule(
-          bufferedItemsMeta,
-          scrollMetrics
-        );
+          const bufferedItemsMeta = bufferedItems
+            .map((item, index) =>
+              this.getItemMeta(item, nextBufferedStartIndex + index)
+            )
+            .filter((v) => v);
+
+          this._onUpdateItemsMetaChangeBatchinator.schedule(
+            bufferedItemsMeta,
+            scrollMetrics
+          );
+        }
       }
     }
   }
@@ -1226,7 +1246,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._dispatchMetricsBatchinator.dispose({
         abort: true,
       });
-      this.updateState(this._state, scrollMetrics, false);
+      this.updateState(this._state, scrollMetrics);
     }
 
     this._scrollMetrics = scrollMetrics;
