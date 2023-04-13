@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.1.1-recycle-alpha.11](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1-recycle-alpha.11) (2023-04-12)
+## [0.1.1-recycle-alpha.12](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1-recycle-alpha.12) (2023-04-13)
+
+
+
+## 0.1.1-recycle-alpha.12 (2023-04-13)
+
+
+### Features
+
+* update ([1a4c120](https://github.com/red-armor/infinite-list/commit/1a4c120b94744af350529dfb0e4169c770c52619))
 
 
 
