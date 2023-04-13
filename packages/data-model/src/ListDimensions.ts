@@ -1162,7 +1162,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
               recycleState: Array<SpaceStateToken<ItemT>>;
             }
           ).recycleState
-            .map((item) => this.getKeyMeta(item.key))
+            // @ts-ignore
+            .map((item) => this.getKeyMeta(item.targetKey))
             .filter((v) => v);
 
           this._onUpdateItemsMetaChangeBatchinator.schedule(
