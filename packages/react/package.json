@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react",
-  "version": "0.1.1-recycle-alpha.13",
+  "version": "0.1.1-recycle-alpha.14",
   "main": "src/index.ts",
   "publishConfig": {
     "access": "public",
