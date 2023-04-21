@@ -1040,47 +1040,47 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         position: 'buffered',
       });
     } else {
-      if (recycleEnabled) {
-        if (visibleStartIndex > 0) {
-          spaceStateResult.push({
-            key: 'spacer_before',
-            length: this.getIndexKeyOffset(visibleStartIndex, true),
-            isSpace: true,
-            isSticky: false,
-            item: null,
-            position: 'buffered',
-          });
-        }
+      // if (recycleEnabled) {
+      //   if (visibleStartIndex > 0) {
+      //     spaceStateResult.push({
+      //       key: 'spacer_before',
+      //       length: this.getIndexKeyOffset(visibleStartIndex, true),
+      //       isSpace: true,
+      //       isSticky: false,
+      //       item: null,
+      //       position: 'buffered',
+      //     });
+      //   }
 
-        for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
-          const item = data[index];
-          if (item)
-            this.hydrateSpaceStateToken(
-              spaceStateResult,
-              item,
-              index,
-              'buffered'
-            );
-        }
+      //   for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+      //     const item = data[index];
+      //     if (item)
+      //       this.hydrateSpaceStateToken(
+      //         spaceStateResult,
+      //         item,
+      //         index,
+      //         'buffered'
+      //       );
+      //   }
 
-        if (
-          visibleEndIndex < data.length - 1 &&
-          typeof this.getTotalLength() === 'number'
-        ) {
-          spaceStateResult.push({
-            key: 'spacer_after',
-            length:
-              (this.getTotalLength() as number) -
-              this.getIndexKeyOffset(visibleEndIndex + 1, true),
-            isSpace: true,
-            isSticky: false,
-            item: null,
-            position: 'buffered',
-          });
-        }
-      } else {
-        spaceStateResult = this.resolveSpaceState(state);
-      }
+      //   if (
+      //     visibleEndIndex < data.length - 1 &&
+      //     typeof this.getTotalLength() === 'number'
+      //   ) {
+      //     spaceStateResult.push({
+      //       key: 'spacer_after',
+      //       length:
+      //         (this.getTotalLength() as number) -
+      //         this.getIndexKeyOffset(visibleEndIndex + 1, true),
+      //       isSpace: true,
+      //       isSticky: false,
+      //       item: null,
+      //       position: 'buffered',
+      //     });
+      //   }
+      // } else {
+      spaceStateResult = this.resolveSpaceState(state);
+      // }
     }
 
     const stateResult = {
@@ -1156,7 +1156,17 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._offsetTriggerCachedState = scrollMetrics.offset;
 
       if (performItemsMetaChange) {
-        if (this._recycleEnabled()) {
+        // _recycleEnabled()它的时机会比resolveRecycleState要早，
+        // 所以这里面先确保recycle state有东西，要不然的话，itemMeta的state（viewable & imageViewable）
+        // 会出现bug
+        if (
+          this._recycleEnabled() &&
+          (
+            this._stateResult as {
+              recycleState: Array<SpaceStateToken<ItemT>>;
+            }
+          ).recycleState.length
+        ) {
           const bufferedItemsMeta = (
             this._stateResult as {
               recycleState: Array<SpaceStateToken<ItemT>>;
