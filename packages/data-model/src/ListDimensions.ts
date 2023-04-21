@@ -11,7 +11,7 @@ import { INVALID_LENGTH, isNotEmpty, shallowDiffers } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
 import createStore from './state/createStore';
-import { ReducerResult, Store } from './state/types';
+import { ActionType, ReducerResult, Store } from './state/types';
 import {
   SpaceStateToken,
   GetItemLayout,
@@ -30,11 +30,14 @@ import {
   ListStateResult,
   SpaceStateTokenPosition,
   FillingMode,
+  RecycleStateResult,
+  SpaceStateResult,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
+import IntegerBufferSet from '@x-oasis/integer-buffer-set';
 import memoizeOne from 'memoize-one';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
@@ -51,7 +54,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
-  private _stateResult: ListStateResult<ItemT> = [];
+  private _stateResult:
+    | ListStateResult<ItemT>
+    | {
+        recycleState: Array<SpaceStateToken<ItemT>>;
+        spaceState: Array<SpaceStateToken<ItemT>>;
+      };
 
   private _listGroupDimension: ListGroupDimensions;
   private _parentItemsDimensions: ItemsDimensions;
@@ -83,12 +91,20 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _onBatchLayoutFinished: () => boolean;
 
   public updateStateBatchinator: Batchinator;
+  private _recalculateRecycleResultStateBatchinator: Batchinator;
 
   private _selector = new EnabledSelector();
 
+  private _bufferSet = new IntegerBufferSet();
+
+  private _offsetTriggerCachedState = 0;
+
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
-  ) => Array<SpaceStateToken<ItemT>>;
+  ) => SpaceStateResult<ItemT>;
+  private memoizedResolveRecycleState: (
+    state: ListState<ItemT>
+  ) => RecycleStateResult<ItemT>;
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -163,7 +179,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
     );
-    this._stateResult = this.memoizedResolveSpaceState(this._state);
+    this.memoizedResolveRecycleState = memoizeOne(
+      this.resolveRecycleState.bind(this)
+    );
+    this._stateResult =
+      this.fillingMode === FillingMode.RECYCLE
+        ? this.memoizedResolveRecycleState(this._state)
+        : this.memoizedResolveSpaceState(this._state);
 
     this._store = createStore<ReducerResult>() || store;
 
@@ -182,6 +204,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._removeList = this._listGroupDimension ? noop : manager.addList(this);
     this.updateStateBatchinator = new Batchinator(
       this.updateState.bind(this),
+      50
+    );
+    this._recalculateRecycleResultStateBatchinator = new Batchinator(
+      this.recalculateRecycleResultState.bind(this),
       50
     );
   }
@@ -256,7 +282,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isEndReached: false,
         distanceFromEnd: 0,
         data: [],
-        // itemKeys: [],
+        actionType: ActionType.Initial,
       };
 
     if (this._state && this._state.bufferedEndIndex > 0) return this._state;
@@ -270,7 +296,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isEndReached: false,
       distanceFromEnd: 0,
       data: this._data.slice(0, maxIndex + 1),
-      // itemKeys: this._indexKeys.slice(0, maxIndex + 1),
+      actionType: ActionType.Initial,
     };
   }
 
@@ -359,6 +385,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this.intervalTree;
   }
 
+  _recycleEnabled() {
+    if (this.fillingMode !== FillingMode.RECYCLE) return false;
+    const originalPositionSize = this._bufferSet.getSize();
+    return originalPositionSize >= this.recycleThreshold;
+  }
+
+  recalculateRecycleResultState() {
+    this.setState(this._state, true);
+  }
+
   // 一旦当前的length 发生了变化，判断一下自己总的高度是否变化，如果
   // 变了，那么就去更新
   setIntervalTreeValue(index: number, length: number) {
@@ -378,6 +414,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const falsy = this._onBatchLayoutFinished();
         if (falsy) this.notifyRenderFinished();
       }
+    }
+
+    if (this._recycleEnabled()) {
+      this._recalculateRecycleResultStateBatchinator.schedule();
     }
   }
 
@@ -573,7 +613,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         });
       }
     } else {
-      this.updateScrollMetrics();
+      this.updateScrollMetrics(this._scrollMetrics, false);
     }
 
     return changedType;
@@ -641,8 +681,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
    * @returns void
    */
   updateTheLastItemIntervalValue() {
-    const index = this._data.length;
-    const item = this._data[index - 1];
+    const len = this._data.length;
+    const index = len - 1;
+    const item = this._data[index];
     if (!item) return;
 
     const meta = this.getItemMeta(item, index);
@@ -693,10 +734,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       keyToMetaMap.set(itemKey, meta);
     }
   }
-
-  intersect() {}
-
-  restart() {}
 
   append(data: Array<ItemT>) {
     const baseIndex = this._indexKeys.length;
@@ -755,12 +792,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     if (!layoutEqual(meta.getLayout(), info as ItemLayout)) {
+      const currentLength = this._selectValue.selectLength(
+        meta.getLayout() || {}
+      );
+      let length = this._selectValue.selectLength((info as ItemLayout) || {});
       meta.setLayout(info as ItemLayout);
-      let length = this._selectValue.selectLength(info as ItemLayout);
-      if (index !== this._data.length - 1) {
-        length = meta.getSeparatorLength() + length;
-      }
-      if (_update) {
+      // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
+      if (currentLength !== length && _update) {
+        if (index !== this._data.length - 1) {
+          length = meta.getSeparatorLength() + length;
+        }
         this.setIntervalTreeValue(index, length);
         return true;
       }
@@ -794,9 +835,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     };
   }
 
-  setState(state: ListState<ItemT>) {
+  setState(state: ListState<ItemT>, force = false) {
     if (this.fillingMode === FillingMode.SPACE) {
-      const stateResult = this.memoizedResolveSpaceState(state);
+      const stateResult = force
+        ? this.resolveSpaceState(state)
+        : this.memoizedResolveSpaceState(state);
+      if (typeof this._stateListener === 'function') {
+        this._stateListener(stateResult, this._stateResult);
+      }
+      this._stateResult = stateResult;
+    } else if (this.fillingMode === FillingMode.RECYCLE) {
+      const stateResult = force
+        ? this.resolveRecycleState(state)
+        : this.memoizedResolveRecycleState(state);
       if (typeof this._stateListener === 'function') {
         this._stateListener(stateResult, this._stateResult);
       }
@@ -834,7 +885,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       position !== 'buffered' &&
       this.persistanceIndices.indexOf(currentIndex) === -1;
     const itemLength =
-      (itemLayout?.height || 0) + (itemMeta.getSeparatorLength() || 0);
+      (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
     if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
       const key = `${lastToken.key}_${itemKey}`;
@@ -855,6 +906,189 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       });
       spaceStateResult.push(token);
     }
+  }
+
+  getPosition(rowIndex: number, startIndex: number, endIndex: number) {
+    let position = this._bufferSet.getValuePosition(rowIndex);
+
+    if (
+      position === null &&
+      this._bufferSet.getSize() >= this.recycleThreshold
+    ) {
+      position = this._bufferSet.replaceFurthestValuePosition(
+        startIndex,
+        endIndex,
+        rowIndex
+      );
+    }
+
+    if (position === null) {
+      position = this._bufferSet.getNewPositionForValue(rowIndex);
+    }
+
+    return position;
+  }
+
+  resolveRecycleState(state: ListState<ItemT>) {
+    const {
+      visibleEndIndex,
+      bufferedEndIndex,
+      visibleStartIndex,
+      bufferedStartIndex,
+      // actionType,
+      data,
+    } = state;
+
+    const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+
+    // const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
+    // const originalPositionSize = this._bufferSet.getSize();
+
+    const recycleEnabled = this._recycleEnabled();
+
+    if (visibleEndIndex >= 0) {
+      for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+        const position = this.getPosition(
+          index,
+          visibleStartIndex,
+          visibleEndIndex
+        );
+        if (position !== null) targetIndices[position] = index;
+      }
+    }
+
+    const visibleSize = Math.max(visibleEndIndex - visibleStartIndex + 1, 0);
+    const beforeSize = Math.floor((this.recycleThreshold - visibleSize) / 2);
+    const afterSize = this.recycleThreshold - visibleSize - beforeSize;
+
+    for (
+      let index = visibleStartIndex, size = beforeSize;
+      size > 0 && index >= 0;
+      size--, index--
+    ) {
+      const position = this.getPosition(
+        index,
+        bufferedStartIndex,
+        visibleStartIndex
+      );
+      if (position !== null) targetIndices[position] = index;
+    }
+
+    for (
+      let index = visibleEndIndex + 1, size = afterSize;
+      size > 0 && index <= bufferedEndIndex;
+      size--, index++
+    ) {
+      const position = this.getPosition(
+        index,
+        visibleEndIndex + 1,
+        bufferedEndIndex
+      );
+      if (position !== null) targetIndices[position] = index;
+    }
+
+    const recycleStateResult = [];
+
+    if (recycleEnabled) {
+      const indexToOffsetMap = {};
+      const minValue = this._bufferSet.getMinValue();
+      const maxValue = this._bufferSet.getMaxValue();
+      let startOffset = this.getIndexKeyOffset(minValue, true);
+
+      for (let index = minValue; index <= maxValue; index++) {
+        indexToOffsetMap[index] = startOffset;
+        const item = data[index];
+        const itemMeta = this.getItemMeta(item, index);
+        startOffset +=
+          (itemMeta?.getLayout()?.height || 0) +
+          (itemMeta?.getSeparatorLength() || 0);
+      }
+
+      targetIndices.forEach((targetIndex, index) => {
+        const item = data[targetIndex];
+        if (!item) return;
+
+        const itemKey = this.getItemKey(item, targetIndex);
+        const itemMeta = this.getItemMeta(item, targetIndex);
+
+        const itemLayout = itemMeta?.getLayout();
+        const itemLength =
+          (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+        recycleStateResult.push({
+          key: `recycle_${index}`,
+          targetKey: itemKey,
+          length: itemLength,
+          isSpace: false,
+          isSticky: false,
+          item,
+          offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
+          position: 'buffered',
+        });
+      });
+    }
+
+    let spaceStateResult = [];
+
+    // 滚动中
+    if (recycleEnabled) {
+      spaceStateResult.push({
+        key: `spacer_${this.getTotalLength()}`,
+        length: this.getTotalLength(),
+        isSpace: true,
+        isSticky: false,
+        item: null,
+        position: 'buffered',
+      });
+    } else {
+      // if (recycleEnabled) {
+      //   if (visibleStartIndex > 0) {
+      //     spaceStateResult.push({
+      //       key: 'spacer_before',
+      //       length: this.getIndexKeyOffset(visibleStartIndex, true),
+      //       isSpace: true,
+      //       isSticky: false,
+      //       item: null,
+      //       position: 'buffered',
+      //     });
+      //   }
+
+      //   for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+      //     const item = data[index];
+      //     if (item)
+      //       this.hydrateSpaceStateToken(
+      //         spaceStateResult,
+      //         item,
+      //         index,
+      //         'buffered'
+      //       );
+      //   }
+
+      //   if (
+      //     visibleEndIndex < data.length - 1 &&
+      //     typeof this.getTotalLength() === 'number'
+      //   ) {
+      //     spaceStateResult.push({
+      //       key: 'spacer_after',
+      //       length:
+      //         (this.getTotalLength() as number) -
+      //         this.getIndexKeyOffset(visibleEndIndex + 1, true),
+      //       isSpace: true,
+      //       isSticky: false,
+      //       item: null,
+      //       position: 'buffered',
+      //     });
+      //   }
+      // } else {
+      spaceStateResult = this.resolveSpaceState(state);
+      // }
+    }
+
+    const stateResult = {
+      recycleState: recycleStateResult,
+      spaceState: spaceStateResult,
+    };
+
+    return stateResult;
   }
 
   resolveSpaceState(state: ListState<ItemT>) {
@@ -919,23 +1153,50 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
       this.setState(state);
       this._state = state;
+      this._offsetTriggerCachedState = scrollMetrics.offset;
 
       if (performItemsMetaChange) {
-        const bufferedItems = this._data.slice(
-          nextBufferedStartIndex,
-          nextBufferedEndIndex + 1
-        );
+        // _recycleEnabled()它的时机会比resolveRecycleState要早，
+        // 所以这里面先确保recycle state有东西，要不然的话，itemMeta的state（viewable & imageViewable）
+        // 会出现bug
+        if (
+          this._recycleEnabled() &&
+          (
+            this._stateResult as {
+              recycleState: Array<SpaceStateToken<ItemT>>;
+            }
+          ).recycleState.length
+        ) {
+          const bufferedItemsMeta = (
+            this._stateResult as {
+              recycleState: Array<SpaceStateToken<ItemT>>;
+            }
+          ).recycleState
+            // @ts-ignore
+            .map((item) => this.getKeyMeta(item.targetKey))
+            .filter((v) => v);
 
-        const bufferedItemsMeta = bufferedItems
-          .map((item, index) =>
-            this.getItemMeta(item, nextBufferedStartIndex + index)
-          )
-          .filter((v) => v);
+          this._onUpdateItemsMetaChangeBatchinator.schedule(
+            bufferedItemsMeta,
+            scrollMetrics
+          );
+        } else {
+          const bufferedItems = this._data.slice(
+            nextBufferedStartIndex,
+            nextBufferedEndIndex + 1
+          );
 
-        this._onUpdateItemsMetaChangeBatchinator.schedule(
-          bufferedItemsMeta,
-          scrollMetrics
-        );
+          const bufferedItemsMeta = bufferedItems
+            .map((item, index) =>
+              this.getItemMeta(item, nextBufferedStartIndex + index)
+            )
+            .filter((v) => v);
+
+          this._onUpdateItemsMetaChangeBatchinator.schedule(
+            bufferedItemsMeta,
+            scrollMetrics
+          );
+        }
       }
     }
   }
@@ -975,6 +1236,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       return;
     }
 
+    if (!useCache) {
+      this._scrollMetrics = scrollMetrics;
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+      return;
+    }
+
     if (
       !this._scrollMetrics ||
       scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
@@ -983,11 +1250,14 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     ) {
       this._scrollMetrics = scrollMetrics;
       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-    } else if (this._state) {
+    } else if (scrollMetrics.offset !== this._offsetTriggerCachedState) {
+      this._scrollMetrics = scrollMetrics;
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+    } else {
       this._dispatchMetricsBatchinator.dispose({
         abort: true,
       });
-      this.updateState(this._state, scrollMetrics, false);
+      this.updateState(this._state, scrollMetrics);
     }
 
     this._scrollMetrics = scrollMetrics;

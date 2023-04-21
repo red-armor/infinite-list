@@ -10,7 +10,7 @@ export default <State extends ReducerResult = ReducerResult>(
   let maxIndex = 0;
   const { dimension } = payload;
   if (dimension instanceof BaseDimensions) {
-    maxIndex = dimension.length;
+    maxIndex = dimension.length - 1;
   } else if (dimension instanceof ListGroupDimensions) {
     maxIndex = dimension.getDataLength() - 1;
   }

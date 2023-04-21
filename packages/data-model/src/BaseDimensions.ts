@@ -65,9 +65,9 @@ abstract class BaseDimensions extends BaseLayout {
     return this._indexKeys[index];
   }
 
-  getIndexKeyOffset(index: number) {
+  getIndexKeyOffset(index: number, exclusive?: boolean) {
     const key = this.getIndexKey(index);
-    return this.getKeyItemOffset(key);
+    return this.getKeyItemOffset(key, exclusive);
   }
 
   /**

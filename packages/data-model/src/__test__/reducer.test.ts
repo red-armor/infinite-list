@@ -2,6 +2,7 @@ import createStore from '../state/createStore';
 import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
+import { ActionType } from '../state/types';
 import { vi, describe, it, expect } from 'vitest';
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
@@ -54,7 +55,7 @@ describe('reducer', () => {
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
 
     store.dispatch({
-      type: 'scrollDown',
+      type: ActionType.ScrollDown,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -67,6 +68,7 @@ describe('reducer', () => {
 
     expect(listGroupDimensions.getContainerOffset()).toBe(2000);
     expect(store.getState()).toEqual({
+      actionType: ActionType.ScrollDown,
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
@@ -113,7 +115,7 @@ describe('reducer', () => {
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
 
     store.dispatch({
-      type: 'hydrationWithBatchUpdate',
+      type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -125,6 +127,7 @@ describe('reducer', () => {
     });
 
     expect(store.getState()).toEqual({
+      actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
@@ -132,7 +135,7 @@ describe('reducer', () => {
     });
 
     store.dispatch({
-      type: 'scrollDown',
+      type: ActionType.ScrollDown,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -145,6 +148,7 @@ describe('reducer', () => {
 
     expect(listGroupDimensions.getContainerOffset()).toBe(2000);
     expect(store.getState()).toEqual({
+      actionType: ActionType.ScrollDown,
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
@@ -178,7 +182,7 @@ describe('reducer', () => {
     });
 
     store.dispatch({
-      type: 'hydrationWithBatchUpdate',
+      type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -190,6 +194,7 @@ describe('reducer', () => {
     });
 
     expect(store.getState()).toEqual({
+      actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 0,
       bufferedStartIndex: 0,
@@ -225,7 +230,7 @@ describe('reducer', () => {
     });
 
     store.dispatch({
-      type: 'hydrationWithBatchUpdate',
+      type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -237,6 +242,7 @@ describe('reducer', () => {
     });
 
     expect(store.getState()).toEqual({
+      actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 0,
       bufferedStartIndex: 0,
@@ -274,7 +280,7 @@ describe('reducer', () => {
     listGroupDimensions.setKeyItemLayout('header_1', 'header_1', 200);
     listGroupDimensions.setKeyItemLayout('footer_1', 'footer_1', 30);
     store.dispatch({
-      type: 'hydrationWithBatchUpdate',
+      type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -286,6 +292,7 @@ describe('reducer', () => {
     });
 
     expect(store.getState()).toEqual({
+      actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 19,
       bufferedStartIndex: 0,
@@ -357,7 +364,7 @@ describe('reducer', () => {
     listGroupDimensions.registerItem('footer_7', true);
 
     store.dispatch({
-      type: 'hydrationWithBatchUpdate',
+      type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -369,6 +376,7 @@ describe('reducer', () => {
     });
 
     expect(store.getState()).toEqual({
+      actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 20,
       bufferedStartIndex: 0,
@@ -440,7 +448,7 @@ describe('reducer', () => {
     listGroupDimensions.registerItem('footer_7');
 
     store.dispatch({
-      type: 'hydrationWithBatchUpdate',
+      type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
         scrollMetrics: {
@@ -452,6 +460,7 @@ describe('reducer', () => {
     });
 
     expect(store.getState()).toEqual({
+      actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 9,
       bufferedStartIndex: 0,

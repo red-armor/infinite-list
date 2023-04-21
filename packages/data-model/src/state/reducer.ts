@@ -1,3 +1,4 @@
+import preCheck from './middleware/preCheck';
 import addBatch from './middleware/addBatch';
 import bufferedEndIndexShouldBeReserved from './middleware/bufferedEndIndexShouldBeReserved';
 import bufferedStartIndexShouldBeReserved from './middleware/bufferedStartIndexShouldBeReserved';
@@ -6,8 +7,7 @@ import makeIndexMeaningful from './middleware/makeIndexMeaningful';
 import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
 import resolveUnLayoutLimitation from './middleware/resolveUnLayoutLimitation';
-import preCheck from './middleware/preCheck';
-import { Action, ActionPayload, Ctx, ReducerResult } from './types';
+import { Action, ActionPayload, ActionType, Ctx, ReducerResult } from './types';
 
 const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -37,6 +37,7 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
     ...state,
     isEndReached,
     distanceFromEnd,
+    actionType: 'hydrationWithBatchUpdate',
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
@@ -72,6 +73,7 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
     ...state,
     isEndReached,
     distanceFromEnd,
+    actionType: 'recalculate',
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
@@ -105,6 +107,7 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
 
   return {
     ...state,
+    actionType: 'scrollDown',
     isEndReached,
     distanceFromEnd,
     visibleStartIndex: visibleIndexRange.startIndex,
@@ -142,6 +145,7 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
     ...state,
     isEndReached,
     distanceFromEnd,
+    actionType: 'scrollUp',
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     // @ts-ignore
@@ -156,13 +160,14 @@ export default <State extends ReducerResult = ReducerResult>(
 ) => {
   const { type, payload } = action;
   switch (type) {
-    case 'hydrationWithBatchUpdate':
+    case ActionType.HydrationWithBatchUpdate:
       return hydrationWithBatchUpdate(state, payload);
-    case 'scrollDown':
+    case ActionType.ScrollDown:
       return scrollDown(state, payload);
-    case 'scrollUp':
+    case ActionType.ScrollUp:
       return scrollUp(state, payload);
-    case 'recalculate':
+    case ActionType.Initial:
+    case ActionType.Recalculate:
       return recalculate(state, payload);
   }
 };
