@@ -874,7 +874,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     position: SpaceStateTokenPosition
   ) {
     const itemMeta = this.getItemMeta(item, index);
-    const { index: currentIndex } = itemMeta.getIndexInfo();
+    const currentIndex = itemMeta?.getIndexInfo().index || -1;
     const lastTokenIndex = spaceStateResult.length - 1;
     const lastToken = spaceStateResult[lastTokenIndex];
     const itemKey = itemMeta.getKey();

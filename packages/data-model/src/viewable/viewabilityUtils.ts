@@ -66,6 +66,7 @@ export function _getPixelsVisible(props: {
   return Math.max(0, visibleHeight);
 }
 
+// TODO 针对visible的单测，需要加起来。。
 export function _isEntirelyVisible(props: {
   top: number;
   bottom: number;
