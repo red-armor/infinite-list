@@ -874,11 +874,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     position: SpaceStateTokenPosition
   ) {
     const itemMeta = this.getItemMeta(item, index);
-    const currentIndex = itemMeta?.getIndexInfo().index || -1;
+    if (!itemMeta) return;
+    const currentIndex = itemMeta.getIndexInfo().index;
     const lastTokenIndex = spaceStateResult.length - 1;
     const lastToken = spaceStateResult[lastTokenIndex];
     const itemKey = itemMeta.getKey();
-    const itemLayout = itemMeta?.getLayout();
+    const itemLayout = itemMeta.getLayout();
     const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
     const isSpace =
       !isSticky &&
@@ -1040,47 +1041,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         position: 'buffered',
       });
     } else {
-      // if (recycleEnabled) {
-      //   if (visibleStartIndex > 0) {
-      //     spaceStateResult.push({
-      //       key: 'spacer_before',
-      //       length: this.getIndexKeyOffset(visibleStartIndex, true),
-      //       isSpace: true,
-      //       isSticky: false,
-      //       item: null,
-      //       position: 'buffered',
-      //     });
-      //   }
-
-      //   for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
-      //     const item = data[index];
-      //     if (item)
-      //       this.hydrateSpaceStateToken(
-      //         spaceStateResult,
-      //         item,
-      //         index,
-      //         'buffered'
-      //       );
-      //   }
-
-      //   if (
-      //     visibleEndIndex < data.length - 1 &&
-      //     typeof this.getTotalLength() === 'number'
-      //   ) {
-      //     spaceStateResult.push({
-      //       key: 'spacer_after',
-      //       length:
-      //         (this.getTotalLength() as number) -
-      //         this.getIndexKeyOffset(visibleEndIndex + 1, true),
-      //       isSpace: true,
-      //       isSticky: false,
-      //       item: null,
-      //       position: 'buffered',
-      //     });
-      //   }
-      // } else {
       spaceStateResult = this.resolveSpaceState(state);
-      // }
     }
 
     const stateResult = {
