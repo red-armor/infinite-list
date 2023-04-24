@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.1.3](https://github.com/red-armor/infinite-list/compare/v0.1.2...v0.1.3) (2023-04-24)
+
+
+### Bug Fixes
+
+* hydrateSpaceStateToken with null itemMeta ([385af07](https://github.com/red-armor/infinite-list/commit/385af075c12327a428baede13e49c7629cd11509))
+
+
+
 ## [0.1.2](https://github.com/red-armor/infinite-list/compare/v0.1.1...v0.1.2) (2023-04-24)
 
 
