@@ -83,11 +83,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 0,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 0,
           length: 100,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 0,
           visibleLength: 927,
         },
@@ -97,11 +97,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 0,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 0,
           length: 928,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 0,
           visibleLength: 927,
         },
@@ -111,11 +111,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 0,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 927,
           length: 100,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 0,
           visibleLength: 927,
         },
@@ -127,11 +127,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 0,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 926,
           length: 100,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 0,
           visibleLength: 927,
         },
@@ -141,11 +141,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 0,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 927,
           length: 100,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 0,
           visibleLength: 927,
         },
@@ -155,11 +155,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 0,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 1,
           length: 1,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 1,
           visibleLength: 927,
         },
@@ -171,11 +171,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 - viewportLength,
           length: 1,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },
@@ -184,11 +184,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 - viewportLength - 1,
           length: 1,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },
@@ -197,11 +197,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 + 2 * viewportLength - 1,
           length: 1,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },
@@ -211,11 +211,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 + 2 * viewportLength,
           length: 1,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },
@@ -227,11 +227,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 - viewportLength,
           length: viewportLength * 0.2,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },
@@ -244,11 +244,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 - viewportLength,
           length: viewportLength * 0.19,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },
@@ -260,11 +260,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 - viewportLength * 1.1,
           length: viewportLength * 0.3,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },
@@ -276,11 +276,11 @@ describe('isItemViewable', () => {
     expect(
       isItemViewable({
         viewport: 1,
-        itemInfo: {
+        viewabilityItemMeta: {
           offset: 2500 - viewportLength * 1.1 + 1,
           length: viewportLength * 0.3,
         },
-        scrollMetrics: {
+        viewabilityScrollMetrics: {
           offset: 2500,
           visibleLength: viewportLength,
         },

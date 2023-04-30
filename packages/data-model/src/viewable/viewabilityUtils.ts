@@ -1,20 +1,6 @@
-import ItemMeta from '../ItemMeta';
 import SelectValue from '@x-oasis/select-value';
-import { ScrollEventMetrics, ScrollMetrics } from '../types';
-
-export type IsItemViewableOptions = {
-  viewport: number;
-  itemInfo: {
-    offset: number;
-    length: number;
-  };
-  scrollMetrics: {
-    offset: number;
-    visibleLength: number;
-  };
-  viewAreaMode?: boolean;
-  viewablePercentThreshold?: number;
-};
+import { ScrollEventMetrics, IsItemViewableOptions } from '../types';
+import ViewabilityItemMeta from './ViewabilityItemMeta';
 
 export function resolveMeasureMetrics(
   scrollEventMetrics: ScrollEventMetrics,
@@ -31,37 +17,37 @@ export function resolveMeasureMetrics(
   };
 }
 
-export function isItemMetaViewable(options: {
-  viewport: number;
-  itemMeta: ItemMeta;
-  scrollMetrics: ScrollMetrics;
-  viewAreaMode?: boolean;
-  viewablePercentThreshold?: number;
-}) {
-  const {
-    itemMeta,
-    viewport,
-    viewAreaMode = false,
-    scrollMetrics,
-    viewablePercentThreshold,
-  } = options;
+// export function isItemMetaViewable(options: {
+//   viewport: number;
+//   itemMeta: ItemMeta;
+//   scrollMetrics: ScrollMetrics;
+//   viewAreaMode?: boolean;
+//   viewablePercentThreshold?: number;
+// }) {
+//   const {
+//     itemMeta,
+//     viewport,
+//     viewAreaMode = false,
+//     scrollMetrics,
+//     viewablePercentThreshold,
+//   } = options;
 
-  if (!itemMeta || !scrollMetrics) return false;
+//   if (!itemMeta || !scrollMetrics) return false;
 
-  return isItemViewable({
-    itemInfo: {
-      offset: itemMeta.getItemOffset(),
-      length: itemMeta.getItemLength(),
-    },
-    viewport,
-    viewAreaMode,
-    scrollMetrics: {
-      offset: scrollMetrics.offset,
-      visibleLength: scrollMetrics.visibleLength,
-    },
-    viewablePercentThreshold,
-  });
-}
+//   return isItemViewable({
+//     itemInfo: {
+//       offset: itemMeta.getItemOffset(),
+//       length: itemMeta.getItemLength(),
+//     },
+//     viewport,
+//     viewAreaMode,
+//     scrollMetrics: {
+//       offset: scrollMetrics.offset,
+//       visibleLength: scrollMetrics.visibleLength,
+//     },
+//     viewablePercentThreshold,
+//   });
+// }
 
 /**
  *
@@ -73,15 +59,24 @@ export function isItemMetaViewable(options: {
  */
 export function isItemViewable(options: IsItemViewableOptions) {
   const {
-    itemInfo,
+    viewabilityItemMeta,
     viewport: _viewport,
     viewAreaMode = false,
-    scrollMetrics,
+    viewabilityScrollMetrics,
     viewablePercentThreshold = 0,
   } = options;
-  const { offset: scrollOffset, visibleLength: viewportLength } = scrollMetrics;
-  if (!itemInfo) return false;
-  const { offset: itemOffset, length: itemLength } = itemInfo;
+
+  const { offset: scrollOffset, visibleLength: viewportLength } =
+    viewabilityScrollMetrics;
+  if (!viewabilityItemMeta) return false;
+  const itemOffset =
+    viewabilityItemMeta instanceof ViewabilityItemMeta
+      ? viewabilityItemMeta.getItemOffset()
+      : viewabilityItemMeta.offset;
+  const itemLength =
+    viewabilityItemMeta instanceof ViewabilityItemMeta
+      ? viewabilityItemMeta.getItemLength()
+      : viewabilityItemMeta.length;
 
   const viewport = Math.max(_viewport, 0);
   const top = itemOffset - scrollOffset + viewport * viewportLength;

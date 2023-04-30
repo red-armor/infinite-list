@@ -23,6 +23,7 @@ class BaseLayout {
   private _initialNumToRender: number;
   private _persistanceIndices = [];
   private _stickyHeaderIndices = [];
+  private _reservedIndices = [];
   private _recycleThreshold: number;
   readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
@@ -44,11 +45,11 @@ class BaseLayout {
     const {
       id,
       recycleThreshold,
-      persistanceIndices,
+      persistanceIndices = [],
       recycleEnabled = false,
       horizontal = false,
       getContainerLayout,
-      stickyHeaderIndices,
+      stickyHeaderIndices = [],
       windowSize = WINDOW_SIZE,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
@@ -72,8 +73,11 @@ class BaseLayout {
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
-    this._stickyHeaderIndices = (stickyHeaderIndices || []).sort();
-    this._persistanceIndices = (persistanceIndices || []).sort((a, b) => a - b);
+    this.persistanceIndices = persistanceIndices;
+    this.stickyHeaderIndices = stickyHeaderIndices;
+
+    // this._stickyHeaderIndices = (stickyHeaderIndices || []).sort();
+    // this._persistanceIndices = (persistanceIndices || []).sort((a, b) => a - b);
   }
 
   get initialNumToRender() {
@@ -84,12 +88,24 @@ class BaseLayout {
     this._initialNumToRender = num;
   }
 
+  get reservedIndices() {
+    return this._reservedIndices;
+  }
+
+  updateReservedIndices() {
+    const indices = new Set(
+      [].concat(this.persistanceIndices, this.stickyHeaderIndices)
+    );
+    this._reservedIndices = [...indices].sort((a, b) => a - b);
+  }
+
   get persistanceIndices() {
     return this._persistanceIndices;
   }
 
   set persistanceIndices(indices: Array<number>) {
     this._persistanceIndices = indices.sort((a, b) => a - b);
+    this.updateReservedIndices();
   }
 
   get stickyHeaderIndices() {
@@ -98,6 +114,7 @@ class BaseLayout {
 
   set stickyHeaderIndices(indices: Array<number>) {
     this._stickyHeaderIndices = indices.sort((a, b) => a - b);
+    this.updateReservedIndices();
   }
 
   get recycleThreshold() {

@@ -10,8 +10,8 @@ import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensions from './ListDimensions';
-import { isNotEmpty, removeItemsKeyword } from './common';
-import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
+import { isNotEmpty } from './common';
+import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
@@ -103,7 +103,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
     this._configTuples = new ViewabilityConfigTuples({
-      horizontal: this.getHorizontal(),
+      // horizontal: this.getHorizontal(),
       viewabilityConfig,
       onViewableItemsChanged,
       isListItem: true,
@@ -249,22 +249,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     }
   }
 
-  getConfigTuples() {
+  getConfigTuple() {
     return this._configTuples;
   }
 
   resolveConfigTuplesDefaultState(defaultValue?: boolean) {
-    const state = {};
-
-    this._configTuples.getTuples().forEach((tuple) => {
-      const { configMap } = tuple;
-      const keys = Object.keys(configMap);
-      keys.forEach((key) => {
-        const k = removeItemsKeyword(key);
-        state[k] = defaultValue ?? false;
-      });
-    });
-    return state;
+    return this._configTuples.getDefaultState(defaultValue);
   }
 
   notifyRenderFinished() {

@@ -84,7 +84,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _removeList: Function;
 
-  private _onUpdateItemsMetaChangeBatchinator: Batchinator;
+  // private _onUpdateItemsMetaChangeBatchinator: Batchinator;
 
   private _initializeMode = false;
 
@@ -191,10 +191,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     this._offsetInListGroup = 0;
 
-    this._onUpdateItemsMetaChangeBatchinator = new Batchinator(
-      this.onUpdateItemsMetaChange.bind(this),
-      50
-    );
+    // this._onUpdateItemsMetaChangeBatchinator = new Batchinator(
+    //   this.onUpdateItemsMetaChange.bind(this),
+    //   50
+    // );
     this.attemptToHandleEndReached();
     this.handleDeps = this.handleDeps.bind(this);
 
@@ -387,8 +387,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   _recycleEnabled() {
     if (this.fillingMode !== FillingMode.RECYCLE) return false;
-    const originalPositionSize = this._bufferSet.getSize();
-    return originalPositionSize >= this.recycleThreshold;
+    return this.getReflowItemsLength() >= this.initialNumToRender;
   }
 
   recalculateRecycleResultState() {
@@ -863,8 +862,35 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isSpace: false,
       position: 'before' as SpaceStateTokenPosition,
       isSticky: false,
+      isReserved: false,
       ...options,
     };
+  }
+
+  /**
+   * For performance boosting. `getIndexKeyOffset` will call intervalTree's sumUtil
+   * function. this method may cause performance issue.
+   * @param startIndex
+   * @param endIndex
+   * @param exclusive
+   * @returns
+   */
+  getIndexRangeOffsetMap(
+    startIndex: number,
+    endIndex: number,
+    exclusive?: boolean
+  ) {
+    const indexToOffsetMap = {};
+    let startOffset = this.getIndexKeyOffset(startIndex, exclusive);
+    for (let index = startIndex; index <= endIndex; index++) {
+      indexToOffsetMap[index] = startOffset;
+      const item = this._data[index];
+      const itemMeta = this.getItemMeta(item, index);
+      startOffset +=
+        (itemMeta?.getLayout()?.height || 0) +
+        (itemMeta?.getSeparatorLength() || 0);
+    }
+    return indexToOffsetMap;
   }
 
   hydrateSpaceStateToken(
@@ -874,17 +900,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     position: SpaceStateTokenPosition
   ) {
     const itemMeta = this.getItemMeta(item, index);
-    if (!itemMeta) return;
-    const currentIndex = itemMeta.getIndexInfo().index;
     const lastTokenIndex = spaceStateResult.length - 1;
     const lastToken = spaceStateResult[lastTokenIndex];
     const itemKey = itemMeta.getKey();
     const itemLayout = itemMeta.getLayout();
     const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
-    const isSpace =
-      !isSticky &&
-      position !== 'buffered' &&
-      this.persistanceIndices.indexOf(currentIndex) === -1;
+    const isReserved = this.persistanceIndices.indexOf(index) !== -1;
+    const isSpace = !isSticky && position !== 'buffered' && !isReserved;
     const itemLength =
       (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
@@ -894,6 +916,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         ...lastToken,
         item: null,
         key,
+        isReserved,
         length: lastToken.length + itemLength,
       };
     } else {
@@ -902,6 +925,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         length: itemLength,
         isSpace,
         isSticky,
+        isReserved,
         item,
         position,
       });
@@ -910,6 +934,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getPosition(rowIndex: number, startIndex: number, endIndex: number) {
+    // 初始化的item不参与absolute替换
+    if (rowIndex < this.initialNumToRender) return null;
     let position = this._bufferSet.getValuePosition(rowIndex);
 
     if (
@@ -946,103 +972,93 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // const originalPositionSize = this._bufferSet.getSize();
 
     const recycleEnabled = this._recycleEnabled();
+    const recycleStateResult = [];
+    let spaceStateResult = [];
 
-    if (visibleEndIndex >= 0) {
-      for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+    // 只有当recycleEnabled为true的时候，才进行位置替换
+
+    if (recycleEnabled) {
+      if (visibleEndIndex >= 0) {
+        for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
+          const position = this.getPosition(
+            index,
+            visibleStartIndex,
+            visibleEndIndex
+          );
+          if (position !== null) targetIndices[position] = index;
+        }
+      }
+
+      const visibleSize = Math.max(visibleEndIndex - visibleStartIndex + 1, 0);
+      const beforeSize = Math.floor((this.recycleThreshold - visibleSize) / 2);
+      const afterSize = this.recycleThreshold - visibleSize - beforeSize;
+
+      for (
+        let index = visibleStartIndex, size = beforeSize;
+        size > 0 && index >= 0;
+        size--, index--
+      ) {
         const position = this.getPosition(
           index,
-          visibleStartIndex,
-          visibleEndIndex
+          bufferedStartIndex,
+          visibleStartIndex
         );
         if (position !== null) targetIndices[position] = index;
       }
-    }
 
-    const visibleSize = Math.max(visibleEndIndex - visibleStartIndex + 1, 0);
-    const beforeSize = Math.floor((this.recycleThreshold - visibleSize) / 2);
-    const afterSize = this.recycleThreshold - visibleSize - beforeSize;
-
-    for (
-      let index = visibleStartIndex, size = beforeSize;
-      size > 0 && index >= 0;
-      size--, index--
-    ) {
-      const position = this.getPosition(
-        index,
-        bufferedStartIndex,
-        visibleStartIndex
-      );
-      if (position !== null) targetIndices[position] = index;
-    }
-
-    for (
-      let index = visibleEndIndex + 1, size = afterSize;
-      size > 0 && index <= bufferedEndIndex;
-      size--, index++
-    ) {
-      const position = this.getPosition(
-        index,
-        visibleEndIndex + 1,
-        bufferedEndIndex
-      );
-      if (position !== null) targetIndices[position] = index;
-    }
-
-    const recycleStateResult = [];
-
-    if (recycleEnabled) {
-      const indexToOffsetMap = {};
-      const minValue = this._bufferSet.getMinValue();
-      const maxValue = this._bufferSet.getMaxValue();
-      let startOffset = this.getIndexKeyOffset(minValue, true);
-
-      for (let index = minValue; index <= maxValue; index++) {
-        indexToOffsetMap[index] = startOffset;
-        const item = data[index];
-        const itemMeta = this.getItemMeta(item, index);
-        startOffset +=
-          (itemMeta?.getLayout()?.height || 0) +
-          (itemMeta?.getSeparatorLength() || 0);
+      for (
+        let index = visibleEndIndex + 1, size = afterSize;
+        size > 0 && index <= bufferedEndIndex;
+        size--, index++
+      ) {
+        const position = this.getPosition(
+          index,
+          visibleEndIndex + 1,
+          bufferedEndIndex
+        );
+        if (position !== null) targetIndices[position] = index;
       }
 
-      targetIndices.forEach((targetIndex, index) => {
-        const item = data[targetIndex];
-        if (!item) return;
+      if (recycleEnabled) {
+        const minValue = this._bufferSet.getMinValue();
+        const maxValue = this._bufferSet.getMaxValue();
+        const indexToOffsetMap = this.getIndexRangeOffsetMap(
+          minValue,
+          maxValue,
+          true
+        );
 
-        const itemKey = this.getItemKey(item, targetIndex);
-        const itemMeta = this.getItemMeta(item, targetIndex);
+        targetIndices.forEach((targetIndex, index) => {
+          const item = data[targetIndex];
+          if (!item) return;
 
-        const itemLayout = itemMeta?.getLayout();
-        const itemLength =
-          (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-        recycleStateResult.push({
-          key: `recycle_${index}`,
-          targetKey: itemKey,
-          length: itemLength,
-          isSpace: false,
-          isSticky: false,
-          item,
-          offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
-          position: 'buffered',
+          const itemKey = this.getItemKey(item, targetIndex);
+          const itemMeta = this.getItemMeta(item, targetIndex);
+
+          const itemLayout = itemMeta?.getLayout();
+          const itemLength =
+            (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+          const metaState = this._configTuple.resolveItemMetaState(itemMeta, {
+            dimensions: this,
+            scrollMetrics: this._scrollMetrics,
+          });
+          recycleStateResult.push({
+            key: `recycle_${index}`,
+            targetKey: itemKey,
+            length: itemLength,
+            isSpace: false,
+            isSticky: false,
+            item,
+            // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+            offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
+            position: 'buffered',
+            ...metaState,
+          });
         });
-      });
+      }
     }
 
-    let spaceStateResult = [];
-
-    // 滚动中
-    if (recycleEnabled) {
-      spaceStateResult.push({
-        key: `spacer_${this.getTotalLength()}`,
-        length: this.getTotalLength(),
-        isSpace: true,
-        isSticky: false,
-        item: null,
-        position: 'buffered',
-      });
-    } else {
-      spaceStateResult = this.resolveSpaceState(state);
-    }
+    spaceStateResult = this.resolveRecycleSpaceState(state);
 
     const stateResult = {
       recycleState: recycleStateResult,
@@ -1052,30 +1068,215 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return stateResult;
   }
 
-  resolveSpaceState(state: ListState<ItemT>) {
+  /**
+   *
+   * @param startIndex included
+   * @param endIndex exclusive
+   */
+  resolveToken(startIndex: number, endIndex: number) {
+    if (startIndex === endIndex) return [];
+    const tokens = [
+      {
+        startIndex,
+        endIndex: startIndex + 1,
+        isSticky: false,
+        isReserved: false,
+        isSpace: true,
+      },
+    ];
+
+    this.reservedIndices.forEach((index) => {
+      const lastToken = tokens[tokens.length - 1];
+      if (isClamped(startIndex, index, endIndex - 1)) {
+        const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
+        const isReserved = this.persistanceIndices.indexOf(index) !== -1;
+        if (lastToken.startIndex === index) {
+          lastToken.isSticky = isSticky;
+          lastToken.isReserved = isReserved;
+          if (index + 1 !== endIndex) {
+            tokens.push({
+              startIndex: index + 1,
+              endIndex: index + 2,
+              isSticky: false,
+              isReserved: false,
+              isSpace: true,
+            });
+          }
+        } else {
+          lastToken.endIndex = index;
+          tokens.push({
+            startIndex: index,
+            endIndex: index + 1,
+            isSticky,
+            isReserved,
+            isSpace: !isSticky && !isReserved,
+          });
+          if (index + 1 !== endIndex) {
+            tokens.push({
+              startIndex: index + 1,
+              endIndex: index + 2,
+              isSticky: false,
+              isReserved: false,
+              isSpace: true,
+            });
+          }
+        }
+      }
+    });
+
+    const lastToken = tokens[tokens.length - 1];
+    if (lastToken.endIndex !== endIndex) lastToken.endIndex = endIndex;
+
+    return tokens;
+  }
+
+  resolveRecycleSpaceState(state: ListState<ItemT>) {
     const { data, bufferedEndIndex, bufferedStartIndex } = state;
-    const afterStartIndex = bufferedEndIndex + 1;
-    const beforeData = data.slice(0, bufferedStartIndex);
-    const afterData = data.slice(afterStartIndex);
-    const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
+    const nextStart =
+      bufferedStartIndex >= this.initialNumToRender
+        ? this.initialNumToRender
+        : bufferedStartIndex;
+    const nextEnd =
+      bufferedStartIndex >= this.initialNumToRender
+        ? this.initialNumToRender
+        : bufferedEndIndex + 1;
 
-    const spaceStateResult = [] as Array<SpaceStateToken<ItemT>>;
+    const remainingData = data.slice(nextStart, nextEnd);
+    // const spaceStateResult = [] as Array<SpaceStateToken<ItemT>>;
+    const beforeTokens = this.resolveToken(0, nextStart);
 
-    beforeData.forEach((item, index) =>
-      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'before')
-    );
+    const spaceState = [];
+
+    beforeTokens.forEach((token) => {
+      const { isSticky, isReserved, startIndex, endIndex } = token;
+      if (isSticky || isReserved) {
+        spaceState.push({
+          item: data[startIndex],
+          isSpace: false,
+          isSticky,
+          length: this.getIndexItemLength(startIndex),
+          isReserved,
+        });
+      } else {
+        const startIndexOffset = this.getIndexKeyOffset(startIndex);
+        const endIndexOffset = this.getIndexKeyOffset(endIndex);
+        spaceState.push({
+          isSpace: true,
+          length: endIndexOffset - startIndexOffset,
+        });
+      }
+    });
 
     remainingData.forEach((item, _index) => {
       const index = bufferedStartIndex + _index;
-      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'buffered');
+      this.hydrateSpaceStateToken(spaceState, item, index, 'buffered');
     });
 
-    afterData.forEach((item, _index) => {
-      const index = afterStartIndex + _index;
-      this.hydrateSpaceStateToken(spaceStateResult, item, index, 'after');
+    const afterTokens = this.resolveToken(nextEnd, data.length);
+
+    afterTokens.forEach((token) => {
+      const { isSticky, isReserved, startIndex, endIndex } = token;
+      if (isSticky || isReserved) {
+        spaceState.push({
+          item: data[startIndex],
+          isSpace: false,
+          isSticky,
+          isReserved,
+          length: this.getIndexItemLength(startIndex),
+        });
+      } else {
+        const startIndexOffset = this.getIndexKeyOffset(startIndex);
+        const endIndexOffset = this.getIndexKeyOffset(endIndex);
+        spaceState.push({
+          isSpace: true,
+          length: endIndexOffset - startIndexOffset,
+        });
+      }
     });
 
-    return spaceStateResult;
+    return spaceState;
+  }
+
+  resolveSpaceState(state: ListState<ItemT>) {
+    const { data, bufferedEndIndex, bufferedStartIndex } = state;
+    const nextStart = bufferedStartIndex;
+    const nextEnd = bufferedEndIndex + 1;
+    const remainingData = data.slice(nextStart, nextEnd);
+    const beforeTokens = this.resolveToken(0, nextStart);
+    const spaceState = [];
+
+    beforeTokens.forEach((token) => {
+      const { isSticky, isReserved, startIndex, endIndex } = token;
+      if (isSticky || isReserved) {
+        spaceState.push({
+          item: data[startIndex],
+          isSpace: false,
+          isSticky,
+          length: this.getIndexItemLength(startIndex),
+          isReserved,
+        });
+      } else {
+        const startIndexOffset = this.getIndexKeyOffset(startIndex);
+        const endIndexOffset = this.getIndexKeyOffset(endIndex);
+        spaceState.push({
+          isSpace: true,
+          length: endIndexOffset - startIndexOffset,
+        });
+      }
+    });
+
+    remainingData.forEach((item, _index) => {
+      const index = bufferedStartIndex + _index;
+      this.hydrateSpaceStateToken(spaceState, item, index, 'buffered');
+    });
+
+    const afterTokens = this.resolveToken(nextEnd, data.length);
+
+    afterTokens.forEach((token) => {
+      const { isSticky, isReserved, startIndex, endIndex } = token;
+      if (isSticky || isReserved) {
+        spaceState.push({
+          item: data[startIndex],
+          isSpace: false,
+          isSticky,
+          isReserved,
+          length: this.getIndexItemLength(startIndex),
+        });
+      } else {
+        const startIndexOffset = this.getIndexKeyOffset(startIndex);
+        const endIndexOffset = this.getIndexKeyOffset(endIndex);
+        spaceState.push({
+          isSpace: true,
+          length: endIndexOffset - startIndexOffset,
+        });
+      }
+    });
+
+    return spaceState;
+
+    // const { data, bufferedEndIndex, bufferedStartIndex } = state;
+    // const afterStartIndex = bufferedEndIndex + 1;
+    // const beforeData = data.slice(0, bufferedStartIndex);
+    // const afterData = data.slice(afterStartIndex);
+    // const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
+
+    // const spaceStateResult = [] as Array<SpaceStateToken<ItemT>>;
+
+    // beforeData.forEach((item, index) =>
+    //   this.hydrateSpaceStateToken(spaceStateResult, item, index, 'before')
+    // );
+
+    // remainingData.forEach((item, _index) => {
+    //   const index = bufferedStartIndex + _index;
+    //   this.hydrateSpaceStateToken(spaceStateResult, item, index, 'buffered');
+    // });
+
+    // afterData.forEach((item, _index) => {
+    //   const index = afterStartIndex + _index;
+    //   this.hydrateSpaceStateToken(spaceStateResult, item, index, 'after');
+    // });
+
+    // return spaceStateResult;
   }
 
   updateState(
@@ -1116,49 +1317,49 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._state = state;
       this._offsetTriggerCachedState = scrollMetrics.offset;
 
-      if (performItemsMetaChange) {
-        // _recycleEnabled()它的时机会比resolveRecycleState要早，
-        // 所以这里面先确保recycle state有东西，要不然的话，itemMeta的state（viewable & imageViewable）
-        // 会出现bug
-        if (
-          this._recycleEnabled() &&
-          (
-            this._stateResult as {
-              recycleState: Array<SpaceStateToken<ItemT>>;
-            }
-          ).recycleState.length
-        ) {
-          const bufferedItemsMeta = (
-            this._stateResult as {
-              recycleState: Array<SpaceStateToken<ItemT>>;
-            }
-          ).recycleState
-            // @ts-ignore
-            .map((item) => this.getKeyMeta(item.targetKey))
-            .filter((v) => v);
+      // if (performItemsMetaChange) {
+      //   // _recycleEnabled()它的时机会比resolveRecycleState要早，
+      //   // 所以这里面先确保recycle state有东西，要不然的话，itemMeta的state（viewable & imageViewable）
+      //   // 会出现bug
+      //   if (
+      //     this._recycleEnabled() &&
+      //     (
+      //       this._stateResult as {
+      //         recycleState: Array<SpaceStateToken<ItemT>>;
+      //       }
+      //     ).recycleState.length
+      //   ) {
+      //     const bufferedItemsMeta = (
+      //       this._stateResult as {
+      //         recycleState: Array<SpaceStateToken<ItemT>>;
+      //       }
+      //     ).recycleState
+      //       // @ts-ignore
+      //       .map((item) => this.getKeyMeta(item.targetKey))
+      //       .filter((v) => v);
 
-          this._onUpdateItemsMetaChangeBatchinator.schedule(
-            bufferedItemsMeta,
-            scrollMetrics
-          );
-        } else {
-          const bufferedItems = this._data.slice(
-            nextBufferedStartIndex,
-            nextBufferedEndIndex + 1
-          );
+      //     this._onUpdateItemsMetaChangeBatchinator.schedule(
+      //       bufferedItemsMeta,
+      //       scrollMetrics
+      //     );
+      //   } else {
+      //     const bufferedItems = this._data.slice(
+      //       nextBufferedStartIndex,
+      //       nextBufferedEndIndex + 1
+      //     );
 
-          const bufferedItemsMeta = bufferedItems
-            .map((item, index) =>
-              this.getItemMeta(item, nextBufferedStartIndex + index)
-            )
-            .filter((v) => v);
+      //     const bufferedItemsMeta = bufferedItems
+      //       .map((item, index) =>
+      //         this.getItemMeta(item, nextBufferedStartIndex + index)
+      //       )
+      //       .filter((v) => v);
 
-          this._onUpdateItemsMetaChangeBatchinator.schedule(
-            bufferedItemsMeta,
-            scrollMetrics
-          );
-        }
-      }
+      //     this._onUpdateItemsMetaChangeBatchinator.schedule(
+      //       bufferedItemsMeta,
+      //       scrollMetrics
+      //     );
+      //   }
+      // }
     }
   }
 

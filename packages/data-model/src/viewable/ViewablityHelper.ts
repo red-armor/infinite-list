@@ -1,31 +1,29 @@
 import resolveChanged from '@x-oasis/resolve-changed';
 import capitalize from '@x-oasis/capitalize';
-import SelectValue, {
-  selectHorizontalValue,
-  selectVerticalValue,
-} from '@x-oasis/select-value';
-
-import BaseDimensions from '../BaseDimensions';
-import ItemMeta from '../ItemMeta';
+import ViewabilityItemMeta from './ViewabilityItemMeta';
 import { removeItemsKeyword } from '../common';
 import {
   ScrollMetrics,
+  ViewabilityScrollMetrics,
   ViewAreaModeConfig,
   ViewabilityConfig,
-  ViewabilityConfigTuple,
+  OnViewableItemsChanged,
+  NormalizedViewablityConfig,
+  ViewabilityConfigCallbackPair,
   VisiblePercentModeConfig,
 } from '../types';
-import { isItemMetaViewable } from './viewabilityUtils';
+import { isItemViewable } from './viewabilityUtils';
 
 const createIntervalTreeItemChangedToken = (opts: {
-  helper: ItemMeta;
+  helper: ViewabilityItemMeta;
   falsy?: boolean;
   propsKey: string;
 }) => {
   const { helper, falsy, propsKey } = opts;
-  const helperMeta = helper?.getMetaOnViewableItemsChanged
-    ? helper.getMetaOnViewableItemsChanged() || {}
-    : {};
+  const helperMeta = {};
+  // const helperMeta = helper?.getMetaOnViewableItemsChanged
+  //   ? helper.getMetaOnViewableItemsChanged() || {}
+  //   : {};
   return {
     helper,
     key: helper.getKey(),
@@ -35,11 +33,11 @@ const createIntervalTreeItemChangedToken = (opts: {
 };
 
 const createBasicItemChangedToken = (opts: {
-  helper: ItemMeta;
+  helper: ViewabilityItemMeta;
   falsy?: boolean;
   propsKey: string;
 }): {
-  helper: ItemMeta;
+  helper: ViewabilityItemMeta;
   key: string;
 } => {
   const { helper, falsy, propsKey } = opts;
@@ -51,7 +49,7 @@ const createBasicItemChangedToken = (opts: {
 };
 
 const createChangedToken = (opts: {
-  helper: ItemMeta;
+  helper: ViewabilityItemMeta;
   falsy?: boolean;
   propsKey: string;
   isListItem?: boolean;
@@ -62,90 +60,189 @@ const createChangedToken = (opts: {
 };
 
 class ViewablityHelper {
-  readonly selectValue: SelectValue;
-  readonly tuple: ViewabilityConfigTuple;
   readonly isListItem: boolean;
-  readonly horizontal: boolean;
+  private _configName: string;
+  private _changed: Array<ViewabilityItemMeta>;
+  private _config: NormalizedViewablityConfig;
+  private _callback: OnViewableItemsChanged;
+  readonly _pair: ViewabilityConfigCallbackPair;
 
   constructor(props: {
-    horizontal: boolean;
     isListItem: boolean;
-    tuple: ViewabilityConfigTuple;
+    pair: ViewabilityConfigCallbackPair;
   }) {
-    const { tuple, isListItem, horizontal } = props;
+    const { pair, isListItem } = props;
 
-    this.tuple = tuple;
-    this.horizontal = !!horizontal;
-    this.selectValue = horizontal ? selectHorizontalValue : selectVerticalValue;
+    this._pair = pair;
+    this._configName = pair.viewabilityConfig.name;
     this.isListItem = isListItem;
+
+    this._config = this.normalizeTupleConfig(this._pair.viewabilityConfig);
+    this._callback = this._pair.onViewableItemsChanged;
   }
 
-  onItemsMetaChange(
-    itemsMeta: Array<ItemMeta>,
-    configKey: string,
-    tupleConfig: ViewabilityConfig,
-    options: {
-      dimensions: BaseDimensions;
-      scrollMetrics: ScrollMetrics;
-    }
-  ) {
-    const { scrollMetrics } = options;
+  /**
+   * Return state for rendering. It could be { isViewable: true, isImageViewable: false, ...}
+   */
+  get defaultStateViewToken() {
+    return {
+      [this._configName]: false,
+    };
+  }
 
+  get configName() {
+    return this._configName;
+  }
+
+  /**
+   * View Token for `onItemsChanged` callback
+   */
+  createChangedViewToken() {}
+
+  resolveChangedViewTokenCallbackInfo() {}
+
+  /**
+   *
+   * @param tupleConfig
+   * @returns
+   *   - viewAreaMode: if true then it will compare with viewport
+   *   - viewablePercentThreshold: It's a merged value
+   */
+  normalizeTupleConfig(tupleConfig: ViewabilityConfig): {
+    viewport: number;
+    exclusive: boolean;
+    viewAreaMode: boolean;
+    viewablePercentThreshold: number;
+  } {
     const viewport = tupleConfig.viewport || 0;
-    const exclusive = tupleConfig.exclusive;
+    const exclusive = !!tupleConfig.exclusive;
     const viewAreaCoveragePercentThreshold =
       (tupleConfig as ViewAreaModeConfig).viewAreaCoveragePercentThreshold || 0;
     const itemVisiblePercentThreshold =
       (tupleConfig as VisiblePercentModeConfig).itemVisiblePercentThreshold ||
       0;
+    return {
+      ...tupleConfig,
+      viewport,
+      exclusive,
+      viewAreaMode: !!viewAreaCoveragePercentThreshold,
+      viewablePercentThreshold:
+        viewAreaCoveragePercentThreshold || itemVisiblePercentThreshold,
+    };
+  }
 
-    let nextData = itemsMeta;
+  checkItemViewability(
+    viewabilityItemMeta: ViewabilityItemMeta,
+    scrollMetrics: ViewabilityScrollMetrics
+  ) {
+    const { viewport, viewAreaMode, viewablePercentThreshold } = this._config;
+    return isItemViewable({
+      viewport,
+      viewAreaMode,
+      viewabilityItemMeta,
+      viewablePercentThreshold,
+      viewabilityScrollMetrics: scrollMetrics,
+    });
+  }
 
-    nextData = nextData.filter((itemMeta) =>
-      isItemMetaViewable({
-        itemMeta,
-        viewport,
-        scrollMetrics,
-        viewAreaMode: !!viewAreaCoveragePercentThreshold,
-        viewablePercentThreshold:
-          viewAreaCoveragePercentThreshold || itemVisiblePercentThreshold,
-      })
+  resolveViewableItems(
+    itemsMeta: Array<ViewabilityItemMeta>,
+    scrollMetrics: ViewabilityScrollMetrics
+  ) {
+    const { exclusive } = this._config;
+
+    let nextData = itemsMeta.filter((itemMeta) =>
+      this.checkItemViewability(itemMeta, scrollMetrics)
     );
 
     if (exclusive) nextData = nextData.slice(0, 1);
 
-    const { changed, callbackMap } = this.tuple;
-    const callbackKey = `on${capitalize(configKey)}Changed`;
-    const callback = callbackMap[callbackKey];
-    const propsKey = `is${capitalize(
-      removeItemsKeyword(configKey) || 'Viewable'
-    )}`;
+    return nextData;
+  }
 
-    const oldItems = changed[configKey] || [];
-    const newItems = nextData || [];
-    const { removed, added } = resolveChanged(oldItems, newItems);
+  // onUpdateTupleConfig(
+  //   configKey: string,
+  //   tupleConfig: ViewabilityConfig,
+  //   options: {
+  //     dimensions: BaseDimensions;
+  //     scrollMetrics: ScrollMetrics;
+  //   }
+  // ) {
+  //   const { scrollMetrics, dimensions } = options;
+  //   const {
+  //     offset: scrollOffset,
+  //     contentLength,
+  //     visibleLength: viewportLength,
+  //   } = scrollMetrics;
+  //   const length = dimensions.getContainerOffset();
 
+  //   let nextData = [] as Array<ViewabilityItemMeta>;
+
+  //   // 如果是一个List的话，那么它是基于container offset来算的
+  //   const startOffset = this.isListItem ? length : 0;
+  //   // const config = this.tuple.configMap[configKey];
+  //   const viewport = tupleConfig.viewport || 0;
+  //   const minOffset = Math.max(
+  //     0,
+  //     scrollOffset - startOffset - viewportLength * viewport
+  //   );
+  //   const maxOffset = Math.min(
+  //     scrollOffset - startOffset + viewportLength * (viewport + 1),
+  //     contentLength - startOffset
+  //   );
+
+  //   nextData = dimensions.computeIndexRangeMeta(minOffset, maxOffset);
+
+  //   nextData = this.resolveViewableItems(
+  //     nextData,
+  //     configKey,
+  //     tupleConfig,
+  //     options
+  //   );
+  //   return nextData;
+  // }
+
+  onUpdateItemsMeta(
+    itemsMeta: Array<ViewabilityItemMeta>,
+    scrollMetrics: ScrollMetrics
+  ) {
+    const nextViewableItems = this.resolveViewableItems(
+      itemsMeta,
+      scrollMetrics
+    );
+    this.mergeState(nextViewableItems);
+    this.performViewableItemsChangedCallback(nextViewableItems);
+  }
+
+  performViewableItemsChangedCallback(
+    nextViewableItems: Array<ViewabilityItemMeta> = []
+  ) {
     // 触发changed items callback；
-    if (typeof callback === 'function') {
-      const addedTokens = added.map((itemMeta) =>
-        createChangedToken({
-          helper: itemMeta,
-          falsy: true,
-          propsKey,
-          isListItem: this.isListItem,
-        })
-      );
-      const removedTokens = removed.map((itemMeta) =>
-        createChangedToken({
-          helper: itemMeta,
-          falsy: false,
-          propsKey,
-          isListItem: this.isListItem,
-        })
+    if (typeof this._callback === 'function') {
+      // viewable -> isViewable
+      const propsKey = `is${capitalize(
+        removeItemsKeyword(this._configName) || 'Viewable'
+      )}`;
+
+      const { removed, added } = resolveChanged(
+        this._changed,
+        nextViewableItems
       );
 
-      callback({
-        [configKey]: newItems.map((helper) =>
+      const [addedTokens, removedTokens] = [added, removed].map(
+        (entry, entryIndex) =>
+          entry.map((itemMeta) =>
+            createChangedToken({
+              helper: itemMeta,
+              falsy: !entryIndex,
+              propsKey,
+              isListItem: this.isListItem,
+            })
+          )
+      );
+
+      this._callback({
+        viewableItems: nextViewableItems.map((helper) =>
           createChangedToken({
             helper,
             falsy: true,
@@ -156,151 +253,59 @@ class ViewablityHelper {
         changed: [].concat(addedTokens, removedTokens),
       });
     }
-
-    return nextData;
+    this._changed = nextViewableItems;
   }
 
-  onUpdateTupleConfig(
-    configKey: string,
-    tupleConfig: ViewabilityConfig,
-    options: {
-      dimensions: BaseDimensions;
-      scrollMetrics: ScrollMetrics;
-    }
-  ) {
-    const { scrollMetrics, dimensions } = options;
-    const {
-      offset: scrollOffset,
-      contentLength,
-      visibleLength: viewportLength,
-    } = scrollMetrics;
-    const length = dimensions.getContainerOffset();
+  // onUpdateMetrics(options: {
+  //   dimensions: BaseDimensions;
+  //   scrollMetrics: ScrollMetrics;
+  // }) {
+  //   const nextChanged = Object.entries(this.tuple.configMap).reduce<{
+  //     [key: string]: Array<ViewabilityItemMeta>;
+  //   }>((result, current) => {
+  //     const [configKey, tupleConfig] = current;
+  //     const nextData = this.onUpdateTupleConfig(
+  //       configKey,
+  //       tupleConfig,
+  //       options
+  //     );
+  //     result[configKey] = nextData.slice();
+  //     return result;
+  //   }, {});
 
-    let nextData = [] as Array<ItemMeta>;
+  //   this.mergeState(nextChanged);
 
-    // 如果是一个List的话，那么它是基于container offset来算的
-    const startOffset = this.isListItem ? length : 0;
-    // const config = this.tuple.configMap[configKey];
-    const viewport = tupleConfig.viewport || 0;
-    const minOffset = Math.max(
-      0,
-      scrollOffset - startOffset - viewportLength * viewport
-    );
-    const maxOffset = Math.min(
-      scrollOffset - startOffset + viewportLength * (viewport + 1),
-      contentLength - startOffset
-    );
+  //   // tuple在处理都结束以后才进行更新
+  //   Object.keys(this.tuple.configMap).forEach((configKey) => {
+  //     const newItems = nextChanged[configKey];
+  //     this.tuple.changed[configKey] = newItems;
+  //   });
+  // }
 
-    nextData = dimensions.computeIndexRangeMeta(minOffset, maxOffset);
-
-    nextData = this.onItemsMetaChange(
-      nextData,
-      configKey,
-      tupleConfig,
-      options
-    );
-    return nextData;
-  }
-
-  onUpdateItemsMeta(
-    itemsMeta: Array<ItemMeta>,
-    options: {
-      dimensions: BaseDimensions;
-      scrollMetrics: ScrollMetrics;
-    }
-  ) {
-    const nextChanged = Object.entries(this.tuple.configMap).reduce<{
-      [key: string]: Array<ItemMeta>;
-    }>((result, current) => {
-      const [configKey, tupleConfig] = current;
-      const nextData = this.onItemsMetaChange(
-        itemsMeta,
-        configKey,
-        tupleConfig,
-        options
-      );
-      result[configKey] = nextData.slice();
-      return result;
-    }, {});
-
-    this.mergeState(nextChanged);
-
-    // tuple在处理都结束以后才进行更新
-    Object.keys(this.tuple.configMap).forEach((configKey) => {
-      const newItems = nextChanged[configKey];
-      this.tuple.changed[configKey] = newItems;
-    });
-  }
-
-  onUpdateMetrics(options: {
-    dimensions: BaseDimensions;
-    scrollMetrics: ScrollMetrics;
-  }) {
-    const nextChanged = Object.entries(this.tuple.configMap).reduce<{
-      [key: string]: Array<ItemMeta>;
-    }>((result, current) => {
-      const [configKey, tupleConfig] = current;
-      const nextData = this.onUpdateTupleConfig(
-        configKey,
-        tupleConfig,
-        options
-      );
-      result[configKey] = nextData.slice();
-      return result;
-    }, {});
-
-    this.mergeState(nextChanged);
-
-    // tuple在处理都结束以后才进行更新
-    Object.keys(this.tuple.configMap).forEach((configKey) => {
-      const newItems = nextChanged[configKey];
-      this.tuple.changed[configKey] = newItems;
-    });
-  }
-
-  mergeState(nextChanged: { [key: string]: Array<ItemMeta> }) {
+  mergeState(nextViewableItems: Array<ViewabilityItemMeta>) {
     const itemMetaStateMap = new Map<
-      ItemMeta,
+      ViewabilityItemMeta,
       {
         [key: string]: boolean;
       }
     >();
 
-    const configKeys = Object.keys(this.tuple.configMap);
+    this._changed.forEach((itemMeta) => {
+      if (!itemMetaStateMap.has(itemMeta)) {
+        itemMetaStateMap.set(itemMeta, { ...this.defaultStateViewToken });
+      }
+    });
 
-    const defaultToken = configKeys.reduce((acc, cur) => {
-      const nextCur = removeItemsKeyword(cur);
-      acc[nextCur] = false;
-      return acc;
-    }, {});
-
-    configKeys.forEach((configKey) => {
-      const { changed } = this.tuple;
-      const items = changed[configKey] || [];
-      items.forEach((itemMeta) => {
-        if (!itemMetaStateMap.has(itemMeta)) {
-          itemMetaStateMap.set(itemMeta, { ...defaultToken });
-        }
+    nextViewableItems.forEach((itemMeta) => {
+      itemMetaStateMap.set(itemMeta, {
+        ...(itemMetaStateMap.get(itemMeta) || {}),
+        [this._configName]: true,
       });
     });
 
-    configKeys.forEach((configKey) => {
-      const items = nextChanged[configKey];
-      items.forEach((itemMeta) => {
-        if (!itemMetaStateMap.has(itemMeta)) {
-          itemMetaStateMap.set(itemMeta, { ...defaultToken });
-        }
-        const nextConfigKey = removeItemsKeyword(configKey);
-        itemMetaStateMap.set(itemMeta, {
-          ...itemMetaStateMap.get(itemMeta),
-          [nextConfigKey]: true,
-        });
-      });
-    });
-
-    for (const [itemMeta, state] of itemMetaStateMap) {
-      itemMeta.setItemMetaState(state);
-    }
+    // for (const [itemMeta, state] of itemMetaStateMap) {
+    //   itemMeta.setItemMetaState(state);
+    // }
   }
 }
 
