@@ -1,6 +1,6 @@
 import ListDimensions from '../ListDimensions';
 import Batchinator from '@x-oasis/batchinator';
-import { KeysChangedType } from '../types';
+import { KeysChangedType, SpaceStateResult } from '../types';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { vi, describe, it, expect } from 'vitest';
 const buildData = (count: number) =>
@@ -123,7 +123,7 @@ describe('resolve space state', () => {
       contentLength: 10000,
     });
 
-    const stateResult = listDimensions.stateResult;
+    const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
 
     expect(stateResult.length).toBe(39);
     expect(stateResult[0].length).toBe(100);
@@ -162,12 +162,18 @@ describe('resolve space state', () => {
       contentLength: 10000,
     });
 
-    expect(listDimensions.stateResult.length).toBe(39);
-    expect(listDimensions.stateResult[0].length).toBe(100);
-    expect(listDimensions.stateResult[0].isSpace).toBe(false);
-    expect(listDimensions.stateResult[0].isSticky).toBe(true);
-    expect(listDimensions.stateResult[38].length).toBe(6200);
-    expect(listDimensions.stateResult[38].isSpace).toBe(true);
+    let stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(39);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(false);
+    expect(stateResult[0].isSticky).toBe(true);
+    expect(stateResult[0].isReserved).toBe(false);
+    expect(stateResult[10].isSpace).toBe(false);
+    expect(stateResult[10].isSticky).toBe(true);
+    expect(stateResult[10].isReserved).toBe(false);
+    expect(stateResult[38].length).toBe(6200);
+    expect(stateResult[38].isSpace).toBe(true);
 
     // @ts-ignore
     listDimensions.updateScrollMetrics({
@@ -176,12 +182,16 @@ describe('resolve space state', () => {
       contentLength: 10000,
     });
 
-    expect(listDimensions.stateResult.length).toBe(51);
-    expect(listDimensions.stateResult[0].length).toBe(100);
-    expect(listDimensions.stateResult[0].isSpace).toBe(false);
-    expect(listDimensions.stateResult[0].isSticky).toBe(true);
-    expect(listDimensions.stateResult[50].length).toBe(4200);
-    expect(listDimensions.stateResult[50].isSpace).toBe(true);
+    stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(51);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(false);
+    expect(stateResult[0].isSticky).toBe(true);
+    expect(stateResult[1].length).toBe(900);
+    expect(stateResult[1].isSpace).toBe(true);
+    expect(stateResult[50].length).toBe(4200);
+    expect(stateResult[50].isSpace).toBe(true);
   });
 
   it('memoize state result if input is equal', () => {
@@ -237,11 +247,28 @@ describe('resolve space state', () => {
       contentLength: 10000,
     });
 
-    const stateResult = listDimensions.stateResult;
+    let stateResult = listDimensions.stateResult as SpaceStateResult<any>;
 
     expect(stateResult.length).toBe(39);
     expect(stateResult[0].length).toBe(100);
     expect(stateResult[0].isSpace).toBe(false);
+    expect(stateResult[0].isSticky).toBe(false);
+    expect(stateResult[0].isReserved).toBe(false);
+
+    expect(stateResult[1].length).toBe(100);
+    expect(stateResult[1].isSpace).toBe(false);
+    expect(stateResult[1].isSticky).toBe(false);
+    expect(stateResult[1].isReserved).toBe(true);
+
+    expect(stateResult[2].length).toBe(100);
+    expect(stateResult[2].isSpace).toBe(false);
+    expect(stateResult[2].isSticky).toBe(false);
+    expect(stateResult[2].isReserved).toBe(true);
+
+    expect(stateResult[10].isSpace).toBe(false);
+    expect(stateResult[10].isSticky).toBe(false);
+    expect(stateResult[10].isReserved).toBe(true);
+
     expect(stateResult[38].length).toBe(6200);
     expect(stateResult[38].isSpace).toBe(true);
 
@@ -253,5 +280,172 @@ describe('resolve space state', () => {
     });
 
     expect(stateResult).toBe(listDimensions.stateResult);
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 3009,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(53);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(true);
+    expect(stateResult[1].isSpace).toBe(false);
+    expect(stateResult[2].isSpace).toBe(false);
+    expect(stateResult[3].isSpace).toBe(true);
+    expect(stateResult[3].length).toBe(700);
+    expect(stateResult[4].isSpace).toBe(false);
+    expect(stateResult[4].isReserved).toBe(true);
+    expect(stateResult[14].isSpace).toBe(false);
+    expect(stateResult[14].isReserved).toBe(true);
+    expect(stateResult[52].length).toBe(4200);
+    expect(stateResult[52].isSpace).toBe(true);
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 5009,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(56);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(true);
+    expect(stateResult[1].isSpace).toBe(false);
+    expect(stateResult[1].isReserved).toBe(true);
+    expect(stateResult[2].isSpace).toBe(false);
+    expect(stateResult[2].isReserved).toBe(true);
+    expect(stateResult[3].isSpace).toBe(true);
+    expect(stateResult[3].length).toBe(700);
+    expect(stateResult[4].isSpace).toBe(false);
+    expect(stateResult[4].isReserved).toBe(true);
+    expect(stateResult[5].isSpace).toBe(true);
+    expect(stateResult[5].length).toBe(900);
+    expect(stateResult[6].isSpace).toBe(false);
+    expect(stateResult[6].isReserved).toBe(true);
+    expect(stateResult[6].length).toBe(100);
+    expect(stateResult[7].isSpace).toBe(true);
+    expect(stateResult[7].length).toBe(1000);
+    expect(stateResult[8].isSpace).toBe(false);
+    expect(stateResult[8].isReserved).toBe(false);
+    expect(stateResult[55].length).toBe(2200);
+    expect(stateResult[55].isSpace).toBe(true);
+  });
+
+  it('persistanceIndices and stickyIndices', () => {
+    const data = buildData(100);
+
+    const listDimensions = new ListDimensions({
+      id: 'list_1',
+      data,
+      stickyHeaderIndices: [0, 1],
+      persistanceIndices: [1, 2, 10, 20],
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({
+        index,
+        length: 100,
+      }),
+    });
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 990,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    let stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(39);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(false);
+    expect(stateResult[0].isSticky).toBe(true);
+    expect(stateResult[0].isReserved).toBe(false);
+
+    expect(stateResult[1].length).toBe(100);
+    expect(stateResult[1].isSpace).toBe(false);
+    expect(stateResult[1].isSticky).toBe(true);
+    expect(stateResult[1].isReserved).toBe(true);
+
+    expect(stateResult[2].length).toBe(100);
+    expect(stateResult[2].isSpace).toBe(false);
+    expect(stateResult[2].isSticky).toBe(false);
+    expect(stateResult[2].isReserved).toBe(true);
+
+    expect(stateResult[10].isSpace).toBe(false);
+    expect(stateResult[10].isSticky).toBe(false);
+    expect(stateResult[10].isReserved).toBe(true);
+
+    expect(stateResult[38].length).toBe(6200);
+    expect(stateResult[38].isSpace).toBe(true);
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 995,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    expect(stateResult).toBe(listDimensions.stateResult);
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 3009,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(53);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(false);
+    expect(stateResult[1].isSpace).toBe(false);
+    expect(stateResult[2].isSpace).toBe(false);
+    expect(stateResult[3].isSpace).toBe(true);
+    expect(stateResult[3].length).toBe(700);
+    expect(stateResult[4].isSpace).toBe(false);
+    expect(stateResult[4].isReserved).toBe(true);
+    expect(stateResult[14].isSpace).toBe(false);
+    expect(stateResult[14].isReserved).toBe(true);
+    expect(stateResult[52].length).toBe(4200);
+    expect(stateResult[52].isSpace).toBe(true);
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 5009,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(56);
+    expect(stateResult[0].length).toBe(100);
+    expect(stateResult[0].isSpace).toBe(false);
+    expect(stateResult[1].isSpace).toBe(false);
+    expect(stateResult[1].isReserved).toBe(true);
+    expect(stateResult[2].isSpace).toBe(false);
+    expect(stateResult[2].isReserved).toBe(true);
+    expect(stateResult[3].isSpace).toBe(true);
+    expect(stateResult[3].length).toBe(700);
+    expect(stateResult[4].isSpace).toBe(false);
+    expect(stateResult[4].isReserved).toBe(true);
+    expect(stateResult[5].isSpace).toBe(true);
+    expect(stateResult[5].length).toBe(900);
+    expect(stateResult[6].isSpace).toBe(false);
+    expect(stateResult[6].isReserved).toBe(true);
+    expect(stateResult[6].length).toBe(100);
+    expect(stateResult[7].isSpace).toBe(true);
+    expect(stateResult[7].length).toBe(1000);
+    expect(stateResult[8].isSpace).toBe(false);
+    expect(stateResult[8].isReserved).toBe(false);
+    expect(stateResult[55].length).toBe(2200);
+    expect(stateResult[55].isSpace).toBe(true);
   });
 });

@@ -1,8 +1,7 @@
 import BaseLayout from './BaseLayout';
 import ItemMeta from './ItemMeta';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import { removeItemsKeyword } from './common';
-import ViewabilityConfigTuples from './configs/ViewabilityConfigTuples';
+import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import {
   BaseDimensionsProps,
   BoundInfo,
@@ -17,7 +16,7 @@ abstract class BaseDimensions extends BaseLayout {
   _keyToIndexMap: Map<string, number> = new Map();
   _indexKeys: Array<string> = [];
   _keyToMetaMap: Map<string, ItemMeta> = new Map();
-  _configTuples: ViewabilityConfigTuples;
+  _configTuple: ViewabilityConfigTuples;
 
   _onUpdateItemLayout?: Function;
   _onUpdateIntervalTree?: Function;
@@ -38,8 +37,7 @@ abstract class BaseDimensions extends BaseLayout {
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
     this._intervalTree = this.createIntervalTree();
-    this._configTuples = new ViewabilityConfigTuples({
-      horizontal: this.getHorizontal(),
+    this._configTuple = new ViewabilityConfigTuples({
       viewabilityConfig,
       onViewableItemsChanged,
       isListItem: isIntervalTreeItems,
@@ -239,22 +237,12 @@ abstract class BaseDimensions extends BaseLayout {
     return info;
   }
 
-  getConfigTuples() {
-    return this._configTuples;
+  getConfigTuple() {
+    return this._configTuple;
   }
 
   resolveConfigTuplesDefaultState(defaultValue?: boolean) {
-    const state = {};
-
-    this._configTuples.getTuples().forEach((tuple) => {
-      const { configMap } = tuple;
-      const keys = Object.keys(configMap);
-      keys.forEach((key) => {
-        const k = removeItemsKeyword(key);
-        state[k] = !!defaultValue;
-      });
-    });
-    return state;
+    return this._configTuple.getDefaultState(defaultValue);
   }
 
   abstract getIndexInfo(key: string): IndexInfo;
@@ -263,7 +251,7 @@ abstract class BaseDimensions extends BaseLayout {
     itemsMeta: Array<ItemMeta>,
     scrollMetrics: ScrollMetrics
   ) {
-    this._configTuples.getViewabilityHelpers().forEach((helper) => {
+    this._configTuple.getViewabilityHelpers().forEach((helper) => {
       helper.onUpdateItemsMeta(itemsMeta, {
         dimensions: this,
         scrollMetrics,

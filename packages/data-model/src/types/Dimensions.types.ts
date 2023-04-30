@@ -218,6 +218,7 @@ export type SpaceStateToken<ItemT> = {
   length: number;
   isSpace: boolean;
   isSticky: boolean;
+  isReserved: boolean;
   position: SpaceStateTokenPosition;
 };
 

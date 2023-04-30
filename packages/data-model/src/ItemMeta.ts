@@ -8,9 +8,10 @@ import {
   ItemMetaState,
   StateEventListener,
 } from './types';
-import noop from '@x-oasis/noop'
+import noop from '@x-oasis/noop';
+import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
-class ItemMeta {
+class ItemMeta extends ViewabilityItemMeta {
   private _isListItem: boolean;
   private _layout?: ItemLayout;
   private _separatorLength?: number;
@@ -19,7 +20,6 @@ class ItemMeta {
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
   readonly getMetaOnViewableItemsChanged?: any;
-  readonly _key: string;
   readonly _ownerId: string;
 
   constructor(props: {
@@ -34,6 +34,7 @@ class ItemMeta {
     state?: ItemMetaState;
     isInitialItem?: boolean;
   }) {
+    super(props);
     const {
       key,
       owner,
@@ -44,7 +45,6 @@ class ItemMeta {
       isListItem,
       isInitialItem = false,
     } = props;
-    this._key = key;
     this._owner = owner;
     this._setState = setState;
     this._layout = layout;

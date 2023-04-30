@@ -1,47 +1,38 @@
-import ItemMeta from '../ItemMeta';
+import ViewabilityItemMeta from '../viewable/ViewabilityItemMeta';
 
 export type CommonViewabilityConfig = {
+  name?: string;
   viewport?: number;
   minimumViewTime?: number;
   waitForInteraction?: boolean;
-  impression?: boolean;
 
   // 目前主要用在比如只希望有一个曝光出来；比如viewport中可以
   // 放置两个item的时候，而item两个都是
   exclusive?: boolean;
 };
 
-export type ViewabilityConfigTuple = {
-  configMap: {
-    [key: string]: ViewabilityConfig;
-  };
-  changed: {
-    [key: string]: Array<ItemMeta>;
-  };
-  callbackMap: {
-    [key: string]: Function;
-  };
-  primary: boolean;
+export type NormalizedViewablityConfig = {
+  exclusive: boolean;
+  viewport: number;
+  minimumViewTime?: number;
+  waitForInteraction?: boolean;
+  viewAreaMode: boolean;
+  viewablePercentThreshold: number;
 };
 
 export type ViewAreaModeConfig = {
-  viewAreaCoveragePercentThreshold: number;
+  viewAreaCoveragePercentThreshold?: number;
 } & CommonViewabilityConfig;
 
 export type VisiblePercentModeConfig = {
-  itemVisiblePercentThreshold: number;
+  itemVisiblePercentThreshold?: number;
 } & CommonViewabilityConfig;
 
 export type ViewabilityConfig = ViewAreaModeConfig | VisiblePercentModeConfig;
-export type ViewabilityConfigMap = {
-  [key: string]: ViewabilityConfig;
-};
 
 export type ViewabilityConfigCallbackPair = {
   viewabilityConfig?: ViewabilityConfig;
-  viewabilityConfigMap?: ViewabilityConfigMap;
   onViewableItemsChanged?: OnViewableItemsChanged;
-  primary?: boolean;
 };
 
 export type ViewabilityConfigCallbackPairs =
@@ -63,7 +54,24 @@ export type OnViewableItemsChanged =
   | ((info: OnViewableItemChangedInfo) => void)
   | null;
 
-export type ViewabilityHelperCallbackTuple = {
-  viewabilityConfig?: ViewabilityConfig;
-  onViewableItemsChanged: OnViewableItemsChanged;
+// export type ViewabilityItemMeta = {
+//   offset: number;
+//   length: number;
+// };
+export type ViewabilityScrollMetrics = {
+  offset: number;
+  visibleLength: number;
+};
+
+export type IsItemViewableOptions = {
+  viewport: number;
+  viewabilityItemMeta:
+    | ViewabilityItemMeta
+    | {
+        offset: number;
+        length: number;
+      };
+  viewabilityScrollMetrics: ViewabilityScrollMetrics;
+  viewAreaMode?: boolean;
+  viewablePercentThreshold?: number;
 };
