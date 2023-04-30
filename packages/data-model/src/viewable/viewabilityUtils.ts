@@ -2,6 +2,20 @@ import ItemMeta from '../ItemMeta';
 import SelectValue from '@x-oasis/select-value';
 import { ScrollEventMetrics, ScrollMetrics } from '../types';
 
+export type IsItemViewableOptions = {
+  viewport: number;
+  itemInfo: {
+    offset: number;
+    length: number;
+  };
+  scrollMetrics: {
+    offset: number;
+    visibleLength: number;
+  };
+  viewAreaMode?: boolean;
+  viewablePercentThreshold?: number;
+};
+
 export function resolveMeasureMetrics(
   scrollEventMetrics: ScrollEventMetrics,
   selectValue: SelectValue
@@ -17,25 +31,59 @@ export function resolveMeasureMetrics(
   };
 }
 
-export function isItemViewable(options: {
+export function isItemMetaViewable(options: {
   viewport: number;
   itemMeta: ItemMeta;
   scrollMetrics: ScrollMetrics;
-  viewAreaMode: boolean;
-  viewablePercentThreshold: number;
+  viewAreaMode?: boolean;
+  viewablePercentThreshold?: number;
 }) {
   const {
     itemMeta,
     viewport,
-    viewAreaMode,
+    viewAreaMode = false,
     scrollMetrics,
     viewablePercentThreshold,
   } = options;
-  const { offset: scrollOffset, visibleLength: viewportLength } = scrollMetrics;
-  if (!itemMeta) return false;
-  const itemOffset = itemMeta.getItemOffset();
-  const itemLength = itemMeta.getItemLength();
 
+  if (!itemMeta || !scrollMetrics) return false;
+
+  return isItemViewable({
+    itemInfo: {
+      offset: itemMeta.getItemOffset(),
+      length: itemMeta.getItemLength(),
+    },
+    viewport,
+    viewAreaMode,
+    scrollMetrics: {
+      offset: scrollMetrics.offset,
+      visibleLength: scrollMetrics.visibleLength,
+    },
+    viewablePercentThreshold,
+  });
+}
+
+/**
+ *
+ * @param options
+ *    - viewAreaMode false as default, which means it compares with self length.
+ *      if value is true, then compare with viewport length.
+ *
+ * @returns
+ */
+export function isItemViewable(options: IsItemViewableOptions) {
+  const {
+    itemInfo,
+    viewport: _viewport,
+    viewAreaMode = false,
+    scrollMetrics,
+    viewablePercentThreshold = 0,
+  } = options;
+  const { offset: scrollOffset, visibleLength: viewportLength } = scrollMetrics;
+  if (!itemInfo) return false;
+  const { offset: itemOffset, length: itemLength } = itemInfo;
+
+  const viewport = Math.max(_viewport, 0);
   const top = itemOffset - scrollOffset + viewport * viewportLength;
   const bottom = top + itemLength;
 
@@ -56,7 +104,7 @@ export function isItemViewable(options: {
  * @param props
  * @returns
  */
-export function _getPixelsVisible(props: {
+export function getPixelsVisible(props: {
   top: number;
   bottom: number;
   viewportHeight: number;
@@ -66,8 +114,7 @@ export function _getPixelsVisible(props: {
   return Math.max(0, visibleHeight);
 }
 
-// TODO 针对visible的单测，需要加起来。。
-export function _isEntirelyVisible(props: {
+export function isEntirelyVisible(props: {
   top: number;
   bottom: number;
   viewportHeight: number;
@@ -94,7 +141,7 @@ export function _isViewable(props: {
     viewablePercentThreshold,
   } = props;
   if (
-    _isEntirelyVisible({
+    isEntirelyVisible({
       top,
       bottom,
       viewportHeight,
@@ -102,13 +149,17 @@ export function _isViewable(props: {
   ) {
     return true;
   } else {
-    const pixels = _getPixelsVisible({
+    const pixels = getPixelsVisible({
       top,
       bottom,
       viewportHeight,
     });
+
     const percent =
       100 * (viewAreaMode ? pixels / viewportHeight : pixels / itemLength);
+
+    // viewablePercentThreshold is 0 on default, so item is viewable even if 1 pixel
+    // in viewport.
     return viewablePercentThreshold
       ? percent >= viewablePercentThreshold
       : percent > viewablePercentThreshold;
