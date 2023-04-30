@@ -15,7 +15,7 @@ import {
   ViewabilityConfigTuple,
   VisiblePercentModeConfig,
 } from '../types';
-import { isItemViewable } from './viewabilityUtils';
+import { isItemMetaViewable } from './viewabilityUtils';
 
 const createIntervalTreeItemChangedToken = (opts: {
   helper: ItemMeta;
@@ -102,7 +102,7 @@ class ViewablityHelper {
     let nextData = itemsMeta;
 
     nextData = nextData.filter((itemMeta) =>
-      isItemViewable({
+      isItemMetaViewable({
         itemMeta,
         viewport,
         scrollMetrics,
