@@ -84,8 +84,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _removeList: Function;
 
-  // private _onUpdateItemsMetaChangeBatchinator: Batchinator;
-
   private _initializeMode = false;
 
   private _onBatchLayoutFinished: () => boolean;
@@ -1038,10 +1036,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           const itemLayout = itemMeta?.getLayout();
           const itemLength =
             (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-          const metaState = this._configTuple.resolveItemMetaState(itemMeta, {
-            dimensions: this,
-            scrollMetrics: this._scrollMetrics,
-          });
+
+          const metaState = this._scrollMetrics
+            ? this._configTuple.resolveItemMetaState(
+                itemMeta,
+                this._scrollMetrics,
+                () => indexToOffsetMap[targetIndex]
+              )
+            : itemMeta.getState();
+
           recycleStateResult.push({
             key: `recycle_${index}`,
             targetKey: itemKey,
@@ -1142,7 +1145,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         : bufferedEndIndex + 1;
 
     const remainingData = data.slice(nextStart, nextEnd);
-    // const spaceStateResult = [] as Array<SpaceStateToken<ItemT>>;
     const beforeTokens = this.resolveToken(0, nextStart);
 
     const spaceState = [];
@@ -1161,7 +1163,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const startIndexOffset = this.getIndexKeyOffset(startIndex);
         const endIndexOffset = this.getIndexKeyOffset(endIndex);
         spaceState.push({
+          item: null,
           isSpace: true,
+          isSticky: false,
+          isReserved: false,
           length: endIndexOffset - startIndexOffset,
         });
       }
@@ -1188,7 +1193,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const startIndexOffset = this.getIndexKeyOffset(startIndex);
         const endIndexOffset = this.getIndexKeyOffset(endIndex);
         spaceState.push({
+          item: null,
           isSpace: true,
+          isSticky: false,
+          isReserved: false,
           length: endIndexOffset - startIndexOffset,
         });
       }
@@ -1220,14 +1228,46 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const endIndexOffset = this.getIndexKeyOffset(endIndex);
         spaceState.push({
           isSpace: true,
+          item: null,
+          isSticky: false,
+          isReserved: false,
           length: endIndexOffset - startIndexOffset,
         });
       }
     });
 
+    const indexToOffsetMap = this.getIndexRangeOffsetMap(
+      bufferedStartIndex,
+      bufferedEndIndex
+    );
+
     remainingData.forEach((item, _index) => {
       const index = bufferedStartIndex + _index;
-      this.hydrateSpaceStateToken(spaceState, item, index, 'buffered');
+      const itemMeta = this.getItemMeta(item, index);
+      const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
+      const isReserved = this.persistanceIndices.indexOf(index) !== -1;
+      const itemLayout = itemMeta?.getLayout();
+      const itemKey = itemMeta.getKey();
+      const itemLength =
+        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+      const viewabilityState = this._scrollMetrics
+        ? this._configTuple.resolveItemMetaState(
+            itemMeta,
+            this._scrollMetrics,
+            () => indexToOffsetMap[index]
+          )
+        : itemMeta.getState();
+
+      spaceState.push({
+        key: itemKey,
+        item,
+        isSpace: false,
+        isSticky,
+        isReserved,
+        length: itemLength,
+        ...viewabilityState,
+      });
     });
 
     const afterTokens = this.resolveToken(nextEnd, data.length);
@@ -1245,38 +1285,18 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       } else {
         const startIndexOffset = this.getIndexKeyOffset(startIndex);
         const endIndexOffset = this.getIndexKeyOffset(endIndex);
+
         spaceState.push({
+          item: null,
           isSpace: true,
+          isSticky: false,
+          isReserved: false,
           length: endIndexOffset - startIndexOffset,
         });
       }
     });
 
     return spaceState;
-
-    // const { data, bufferedEndIndex, bufferedStartIndex } = state;
-    // const afterStartIndex = bufferedEndIndex + 1;
-    // const beforeData = data.slice(0, bufferedStartIndex);
-    // const afterData = data.slice(afterStartIndex);
-    // const remainingData = data.slice(bufferedStartIndex, bufferedEndIndex + 1);
-
-    // const spaceStateResult = [] as Array<SpaceStateToken<ItemT>>;
-
-    // beforeData.forEach((item, index) =>
-    //   this.hydrateSpaceStateToken(spaceStateResult, item, index, 'before')
-    // );
-
-    // remainingData.forEach((item, _index) => {
-    //   const index = bufferedStartIndex + _index;
-    //   this.hydrateSpaceStateToken(spaceStateResult, item, index, 'buffered');
-    // });
-
-    // afterData.forEach((item, _index) => {
-    //   const index = afterStartIndex + _index;
-    //   this.hydrateSpaceStateToken(spaceStateResult, item, index, 'after');
-    // });
-
-    // return spaceStateResult;
   }
 
   updateState(

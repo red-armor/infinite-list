@@ -1,7 +1,5 @@
 import resolveChanged from '@x-oasis/resolve-changed';
-import capitalize from '@x-oasis/capitalize';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
-import { removeItemsKeyword } from '../common';
 import {
   ScrollMetrics,
   ViewabilityScrollMetrics,
@@ -50,13 +48,22 @@ const createBasicItemChangedToken = (opts: {
 
 const createChangedToken = (opts: {
   helper: ViewabilityItemMeta;
-  falsy?: boolean;
-  propsKey: string;
+  isViewable: boolean;
+  // falsy?: boolean;
+  // propsKey: string;
   isListItem?: boolean;
 }) => {
-  const { isListItem = false, ...rest } = opts;
-  if (isListItem) return createIntervalTreeItemChangedToken(rest);
-  return createBasicItemChangedToken(rest);
+  const { helper, isViewable } = opts;
+  return {
+    item: null,
+    key: helper.getKey(),
+    isViewable,
+    // TODO
+    index: null,
+  };
+  // const { isListItem = false, ...rest } = opts;
+  // if (isListItem) return createIntervalTreeItemChangedToken(rest);
+  // return createBasicItemChangedToken(rest);
 };
 
 class ViewablityHelper {
@@ -92,6 +99,14 @@ class ViewablityHelper {
 
   get configName() {
     return this._configName;
+  }
+
+  get config() {
+    return this._config;
+  }
+
+  get callback() {
+    return this._callback;
   }
 
   /**
@@ -133,11 +148,13 @@ class ViewablityHelper {
 
   checkItemViewability(
     viewabilityItemMeta: ViewabilityItemMeta,
-    scrollMetrics: ViewabilityScrollMetrics
+    scrollMetrics: ViewabilityScrollMetrics,
+    getItemOffset?: (itemMeta: ViewabilityItemMeta) => number
   ) {
     const { viewport, viewAreaMode, viewablePercentThreshold } = this._config;
     return isItemViewable({
       viewport,
+      getItemOffset,
       viewAreaMode,
       viewabilityItemMeta,
       viewablePercentThreshold,
@@ -219,11 +236,6 @@ class ViewablityHelper {
   ) {
     // 触发changed items callback；
     if (typeof this._callback === 'function') {
-      // viewable -> isViewable
-      const propsKey = `is${capitalize(
-        removeItemsKeyword(this._configName) || 'Viewable'
-      )}`;
-
       const { removed, added } = resolveChanged(
         this._changed,
         nextViewableItems
@@ -234,8 +246,9 @@ class ViewablityHelper {
           entry.map((itemMeta) =>
             createChangedToken({
               helper: itemMeta,
-              falsy: !entryIndex,
-              propsKey,
+              isViewable: !entryIndex,
+              // falsy: !entryIndex,
+              // propsKey: 'isViewable',
               isListItem: this.isListItem,
             })
           )
@@ -245,8 +258,9 @@ class ViewablityHelper {
         viewableItems: nextViewableItems.map((helper) =>
           createChangedToken({
             helper,
-            falsy: true,
-            propsKey,
+            isViewable: true,
+            // falsy: true,
+            // propsKey: 'isViewable',
             isListItem: this.isListItem,
           })
         ),

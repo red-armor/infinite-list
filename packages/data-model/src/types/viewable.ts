@@ -30,14 +30,6 @@ export type VisiblePercentModeConfig = {
 
 export type ViewabilityConfig = ViewAreaModeConfig | VisiblePercentModeConfig;
 
-export type ViewabilityConfigCallbackPair = {
-  viewabilityConfig?: ViewabilityConfig;
-  onViewableItemsChanged?: OnViewableItemsChanged;
-};
-
-export type ViewabilityConfigCallbackPairs =
-  Array<ViewabilityConfigCallbackPair>;
-
 export interface ViewToken {
   item: any;
   key: string;
@@ -49,10 +41,6 @@ export type OnViewableItemChangedInfo = {
   viewableItems: Array<ViewToken>;
   changed: Array<ViewToken>;
 };
-
-export type OnViewableItemsChanged =
-  | ((info: OnViewableItemChangedInfo) => void)
-  | null;
 
 // export type ViewabilityItemMeta = {
 //   offset: number;
@@ -74,4 +62,19 @@ export type IsItemViewableOptions = {
   viewabilityScrollMetrics: ViewabilityScrollMetrics;
   viewAreaMode?: boolean;
   viewablePercentThreshold?: number;
+
+  // for performance boost....
+  getItemOffset?: (itemMeta: ViewabilityItemMeta) => number;
 };
+
+export type OnViewableItemsChanged =
+  | ((info: OnViewableItemChangedInfo) => void)
+  | null;
+
+export type ViewabilityConfigCallbackPair = {
+  viewabilityConfig?: ViewabilityConfig;
+  onViewableItemsChanged?: OnViewableItemsChanged;
+};
+
+export type ViewabilityConfigCallbackPairs =
+  Array<ViewabilityConfigCallbackPair>;

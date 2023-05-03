@@ -1032,11 +1032,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     scrollMetrics: ScrollMetrics
   ) {
     this._configTuples.getViewabilityHelpers().forEach((helper) => {
-      helper.onUpdateItemsMeta(itemsMeta, {
-        // @ts-ignore
-        dimensions: this,
-        scrollMetrics,
-      });
+      helper.onUpdateItemsMeta(itemsMeta, scrollMetrics);
     });
   }
 

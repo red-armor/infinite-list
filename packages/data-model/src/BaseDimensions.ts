@@ -64,8 +64,14 @@ abstract class BaseDimensions extends BaseLayout {
   }
 
   getIndexKeyOffset(index: number, exclusive?: boolean) {
-    const key = this.getIndexKey(index);
-    return this.getKeyItemOffset(key, exclusive);
+    const listOffset = exclusive ? 0 : this.getContainerOffset();
+
+    if (typeof index === 'number') {
+      return listOffset + index >= this._intervalTree.getMaxUsefulLength()
+        ? this.intervalTree.getHeap()[1]
+        : this._intervalTree.sumUntil(index);
+    }
+    return 0;
   }
 
   /**
@@ -76,12 +82,8 @@ abstract class BaseDimensions extends BaseLayout {
    * @returns
    */
   getKeyItemOffset(key: string, exclusive?: boolean) {
-    const listOffset = exclusive ? 0 : this.getContainerOffset();
     const index = this.getKeyIndex(key);
-    if (typeof index === 'number') {
-      return listOffset + this._intervalTree.sumUntil(index);
-    }
-    return -1;
+    return this.getIndexKeyOffset(index, exclusive);
   }
 
   createIntervalTree() {
@@ -252,10 +254,7 @@ abstract class BaseDimensions extends BaseLayout {
     scrollMetrics: ScrollMetrics
   ) {
     this._configTuple.getViewabilityHelpers().forEach((helper) => {
-      helper.onUpdateItemsMeta(itemsMeta, {
-        dimensions: this,
-        scrollMetrics,
-      });
+      helper.onUpdateItemsMeta(itemsMeta, scrollMetrics);
     });
   }
 }

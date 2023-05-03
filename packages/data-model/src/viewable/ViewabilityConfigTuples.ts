@@ -1,11 +1,11 @@
+import uniqueArrayObject from '@x-oasis/unique-array-object';
 import {
-  ScrollMetrics,
   ViewabilityConfig,
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
+  ViewabilityScrollMetrics,
 } from '../types';
-import ItemMeta from '../ItemMeta';
-import BaseDimensions from '../BaseDimensions';
+import ViewabilityItemMeta from './ViewabilityItemMeta';
 import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 
@@ -15,7 +15,7 @@ class ViewabilityConfigTuples {
 
   constructor(props: {
     isListItem?: boolean;
-    viewabilityConfig: ViewabilityConfig;
+    viewabilityConfig?: ViewabilityConfig;
     viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
     onViewableItemsChanged?: OnViewableItemsChanged;
   }) {
@@ -34,9 +34,12 @@ class ViewabilityConfigTuples {
         viewabilityConfigCallbackPairs[0].viewabilityConfig.name = 'viewable';
       }
       viewabilityConfigCallbackPairs.forEach((pair) => {
-        const { viewabilityConfig, onViewableItemsChanged } = pair;
+        const {
+          viewabilityConfig = DEFAULT_VIEWABILITY_CONFIG,
+          onViewableItemsChanged,
+        } = pair;
 
-        if (!viewabilityConfig.name) {
+        if (!viewabilityConfig?.name) {
           console.warn(
             '[ViewabilityConfigTuples warning] `viewabilityConfig.name` is required'
           );
@@ -55,7 +58,19 @@ class ViewabilityConfigTuples {
           ...viewabilityConfig,
         },
       });
+    } else if (viewabilityConfig) {
+      this.tuple.push({
+        viewabilityConfig: {
+          name: 'viewable',
+          ...viewabilityConfig,
+        },
+      });
     }
+
+    this._tuple = uniqueArrayObject(
+      this._tuple,
+      (config) => config.viewabilityConfig.name
+    );
 
     this._tuple.forEach((pair) => {
       this.viewabilityHelpers.push(
@@ -87,15 +102,17 @@ class ViewabilityConfigTuples {
   }
 
   resolveItemMetaState(
-    itemMeta: ItemMeta,
-    options: {
-      dimensions: BaseDimensions;
-      scrollMetrics: ScrollMetrics;
-    }
+    itemMeta: ViewabilityItemMeta,
+    viewabilityScrollMetrics: ViewabilityScrollMetrics,
+    getItemOffset?: (itemMeta: ViewabilityItemMeta) => number
   ) {
-    const { scrollMetrics } = options;
+    if (!viewabilityScrollMetrics || !itemMeta) return {};
     return this.viewabilityHelpers.reduce((value, helper) => {
-      const falsy = helper.checkItemViewability(itemMeta, scrollMetrics);
+      const falsy = helper.checkItemViewability(
+        itemMeta,
+        viewabilityScrollMetrics,
+        getItemOffset
+      );
       const key = helper.configName;
       value[key] = falsy;
       return value;
