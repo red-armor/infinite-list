@@ -50,51 +50,6 @@ export function resolveMeasureMetrics(
 // }
 
 /**
- *
- * @param options
- *    - viewAreaMode false as default, which means it compares with self length.
- *      if value is true, then compare with viewport length.
- *
- * @returns
- */
-export function isItemViewable(options: IsItemViewableOptions) {
-  const {
-    viewabilityItemMeta,
-    viewport: _viewport,
-    viewAreaMode = false,
-    viewabilityScrollMetrics,
-    viewablePercentThreshold = 0,
-  } = options;
-
-  const { offset: scrollOffset, visibleLength: viewportLength } =
-    viewabilityScrollMetrics;
-  if (!viewabilityItemMeta) return false;
-  const itemOffset =
-    viewabilityItemMeta instanceof ViewabilityItemMeta
-      ? viewabilityItemMeta.getItemOffset()
-      : viewabilityItemMeta.offset;
-  const itemLength =
-    viewabilityItemMeta instanceof ViewabilityItemMeta
-      ? viewabilityItemMeta.getItemLength()
-      : viewabilityItemMeta.length;
-
-  const viewport = Math.max(_viewport, 0);
-  const top = itemOffset - scrollOffset + viewport * viewportLength;
-  const bottom = top + itemLength;
-
-  const value = _isViewable({
-    top,
-    bottom,
-    itemLength,
-    viewAreaMode,
-    viewablePercentThreshold,
-    viewportHeight: (2 * viewport + 1) * viewportLength,
-  });
-
-  return value;
-}
-
-/**
  * 获取在视窗中的可见高度
  * @param props
  * @returns
@@ -159,4 +114,52 @@ export function _isViewable(props: {
       ? percent >= viewablePercentThreshold
       : percent > viewablePercentThreshold;
   }
+}
+
+/**
+ *
+ * @param options
+ *    - viewAreaMode false as default, which means it compares with self length.
+ *      if value is true, then compare with viewport length.
+ *
+ * @returns
+ */
+export function isItemViewable(options: IsItemViewableOptions) {
+  const {
+    getItemOffset,
+    viewabilityItemMeta,
+    viewport: _viewport,
+    viewAreaMode = false,
+    viewabilityScrollMetrics,
+    viewablePercentThreshold = 0,
+  } = options;
+
+  const { offset: scrollOffset, visibleLength: viewportLength } =
+    viewabilityScrollMetrics;
+  if (!viewabilityItemMeta) return false;
+  const itemOffset =
+    typeof getItemOffset === 'function'
+      ? getItemOffset(viewabilityItemMeta as ViewabilityItemMeta)
+      : viewabilityItemMeta instanceof ViewabilityItemMeta
+      ? viewabilityItemMeta.getItemOffset()
+      : viewabilityItemMeta.offset;
+  const itemLength =
+    viewabilityItemMeta instanceof ViewabilityItemMeta
+      ? viewabilityItemMeta.getItemLength()
+      : viewabilityItemMeta.length;
+
+  const viewport = Math.max(_viewport, 0);
+  const top = itemOffset - scrollOffset + viewport * viewportLength;
+  const bottom = top + itemLength;
+
+  const value = _isViewable({
+    top,
+    bottom,
+    itemLength,
+    viewAreaMode,
+    viewablePercentThreshold,
+    viewportHeight: (2 * viewport + 1) * viewportLength,
+  });
+
+  return value;
 }

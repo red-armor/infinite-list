@@ -190,6 +190,10 @@ describe('resolve space state', () => {
     expect(stateResult[0].isSticky).toBe(true);
     expect(stateResult[1].length).toBe(900);
     expect(stateResult[1].isSpace).toBe(true);
+    expect(stateResult[21].viewable).toBe(false);
+    expect(stateResult[22].viewable).toBe(true);
+    expect(stateResult[31].viewable).toBe(true);
+    expect(stateResult[32].viewable).toBe(false);
     expect(stateResult[50].length).toBe(4200);
     expect(stateResult[50].isSpace).toBe(true);
   });
@@ -447,5 +451,140 @@ describe('resolve space state', () => {
     expect(stateResult[8].isReserved).toBe(false);
     expect(stateResult[55].length).toBe(2200);
     expect(stateResult[55].isSpace).toBe(true);
+  });
+});
+
+describe('viewability', () => {
+  it('default viewabilityConfig', () => {
+    const data = buildData(100);
+
+    const listDimensions = new ListDimensions({
+      id: 'list_1',
+      data,
+      stickyHeaderIndices: [0, 10],
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({
+        index,
+        length: 100,
+      }),
+    });
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 990,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(39);
+    expect(stateResult[8].viewable).toBe(false);
+    expect(stateResult[9].viewable).toBe(true);
+    expect(stateResult[19].viewable).toBe(true);
+    expect(stateResult[20].viewable).toBe(false);
+  });
+
+  it('imageViewable - viewport: 0, thresholdValue: 0', () => {
+    const data = buildData(100);
+
+    const listDimensions = new ListDimensions({
+      id: 'list_1',
+      data,
+      stickyHeaderIndices: [0, 10],
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({
+        index,
+        length: 100,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 0,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 0,
+          },
+        },
+      ],
+    });
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 990,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(39);
+    expect(stateResult[8].viewable).toBe(false);
+    expect(stateResult[9].viewable).toBe(true);
+    expect(stateResult[19].viewable).toBe(true);
+    expect(stateResult[20].viewable).toBe(false);
+    expect(stateResult[8].imageViewable).toBe(false);
+    expect(stateResult[9].imageViewable).toBe(true);
+    expect(stateResult[19].imageViewable).toBe(true);
+    expect(stateResult[20].imageViewable).toBe(false);
+  });
+
+  it('imageViewable - viewport: 1, thresholdValue: 0', () => {
+    const data = buildData(100);
+
+    const listDimensions = new ListDimensions({
+      id: 'list_1',
+      data,
+      stickyHeaderIndices: [0, 10],
+      keyExtractor: defaultKeyExtractor,
+      getItemLayout: (item, index) => ({
+        index,
+        length: 100,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            name: 'imageViewable',
+            viewport: 1,
+            viewAreaCoveragePercentThreshold: 0,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 0,
+          },
+        },
+      ],
+    });
+
+    // @ts-ignore
+    listDimensions.updateScrollMetrics({
+      offset: 990,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    expect(stateResult.length).toBe(39);
+    expect(stateResult[0].viewable).toBe(false);
+    expect(stateResult[0].imageViewable).toBe(true);
+    expect(stateResult[8].viewable).toBe(false);
+    expect(stateResult[8].imageViewable).toBe(true);
+    expect(stateResult[9].viewable).toBe(true);
+    expect(stateResult[9].imageViewable).toBe(true);
+    expect(stateResult[19].viewable).toBe(true);
+    expect(stateResult[19].imageViewable).toBe(true);
+    expect(stateResult[20].viewable).toBe(false);
+    expect(stateResult[20].imageViewable).toBe(true);
+    expect(stateResult[28].viewable).toBe(false);
+    expect(stateResult[28].imageViewable).toBe(true);
+    expect(stateResult[29].viewable).toBe(false);
+    expect(stateResult[29].imageViewable).toBe(false);
   });
 });

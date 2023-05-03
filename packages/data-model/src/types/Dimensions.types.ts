@@ -220,6 +220,9 @@ export type SpaceStateToken<ItemT> = {
   isSticky: boolean;
   isReserved: boolean;
   position: SpaceStateTokenPosition;
+
+  // viewability props
+  viewable?: boolean;
 };
 
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
