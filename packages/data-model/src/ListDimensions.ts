@@ -1155,10 +1155,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     beforeTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
+        const item = data[startIndex];
         spaceState.push({
-          item: data[startIndex],
+          item,
           isSpace: false,
           isSticky,
+          key: this.getItemKey(item, startIndex),
           length: this.getIndexItemLength(startIndex),
           isReserved,
         });
@@ -1170,6 +1172,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSpace: true,
           isSticky: false,
           isReserved: false,
+          key: `space_${startIndex}_${endIndex}`,
           length: endIndexOffset - startIndexOffset,
         });
       }
@@ -1214,11 +1217,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     afterTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
+        const item = data[startIndex];
         spaceState.push({
-          item: data[startIndex],
+          item,
           isSpace: false,
           isSticky,
           isReserved,
+          key: this.getItemKey(item, startIndex),
           length: this.getIndexItemLength(startIndex),
         });
       } else {
@@ -1230,6 +1235,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSticky: false,
           isReserved: false,
           length: endIndexOffset - startIndexOffset,
+          key: `space_${startIndex}_${endIndex}`,
         });
       }
     });
@@ -1248,8 +1254,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     beforeTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
+        const item = data[startIndex];
         spaceState.push({
-          item: data[startIndex],
+          item,
+          key: this.getItemKey(item, startIndex),
           isSpace: false,
           isSticky,
           length: this.getIndexItemLength(startIndex),
@@ -1263,6 +1271,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           item: null,
           isSticky: false,
           isReserved: false,
+          key: `space_${startIndex}_${endIndex}`,
           length: endIndexOffset - startIndexOffset,
         });
       }
@@ -1304,12 +1313,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const afterTokens = this.resolveToken(nextEnd, data.length);
 
+    console.log('after tokens ', afterTokens);
+
     afterTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
+        const item = data[startIndex];
         spaceState.push({
-          item: data[startIndex],
+          item,
           isSpace: false,
+          key: this.getItemKey(item, startIndex),
           isSticky,
           isReserved,
           length: this.getIndexItemLength(startIndex),
@@ -1324,6 +1337,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSticky: false,
           isReserved: false,
           length: endIndexOffset - startIndexOffset,
+          key: `space_${startIndex}_${endIndex}`,
         });
       }
     });

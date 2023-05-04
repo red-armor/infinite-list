@@ -48,7 +48,7 @@ describe('basic', () => {
       maxToRenderPerBatch: 7,
       windowSize: 9,
       initialNumToRender: 20,
-      onEndReachedThreshold: 300,
+      onEndReachedThreshold: 2,
       horizontal: true,
       getContainerLayout: () => ({
         x: 0,
@@ -61,7 +61,7 @@ describe('basic', () => {
     expect(listDimensions.maxToRenderPerBatch).toBe(7);
     expect(listDimensions.windowSize).toBe(9);
     expect(listDimensions.initialNumToRender).toBe(20);
-    expect(listDimensions.onEndReachedThreshold).toBe(300);
+    expect(listDimensions.onEndReachedThreshold).toBe(2);
     expect(listDimensions.horizontal).toBe(true);
   });
 
@@ -634,7 +634,7 @@ describe('lifecycle', () => {
       maxToRenderPerBatch: 7,
       windowSize: 9,
       initialNumToRender: 10,
-      onEndReachedThreshold: 300,
+      onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -662,7 +662,7 @@ describe('lifecycle', () => {
       maxToRenderPerBatch: 7,
       windowSize: 9,
       initialNumToRender: 10,
-      onEndReachedThreshold: 300,
+      onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -695,7 +695,7 @@ describe('lifecycle', () => {
       maxToRenderPerBatch: 7,
       windowSize: 9,
       initialNumToRender: 4,
-      onEndReachedThreshold: 300,
+      onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -735,7 +735,7 @@ describe('lifecycle', () => {
       maxToRenderPerBatch: 7,
       windowSize: 9,
       initialNumToRender: 4,
-      onEndReachedThreshold: 300,
+      onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -780,7 +780,7 @@ describe('lifecycle', () => {
       maxToRenderPerBatch: 7,
       windowSize: 9,
       initialNumToRender: 4,
-      onEndReachedThreshold: 300,
+      onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -832,9 +832,9 @@ describe('lifecycle', () => {
       data: [],
       recycleEnabled: true,
       maxToRenderPerBatch: 7,
-      windowSize: 9,
+      windowSize: 5,
       initialNumToRender: 4,
-      onEndReachedThreshold: 300,
+      onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -881,5 +881,141 @@ describe('lifecycle', () => {
     expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
     expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
     expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
+  });
+
+  it('initialization - update data source (initialNumToRender: 10)', () => {
+    const data = buildData(100);
+    const spaceList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 5,
+      initialNumToRender: 10,
+      onEndReachedThreshold: 2,
+      getItemLayout: (item, index) => ({
+        length: 100,
+        index,
+      }),
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    spaceList.setData(data);
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 9,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 10),
+      actionType: 'initial',
+    });
+
+    const spaceListStateResult = spaceList.stateResult as SpaceStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+    expect(spaceListStateResult.length).toBe(10);
+    expect(spaceListStateResult[0].viewable).toBe(true);
+    expect(spaceListStateResult[1].viewable).toBe(true);
+    expect(spaceListStateResult[2].viewable).toBe(true);
+    expect(spaceListStateResult[3].viewable).toBe(true);
+
+    // @ts-ignore
+    spaceList.updateScrollMetrics({
+      offset: 3009,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 10,
+      visibleEndIndex: 19,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 37,
+      isEndReached: false,
+      distanceFromEnd: 6065,
+      data: data.slice(0, 100),
+      actionType: 'recalculate',
+    });
+
+    // console.log('state ', spaceList.stateResult);
+
+    // const recycleList = new ListDimensions({
+    //   id: 'list_group',
+    //   keyExtractor: defaultKeyExtractor,
+    //   data: [],
+    //   recycleEnabled: true,
+    //   maxToRenderPerBatch: 7,
+    //   windowSize: 9,
+    //   initialNumToRender: 4,
+    //   onEndReachedThreshold: 2,
+    //   getContainerLayout: () => ({
+    //     x: 0,
+    //     y: 2000,
+    //     width: 375,
+    //     height: 2000,
+    //   }),
+    // });
+
+    // expect(recycleList.state).toEqual({
+    //   visibleStartIndex: -1,
+    //   visibleEndIndex: -1,
+    //   bufferedStartIndex: -1,
+    //   bufferedEndIndex: -1,
+    //   isEndReached: false,
+    //   distanceFromEnd: 0,
+    //   data: [],
+    //   actionType: 'initial',
+    // });
+
+    // recycleList.setData(data);
+
+    // expect(recycleList.state).toEqual({
+    //   visibleStartIndex: 0,
+    //   visibleEndIndex: 3,
+    //   bufferedStartIndex: 0,
+    //   bufferedEndIndex: 3,
+    //   isEndReached: false,
+    //   distanceFromEnd: 0,
+    //   data: data.slice(0, 4),
+    //   actionType: 'initial',
+    // });
+
+    // const recycleListStateResult =
+    //   recycleList.stateResult as RecycleStateResult<
+    //     any,
+    //     {
+    //       viewable: boolean;
+    //       imageViewable: boolean;
+    //     }
+    //   >;
+
+    // expect(recycleListStateResult.spaceState.length).toBe(4);
+    // expect(recycleListStateResult.spaceState[0].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
   });
 });
