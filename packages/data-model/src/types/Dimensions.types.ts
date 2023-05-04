@@ -26,7 +26,6 @@ export type BaseDimensionsProps = {
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;
   isIntervalTreeItems?: boolean;
-  // getContainerOffset?: ContainerOffsetGetter;
   viewabilityConfig?: ViewabilityConfig;
   onViewableItemsChanged?: OnViewableItemsChanged;
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
@@ -64,7 +63,14 @@ export type ListDimensionsProps<ItemT> = {
   deps?: Array<string>;
 
   active?: boolean;
+
+  /**
+   * If lazy is true, initialNumToRender default value is 10 or should be 0.
+   * If lazy is true, list state will be hydrated on initialization.
+   */
+  lazy?: boolean;
   initialNumToRender?: number;
+
   stickyHeaderIndices?: Array<number>;
   persistanceIndices?: Array<number>;
   onBatchLayoutFinished?: () => boolean;
@@ -212,7 +218,12 @@ export type InspectingListener = (props: InspectingAPI) => void;
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
-export type SpaceStateToken<ItemT> = {
+export type SpaceStateToken<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = {
   item: ItemT;
   key: string;
   length: number;
@@ -220,15 +231,22 @@ export type SpaceStateToken<ItemT> = {
   isSticky: boolean;
   isReserved: boolean;
   position: SpaceStateTokenPosition;
+} & ViewabilityState;
 
-  // viewability props
-  viewable?: boolean;
-};
-
-export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
-export type RecycleStateResult<ItemT> = {
-  spaceState: SpaceStateResult<ItemT>;
-  recycleState: SpaceStateResult<ItemT>;
+export type SpaceStateResult<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = Array<SpaceStateToken<ItemT, ViewabilityState>>;
+export type RecycleStateResult<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = {
+  spaceState: SpaceStateResult<ItemT, ViewabilityState>;
+  recycleState: SpaceStateResult<ItemT, ViewabilityState>;
 };
 
 export type ListStateResult<ItemT> =

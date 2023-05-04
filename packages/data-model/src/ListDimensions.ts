@@ -122,7 +122,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       parentItemsDimensions,
       getItemSeparatorLength,
       onBatchLayoutFinished,
-      initialNumToRender,
       persistanceIndices,
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
@@ -148,21 +147,23 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._deps = deps;
     this._isActive = this.resolveInitialActiveValue(active);
 
-    if (this._listGroupDimension && initialNumToRender) {
-      console.warn(
-        '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-          ' initialNumToRender value should be controlled' +
-          'by `ListGroup` commander. So value is reset to `0`.'
-      );
+    if (this._listGroupDimension && this.initialNumToRender) {
+      if (process.env.NODE_ENV === 'development')
+        console.warn(
+          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+            ' initialNumToRender value should be controlled' +
+            'by `ListGroup` commander. So value is reset to `0`.'
+        );
       this.initialNumToRender = 0;
     }
 
     if (this._listGroupDimension && persistanceIndices) {
-      console.warn(
-        '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-          ' persistanceIndices value should be controlled' +
-          'by `ListGroup` commander. So value is reset to `[]`.'
-      );
+      if (process.env.NODE_ENV === 'development')
+        console.warn(
+          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+            ' persistanceIndices value should be controlled' +
+            'by `ListGroup` commander. So value is reset to `[]`.'
+        );
       this.persistanceIndices = [];
     }
 
@@ -226,8 +227,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._offsetInListGroup = offset;
   }
 
-  getState() {
-    return this._stateResult;
+  get state() {
+    return this._state;
   }
 
   cleanup() {
@@ -582,6 +583,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (!this._listGroupDimension && changedType === KeysChangedType.Initial) {
       const state = this.resolveInitialState();
       this.setState(state);
+      this._state = state;
       return changedType;
     }
 
@@ -861,6 +863,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       position: 'before' as SpaceStateTokenPosition,
       isSticky: false,
       isReserved: false,
+      viewable: false,
       ...options,
     };
   }
@@ -1077,7 +1080,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
    * @param endIndex exclusive
    */
   resolveToken(startIndex: number, endIndex: number) {
-    if (startIndex === endIndex) return [];
+    if (startIndex >= endIndex) return [];
     const tokens = [
       {
         startIndex,
@@ -1172,9 +1175,38 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     });
 
+    const indexToOffsetMap = this.getIndexRangeOffsetMap(
+      bufferedStartIndex,
+      bufferedEndIndex
+    );
+
     remainingData.forEach((item, _index) => {
       const index = bufferedStartIndex + _index;
-      this.hydrateSpaceStateToken(spaceState, item, index, 'buffered');
+      const itemMeta = this.getItemMeta(item, index);
+      const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
+      const isReserved = this.persistanceIndices.indexOf(index) !== -1;
+      const itemLayout = itemMeta?.getLayout();
+      const itemKey = itemMeta.getKey();
+      const itemLength =
+        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+      const viewabilityState = this._scrollMetrics
+        ? this._configTuple.resolveItemMetaState(
+            itemMeta,
+            this._scrollMetrics,
+            () => indexToOffsetMap[index]
+          )
+        : itemMeta.getState();
+
+      spaceState.push({
+        key: itemKey,
+        item,
+        isSpace: false,
+        isSticky,
+        isReserved,
+        length: itemLength,
+        ...viewabilityState,
+      });
     });
 
     const afterTokens = this.resolveToken(nextEnd, data.length);

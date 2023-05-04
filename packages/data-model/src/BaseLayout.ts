@@ -75,9 +75,6 @@ class BaseLayout {
     this._onEndReachedThreshold = onEndReachedThreshold;
     this.persistanceIndices = persistanceIndices;
     this.stickyHeaderIndices = stickyHeaderIndices;
-
-    // this._stickyHeaderIndices = (stickyHeaderIndices || []).sort();
-    // this._persistanceIndices = (persistanceIndices || []).sort((a, b) => a - b);
   }
 
   get initialNumToRender() {
