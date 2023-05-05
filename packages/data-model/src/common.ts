@@ -43,3 +43,6 @@ export const isNotEmpty = (obj: any) => {
   }
   return false;
 };
+
+export const buildStateTokenIndexKey = (startIndex: number, endIndex: number) =>
+  `space_${startIndex}_${endIndex}`;

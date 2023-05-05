@@ -1,52 +1,20 @@
-import SelectValue from '@x-oasis/select-value';
-import { ScrollEventMetrics, IsItemViewableOptions } from '../types';
+// import SelectValue from '@x-oasis/select-value';
+import { IsItemViewableOptions } from '../types';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
 
-export function resolveMeasureMetrics(
-  scrollEventMetrics: ScrollEventMetrics,
-  selectValue: SelectValue
-) {
-  const { contentOffset, layoutMeasurement, contentSize } = scrollEventMetrics;
-  const contentLength = selectValue.selectLength(contentSize);
-  const scrollOffset = selectValue.selectOffset(contentOffset);
-  const viewportLength = selectValue.selectLength(layoutMeasurement);
-  return {
-    contentLength,
-    scrollOffset,
-    viewportLength,
-  };
-}
-
-// export function isItemMetaViewable(options: {
-//   viewport: number;
-//   itemMeta: ItemMeta;
-//   scrollMetrics: ScrollMetrics;
-//   viewAreaMode?: boolean;
-//   viewablePercentThreshold?: number;
-// }) {
-//   const {
-//     itemMeta,
-//     viewport,
-//     viewAreaMode = false,
-//     scrollMetrics,
-//     viewablePercentThreshold,
-//   } = options;
-
-//   if (!itemMeta || !scrollMetrics) return false;
-
-//   return isItemViewable({
-//     itemInfo: {
-//       offset: itemMeta.getItemOffset(),
-//       length: itemMeta.getItemLength(),
-//     },
-//     viewport,
-//     viewAreaMode,
-//     scrollMetrics: {
-//       offset: scrollMetrics.offset,
-//       visibleLength: scrollMetrics.visibleLength,
-//     },
-//     viewablePercentThreshold,
-//   });
+// export function resolveMeasureMetrics(
+//   scrollEventMetrics: ScrollEventMetrics,
+//   selectValue: SelectValue
+// ) {
+//   const { contentOffset, layoutMeasurement, contentSize } = scrollEventMetrics;
+//   const contentLength = selectValue.selectLength(contentSize);
+//   const scrollOffset = selectValue.selectOffset(contentOffset);
+//   const viewportLength = selectValue.selectLength(layoutMeasurement);
+//   return {
+//     contentLength,
+//     scrollOffset,
+//     viewportLength,
+//   };
 // }
 
 /**
@@ -79,6 +47,7 @@ export function _isViewable(props: {
   bottom: number;
   itemLength: number;
   viewportHeight: number;
+  viewportLength: number;
   viewAreaMode: boolean;
   viewablePercentThreshold: number;
 }) {
@@ -86,6 +55,7 @@ export function _isViewable(props: {
     top,
     bottom,
     itemLength,
+    viewportLength,
     viewportHeight,
     viewAreaMode,
     viewablePercentThreshold,
@@ -106,7 +76,7 @@ export function _isViewable(props: {
     });
 
     const percent =
-      100 * (viewAreaMode ? pixels / viewportHeight : pixels / itemLength);
+      100 * (viewAreaMode ? pixels / viewportLength : pixels / itemLength);
 
     // viewablePercentThreshold is 0 on default, so item is viewable even if 1 pixel
     // in viewport.
@@ -157,6 +127,7 @@ export function isItemViewable(options: IsItemViewableOptions) {
     bottom,
     itemLength,
     viewAreaMode,
+    viewportLength,
     viewablePercentThreshold,
     viewportHeight: (2 * viewport + 1) * viewportLength,
   });
