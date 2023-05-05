@@ -7,7 +7,12 @@ import ListGroupDimensions from './ListGroupDimensions';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import layoutEqual from '@x-oasis/layout-equal';
 import omit from '@x-oasis/omit';
-import { INVALID_LENGTH, isNotEmpty, shallowDiffers } from './common';
+import {
+  INVALID_LENGTH,
+  isNotEmpty,
+  shallowDiffers,
+  buildStateTokenIndexKey,
+} from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
 import createStore from './state/createStore';
@@ -1271,7 +1276,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           item: null,
           isSticky: false,
           isReserved: false,
-          key: `space_${startIndex}_${endIndex}`,
+          key: buildStateTokenIndexKey(startIndex, endIndex - 1),
           length: endIndexOffset - startIndexOffset,
         });
       }
@@ -1313,8 +1318,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const afterTokens = this.resolveToken(nextEnd, data.length);
 
-    console.log('after tokens ', afterTokens);
-
     afterTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
@@ -1337,7 +1340,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSticky: false,
           isReserved: false,
           length: endIndexOffset - startIndexOffset,
-          key: `space_${startIndex}_${endIndex}`,
+          // endIndex is not included
+          key: buildStateTokenIndexKey(startIndex, endIndex - 1),
         });
       }
     });

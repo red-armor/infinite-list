@@ -4,7 +4,7 @@ import {
   isEntirelyVisible,
 } from '../viewable/viewabilityUtils';
 
-const viewportLength = 927;
+const viewportLength = 926;
 
 describe('_isEntirelyVisible', () => {
   it('item has not length and on the top', () => {
@@ -89,7 +89,7 @@ describe('isItemViewable', () => {
         },
         viewabilityScrollMetrics: {
           offset: 0,
-          visibleLength: 927,
+          visibleLength: viewportLength,
         },
       })
     ).toBe(true);
@@ -103,7 +103,7 @@ describe('isItemViewable', () => {
         },
         viewabilityScrollMetrics: {
           offset: 0,
-          visibleLength: 927,
+          visibleLength: viewportLength,
         },
       })
     ).toBe(true);
@@ -117,7 +117,7 @@ describe('isItemViewable', () => {
         },
         viewabilityScrollMetrics: {
           offset: 0,
-          visibleLength: 927,
+          visibleLength: viewportLength,
         },
       })
     ).toBe(false);
@@ -128,29 +128,29 @@ describe('isItemViewable', () => {
       isItemViewable({
         viewport: 0,
         viewabilityItemMeta: {
-          offset: 926,
+          offset: viewportLength,
           length: 100,
         },
         viewabilityScrollMetrics: {
           offset: 0,
-          visibleLength: 927,
+          visibleLength: viewportLength,
         },
       })
-    ).toBe(true);
+    ).toBe(false);
 
     expect(
       isItemViewable({
         viewport: 0,
         viewabilityItemMeta: {
-          offset: 927,
+          offset: viewportLength - 1,
           length: 100,
         },
         viewabilityScrollMetrics: {
           offset: 0,
-          visibleLength: 927,
+          visibleLength: viewportLength,
         },
       })
-    ).toBe(false);
+    ).toBe(true);
 
     expect(
       isItemViewable({
@@ -161,7 +161,7 @@ describe('isItemViewable', () => {
         },
         viewabilityScrollMetrics: {
           offset: 1,
-          visibleLength: 927,
+          visibleLength: viewportLength,
         },
       })
     ).toBe(true);
@@ -219,6 +219,208 @@ describe('isItemViewable', () => {
           offset: 2500,
           visibleLength: viewportLength,
         },
+      })
+    ).toBe(false);
+
+    // top: 4800, bottom: 4900; viewHeight = 3009 + 2 * 926 = 4861 => 61 / 926 = 0.0658
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 6,
+      })
+    ).toBe(true);
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 7,
+      })
+    ).toBe(false);
+
+    // top: 4800, bottom: 4900; viewHeight = 3009 + 2 * 926 = 4861 => 61 / 926 = 0.0658
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 60,
+      })
+    ).toBe(true);
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 62,
+      })
+    ).toBe(false);
+  });
+
+  it('viewablePercentThreshold, if greater than 0, then compare with >=', () => {
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 61,
+      })
+    ).toBe(true);
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 61.1,
+      })
+    ).toBe(false);
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: false,
+        viewablePercentThreshold: 60.9,
+      })
+    ).toBe(true);
+
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 6.58,
+      })
+    ).toBe(true);
+
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 6.59,
+      })
+    ).toBe(false);
+    expect(
+      isItemViewable({
+        viewport: 1,
+        viewabilityItemMeta: {
+          offset: 4800,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 6.57,
+      })
+    ).toBe(true);
+  });
+
+  it('item visible length is 0', () => {
+    // entirely visible
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3009,
+          length: 0,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 0,
+      })
+    ).toBe(true);
+
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3008,
+          length: 1,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 0,
+      })
+    ).toBe(false);
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3009 + viewportLength,
+          length: 1,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 0,
       })
     ).toBe(false);
   });
@@ -287,6 +489,104 @@ describe('isItemViewable', () => {
         viewAreaMode: true,
         viewablePercentThreshold: 20,
       })
+    ).toBe(true);
+  });
+
+  it('compare viewAreaMode with itemAreaMode', () => {
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3000,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 9,
+      })
+    ).toBe(true);
+
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3000,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 10,
+      })
     ).toBe(false);
+
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3000,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 90,
+      })
+    ).toBe(true);
+
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3000,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewablePercentThreshold: 92,
+      })
+    ).toBe(false);
+  });
+
+  it('entirely visible is special case in viewAreaMode', () => {
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3000,
+          length: 100,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 10,
+      })
+    ).toBe(false);
+
+    expect(
+      isItemViewable({
+        viewport: 0,
+        viewabilityItemMeta: {
+          offset: 3000,
+          length: 1000,
+        },
+        viewabilityScrollMetrics: {
+          offset: 3009,
+          visibleLength: viewportLength,
+        },
+        viewAreaMode: true,
+        viewablePercentThreshold: 10,
+      })
+    ).toBe(true);
   });
 });

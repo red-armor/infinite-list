@@ -67,9 +67,12 @@ abstract class BaseDimensions extends BaseLayout {
     const listOffset = exclusive ? 0 : this.getContainerOffset();
 
     if (typeof index === 'number') {
-      return listOffset + index >= this._intervalTree.getMaxUsefulLength()
-        ? this.intervalTree.getHeap()[1]
-        : this._intervalTree.sumUntil(index);
+      return (
+        listOffset +
+        (index >= this._intervalTree.getMaxUsefulLength()
+          ? this.intervalTree.getHeap()[1]
+          : this._intervalTree.sumUntil(index))
+      );
     }
     return 0;
   }
