@@ -1142,114 +1142,39 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   resolveRecycleSpaceState(state: ListState<ItemT>) {
-    const { data, bufferedEndIndex, bufferedStartIndex } = state;
-    const nextStart =
-      bufferedStartIndex >= this.initialNumToRender
-        ? this.initialNumToRender
-        : bufferedStartIndex;
-    const nextEnd =
-      bufferedStartIndex >= this.initialNumToRender
-        ? this.initialNumToRender
-        : bufferedEndIndex + 1;
-
-    const remainingData = data.slice(nextStart, nextEnd);
-    const beforeTokens = this.resolveToken(0, nextStart);
-
-    const spaceState = [];
-
-    beforeTokens.forEach((token) => {
-      const { isSticky, isReserved, startIndex, endIndex } = token;
-      if (isSticky || isReserved) {
-        const item = data[startIndex];
-        spaceState.push({
-          item,
-          isSpace: false,
-          isSticky,
-          key: this.getItemKey(item, startIndex),
-          length: this.getIndexItemLength(startIndex),
-          isReserved,
-        });
-      } else {
-        const startIndexOffset = this.getIndexKeyOffset(startIndex);
-        const endIndexOffset = this.getIndexKeyOffset(endIndex);
-        spaceState.push({
-          item: null,
-          isSpace: true,
-          isSticky: false,
-          isReserved: false,
-          key: `space_${startIndex}_${endIndex}`,
-          length: endIndexOffset - startIndexOffset,
-        });
-      }
+    return this.resolveSpaceState(state, {
+      bufferedStartIndex: (state) =>
+        state.bufferedStartIndex >= this.initialNumToRender
+          ? this.initialNumToRender
+          : state.bufferedStartIndex,
+      bufferedEndIndex: (state) =>
+        state.bufferedEndIndex >= this.initialNumToRender
+          ? this.initialNumToRender - 1
+          : state.bufferedEndIndex,
     });
-
-    const indexToOffsetMap = this.getIndexRangeOffsetMap(
-      bufferedStartIndex,
-      bufferedEndIndex
-    );
-
-    remainingData.forEach((item, _index) => {
-      const index = bufferedStartIndex + _index;
-      const itemMeta = this.getItemMeta(item, index);
-      const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
-      const isReserved = this.persistanceIndices.indexOf(index) !== -1;
-      const itemLayout = itemMeta?.getLayout();
-      const itemKey = itemMeta.getKey();
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-
-      const viewabilityState = this._scrollMetrics
-        ? this._configTuple.resolveItemMetaState(
-            itemMeta,
-            this._scrollMetrics,
-            () => indexToOffsetMap[index]
-          )
-        : itemMeta.getState();
-
-      spaceState.push({
-        key: itemKey,
-        item,
-        isSpace: false,
-        isSticky,
-        isReserved,
-        length: itemLength,
-        ...viewabilityState,
-      });
-    });
-
-    const afterTokens = this.resolveToken(nextEnd, data.length);
-
-    afterTokens.forEach((token) => {
-      const { isSticky, isReserved, startIndex, endIndex } = token;
-      if (isSticky || isReserved) {
-        const item = data[startIndex];
-        spaceState.push({
-          item,
-          isSpace: false,
-          isSticky,
-          isReserved,
-          key: this.getItemKey(item, startIndex),
-          length: this.getIndexItemLength(startIndex),
-        });
-      } else {
-        const startIndexOffset = this.getIndexKeyOffset(startIndex);
-        const endIndexOffset = this.getIndexKeyOffset(endIndex);
-        spaceState.push({
-          item: null,
-          isSpace: true,
-          isSticky: false,
-          isReserved: false,
-          length: endIndexOffset - startIndexOffset,
-          key: `space_${startIndex}_${endIndex}`,
-        });
-      }
-    });
-
-    return spaceState;
   }
 
-  resolveSpaceState(state: ListState<ItemT>) {
-    const { data, bufferedEndIndex, bufferedStartIndex } = state;
+  resolveSpaceState(
+    state: ListState<ItemT>,
+    resolver?: {
+      bufferedStartIndex?: (state: ListState<ItemT>) => number;
+      bufferedEndIndex?: (state: ListState<ItemT>) => number;
+      visibleStartIndex?: (state: ListState<ItemT>) => number;
+      visibleEndIndex?: (state: ListState<ItemT>) => number;
+    }
+  ) {
+    const {
+      data,
+      bufferedEndIndex: _bufferedEndIndex,
+      bufferedStartIndex: _bufferedStartIndex,
+    } = state;
+    const bufferedEndIndex = resolver?.bufferedEndIndex
+      ? resolver?.bufferedEndIndex(state)
+      : _bufferedEndIndex;
+    const bufferedStartIndex = resolver?.bufferedStartIndex
+      ? resolver?.bufferedStartIndex(state)
+      : _bufferedStartIndex;
+
     const nextStart = bufferedStartIndex;
     const nextEnd = bufferedEndIndex + 1;
     const remainingData = data.slice(nextStart, nextEnd);
@@ -1438,6 +1363,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       dimension: this,
       scrollMetrics,
     });
+
     if (!isNotEmpty(state)) return;
     this.updateState(state, scrollMetrics);
     const { isEndReached, distanceFromEnd } = state;
@@ -1457,6 +1383,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         : true)
     );
   }
+
+  /**
+   * When to trigger updateScrollMetrics..
+   * - on scroll
+   * - layout change. In rn, use contentSizeChanged. in web, maybe `_setKeyItemLayout`
+   *   to trigger state updating..
+   */
 
   updateScrollMetrics(
     scrollMetrics: ScrollMetrics = this._scrollMetrics,
