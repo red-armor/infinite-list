@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## [0.1.2-config.0](https://github.com/red-armor/infinite-list/compare/v0.1.1...v0.1.2-config.0) (2023-05-07)
+
+
+
+## 0.1.2-config.0 (2023-05-07)
+
+
+### Features
+
+* add recycle state ([0201fda](https://github.com/red-armor/infinite-list/commit/0201fda44e95e89c1bb20e13a8044f0d32cef926))
+* add space state item key ([12af438](https://github.com/red-armor/infinite-list/commit/12af4386c031ed8572d57ffccfc0c84523aad1a0))
+* add space state test case ([bb1b60b](https://github.com/red-armor/infinite-list/commit/bb1b60b8b62196a431729f4dda8e8b69f3d32431))
+* add test cases ([64f4b1a](https://github.com/red-armor/infinite-list/commit/64f4b1a83006ed39df7f34acac56efeea2c5e20f))
+* add viewabilityUtils test cases ([6b2010a](https://github.com/red-armor/infinite-list/commit/6b2010afbe998851cf3b2853ab513edb930a78ac))
+* resolve space/recycle state ([6ba3642](https://github.com/red-armor/infinite-list/commit/6ba3642408485e54ca37f50172b296b074042c51))
+* resolveItemMetaState ([669280a](https://github.com/red-armor/infinite-list/commit/669280a6961651059bb1810461b720082ae3be9b))
+* update ([b9b08a7](https://github.com/red-armor/infinite-list/commit/b9b08a79cb17ca2886afe3c557a5b30e2d67e6d9))
+* update viewability utils test cases ([95ee205](https://github.com/red-armor/infinite-list/commit/95ee20578c86cbc423af44d46dff1b7424fbe2b3))
+
+
+
 ## [0.1.1](https://github.com/red-armor/infinite-list/compare/v0.1.0...v0.1.1) (2023-04-21)
 
 
