@@ -25,7 +25,6 @@
     "publish": true,
     "allowed_branches": [
       {
-        "name": ".*?-alpha",
         "disallowTypes": [
           "premajor",
           "preminor",
