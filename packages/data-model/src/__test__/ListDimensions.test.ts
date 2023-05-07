@@ -544,6 +544,23 @@ describe('resolve space state', () => {
       data: data.slice(0, 100),
       actionType: 'hydrationWithBatchUpdate',
     });
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1200,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 9,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 18,
+      isEndReached: true,
+      distanceFromEnd: 274,
+      data: data.slice(0, 100),
+      actionType: 'hydrationWithBatchUpdate',
+    });
   });
 
   it('persistanceIndices and stickyIndices', () => {
@@ -1295,173 +1312,388 @@ describe('lifecycle', () => {
     expect(spaceListStateResult[28].imageViewable).toBe(false);
   });
 
-  // it('RecycleList(initialization) - update data source (initialNumToRender: 10) and use viewabilityConfig', () => {
-  //   const data = buildData(100);
+  it('initialization - update data source (initialNumToRender: 10) and use viewabilityConfig', () => {
+    const data = buildData(100);
+    const recycleList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      recycleEnabled: true,
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 5,
+      initialNumToRender: 10,
+      onEndReachedThreshold: 2,
+      getItemLayout: (item, index) => ({
+        length: 100,
+        index,
+      }),
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 0,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 0,
+          },
+        },
+      ],
+    });
 
-  //   const recycleList = new ListDimensions({
-  //     data: [],
-  //     id: 'list_group',
-  //     recycleEnabled: true,
-  //     keyExtractor: defaultKeyExtractor,
-  //     maxToRenderPerBatch: 7,
-  //     windowSize: 2,
-  //     initialNumToRender: 4,
-  //     onEndReachedThreshold: 2,
-  //     getItemLayout: (item, index) => ({
-  //       length: 100,
-  //       index,
-  //     }),
-  //     getContainerLayout: () => ({
-  //       x: 0,
-  //       y: 0,
-  //       width: 375,
-  //       height: 2000,
-  //     }),
-  //     viewabilityConfigCallbackPairs: [
-  //       {
-  //         viewabilityConfig: {
-  //           viewport: 1,
-  //           name: 'imageViewable',
-  //           viewAreaCoveragePercentThreshold: 20,
-  //         },
-  //       },
-  //       {
-  //         viewabilityConfig: {
-  //           name: 'viewable',
-  //           viewAreaCoveragePercentThreshold: 30,
-  //         },
-  //       },
-  //     ],
-  //   });
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
 
-  //   expect(recycleList.state).toEqual({
-  //     visibleStartIndex: -1,
-  //     visibleEndIndex: -1,
-  //     bufferedStartIndex: -1,
-  //     bufferedEndIndex: -1,
-  //     isEndReached: false,
-  //     distanceFromEnd: 0,
-  //     data: [],
-  //     actionType: 'initial',
-  //   });
+    recycleList.setData(data);
 
-  //   recycleList.setData(data);
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 9,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 10),
+      actionType: 'initial',
+    });
 
-  //   expect(recycleList.state).toEqual({
-  //     visibleStartIndex: 0,
-  //     visibleEndIndex: 3,
-  //     bufferedStartIndex: 0,
-  //     bufferedEndIndex: 3,
-  //     isEndReached: false,
-  //     distanceFromEnd: 0,
-  //     data: data.slice(0, 4),
-  //     actionType: 'initial',
-  //   });
+    let recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
 
-  //   let recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-  //     any,
-  //     {
-  //       viewable: boolean;
-  //       imageViewable: boolean;
-  //     }
-  //   >;
+    expect(recycleListStateResult.spaceState.length).toBe(10);
+    expect(recycleListStateResult.recycleState.length).toBe(0);
 
-  //   let recycleSpaceListStateResult = recycleListStateResult.spaceState;
+    expect(recycleListStateResult.spaceState.map((v) => v.viewable)).toEqual([
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+    ]);
+    expect(
+      recycleListStateResult.spaceState.map((v) => v.imageViewable)
+    ).toEqual([true, true, true, true, true, true, true, true, true, true]);
 
-  //   expect(recycleSpaceListStateResult.length).toBe(4);
-  //   expect(recycleSpaceListStateResult[0].viewable).toBe(true);
-  //   expect(recycleSpaceListStateResult[0].imageViewable).toBe(true);
-  //   expect(recycleSpaceListStateResult[1].viewable).toBe(true);
-  //   expect(recycleSpaceListStateResult[1].imageViewable).toBe(true);
-  //   expect(recycleSpaceListStateResult[2].viewable).toBe(true);
-  //   expect(recycleSpaceListStateResult[2].imageViewable).toBe(true);
-  //   expect(recycleSpaceListStateResult[3].viewable).toBe(true);
-  //   expect(recycleSpaceListStateResult[3].imageViewable).toBe(true);
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
 
-  //   // @ts-ignore
-  //   recycleList.updateScrollMetrics({
-  //     offset: 0,
-  //     visibleLength: 926,
-  //     contentLength: 400,
-  //   });
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 9,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 16,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 100),
+      actionType: 'hydrationWithBatchUpdate',
+    });
 
-  //   // expect(recycleList.state).toEqual({
-  //   //   visibleStartIndex: 30,
-  //   //   visibleEndIndex: 39,
-  //   //   bufferedStartIndex: 20,
-  //   //   bufferedEndIndex: 48,
-  //   //   isEndReached: false,
-  //   //   distanceFromEnd: 4065,
-  //   //   data: data.slice(0, 100),
-  //   //   actionType: 'recalculate',
-  //   // });
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
 
-  //   // @ts-ignore
-  //   recycleList.updateScrollMetrics({
-  //     offset: 5009,
-  //     visibleLength: 926,
-  //     contentLength: 10000,
-  //   });
+    expect(recycleListStateResult.spaceState.length).toBe(11);
+    expect(recycleListStateResult.spaceState[10].key).toBe(
+      buildStateTokenIndexKey(10, 99)
+    );
+    expect(recycleListStateResult.spaceState[10].length).toBe(9000);
 
-  //   expect(recycleList.state).toEqual({
-  //     visibleStartIndex: 30,
-  //     visibleEndIndex: 39,
-  //     bufferedStartIndex: 20,
-  //     bufferedEndIndex: 48,
-  //     isEndReached: false,
-  //     distanceFromEnd: 4065,
-  //     data: data.slice(0, 100),
-  //     actionType: 'recalculate',
-  //   });
+    expect(recycleListStateResult.recycleState.length).toBe(2);
 
-  //   recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-  //     any,
-  //     {
-  //       viewable: boolean;
-  //       imageViewable: boolean;
-  //     }
-  //   >;
-  //   recycleSpaceListStateResult = recycleListStateResult.spaceState;
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1200,
+    });
 
-  //   expect(recycleSpaceListStateResult.length).toBe(2);
-  //   expect(recycleSpaceListStateResult[0].isSpace).toBe(true);
-  //   expect(recycleSpaceListStateResult[0].length).toBe(400);
-  //   expect(recycleSpaceListStateResult[0].key).toBe(
-  //     buildStateTokenIndexKey(0, 3)
-  //   );
-  //   expect(recycleSpaceListStateResult[0].isSpace).toBe(true);
-  //   expect(recycleSpaceListStateResult[1].length).toBe(9600);
-  //   expect(recycleSpaceListStateResult[1].key).toBe(
-  //     buildStateTokenIndexKey(4, 99)
-  //   );
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 9,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 18,
+      isEndReached: true,
+      distanceFromEnd: 274,
+      data: data.slice(0, 100),
+      actionType: 'hydrationWithBatchUpdate',
+    });
 
-  //   const recycleStateListStateResult = recycleListStateResult.recycleState;
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
 
-  //   // expect(recycleSpaceListStateResult[0].viewable).toBe(false);
-  //   // // (2100 - (3009 - 926)) / 926 = 0.018
-  //   // expect(recycleSpaceListStateResult[0].imageViewable).toBe(false);
-  //   // expect(recycleSpaceListStateResult[1].viewable).toBe(false);
-  //   // // (3009 - 926) < 2100 < (3009 + 926) entirely
-  //   // expect(recycleSpaceListStateResult[1].imageViewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[9].viewable).toBe(false);
-  //   // expect(recycleSpaceListStateResult[9].imageViewable).toBe(true);
-  //   // // (3100 - 3009) / 925 = 0.098
-  //   // expect(recycleSpaceListStateResult[10].viewable).toBe(false);
-  //   // expect(recycleSpaceListStateResult[10].imageViewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[11].viewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[11].imageViewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[12].viewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[12].imageViewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[19].viewable).toBe(false);
-  //   // expect(recycleSpaceListStateResult[19].imageViewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[20].viewable).toBe(false);
-  //   // expect(recycleSpaceListStateResult[20].imageViewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[27].viewable).toBe(false);
-  //   // // top: 2000 + 2700, bottom: 2000 + 2800; viewHeight = 3009 + 2 * 926 = 4861
-  //   // expect(recycleSpaceListStateResult[27].imageViewable).toBe(true);
-  //   // expect(recycleSpaceListStateResult[28].viewable).toBe(false);
-  //   // // top: 2000 + 2800, bottom: 2000 + 2900; viewHeight = 3009 + 2 * 926 = 4861
-  //   // // 61 / 926 = 0.0658
-  //   // expect(recycleSpaceListStateResult[28].imageViewable).toBe(false);
-  // });
+    expect(recycleListStateResult.recycleState.length).toBe(2);
+
+    expect(recycleListStateResult.recycleState.map((v) => v.item.key)).toEqual([
+      10, 11,
+    ]);
+    expect(recycleListStateResult.recycleState.map((v) => v.key)).toEqual([
+      'recycle_0',
+      'recycle_1',
+    ]);
+    expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual([
+      false,
+      false,
+    ]);
+    expect(
+      recycleListStateResult.recycleState.map((v) => v.imageViewable)
+    ).toEqual([true, true]);
+
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 3000,
+      visibleLength: 926,
+      contentLength: 4500,
+    });
+
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+
+    expect(recycleList.state).toEqual({
+      isEndReached: true,
+      distanceFromEnd: 574,
+      actionType: 'hydrationWithBatchUpdate',
+      visibleStartIndex: 29,
+      visibleEndIndex: 39,
+      bufferedStartIndex: 11,
+      bufferedEndIndex: 51,
+      data,
+    });
+    expect(recycleListStateResult.recycleState.map((v) => v.item.key)).toEqual([
+      41, 11, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    ]);
+
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 2700,
+      visibleLength: 926,
+      contentLength: 4500,
+    });
+
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+
+    expect(recycleList.state).toEqual({
+      isEndReached: true,
+      distanceFromEnd: 874,
+      actionType: 'hydrationWithBatchUpdate',
+      visibleStartIndex: 26,
+      visibleEndIndex: 36,
+      bufferedStartIndex: 8,
+      bufferedEndIndex: 51,
+      data,
+    });
+
+    expect(recycleListStateResult.recycleState.map((v) => v.item.key)).toEqual([
+      27, 26, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 28,
+    ]);
+    expect(recycleListStateResult.recycleState.map((v) => v.offset)).toEqual([
+      2700, 2600, 2900, 3000, 3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800,
+      3900, 2800,
+    ]);
+
+    expect(recycleListStateResult.recycleState.map((v) => v.key)).toEqual([
+      'recycle_0',
+      'recycle_1',
+      'recycle_2',
+      'recycle_3',
+      'recycle_4',
+      'recycle_5',
+      'recycle_6',
+      'recycle_7',
+      'recycle_8',
+      'recycle_9',
+      'recycle_10',
+      'recycle_11',
+      'recycle_12',
+      'recycle_13',
+    ]);
+    expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual([
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+    ]);
+    expect(
+      recycleListStateResult.recycleState.map((v) => v.imageViewable)
+    ).toEqual([
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+    ]);
+
+    expect(recycleListStateResult.spaceState.length).toBe(4);
+    expect(recycleListStateResult.spaceState.map((v) => v.key)).toEqual([
+      'space_0_7',
+      '8',
+      '9',
+      'space_10_99',
+    ]);
+    expect(recycleListStateResult.spaceState.map((v) => v.length)).toEqual([
+      800, 100, 100, 9000,
+    ]);
+
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 5000,
+      visibleLength: 926,
+      contentLength: 6500,
+    });
+
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+    expect(recycleList.state).toEqual({
+      isEndReached: true,
+      distanceFromEnd: 574,
+      actionType: 'hydrationWithBatchUpdate',
+      visibleStartIndex: 49,
+      visibleEndIndex: 59,
+      bufferedStartIndex: 31,
+      bufferedEndIndex: 71,
+      data,
+    });
+
+    expect(recycleListStateResult.recycleState.map((v) => v.item.key)).toEqual([
+      50, 49, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 39, 51,
+    ]);
+
+    expect(recycleListStateResult.recycleState.map((v) => v.offset)).toEqual([
+      5000, 4900, 5200, 5300, 5400, 5500, 5600, 5700, 5800, 5900, 6000, 6100,
+      3900, 5100,
+    ]);
+
+    expect(recycleListStateResult.recycleState.map((v) => v.key)).toEqual([
+      'recycle_0',
+      'recycle_1',
+      'recycle_2',
+      'recycle_3',
+      'recycle_4',
+      'recycle_5',
+      'recycle_6',
+      'recycle_7',
+      'recycle_8',
+      'recycle_9',
+      'recycle_10',
+      'recycle_11',
+      'recycle_12',
+      'recycle_13',
+    ]);
+    expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual([
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      true,
+    ]);
+    expect(
+      recycleListStateResult.recycleState.map((v) => v.imageViewable)
+    ).toEqual([
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true,
+    ]);
+    expect(recycleListStateResult.spaceState.length).toBe(2);
+    expect(recycleListStateResult.spaceState.map((v) => v.key)).toEqual([
+      'space_0_9',
+      'space_10_99',
+    ]);
+    expect(recycleListStateResult.spaceState.map((v) => v.length)).toEqual([
+      1000, 9000,
+    ]);
+  });
 });

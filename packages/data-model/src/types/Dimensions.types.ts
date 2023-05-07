@@ -232,6 +232,15 @@ export type SpaceStateToken<
   isReserved: boolean;
   position: SpaceStateTokenPosition;
 } & ViewabilityState;
+export type RecycleStateToken<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = {
+  targetKey: string;
+  offset: number;
+} & SpaceStateToken<ItemT, ViewabilityState>;
 
 export type SpaceStateResult<
   ItemT,
@@ -239,6 +248,13 @@ export type SpaceStateResult<
     viewable: boolean;
   }
 > = Array<SpaceStateToken<ItemT, ViewabilityState>>;
+export type RecycleState<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = Array<RecycleStateToken<ItemT, ViewabilityState>>;
+
 export type RecycleStateResult<
   ItemT,
   ViewabilityState = {
@@ -246,7 +262,7 @@ export type RecycleStateResult<
   }
 > = {
   spaceState: SpaceStateResult<ItemT, ViewabilityState>;
-  recycleState: SpaceStateResult<ItemT, ViewabilityState>;
+  recycleState: RecycleState<ItemT, ViewabilityState>;
 };
 
 export type ListStateResult<ItemT> =

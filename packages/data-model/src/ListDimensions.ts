@@ -59,12 +59,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
-  private _stateResult:
-    | ListStateResult<ItemT>
-    | {
-        recycleState: Array<SpaceStateToken<ItemT>>;
-        spaceState: Array<SpaceStateToken<ItemT>>;
-      };
+  private _stateResult: ListStateResult<ItemT>;
 
   private _listGroupDimension: ListGroupDimensions;
   private _parentItemsDimensions: ItemsDimensions;
@@ -1009,6 +1004,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           bufferedStartIndex,
           visibleStartIndex
         );
+
         if (position !== null) targetIndices[position] = index;
       }
 
@@ -1025,48 +1021,47 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         if (position !== null) targetIndices[position] = index;
       }
 
-      if (recycleEnabled) {
-        const minValue = this._bufferSet.getMinValue();
-        const maxValue = this._bufferSet.getMaxValue();
-        const indexToOffsetMap = this.getIndexRangeOffsetMap(
-          minValue,
-          maxValue,
-          true
-        );
+      const minValue = this._bufferSet.getMinValue();
+      const maxValue = this._bufferSet.getMaxValue();
+      const indexToOffsetMap = this.getIndexRangeOffsetMap(
+        minValue,
+        maxValue,
+        true
+      );
 
-        targetIndices.forEach((targetIndex, index) => {
-          const item = data[targetIndex];
-          if (!item) return;
+      targetIndices.forEach((targetIndex, index) => {
+        const item = data[targetIndex];
+        if (!item) return;
 
-          const itemKey = this.getItemKey(item, targetIndex);
-          const itemMeta = this.getItemMeta(item, targetIndex);
+        const itemKey = this.getItemKey(item, targetIndex);
+        const itemMeta = this.getItemMeta(item, targetIndex);
 
-          const itemLayout = itemMeta?.getLayout();
-          const itemLength =
-            (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+        const itemLayout = itemMeta?.getLayout();
+        const itemLength =
+          (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
-          const metaState = this._scrollMetrics
-            ? this._configTuple.resolveItemMetaState(
-                itemMeta,
-                this._scrollMetrics,
-                () => indexToOffsetMap[targetIndex]
-              )
-            : itemMeta.getState();
+        const itemMetaState = this._scrollMetrics
+          ? this._configTuple.resolveItemMetaState(
+              itemMeta,
+              this._scrollMetrics,
+              () => indexToOffsetMap[targetIndex]
+            )
+          : itemMeta.getState();
+        itemMeta.setItemMetaState(itemMetaState);
 
-          recycleStateResult.push({
-            key: `recycle_${index}`,
-            targetKey: itemKey,
-            length: itemLength,
-            isSpace: false,
-            isSticky: false,
-            item,
-            // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-            offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
-            position: 'buffered',
-            ...metaState,
-          });
+        recycleStateResult.push({
+          key: `recycle_${index}`,
+          targetKey: itemKey,
+          length: itemLength,
+          isSpace: false,
+          isSticky: false,
+          item,
+          // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+          offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
+          position: 'buffered',
+          ...itemMetaState,
         });
-      }
+      });
     }
 
     spaceStateResult = this.resolveRecycleSpaceState(state);
@@ -1222,13 +1217,14 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const itemLength =
         (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
-      const viewabilityState = this._scrollMetrics
+      const itemMetaState = this._scrollMetrics
         ? this._configTuple.resolveItemMetaState(
             itemMeta,
             this._scrollMetrics,
             () => indexToOffsetMap[index]
           )
         : itemMeta.getState();
+      itemMeta.setItemMetaState(itemMetaState);
 
       spaceState.push({
         key: itemKey,
@@ -1237,7 +1233,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isSticky,
         isReserved,
         length: itemLength,
-        ...viewabilityState,
+        ...itemMetaState,
       });
     });
 
@@ -1276,8 +1272,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   updateState(
     newState: PreStateResult,
-    scrollMetrics: ScrollMetrics,
-    performItemsMetaChange = true
+    scrollMetrics: ScrollMetrics
+    // performItemsMetaChange = true
   ) {
     const {
       bufferedStartIndex: nextBufferedStartIndex,
@@ -1311,50 +1307,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.setState(state);
       this._state = state;
       this._offsetTriggerCachedState = scrollMetrics.offset;
-
-      // if (performItemsMetaChange) {
-      //   // _recycleEnabled()它的时机会比resolveRecycleState要早，
-      //   // 所以这里面先确保recycle state有东西，要不然的话，itemMeta的state（viewable & imageViewable）
-      //   // 会出现bug
-      //   if (
-      //     this._recycleEnabled() &&
-      //     (
-      //       this._stateResult as {
-      //         recycleState: Array<SpaceStateToken<ItemT>>;
-      //       }
-      //     ).recycleState.length
-      //   ) {
-      //     const bufferedItemsMeta = (
-      //       this._stateResult as {
-      //         recycleState: Array<SpaceStateToken<ItemT>>;
-      //       }
-      //     ).recycleState
-      //       // @ts-ignore
-      //       .map((item) => this.getKeyMeta(item.targetKey))
-      //       .filter((v) => v);
-
-      //     this._onUpdateItemsMetaChangeBatchinator.schedule(
-      //       bufferedItemsMeta,
-      //       scrollMetrics
-      //     );
-      //   } else {
-      //     const bufferedItems = this._data.slice(
-      //       nextBufferedStartIndex,
-      //       nextBufferedEndIndex + 1
-      //     );
-
-      //     const bufferedItemsMeta = bufferedItems
-      //       .map((item, index) =>
-      //         this.getItemMeta(item, nextBufferedStartIndex + index)
-      //       )
-      //       .filter((v) => v);
-
-      //     this._onUpdateItemsMetaChangeBatchinator.schedule(
-      //       bufferedItemsMeta,
-      //       scrollMetrics
-      //     );
-      //   }
-      // }
     }
   }
 
