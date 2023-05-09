@@ -1,5 +1,4 @@
 export const DEFAULT_VIEWABILITY_CONFIG = {
+  name: 'viewable',
   viewAreaCoveragePercentThreshold: 0,
 };
-
-export const DEFAULT_CONFIG_MAP_KEY = 'viewableItems';

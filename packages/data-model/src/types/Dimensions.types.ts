@@ -26,7 +26,6 @@ export type BaseDimensionsProps = {
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;
   isIntervalTreeItems?: boolean;
-  // getContainerOffset?: ContainerOffsetGetter;
   viewabilityConfig?: ViewabilityConfig;
   onViewableItemsChanged?: OnViewableItemsChanged;
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
@@ -64,7 +63,14 @@ export type ListDimensionsProps<ItemT> = {
   deps?: Array<string>;
 
   active?: boolean;
+
+  /**
+   * If lazy is true, initialNumToRender default value is 10 or should be 0.
+   * If lazy is true, list state will be hydrated on initialization.
+   */
+  lazy?: boolean;
   initialNumToRender?: number;
+
   stickyHeaderIndices?: Array<number>;
   persistanceIndices?: Array<number>;
   onBatchLayoutFinished?: () => boolean;
@@ -212,19 +218,51 @@ export type InspectingListener = (props: InspectingAPI) => void;
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
-export type SpaceStateToken<ItemT> = {
+export type SpaceStateToken<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = {
   item: ItemT;
   key: string;
   length: number;
   isSpace: boolean;
   isSticky: boolean;
+  isReserved: boolean;
   position: SpaceStateTokenPosition;
-};
+} & ViewabilityState;
+export type RecycleStateToken<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = {
+  targetKey: string;
+  offset: number;
+} & SpaceStateToken<ItemT, ViewabilityState>;
 
-export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
-export type RecycleStateResult<ItemT> = {
-  spaceState: SpaceStateResult<ItemT>;
-  recycleState: SpaceStateResult<ItemT>;
+export type SpaceStateResult<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = Array<SpaceStateToken<ItemT, ViewabilityState>>;
+export type RecycleState<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = Array<RecycleStateToken<ItemT, ViewabilityState>>;
+
+export type RecycleStateResult<
+  ItemT,
+  ViewabilityState = {
+    viewable: boolean;
+  }
+> = {
+  spaceState: SpaceStateResult<ItemT, ViewabilityState>;
+  recycleState: RecycleState<ItemT, ViewabilityState>;
 };
 
 export type ListStateResult<ItemT> =

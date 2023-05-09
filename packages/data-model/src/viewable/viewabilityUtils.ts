@@ -1,62 +1,28 @@
-import ItemMeta from '../ItemMeta';
-import SelectValue from '@x-oasis/select-value';
-import { ScrollEventMetrics, ScrollMetrics } from '../types';
+// import SelectValue from '@x-oasis/select-value';
+import { IsItemViewableOptions } from '../types';
+import ViewabilityItemMeta from './ViewabilityItemMeta';
 
-export function resolveMeasureMetrics(
-  scrollEventMetrics: ScrollEventMetrics,
-  selectValue: SelectValue
-) {
-  const { contentOffset, layoutMeasurement, contentSize } = scrollEventMetrics;
-  const contentLength = selectValue.selectLength(contentSize);
-  const scrollOffset = selectValue.selectOffset(contentOffset);
-  const viewportLength = selectValue.selectLength(layoutMeasurement);
-  return {
-    contentLength,
-    scrollOffset,
-    viewportLength,
-  };
-}
-
-export function isItemViewable(options: {
-  viewport: number;
-  itemMeta: ItemMeta;
-  scrollMetrics: ScrollMetrics;
-  viewAreaMode: boolean;
-  viewablePercentThreshold: number;
-}) {
-  const {
-    itemMeta,
-    viewport,
-    viewAreaMode,
-    scrollMetrics,
-    viewablePercentThreshold,
-  } = options;
-  const { offset: scrollOffset, visibleLength: viewportLength } = scrollMetrics;
-  if (!itemMeta) return false;
-  const itemOffset = itemMeta.getItemOffset();
-  const itemLength = itemMeta.getItemLength();
-
-  const top = itemOffset - scrollOffset + viewport * viewportLength;
-  const bottom = top + itemLength;
-
-  const value = _isViewable({
-    top,
-    bottom,
-    itemLength,
-    viewAreaMode,
-    viewablePercentThreshold,
-    viewportHeight: (2 * viewport + 1) * viewportLength,
-  });
-
-  return value;
-}
+// export function resolveMeasureMetrics(
+//   scrollEventMetrics: ScrollEventMetrics,
+//   selectValue: SelectValue
+// ) {
+//   const { contentOffset, layoutMeasurement, contentSize } = scrollEventMetrics;
+//   const contentLength = selectValue.selectLength(contentSize);
+//   const scrollOffset = selectValue.selectOffset(contentOffset);
+//   const viewportLength = selectValue.selectLength(layoutMeasurement);
+//   return {
+//     contentLength,
+//     scrollOffset,
+//     viewportLength,
+//   };
+// }
 
 /**
  * 获取在视窗中的可见高度
  * @param props
  * @returns
  */
-export function _getPixelsVisible(props: {
+export function getPixelsVisible(props: {
   top: number;
   bottom: number;
   viewportHeight: number;
@@ -66,8 +32,7 @@ export function _getPixelsVisible(props: {
   return Math.max(0, visibleHeight);
 }
 
-// TODO 针对visible的单测，需要加起来。。
-export function _isEntirelyVisible(props: {
+export function isEntirelyVisible(props: {
   top: number;
   bottom: number;
   viewportHeight: number;
@@ -82,6 +47,7 @@ export function _isViewable(props: {
   bottom: number;
   itemLength: number;
   viewportHeight: number;
+  viewportLength: number;
   viewAreaMode: boolean;
   viewablePercentThreshold: number;
 }) {
@@ -89,12 +55,13 @@ export function _isViewable(props: {
     top,
     bottom,
     itemLength,
+    viewportLength,
     viewportHeight,
     viewAreaMode,
     viewablePercentThreshold,
   } = props;
   if (
-    _isEntirelyVisible({
+    isEntirelyVisible({
       top,
       bottom,
       viewportHeight,
@@ -102,15 +69,68 @@ export function _isViewable(props: {
   ) {
     return true;
   } else {
-    const pixels = _getPixelsVisible({
+    const pixels = getPixelsVisible({
       top,
       bottom,
       viewportHeight,
     });
+
     const percent =
-      100 * (viewAreaMode ? pixels / viewportHeight : pixels / itemLength);
+      100 * (viewAreaMode ? pixels / viewportLength : pixels / itemLength);
+
+    // viewablePercentThreshold is 0 on default, so item is viewable even if 1 pixel
+    // in viewport.
     return viewablePercentThreshold
       ? percent >= viewablePercentThreshold
       : percent > viewablePercentThreshold;
   }
+}
+
+/**
+ *
+ * @param options
+ *    - viewAreaMode false as default, which means it compares with self length.
+ *      if value is true, then compare with viewport length.
+ *
+ * @returns
+ */
+export function isItemViewable(options: IsItemViewableOptions) {
+  const {
+    getItemOffset,
+    viewabilityItemMeta,
+    viewport: _viewport,
+    viewAreaMode = false,
+    viewabilityScrollMetrics,
+    viewablePercentThreshold = 0,
+  } = options;
+
+  const { offset: scrollOffset, visibleLength: viewportLength } =
+    viewabilityScrollMetrics;
+  if (!viewabilityItemMeta) return false;
+  const itemOffset =
+    typeof getItemOffset === 'function'
+      ? getItemOffset(viewabilityItemMeta as ViewabilityItemMeta)
+      : viewabilityItemMeta instanceof ViewabilityItemMeta
+      ? viewabilityItemMeta.getItemOffset()
+      : viewabilityItemMeta.offset;
+  const itemLength =
+    viewabilityItemMeta instanceof ViewabilityItemMeta
+      ? viewabilityItemMeta.getItemLength()
+      : viewabilityItemMeta.length;
+
+  const viewport = Math.max(_viewport, 0);
+  const top = itemOffset - scrollOffset + viewport * viewportLength;
+  const bottom = top + itemLength;
+
+  const value = _isViewable({
+    top,
+    bottom,
+    itemLength,
+    viewAreaMode,
+    viewportLength,
+    viewablePercentThreshold,
+    viewportHeight: (2 * viewport + 1) * viewportLength,
+  });
+
+  return value;
 }
