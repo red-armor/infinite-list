@@ -1045,7 +1045,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
               () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
             )
           : itemMeta.getState();
-        itemMeta.setItemMetaState(itemMetaState);
+        itemMeta?.setItemMetaState(itemMetaState);
 
         recycleStateResult.push({
           key: `recycle_${index}`,
@@ -1222,7 +1222,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             () => indexToOffsetMap[index]
           )
         : itemMeta.getState();
-      itemMeta.setItemMetaState(itemMetaState);
+      itemMeta?.setItemMetaState(itemMetaState);
 
       spaceState.push({
         key: itemKey,
