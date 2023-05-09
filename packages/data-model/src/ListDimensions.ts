@@ -190,10 +190,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     this._offsetInListGroup = 0;
 
-    // this._onUpdateItemsMetaChangeBatchinator = new Batchinator(
-    //   this.onUpdateItemsMetaChange.bind(this),
-    //   50
-    // );
     this.attemptToHandleEndReached();
     this.handleDeps = this.handleDeps.bind(this);
 

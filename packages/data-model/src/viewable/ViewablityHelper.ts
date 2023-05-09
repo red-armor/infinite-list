@@ -12,39 +12,39 @@ import {
 } from '../types';
 import { isItemViewable } from './viewabilityUtils';
 
-const createIntervalTreeItemChangedToken = (opts: {
-  helper: ViewabilityItemMeta;
-  falsy?: boolean;
-  propsKey: string;
-}) => {
-  const { helper, falsy, propsKey } = opts;
-  const helperMeta = {};
-  // const helperMeta = helper?.getMetaOnViewableItemsChanged
-  //   ? helper.getMetaOnViewableItemsChanged() || {}
-  //   : {};
-  return {
-    helper,
-    key: helper.getKey(),
-    [propsKey]: !!falsy,
-    ...helperMeta,
-  };
-};
+// const createIntervalTreeItemChangedToken = (opts: {
+//   helper: ViewabilityItemMeta;
+//   falsy?: boolean;
+//   propsKey: string;
+// }) => {
+//   const { helper, falsy, propsKey } = opts;
+//   const helperMeta = {};
+//   // const helperMeta = helper?.getMetaOnViewableItemsChanged
+//   //   ? helper.getMetaOnViewableItemsChanged() || {}
+//   //   : {};
+//   return {
+//     helper,
+//     key: helper.getKey(),
+//     [propsKey]: !!falsy,
+//     ...helperMeta,
+//   };
+// };
 
-const createBasicItemChangedToken = (opts: {
-  helper: ViewabilityItemMeta;
-  falsy?: boolean;
-  propsKey: string;
-}): {
-  helper: ViewabilityItemMeta;
-  key: string;
-} => {
-  const { helper, falsy, propsKey } = opts;
-  return {
-    helper,
-    key: helper.getKey(),
-    [propsKey]: !!falsy,
-  };
-};
+// const createBasicItemChangedToken = (opts: {
+//   helper: ViewabilityItemMeta;
+//   falsy?: boolean;
+//   propsKey: string;
+// }): {
+//   helper: ViewabilityItemMeta;
+//   key: string;
+// } => {
+//   const { helper, falsy, propsKey } = opts;
+//   return {
+//     helper,
+//     key: helper.getKey(),
+//     [propsKey]: !!falsy,
+//   };
+// };
 
 const createChangedToken = (opts: {
   helper: ViewabilityItemMeta;
@@ -69,7 +69,7 @@ const createChangedToken = (opts: {
 class ViewablityHelper {
   readonly isListItem: boolean;
   private _configName: string;
-  private _changed: Array<ViewabilityItemMeta>;
+  private _changed: Array<ViewabilityItemMeta> = [];
   private _config: NormalizedViewablityConfig;
   private _callback: OnViewableItemsChanged;
   readonly _pair: ViewabilityConfigCallbackPair;
@@ -317,9 +317,11 @@ class ViewablityHelper {
       });
     });
 
-    // for (const [itemMeta, state] of itemMetaStateMap) {
-    //   itemMeta.setItemMetaState(state);
-    // }
+    for (const [itemMeta, state] of itemMetaStateMap) {
+      // @ts-ignore TODO, should reconsider.
+      // it only used for itemDimensions.....
+      itemMeta.setItemMetaState(state);
+    }
   }
 }
 
