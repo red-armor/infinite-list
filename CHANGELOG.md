@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [0.2.0](https://github.com/red-armor/infinite-list/compare/v0.1.4...v0.2.0) (2023-05-09)
+
+
+### Bug Fixes
+
+* itemsDimensions not trigger itemMeta issue ([2fb6b33](https://github.com/red-armor/infinite-list/commit/2fb6b330ae868503d51e1236a4613635148637f5))
+
+
+
 ## [0.1.4](https://github.com/red-armor/infinite-list/compare/v0.1.3...v0.1.4) (2023-05-09)
 
 
