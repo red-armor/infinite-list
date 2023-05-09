@@ -264,7 +264,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   getState(listKey: string) {
     const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions) return dimensions.getState();
+    if (dimensions instanceof ListDimensions) return dimensions.stateResult;
     return {};
   }
 
