@@ -1,11 +1,12 @@
 # CHANGELOG
 
-## [0.2.1](https://github.com/red-armor/infinite-list/compare/v0.2.0...v0.2.1) (2023-05-09)
+## [0.2.2](https://github.com/red-armor/infinite-list/compare/v0.2.0...v0.2.2) (2023-05-09)
 
 
 ### Features
 
 * should add container offset when calculate visible ([70f1c02](https://github.com/red-armor/infinite-list/commit/70f1c0244f1a3987e5b26e08958c41bcfb96f2dc))
+* should add container offset when calculate visible ([#15](https://github.com/red-armor/infinite-list/issues/15)) ([2649339](https://github.com/red-armor/infinite-list/commit/2649339e7b396aa9fec5237e5a40b9db10e6f254))
 
 
 
