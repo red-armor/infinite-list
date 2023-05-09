@@ -1040,6 +1040,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           ? this._configTuple.resolveItemMetaState(
               itemMeta,
               this._scrollMetrics,
+              // should add container offset, because indexToOffsetMap containerOffset is
+              // exclusive.
               () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
             )
           : itemMeta.getState();
