@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.4](https://github.com/red-armor/infinite-list/compare/v0.2.3...v0.2.4) (2023-05-10)
+
+
+### Bug Fixes
+
+* itemMeta not exist issue ([ceb6c9f](https://github.com/red-armor/infinite-list/commit/ceb6c9fa99cb3aecc4361622dc778009837ec628))
+
+
+
 ## [0.2.3](https://github.com/red-armor/infinite-list/compare/v0.2.2...v0.2.3) (2023-05-09)
 
 
