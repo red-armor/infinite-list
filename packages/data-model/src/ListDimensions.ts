@@ -890,46 +890,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return indexToOffsetMap;
   }
 
-  hydrateSpaceStateToken(
-    spaceStateResult: Array<SpaceStateToken<ItemT>>,
-    item: ItemT,
-    index: number,
-    position: SpaceStateTokenPosition
-  ) {
-    const itemMeta = this.getItemMeta(item, index);
-    const lastTokenIndex = spaceStateResult.length - 1;
-    const lastToken = spaceStateResult[lastTokenIndex];
-    const itemKey = itemMeta.getKey();
-    const itemLayout = itemMeta.getLayout();
-    const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
-    const isReserved = this.persistanceIndices.indexOf(index) !== -1;
-    const isSpace = !isSticky && position !== 'buffered' && !isReserved;
-    const itemLength =
-      (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-
-    if (!isSticky && isSpace && lastToken && lastToken.isSpace) {
-      const key = `${lastToken.key}_${itemKey}`;
-      spaceStateResult[lastTokenIndex] = {
-        ...lastToken,
-        item: null,
-        key,
-        isReserved,
-        length: lastToken.length + itemLength,
-      };
-    } else {
-      const token = this.createSpaceStateToken({
-        key: itemKey,
-        length: itemLength,
-        isSpace,
-        isSticky,
-        isReserved,
-        item,
-        position,
-      });
-      spaceStateResult.push(token);
-    }
-  }
-
   getPosition(rowIndex: number, startIndex: number, endIndex: number) {
     // 初始化的item不参与absolute替换
     if (rowIndex < this.initialNumToRender) return null;
@@ -1208,6 +1168,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     remainingData.forEach((item, _index) => {
       const index = bufferedStartIndex + _index;
       const itemMeta = this.getItemMeta(item, index);
+      if (!itemMeta) return;
       const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
       const isReserved = this.persistanceIndices.indexOf(index) !== -1;
       const itemLayout = itemMeta?.getLayout();
