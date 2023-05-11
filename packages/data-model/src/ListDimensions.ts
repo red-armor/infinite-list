@@ -259,6 +259,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._renderState;
   }
 
+  setRenderState(state: ListRenderState) {
+    this._renderState = state;
+  }
+
   setRenderStateFinished() {
     return (this._renderState = ListRenderState.ON_RENDER_FINISHED);
   }
@@ -427,8 +431,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   notifyRenderFinished() {
     this.setRenderStateFinished();
-    this._renderStateListeners.forEach((listener) => listener());
-    this._renderStateListeners = [];
   }
 
   createItemMeta(key: string, data: Array<ItemT>, index: number) {
@@ -568,6 +570,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
+  /**
+   * Data change will trigger `state` update for one times.
+   */
   setData(data: Array<ItemT>) {
     if (!this._isActive) {
       this._softData = data;
@@ -707,7 +712,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     intervalTree: PrefixIntervalTree
   ) {
     const len = data.length;
-    let updateIntervalTree = true;
+    const updateIntervalTree = true;
+
     for (let index = 0; index < len; index++) {
       const item = data[index];
       const currentIndex = index + baseIndex;
@@ -719,11 +725,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       if (meta.getLayout() && updateIntervalTree) {
         const itemLength = this._selectValue.selectLength(meta.getLayout());
         const separatorLength = meta.getSeparatorLength();
+
+        // 最后一个不包含separatorLength
         const length =
-          currentIndex === len - 1 ? itemLength : itemLength + separatorLength;
+          index === len - 1 ? itemLength : itemLength + separatorLength;
         intervalTree.set(currentIndex, length);
-      } else {
-        updateIntervalTree = false;
       }
 
       keyToMetaMap.set(itemKey, meta);
@@ -933,7 +939,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     let spaceStateResult = [];
 
     // 只有当recycleEnabled为true的时候，才进行位置替换
-
     if (recycleEnabled) {
       if (visibleEndIndex >= 0) {
         for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
@@ -991,7 +996,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
         const itemKey = this.getItemKey(item, targetIndex);
         const itemMeta = this.getItemMeta(item, targetIndex);
-
         const itemLayout = itemMeta?.getLayout();
         const itemLength =
           (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
