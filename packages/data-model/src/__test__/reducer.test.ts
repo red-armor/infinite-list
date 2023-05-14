@@ -859,3 +859,165 @@ describe('Has trailing element', () => {
     });
   });
 });
+
+describe('Has heading element', () => {
+  it('rewrite onEndReached', () => {
+    const data = buildData(30);
+
+    const list = new ListDimensions({
+      data,
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 3000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    list.setKeyItemLayout('1', 100);
+    list.setKeyItemLayout('2', 100);
+    list.setKeyItemLayout('3', 100);
+    list.setKeyItemLayout('4', 100);
+    list.setKeyItemLayout('5', 100);
+    list.setKeyItemLayout('6', 100);
+    list.setKeyItemLayout('7', 100);
+    list.setKeyItemLayout('8', 100);
+
+    list.updateScrollMetrics(
+      // @ts-ignore
+      {
+        offset: 100,
+        visibleLength: 926,
+        contentLength: 4000,
+      },
+      false
+    );
+    let listState = list.state;
+
+    expect(listState).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 2974,
+      data: data.slice(0, 9),
+      actionType: 'recalculate',
+    });
+
+    list.updateScrollMetrics(
+      // @ts-ignore
+      {
+        offset: 1500,
+        visibleLength: 926,
+        contentLength: 6000,
+      },
+      false
+    );
+
+    expect(listState).toBe(list.state);
+
+    list.updateScrollMetrics(
+      // @ts-ignore
+      {
+        offset: 1500,
+        visibleLength: 926,
+        contentLength: 6000,
+      },
+      false
+    );
+
+    expect(list.state).toBe(listState);
+
+    list.updateScrollMetrics(
+      // @ts-ignore
+      {
+        offset: 3000,
+        visibleLength: 926,
+        contentLength: 6000,
+      },
+      false
+    );
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 8,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 8,
+      isEndReached: false,
+      distanceFromEnd: 2074,
+      data: data.slice(0, 9),
+      actionType: 'recalculate',
+    });
+
+    list.updateScrollMetrics(
+      // @ts-ignore
+      {
+        offset: 3010,
+        visibleLength: 926,
+        contentLength: 6000,
+      },
+      false
+    );
+    listState = list.state;
+    expect(listState).toEqual({
+      visibleStartIndex: 1,
+      visibleEndIndex: 8,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 15,
+      isEndReached: true,
+      distanceFromEnd: 2064,
+      data: data.slice(0, 16),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    list.setKeyItemLayout('29', 100);
+
+    list.updateScrollMetrics(
+      // @ts-ignore
+      {
+        offset: 3500,
+        visibleLength: 926,
+        contentLength: 6000,
+      },
+      false
+    );
+    // TODO xxxxxxxxxx
+    expect(list.state).toEqual({
+      visibleStartIndex: 5,
+      visibleEndIndex: 29,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 15,
+      isEndReached: true,
+      distanceFromEnd: 1574,
+      data: data.slice(0, 30),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    list.updateScrollMetrics(
+      // @ts-ignore
+      {
+        offset: 1000,
+        visibleLength: 926,
+        contentLength: 6000,
+      },
+      false
+    );
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 15,
+      isEndReached: false,
+      distanceFromEnd: 4074,
+      data: data.slice(0, 30),
+      actionType: 'recalculate',
+    });
+  });
+});
