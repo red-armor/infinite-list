@@ -10,7 +10,7 @@ import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensions from './ListDimensions';
-import { isNotEmpty } from './common';
+import { isEmpty } from './common';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import manager from './manager';
 import createStore from './state/createStore';
@@ -233,6 +233,19 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   getReflowItemsLength() {
     return this._reflowItemsLength;
+  }
+
+  hasUnLayoutItems() {
+    const len = this.indexKeys.length;
+    for (let index = 0; index < len; index++) {
+      const key = this.indexKeys[index];
+      const dimensions = this.getDimension(key);
+      if (dimensions && dimensions?.hasUnLayoutItems()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   calculateReflowItemsLength() {
@@ -941,7 +954,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics,
     });
 
-    if (!isNotEmpty(state)) return;
+    if (isEmpty(state)) return;
 
     const bufferedMetaRanges = this.computeIndexRangeMeta({
       startIndex: state.bufferedStartIndex,

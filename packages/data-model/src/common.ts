@@ -37,11 +37,11 @@ export function shallowDiffers(prev: Object, next: Object): boolean {
   return false;
 }
 
-export const isNotEmpty = (obj: any) => {
+export const isEmpty = (obj: any) => {
   if (Object.prototype.toString.call(obj) === '[object Object]') {
-    return !!Object.keys.length;
+    return !Object.keys.length;
   }
-  return false;
+  return true;
 };
 
 export const buildStateTokenIndexKey = (startIndex: number, endIndex: number) =>

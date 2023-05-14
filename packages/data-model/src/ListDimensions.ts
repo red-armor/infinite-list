@@ -9,7 +9,7 @@ import layoutEqual from '@x-oasis/layout-equal';
 import omit from '@x-oasis/omit';
 import {
   INVALID_LENGTH,
-  isNotEmpty,
+  isEmpty,
   shallowDiffers,
   buildStateTokenIndexKey,
 } from './common';
@@ -219,6 +219,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._stateResult;
   }
 
+  set scrollMetrics(scrollMetrics: ScrollMetrics) {
+    this._scrollMetrics = scrollMetrics;
+  }
+
   set offsetInListGroup(offset: number) {
     this._offsetInListGroup = offset;
   }
@@ -384,6 +388,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this.intervalTree;
   }
 
+  hasUnLayoutItems() {
+    return this.getReflowItemsLength() < this._data.length;
+  }
+
   _recycleEnabled() {
     if (this.fillingMode !== FillingMode.RECYCLE) return false;
     return this.getReflowItemsLength() >= this.initialNumToRender;
@@ -395,6 +403,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   // 一旦当前的length 发生了变化，判断一下自己总的高度是否变化，如果
   // 变了，那么就去更新
+  /**
+   * In RN, layout change will not trigger `updateScrollMetrics`, because it's replaced with
+   * onContentSizeChanged.
+   */
   setIntervalTreeValue(index: number, length: number) {
     const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
@@ -712,7 +724,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     intervalTree: PrefixIntervalTree
   ) {
     const len = data.length;
-    const updateIntervalTree = true;
 
     for (let index = 0; index < len; index++) {
       const item = data[index];
@@ -722,7 +733,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         this.getKeyMeta(itemKey) ||
         this.createItemMeta(itemKey, data, currentIndex);
 
-      if (meta.getLayout() && updateIntervalTree) {
+      if (meta.getLayout()) {
         const itemLength = this._selectValue.selectLength(meta.getLayout());
         const separatorLength = meta.getSeparatorLength();
 
@@ -957,7 +968,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
       for (
         let index = visibleStartIndex, size = beforeSize;
-        size > 0 && index >= 0;
+        size > 0 && index >= 0 && index >= bufferedStartIndex;
         size--, index--
       ) {
         const position = this.getPosition(
@@ -1233,11 +1244,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return spaceState;
   }
 
-  updateState(
-    newState: PreStateResult,
-    scrollMetrics: ScrollMetrics
-    // performItemsMetaChange = true
-  ) {
+  updateState(newState: PreStateResult, scrollMetrics: ScrollMetrics) {
     const {
       bufferedStartIndex: nextBufferedStartIndex,
       bufferedEndIndex: nextBufferedEndIndex,
@@ -1279,7 +1286,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       scrollMetrics,
     });
 
-    if (!isNotEmpty(state)) return;
+    if (isEmpty(state)) return;
     this.updateState(state, scrollMetrics);
     const { isEndReached, distanceFromEnd } = state;
 
@@ -1302,10 +1309,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   /**
    * When to trigger updateScrollMetrics..
    * - on scroll
-   * - layout change. In rn, use contentSizeChanged. in web, maybe `_setKeyItemLayout`
-   *   to trigger state updating..
+   * - layout change.
+   *   - In rn, use contentSizeChanged. `setIntervalTreeValue` has remove update scroll logic.
+   *   - In web, maybe `setIntervalTreeValue` to trigger state updating..
    */
-
   updateScrollMetrics(
     scrollMetrics: ScrollMetrics = this._scrollMetrics,
     useCache = true

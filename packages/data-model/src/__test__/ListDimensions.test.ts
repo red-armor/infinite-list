@@ -526,41 +526,6 @@ describe('resolve space state', () => {
       data: data.slice(0, 100),
       actionType: 'hydrationWithBatchUpdate',
     });
-
-    // @ts-ignore
-    list.updateScrollMetrics({
-      offset: 0,
-      visibleLength: 926,
-      contentLength: 1100,
-    });
-
-    expect(list.state).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 9,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 17,
-      isEndReached: true,
-      distanceFromEnd: 174,
-      data: data.slice(0, 100),
-      actionType: 'hydrationWithBatchUpdate',
-    });
-    // @ts-ignore
-    list.updateScrollMetrics({
-      offset: 0,
-      visibleLength: 926,
-      contentLength: 1200,
-    });
-
-    expect(list.state).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 9,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 18,
-      isEndReached: true,
-      distanceFromEnd: 274,
-      data: data.slice(0, 100),
-      actionType: 'hydrationWithBatchUpdate',
-    });
   });
 
   it('persistanceIndices and stickyIndices', () => {
@@ -2051,6 +2016,401 @@ describe('data update', () => {
       isEndReached: true,
       distanceFromEnd: -926,
       data: [].concat(data[0], data.slice(2)),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
+});
+
+describe('updateScrollMetrics', () => {
+  it('setData will trigger updateScrollMetrics', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+  });
+
+  it('setKeyItemLayout will not trigger updateScrollMetrics', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    list.setKeyItemLayout('3', 100);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
+
+  it('If offset, visibleLength, contentLength not change, updateScrollMetrics will use `state` directly', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    list.setKeyItemLayout('3', 100);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    list.setKeyItemLayout('4', 100);
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1001,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 4,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 8,
+      isEndReached: true,
+      distanceFromEnd: 75,
+      data: data.slice(0, 9),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
+
+  it('Usage of `_offsetTriggerCachedState`, ', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    list.setKeyItemLayout('3', 100);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    // to simulate _offsetTriggerCachedState not set, update scrollMetrics only
+    // @ts-ignore
+    list.scrollMetrics = {
+      offset: 1,
+      visibleLength: 926,
+      contentLength: 1000,
+    };
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 1,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 3,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 10,
+      isEndReached: true,
+      distanceFromEnd: 73,
+      data: data.slice(0, 11),
       actionType: 'hydrationWithBatchUpdate',
     });
   });

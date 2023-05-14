@@ -1,4 +1,5 @@
 import ListDimensions from '../ListDimensions';
+import { INVALID_LENGTH } from '../common';
 import { ScrollMetrics } from '../types';
 import { Action, ActionType, ReducerResult } from './types';
 
@@ -12,9 +13,25 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
   const { scrollMetrics, dimension } = props;
   const { velocity } = scrollMetrics;
 
-  const { isEndReached, distanceFromEnd } = dimension
-    .getOnEndReachedHelper()
-    .perform(scrollMetrics);
+  const _info = dimension.getOnEndReachedHelper().perform(scrollMetrics);
+
+  let isEndReached = _info.isEndReached;
+  const distanceFromEnd = _info.distanceFromEnd;
+
+  if (!isEndReached) {
+    const { visibleEndIndex, visibleStartIndex } = state;
+    const total = dimension.getTotalLength();
+    if (
+      (visibleStartIndex !== -1 || visibleEndIndex !== -1) &&
+      total !== INVALID_LENGTH &&
+      dimension.hasUnLayoutItems()
+    ) {
+      isEndReached = dimension.getOnEndReachedHelper().perform({
+        ...scrollMetrics,
+        contentLength: dimension.getContainerOffset() + total,
+      }).isEndReached;
+    }
+  }
 
   if (isEndReached) {
     return {
