@@ -443,6 +443,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   notifyRenderFinished() {
     this.setRenderStateFinished();
+    this._renderStateListeners.forEach((listener) => listener());
   }
 
   createItemMeta(key: string, data: Array<ItemT>, index: number) {
