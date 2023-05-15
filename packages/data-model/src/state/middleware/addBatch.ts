@@ -70,8 +70,4 @@ export default <State extends ReducerResult = ReducerResult>(
   );
 
   ctx.visibleIndexRange.endIndex = maxVisibleEndIndex;
-
-  // ctx.visibleIndexRange.endIndex = state?.visibleEndIndex
-  //   ? Math.min(state.visibleEndIndex, maxVisibleEndIndex)
-  //   : maxVisibleEndIndex;
 };

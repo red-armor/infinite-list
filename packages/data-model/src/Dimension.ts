@@ -1,7 +1,7 @@
 import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
 import { INVALID_LENGTH } from './common';
-import layoutEqual from '@x-oasis/layout-equal'
+import layoutEqual from '@x-oasis/layout-equal';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
@@ -69,6 +69,11 @@ class Dimension {
     const meta = this.getMeta();
     const layout = meta.getLayout();
     return layout ? 1 : 0;
+  }
+
+  hasUnLayoutItems() {
+    const meta = this.getMeta();
+    return !!meta?.getLayout();
   }
 
   getTotalLength() {
@@ -152,7 +157,7 @@ class Dimension {
     // const finalIndex = this._listGroupDimension.getDimensionStartIndex(this.id);
 
     if (typeof layout === 'number') {
-      let length = layout;
+      const length = layout;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
@@ -167,7 +172,7 @@ class Dimension {
 
     if (!layoutEqual(meta.getLayout(), layout as ItemLayout)) {
       meta.setLayout(layout as ItemLayout);
-      let length = this._selectValue.selectLength(layout as ItemLayout);
+      const length = this._selectValue.selectLength(layout as ItemLayout);
       if (_update) {
         if (this._listGroupDimension) {
           this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();

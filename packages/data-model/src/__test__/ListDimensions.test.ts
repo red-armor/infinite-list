@@ -8,9 +8,9 @@ import {
 import { defaultKeyExtractor } from '../exportedUtils';
 import { buildStateTokenIndexKey } from '../common';
 import { vi, describe, it, expect } from 'vitest';
-const buildData = (count: number) =>
+const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
-    key: index,
+    key: index + startIndex,
   }));
 
 vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
@@ -526,41 +526,6 @@ describe('resolve space state', () => {
       data: data.slice(0, 100),
       actionType: 'hydrationWithBatchUpdate',
     });
-
-    // @ts-ignore
-    list.updateScrollMetrics({
-      offset: 0,
-      visibleLength: 926,
-      contentLength: 1100,
-    });
-
-    expect(list.state).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 9,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 17,
-      isEndReached: true,
-      distanceFromEnd: 174,
-      data: data.slice(0, 100),
-      actionType: 'hydrationWithBatchUpdate',
-    });
-    // @ts-ignore
-    list.updateScrollMetrics({
-      offset: 0,
-      visibleLength: 926,
-      contentLength: 1200,
-    });
-
-    expect(list.state).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 9,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 18,
-      isEndReached: true,
-      distanceFromEnd: 274,
-      data: data.slice(0, 100),
-      actionType: 'hydrationWithBatchUpdate',
-    });
   });
 
   it('persistanceIndices and stickyIndices', () => {
@@ -820,6 +785,165 @@ describe('viewability', () => {
     expect(stateResult[28].imageViewable).toBe(true);
     expect(stateResult[29].viewable).toBe(false);
     expect(stateResult[29].imageViewable).toBe(false);
+  });
+});
+
+describe('setData', () => {
+  it('initial', () => {
+    const data = buildData(20);
+    const recycleList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      recycleEnabled: true,
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+      getItemLayout: (data, index) => ({
+        length: 100,
+        index,
+      }),
+    });
+    const _intervalTree = recycleList.intervalTree;
+    const type = recycleList.setData(data);
+    expect(type).toBe(KeysChangedType.Initial);
+    // on initial interval tree should not change.
+    expect(_intervalTree).toBe(recycleList.intervalTree);
+  });
+
+  it('append', () => {
+    const data = buildData(20);
+    const recycleList = new ListDimensions({
+      data,
+      id: 'list_group',
+      recycleEnabled: true,
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+      getItemLayout: (data, index) => ({
+        length: 100,
+        index,
+      }),
+      getItemSeparatorLength: () => ({
+        length: 20,
+      }),
+    });
+
+    const _intervalTree = recycleList.intervalTree;
+    expect(recycleList.intervalTree.get(19)).toBe(100);
+    const newData = [].concat(data, buildData(1, 20));
+
+    const type = recycleList.setData(newData);
+
+    expect(type).toBe(KeysChangedType.Append);
+    // on initial interval tree should not change.
+    expect(_intervalTree).toBe(recycleList.intervalTree);
+    expect(recycleList.intervalTree.get(19)).toBe(120);
+    expect(recycleList.intervalTree.get(20)).toBe(100);
+  });
+
+  it('shuffle', () => {
+    const data = buildData(20);
+    const recycleList = new ListDimensions({
+      data,
+      id: 'list_group',
+      recycleEnabled: true,
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    let _intervalTree = recycleList.intervalTree;
+    expect(recycleList.intervalTree.get(19)).toBe(0);
+    recycleList.setKeyItemLayout('0', 100);
+    recycleList.setKeyItemLayout('1', 80);
+    recycleList.setKeyItemLayout('2', 100);
+    recycleList.setKeyItemLayout('3', 20);
+    recycleList.setKeyItemLayout('4', 100);
+    recycleList.setKeyItemLayout('5', 30);
+    recycleList.setKeyItemLayout('6', 100);
+    recycleList.setKeyItemLayout('7', 200);
+    expect(
+      recycleList.intervalTree
+        .getHeap()
+        .slice(
+          recycleList.intervalTree.getSize(),
+          recycleList.intervalTree.getSize() + 10
+        )
+    ).toEqual([100, 80, 100, 20, 100, 30, 100, 200, 0, 0]);
+    // add
+    let _data = data.slice();
+    const newData = buildData(1, 20);
+    _data.splice(1, 0, newData[0]);
+    let type = recycleList.setData(_data);
+    expect(type).toBe(KeysChangedType.Add);
+    expect(_intervalTree).not.toBe(recycleList.intervalTree);
+    _intervalTree = recycleList.intervalTree;
+    expect(
+      recycleList.intervalTree
+        .getHeap()
+        .slice(
+          recycleList.intervalTree.getSize(),
+          recycleList.intervalTree.getSize() + 10
+        )
+    ).toEqual([100, 0, 80, 100, 20, 100, 30, 100, 200, 0]);
+
+    // remove
+    _data = _data.slice();
+    _data.splice(3, 1);
+    type = recycleList.setData(_data);
+    expect(type).toBe(KeysChangedType.Remove);
+    expect(_intervalTree).not.toBe(recycleList.intervalTree);
+    _intervalTree = recycleList.intervalTree;
+    expect(
+      recycleList.intervalTree
+        .getHeap()
+        .slice(
+          recycleList.intervalTree.getSize(),
+          recycleList.intervalTree.getSize() + 10
+        )
+    ).toEqual([100, 0, 80, 20, 100, 30, 100, 200, 0, 0]);
+
+    // reorder
+    _data = _data.slice();
+    const data5 = _data[5];
+    _data.splice(5, 1);
+    _data.splice(7, 0, data5);
+    type = recycleList.setData(_data);
+    expect(type).toBe(KeysChangedType.Reorder);
+    expect(_intervalTree).not.toBe(recycleList.intervalTree);
+    _intervalTree = recycleList.intervalTree;
+    expect(
+      recycleList.intervalTree
+        .getHeap()
+        .slice(
+          recycleList.intervalTree.getSize(),
+          recycleList.intervalTree.getSize() + 10
+        )
+    ).toEqual([100, 0, 80, 20, 100, 100, 200, 30, 0, 0]);
   });
 });
 
@@ -1598,5 +1722,696 @@ describe('lifecycle', () => {
     expect(recycleListStateResult.spaceState.map((v) => v.length)).toEqual([
       100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 9000,
     ]);
+  });
+});
+
+describe('data update', () => {
+  it('insert a data item', () => {
+    const data = buildData(20);
+    const recycleList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      recycleEnabled: true,
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+      getItemLayout: (data, index) => ({
+        length: 100,
+        index,
+      }),
+    });
+    recycleList.setData(data);
+
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 0,
+    });
+
+    let recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+
+    // offset should be recalculate
+    expect(recycleListStateResult.recycleState[0].offset).toBe(400);
+    // the forth as first item in recycleState
+    expect(recycleListStateResult.recycleState[0].targetKey).toBe('4');
+
+    const _data = data.slice();
+    const newData = buildData(1, 20);
+    _data.splice(1, 0, newData[0]);
+    recycleList.setData(_data);
+
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+    // offset should be recalculate
+    expect(recycleListStateResult.recycleState[0].offset).toBe(400);
+    // the third as first item in recycleState
+    expect(recycleListStateResult.recycleState[0].targetKey).toBe('3');
+  });
+
+  it('insert a data item with dynamic layout', () => {
+    const data = buildData(20);
+    const recycleList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      recycleEnabled: true,
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+    recycleList.setData(data);
+
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    recycleList.setKeyItemLayout('0', 100);
+    recycleList.setKeyItemLayout('1', 80);
+    recycleList.setKeyItemLayout('2', 100);
+    recycleList.setKeyItemLayout('3', 20);
+
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 0,
+    });
+
+    recycleList.setKeyItemLayout('4', 100);
+    recycleList.setKeyItemLayout('5', 30);
+    recycleList.setKeyItemLayout('6', 100);
+    recycleList.setKeyItemLayout('7', 200);
+    recycleList.setKeyItemLayout('8', 100);
+    recycleList.setKeyItemLayout('9', 100);
+    recycleList.setKeyItemLayout('10', 100);
+    recycleList.setKeyItemLayout('11', 100);
+    recycleList.setKeyItemLayout('12', 100);
+    recycleList.setKeyItemLayout('13', 100);
+
+    let recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+
+    // offset should be recalculate
+    expect(recycleListStateResult.recycleState[0].offset).toBe(300);
+    // the forth as first item in recycleState
+    expect(recycleListStateResult.recycleState[0].targetKey).toBe('4');
+
+    const _data = data.slice();
+    const newData = buildData(1, 20);
+    _data.splice(1, 0, newData[0]);
+    recycleList.setData(_data);
+
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
+      any,
+      {
+        viewable: boolean;
+        imageViewable: boolean;
+      }
+    >;
+
+    // offset should be recalculate
+    expect(recycleListStateResult.recycleState[0].offset).toBe(280);
+    // the third as first item in recycleState
+    expect(recycleListStateResult.recycleState[0].targetKey).toBe('3');
+  });
+
+  it('delete a data item (without layout): setData will trigger state update', () => {
+    const data = buildData(20);
+    const spaceList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+    spaceList.setData(data);
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    spaceList.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 0,
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: true,
+      distanceFromEnd: -926,
+      data: data.slice(0, 10),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    const _data = data.slice();
+    _data.splice(1, 1);
+
+    spaceList.setData(_data);
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: true,
+      distanceFromEnd: -926,
+      data: [].concat(data[0], data.slice(2, 11)),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
+
+  it('delete a data item (with layout): setData will trigger state update', () => {
+    const data = buildData(20);
+    const spaceList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getItemLayout: (data, index) => ({
+        length: 100,
+        index,
+      }),
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+    spaceList.setData(data);
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    spaceList.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 0,
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: true,
+      distanceFromEnd: -926,
+      data: data.slice(),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    const _data = data.slice();
+    _data.splice(1, 1);
+
+    spaceList.setData(_data);
+
+    // data should be updated
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: true,
+      distanceFromEnd: -926,
+      data: [].concat(data[0], data.slice(2)),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
+});
+
+describe('updateScrollMetrics', () => {
+  it('setData will trigger updateScrollMetrics', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+  });
+
+  it('setKeyItemLayout will not trigger updateScrollMetrics', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    list.setKeyItemLayout('3', 100);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
+
+  it('If offset, visibleLength, contentLength not change, updateScrollMetrics will use `state` directly', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    list.setKeyItemLayout('3', 100);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    list.setKeyItemLayout('4', 100);
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1001,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 4,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 8,
+      isEndReached: true,
+      distanceFromEnd: 75,
+      data: data.slice(0, 9),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
+
+  it('Usage of `_offsetTriggerCachedState`, ', () => {
+    const data = buildData(100);
+
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    list.setData(data);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    list.setKeyItemLayout('3', 100);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 7,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      data: data.slice(0, 8),
+      actionType: 'hydrationWithBatchUpdate',
+    });
+
+    // to simulate _offsetTriggerCachedState not set, update scrollMetrics only
+    // @ts-ignore
+    list.scrollMetrics = {
+      offset: 1,
+      visibleLength: 926,
+      contentLength: 1000,
+    };
+
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 1,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
+
+    expect(list.state).toEqual({
+      visibleStartIndex: 3,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 10,
+      isEndReached: true,
+      distanceFromEnd: 73,
+      data: data.slice(0, 11),
+      actionType: 'hydrationWithBatchUpdate',
+    });
   });
 });

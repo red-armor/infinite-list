@@ -49,10 +49,23 @@ class OnEndReachedHelper {
       this.onEndReached = onEndReached;
   }
 
-  perform(scrollMetrics: ScrollMetrics) {
+  /**
+   *
+   * @param scrollMetrics
+   * @param positive
+   * @returns
+   */
+  perform(scrollMetrics: ScrollMetrics, positive = false) {
     const { contentLength, offset, visibleLength } = scrollMetrics;
     const distanceFromEnd = contentLength - visibleLength - offset;
     const threshold = this.onEndReachedThreshold * visibleLength;
+
+    if (positive && distanceFromEnd < 0) {
+      return {
+        distanceFromEnd,
+        isEndReached: false,
+      };
+    }
 
     return {
       distanceFromEnd,
