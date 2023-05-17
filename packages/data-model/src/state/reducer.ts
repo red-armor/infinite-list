@@ -16,27 +16,27 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   const ctx = {} as Ctx;
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
-  const { dimension } = payload;
+  // const { dimension } = payload;
 
   // if visibleStartIndex and visibleEndIndex not change, then return directly
-  if (
-    state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-    state.visibleStartIndex === ctx.visibleIndexRange.startIndex &&
-    !dimension.hasUnLayoutItems()
-  ) {
-    if (state.actionType === 'hydrationWithBatchUpdate')
-      return {
-        ...state,
-        isEndReached: payload.isEndReached,
-        distanceFromEnd: payload.distanceFromEnd,
-      };
-    return {
-      ...state,
-      isEndReached: payload.isEndReached,
-      distanceFromEnd: payload.distanceFromEnd,
-      actionType: 'hydrationWithBatchUpdate',
-    };
-  }
+  // if (
+  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
+  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex &&
+  //   !dimension.hasUnLayoutItems()
+  // ) {
+  //   if (state.actionType === 'hydrationWithBatchUpdate')
+  //     return {
+  //       ...state,
+  //       isEndReached: payload.isEndReached,
+  //       distanceFromEnd: payload.distanceFromEnd,
+  //     };
+  //   return {
+  //     ...state,
+  //     isEndReached: payload.isEndReached,
+  //     distanceFromEnd: payload.distanceFromEnd,
+  //     actionType: 'hydrationWithBatchUpdate',
+  //   };
+  // }
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
@@ -76,23 +76,23 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
 
-  if (
-    state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-    state.visibleStartIndex === ctx.visibleIndexRange.startIndex
-  ) {
-    if (state.actionType === 'recalculate')
-      return {
-        ...state,
-        isEndReached: payload.isEndReached,
-        distanceFromEnd: payload.distanceFromEnd,
-      };
-    return {
-      ...state,
-      isEndReached: payload.isEndReached,
-      distanceFromEnd: payload.distanceFromEnd,
-      actionType: 'recalculate',
-    };
-  }
+  // if (
+  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
+  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex
+  // ) {
+  //   if (state.actionType === 'recalculate')
+  //     return {
+  //       ...state,
+  //       isEndReached: payload.isEndReached,
+  //       distanceFromEnd: payload.distanceFromEnd,
+  //     };
+  //   return {
+  //     ...state,
+  //     isEndReached: payload.isEndReached,
+  //     distanceFromEnd: payload.distanceFromEnd,
+  //     actionType: 'recalculate',
+  //   };
+  // }
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
   resolveUnLayoutLimitation(state, payload, ctx);
@@ -130,24 +130,24 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
 
-  if (
-    state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-    state.visibleStartIndex === ctx.visibleIndexRange.startIndex
-  ) {
-    if (state.actionType === 'scrollDown')
-      return {
-        ...state,
-        isEndReached: payload.isEndReached,
-        distanceFromEnd: payload.distanceFromEnd,
-      };
+  // if (
+  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
+  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex
+  // ) {
+  //   if (state.actionType === 'scrollDown')
+  //     return {
+  //       ...state,
+  //       isEndReached: payload.isEndReached,
+  //       distanceFromEnd: payload.distanceFromEnd,
+  //     };
 
-    return {
-      ...state,
-      isEndReached: payload.isEndReached,
-      distanceFromEnd: payload.distanceFromEnd,
-      actionType: 'scrollDown',
-    };
-  }
+  //   return {
+  //     ...state,
+  //     isEndReached: payload.isEndReached,
+  //     distanceFromEnd: payload.distanceFromEnd,
+  //     actionType: 'scrollDown',
+  //   };
+  // }
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
@@ -186,24 +186,24 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
 
-  if (
-    state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-    state.visibleStartIndex === ctx.visibleIndexRange.startIndex
-  ) {
-    if (state.actionType === 'scrollUp')
-      return {
-        ...state,
-        isEndReached: payload.isEndReached,
-        distanceFromEnd: payload.distanceFromEnd,
-      };
+  // if (
+  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
+  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex
+  // ) {
+  //   if (state.actionType === 'scrollUp')
+  //     return {
+  //       ...state,
+  //       isEndReached: payload.isEndReached,
+  //       distanceFromEnd: payload.distanceFromEnd,
+  //     };
 
-    return {
-      ...state,
-      isEndReached: payload.isEndReached,
-      distanceFromEnd: payload.distanceFromEnd,
-      actionType: 'scrollUp',
-    };
-  }
+  //   return {
+  //     ...state,
+  //     isEndReached: payload.isEndReached,
+  //     distanceFromEnd: payload.distanceFromEnd,
+  //     actionType: 'scrollUp',
+  //   };
+  // }
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
