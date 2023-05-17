@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.9](https://github.com/red-armor/infinite-list/compare/v0.2.8...v0.2.9) (2023-05-17)
+
+
+### Features
+
+* update ([8a940e2](https://github.com/red-armor/infinite-list/commit/8a940e278ac0b79e9057d5140b9c1b61f70f08c4))
+
+
+
 ## [0.2.8](https://github.com/red-armor/infinite-list/compare/v0.2.7...v0.2.8) (2023-05-17)
 
 
