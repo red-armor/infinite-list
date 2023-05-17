@@ -24,9 +24,16 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
     state.visibleStartIndex === ctx.visibleIndexRange.startIndex &&
     !dimension.hasUnLayoutItems()
   ) {
-    if (state.actionType === 'hydrationWithBatchUpdate') return state;
+    if (state.actionType === 'hydrationWithBatchUpdate')
+      return {
+        ...state,
+        isEndReached: payload.isEndReached,
+        distanceFromEnd: payload.distanceFromEnd,
+      };
     return {
       ...state,
+      isEndReached: payload.isEndReached,
+      distanceFromEnd: payload.distanceFromEnd,
       actionType: 'hydrationWithBatchUpdate',
     };
   }
@@ -73,9 +80,16 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
     state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
     state.visibleStartIndex === ctx.visibleIndexRange.startIndex
   ) {
-    if (state.actionType === 'recalculate') return state;
+    if (state.actionType === 'recalculate')
+      return {
+        ...state,
+        isEndReached: payload.isEndReached,
+        distanceFromEnd: payload.distanceFromEnd,
+      };
     return {
       ...state,
+      isEndReached: payload.isEndReached,
+      distanceFromEnd: payload.distanceFromEnd,
       actionType: 'recalculate',
     };
   }
@@ -120,10 +134,17 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
     state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
     state.visibleStartIndex === ctx.visibleIndexRange.startIndex
   ) {
-    if (state.actionType === 'scrollDown') return state;
+    if (state.actionType === 'scrollDown')
+      return {
+        ...state,
+        isEndReached: payload.isEndReached,
+        distanceFromEnd: payload.distanceFromEnd,
+      };
 
     return {
       ...state,
+      isEndReached: payload.isEndReached,
+      distanceFromEnd: payload.distanceFromEnd,
       actionType: 'scrollDown',
     };
   }
@@ -169,10 +190,17 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
     state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
     state.visibleStartIndex === ctx.visibleIndexRange.startIndex
   ) {
-    if (state.actionType === 'scrollUp') return state;
+    if (state.actionType === 'scrollUp')
+      return {
+        ...state,
+        isEndReached: payload.isEndReached,
+        distanceFromEnd: payload.distanceFromEnd,
+      };
 
     return {
       ...state,
+      isEndReached: payload.isEndReached,
+      distanceFromEnd: payload.distanceFromEnd,
       actionType: 'scrollUp',
     };
   }

@@ -832,8 +832,8 @@ describe('Has trailing element', () => {
       visibleEndIndex: 29,
       bufferedStartIndex: 29,
       bufferedEndIndex: 29,
-      isEndReached: false,
-      distanceFromEnd: 2064,
+      isEndReached: true,
+      distanceFromEnd: 1574,
       data: data.slice(0, 30),
       actionType: 'hydrationWithBatchUpdate',
     });
@@ -853,7 +853,7 @@ describe('Has trailing element', () => {
       bufferedStartIndex: 29,
       bufferedEndIndex: 29,
       isEndReached: false,
-      distanceFromEnd: 2064,
+      distanceFromEnd: 4074,
       data: data.slice(0, 30),
       actionType: 'recalculate',
     });
