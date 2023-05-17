@@ -14,11 +14,13 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
   const { velocity } = scrollMetrics;
 
   const _info = dimension.getOnEndReachedHelper().perform(scrollMetrics);
+  const isEndReached = _info.isEndReached;
 
-  let isEndReached = _info.isEndReached;
+  // isEndReached should not be rewrite, or trigger onEndReached...
+  let nextIsEndReached = isEndReached;
   const distanceFromEnd = _info.distanceFromEnd;
 
-  if (!isEndReached) {
+  if (!nextIsEndReached) {
     const { visibleEndIndex, visibleStartIndex } = state;
     const total = dimension.getTotalLength();
     if (
@@ -26,14 +28,14 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
       total !== INVALID_LENGTH &&
       dimension.hasUnLayoutItems()
     ) {
-      isEndReached = dimension.getOnEndReachedHelper().perform({
+      nextIsEndReached = dimension.getOnEndReachedHelper().perform({
         ...scrollMetrics,
         contentLength: dimension.getContainerOffset() + total,
       }).isEndReached;
     }
   }
 
-  if (isEndReached) {
+  if (nextIsEndReached) {
     return {
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
