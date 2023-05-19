@@ -1674,6 +1674,7 @@ describe('lifecycle', () => {
       'recycle_10',
       'recycle_11',
     ]);
+
     expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual([
       true,
       true,
@@ -1684,7 +1685,7 @@ describe('lifecycle', () => {
       true,
       false,
       false,
-      false,
+      true,
       false,
       false,
     ]);
