@@ -78,6 +78,8 @@ export type ListDimensionsProps<ItemT> = {
   recycleThreshold?: number;
 
   recycleEnabled?: boolean;
+
+  stillnessThresholdValue?: number;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
 
