@@ -44,6 +44,7 @@ import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
 import IntegerBufferSet from '@x-oasis/integer-buffer-set';
 import memoizeOne from 'memoize-one';
+import StillnessHelper from './utils/StillnessHelper';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -97,6 +98,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _offsetTriggerCachedState = 0;
 
+  private _stillnessHelper: StillnessHelper;
+
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
   ) => SpaceStateResult<ItemT>;
@@ -123,6 +126,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       getItemSeparatorLength,
       onBatchLayoutFinished,
       persistanceIndices,
+      stillnessThresholdValue,
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
     } = props;
@@ -143,6 +147,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       onEndReachedHandlerTimeoutThreshold,
     });
     this._onBatchLayoutFinished = onBatchLayoutFinished;
+
+    this.stillnessHandler = this.stillnessHandler.bind(this);
+    this._stillnessHelper = new StillnessHelper({
+      stillnessThresholdValue,
+      handler: this.stillnessHandler,
+    });
 
     this._deps = deps;
     this._isActive = this.resolveInitialActiveValue(active);
@@ -941,7 +951,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       data,
     } = state;
 
-    const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    const _targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    const targetIndices = new Array(_targetIndices.length).fill(null);
 
     // const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
     // const originalPositionSize = this._bufferSet.getSize();
@@ -967,31 +978,57 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const beforeSize = Math.floor((this.recycleThreshold - visibleSize) / 2);
       const afterSize = this.recycleThreshold - visibleSize - beforeSize;
 
+      let _beforeCount = 0;
+
       for (
         let index = visibleStartIndex, size = beforeSize;
         size > 0 && index >= 0 && index >= bufferedStartIndex;
         size--, index--
       ) {
-        const position = this.getPosition(
-          index,
-          bufferedStartIndex,
-          visibleStartIndex
-        );
+        const item = data[index];
+        if (!item) continue;
+        const itemMeta = this.getItemMeta(item, index);
+        const itemLayout = itemMeta?.getLayout();
 
-        if (position !== null) targetIndices[position] = index;
+        if (_beforeCount < 2 || !itemLayout) {
+          const position = this.getPosition(
+            index,
+            bufferedStartIndex,
+            visibleStartIndex
+          );
+
+          if (position !== null) targetIndices[position] = index;
+        }
+
+        if (index >= this.initialNumToRender) {
+          _beforeCount++;
+        }
       }
+
+      let _afterCount = 0;
 
       for (
         let index = visibleEndIndex + 1, size = afterSize;
         size > 0 && index <= bufferedEndIndex;
         size--, index++
       ) {
-        const position = this.getPosition(
-          index,
-          visibleEndIndex + 1,
-          bufferedEndIndex
-        );
-        if (position !== null) targetIndices[position] = index;
+        const item = data[index];
+        if (!item) continue;
+        const itemMeta = this.getItemMeta(item, index);
+        const itemLayout = itemMeta?.getLayout();
+
+        if (_afterCount < 2 || !itemLayout) {
+          const position = this.getPosition(
+            index,
+            visibleEndIndex + 1,
+            bufferedEndIndex
+          );
+          if (position !== null) targetIndices[position] = index;
+        }
+
+        if (index >= this.initialNumToRender) {
+          _afterCount++;
+        }
       }
 
       const minValue = this._bufferSet.getMinValue();
@@ -1003,6 +1040,23 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       );
 
       targetIndices.forEach((targetIndex, index) => {
+        const prevStateResult = this._stateResult as RecycleStateResult<ItemT>;
+        if (!targetIndex && typeof targetIndex !== 'number') {
+          const _result = prevStateResult.recycleState[index];
+          if (_result) {
+            const { item, targetKey } = _result;
+            if (item === this._data[this.getKeyIndex(targetKey)]) {
+              recycleStateResult.push(prevStateResult.recycleState[index]);
+            }
+          }
+          if (
+            prevStateResult.recycleState &&
+            prevStateResult.recycleState[index]?.item ===
+              this._data[targetIndex]
+          )
+            recycleStateResult.push(prevStateResult.recycleState[index]);
+          return;
+        }
         const item = data[targetIndex];
         if (!item) return;
 
@@ -1043,8 +1097,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     spaceStateResult = this.resolveRecycleSpaceState(state);
 
     const stateResult = {
-      recycleState: recycleStateResult,
-      spaceState: spaceStateResult,
+      recycleState: recycleStateResult.filter((v) => v),
+      spaceState: spaceStateResult.filter((v) => v),
     };
 
     return stateResult;
@@ -1311,6 +1365,14 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     );
   }
 
+  stillnessHandler() {
+    this.dispatchMetrics(this._scrollMetrics);
+  }
+
+  isStill() {
+    this._stillnessHelper.isStill;
+  }
+
   /**
    * When to trigger updateScrollMetrics..
    * - on scroll
@@ -1332,6 +1394,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._scrollMetrics = scrollMetrics;
       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       return;
+    }
+
+    if (this._scrollMetrics?.offset !== scrollMetrics?.offset) {
+      // this._stillnessHelper.startClockBatchinateLast.schedule();
     }
 
     if (
