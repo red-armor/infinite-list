@@ -47,6 +47,7 @@ import IntegerBufferSet from '@x-oasis/integer-buffer-set';
 import memoizeOne from 'memoize-one';
 import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
+import StillnessHelper from './utils/StillnessHelper';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -100,6 +101,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _offsetTriggerCachedState = 0;
 
+  private _stillnessHelper: StillnessHelper;
+
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
   ) => SpaceStateResult<ItemT>;
@@ -126,9 +129,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       getItemSeparatorLength,
       onBatchLayoutFinished,
       persistanceIndices,
-      dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
+      stillnessThreshold,
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
+      dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
     } = props;
     this._keyExtractor = keyExtractor;
     this._getItemLayout = getItemLayout;
@@ -147,6 +151,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       onEndReachedHandlerTimeoutThreshold,
     });
     this._onBatchLayoutFinished = onBatchLayoutFinished;
+
+    this.stillnessHandler = this.stillnessHandler.bind(this);
+    this._stillnessHelper = new StillnessHelper({
+      stillnessThreshold,
+      handler: this.stillnessHandler,
+    });
 
     this._deps = deps;
     this._isActive = this.resolveInitialActiveValue(active);
@@ -970,7 +980,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       data,
     } = state;
 
-    const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    const _targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    const targetIndices = new Array(_targetIndices.length).fill(null);
 
     // const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
     // const originalPositionSize = this._bufferSet.getSize();
@@ -985,8 +996,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
           const position = this.getPosition(
             index,
-            visibleStartIndex,
-            visibleEndIndex
+            visibleStartIndex - 2,
+            visibleEndIndex + 2
           );
           if (position !== null) targetIndices[position] = index;
         }
@@ -996,31 +1007,65 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const beforeSize = Math.floor((this.recycleThreshold - visibleSize) / 2);
       const afterSize = this.recycleThreshold - visibleSize - beforeSize;
 
+      let _beforeCount = 0;
+      let _topMinIndex = visibleStartIndex;
+
       for (
         let index = visibleStartIndex, size = beforeSize;
         size > 0 && index >= 0 && index >= bufferedStartIndex;
         size--, index--
       ) {
-        const position = this.getPosition(
-          index,
-          bufferedStartIndex,
-          visibleStartIndex
-        );
+        const item = data[index];
+        if (!item) continue;
+        const itemMeta = this.getItemMeta(item, index);
+        const itemLayout = itemMeta?.getLayout();
 
-        if (position !== null) targetIndices[position] = index;
+        if (_beforeCount < 2 || !itemLayout) {
+          const position = this.getPosition(
+            index,
+            visibleStartIndex - 2,
+            visibleEndIndex + 2
+          );
+
+          _topMinIndex = index;
+          if (position !== null) targetIndices[position] = index;
+        } else {
+          break;
+        }
+
+        if (index >= this.initialNumToRender) {
+          _beforeCount++;
+        }
       }
+
+      let _afterCount = 0;
+      let _bottomMaxIndex = visibleEndIndex + 1;
 
       for (
         let index = visibleEndIndex + 1, size = afterSize;
         size > 0 && index <= bufferedEndIndex;
         size--, index++
       ) {
-        const position = this.getPosition(
-          index,
-          visibleEndIndex + 1,
-          bufferedEndIndex
-        );
-        if (position !== null) targetIndices[position] = index;
+        const item = data[index];
+        if (!item) continue;
+        const itemMeta = this.getItemMeta(item, index);
+        const itemLayout = itemMeta?.getLayout();
+
+        if (_afterCount < 2 || !itemLayout) {
+          const position = this.getPosition(
+            index,
+            visibleStartIndex - 2,
+            visibleEndIndex + 2
+          );
+          _bottomMaxIndex = index;
+          if (position !== null) targetIndices[position] = index;
+        } else {
+          break;
+        }
+
+        if (index >= this.initialNumToRender) {
+          _afterCount++;
+        }
       }
 
       const minValue = this._bufferSet.getMinValue();
@@ -1031,7 +1076,85 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         true
       );
 
+      let topOffset = indexToOffsetMap[Math.max(_topMinIndex, 0)] || 0;
+      let bottomOffset = indexToOffsetMap[Math.max(_bottomMaxIndex, 0)] || 0;
+
       targetIndices.forEach((targetIndex, index) => {
+        // const prevStateResult = this._stateResult as RecycleStateResult<ItemT>;
+        // targetIndex is null or undefined
+        if (targetIndex == null) {
+          // if (prevStateResult?.recycleState) {
+          //   const _result = prevStateResult.recycleState[index];
+          //   if (_result) {
+          //     const { item, targetKey } = _result;
+          //     // maybe item has been deleted
+          //     if (item === this._data[this.getKeyIndex(targetKey)]) {
+          //       const { targetIndex, offset: _offset } = _result;
+          //       if (targetIndex < visibleStartIndex) {
+          //         const offset = indexToOffsetMap[negativeStartIndex--];
+          //         if (typeof offset === 'number')
+          //           recycleStateResult.push({
+          //             ..._result,
+          //             offset: offset || _offset,
+          //           });
+          //       } else if (targetIndex > visibleStartIndex) {
+          //         const offset = indexToOffsetMap[positiveStartIndex++];
+          //         if (typeof offset === 'number')
+          //           recycleStateResult.push({
+          //             ..._result,
+          //             offset: offset || _offset,
+          //           });
+          //       }
+          //     }
+          //   }
+          // }
+          // return;
+          targetIndex = _targetIndices[index];
+          const item = data[targetIndex];
+          if (!item) return;
+          const itemKey = this.getItemKey(item, targetIndex);
+          const itemMeta = this.getItemMeta(item, targetIndex);
+          const itemLayout = itemMeta?.getLayout();
+          const itemLength =
+            (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+          let offset = 0;
+
+          if (this._scrollMetrics && itemLayout) {
+            const velocity = this._scrollMetrics.velocity;
+            // scroll up, preserve start
+            if (velocity < 0) {
+              topOffset -= itemLength;
+              offset = topOffset;
+              // scroll down, preserve end
+            } else if (velocity > 0) {
+              bottomOffset += itemLength;
+              offset = bottomOffset;
+            } else {
+              if (targetIndex < visibleStartIndex) {
+                topOffset -= itemLength;
+                offset = topOffset;
+              } else {
+                bottomOffset += itemLength;
+                offset = bottomOffset;
+              }
+            }
+          }
+
+          recycleStateResult.push({
+            key: `recycle_${index}`,
+            targetKey: itemKey,
+            targetIndex,
+            length: itemLength,
+            isSpace: false,
+            isSticky: false,
+            item,
+            // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+            offset: itemLayout ? offset : 0,
+            position: 'buffered',
+          });
+          return;
+        }
         const item = data[targetIndex];
         if (!item) return;
 
@@ -1059,6 +1182,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         recycleStateResult.push({
           key: `recycle_${index}`,
           targetKey: itemKey,
+          targetIndex,
           length: itemLength,
           isSpace: false,
           isSticky: false,
@@ -1074,8 +1198,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     spaceStateResult = this.resolveRecycleSpaceState(state);
 
     const stateResult = {
-      recycleState: recycleStateResult,
-      spaceState: spaceStateResult,
+      recycleState: recycleStateResult.filter((v) => v),
+      spaceState: spaceStateResult.filter((v) => v),
     };
 
     return stateResult;
@@ -1343,6 +1467,14 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     );
   }
 
+  stillnessHandler() {
+    this.dispatchMetrics(this._scrollMetrics);
+  }
+
+  isStill() {
+    this._stillnessHelper.isStill;
+  }
+
   /**
    * When to trigger updateScrollMetrics..
    * - on scroll
@@ -1364,6 +1496,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._scrollMetrics = scrollMetrics;
       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
       return;
+    }
+
+    if (this._scrollMetrics?.offset !== scrollMetrics?.offset) {
+      // this._stillnessHelper.startClockBatchinateLast.schedule();
     }
 
     if (

@@ -79,6 +79,8 @@ export type ListDimensionsProps<ItemT> = {
 
   recycleEnabled?: boolean;
 
+  stillnessThreshold?: number;
+
   dispatchMetricsThreshold?: number;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
@@ -228,6 +230,7 @@ export type SpaceStateToken<ItemT> = {
 
 export type RecycleStateToken<ItemT> = {
   targetKey: string;
+  targetIndex: number;
   offset: number;
 } & SpaceStateToken<ItemT>;
 
