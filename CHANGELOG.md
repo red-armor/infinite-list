@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.10](https://github.com/red-armor/infinite-list/compare/v0.2.9...v0.2.10) (2023-05-21)
+
+
+### Features
+
+* ItemMeta viewable=true as first class ([#17](https://github.com/red-armor/infinite-list/issues/17)) ([1e1cc7c](https://github.com/red-armor/infinite-list/commit/1e1cc7c102e13e0895f6d1f4313ead46c8533e12))
+
+
+
 ## [0.2.9](https://github.com/red-armor/infinite-list/compare/v0.2.8...v0.2.9) (2023-05-17)
 
 
