@@ -16,7 +16,6 @@ class ItemMeta extends ViewabilityItemMeta {
   private _layout?: ItemLayout;
   private _separatorLength?: number;
   private _owner?: ItemMetaOwner;
-  private _setState?: Function;
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
   readonly getMetaOnViewableItemsChanged?: any;
@@ -36,9 +35,7 @@ class ItemMeta extends ViewabilityItemMeta {
   }) {
     super(props);
     const {
-      key,
       owner,
-      setState,
       separatorLength,
       layout,
       state,
@@ -46,7 +43,6 @@ class ItemMeta extends ViewabilityItemMeta {
       isInitialItem = false,
     } = props;
     this._owner = owner;
-    this._setState = setState;
     this._layout = layout;
     this._separatorLength = separatorLength || 0;
     this._isListItem = isListItem || false;
@@ -56,8 +52,8 @@ class ItemMeta extends ViewabilityItemMeta {
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
         : {};
 
-    this.addStateListener = this.addStateListener.bind(this);
-    this.removeStateListener = this.removeStateListener.bind(this);
+    // this.addStateListener = this.addStateListener.bind(this);
+    // this.removeStateListener = this.removeStateListener.bind(this);
     this.addStateEventListener = this.addStateEventListener.bind(this);
   }
 
@@ -126,15 +122,12 @@ class ItemMeta extends ViewabilityItemMeta {
       [key: string]: boolean;
     } = {}
   ) {
-    let hasChangedValue = false;
-
     Object.keys({ ...state }).forEach((key) => {
       const helper = this._stateEventSubscriptions.get(key);
       const currentValue = state[key];
 
       if (helper) {
-        const falsy = helper.setValue(currentValue);
-        if (falsy) hasChangedValue = true;
+        helper.setValue(currentValue);
       }
 
       if (key === 'viewable') {
@@ -143,8 +136,6 @@ class ItemMeta extends ViewabilityItemMeta {
         impressionHelper?.trigger(currentValue);
       }
     });
-    if (typeof this._setState === 'function' && hasChangedValue)
-      this._setState(state);
 
     this._state = { ...state };
   }
@@ -170,14 +161,14 @@ class ItemMeta extends ViewabilityItemMeta {
     return this._owner.getIndexInfo(this._key);
   }
 
-  addStateListener(setState: Function) {
-    if (typeof setState === 'function') this._setState = setState;
-    return this.removeStateListener;
-  }
+  // addStateListener(setState: Function) {
+  //   if (typeof setState === 'function') this._setState = setState;
+  //   return this.removeStateListener;
+  // }
 
-  removeStateListener() {
-    this._setState = null;
-  }
+  // removeStateListener() {
+  //   this._setState = null;
+  // }
 
   addStateEventListener(event: string, callback: StateEventListener) {
     if (typeof callback !== 'function') return noop;

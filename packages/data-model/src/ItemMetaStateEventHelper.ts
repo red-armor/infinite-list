@@ -41,11 +41,7 @@ class ItemMetaStateEventHelper {
         ? true
         : false;
 
-    this._triggerBatchinator = this._batchUpdateEnabled
-      ? new Batchinator(this._trigger.bind(this), 50)
-      : ({
-          schedule: this._trigger.bind(this),
-        } as Batchinator);
+    this._triggerBatchinator = new Batchinator(this._trigger.bind(this), 50);
 
     if (defaultValue) {
       this.trigger(defaultValue);
@@ -67,11 +63,21 @@ class ItemMetaStateEventHelper {
 
   setValue(value: boolean) {
     this.trigger(value);
-    return value !== this._value;
+    // return value !== this._value;
   }
 
   trigger(value: boolean) {
     if (this._once && this._handleCount) return;
+    if (value && this._batchUpdateEnabled) {
+      this._triggerBatchinator.dispose({
+        abort: true,
+      });
+      this._trigger(value);
+      return;
+    }
+    this._triggerBatchinator.dispose({
+      abort: true,
+    });
     this._triggerBatchinator.schedule(value);
   }
 
