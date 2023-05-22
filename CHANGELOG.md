@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.11](https://github.com/red-armor/infinite-list/compare/v0.2.10...v0.2.11) (2023-05-22)
+
+
+### Bug Fixes
+
+* createItemMeta on append, TODO ( testing case ) ([c056a8e](https://github.com/red-armor/infinite-list/commit/c056a8e25e57459429432e3b4b2c06fd082a5b63))
+
+
+
 ## [0.2.10](https://github.com/red-armor/infinite-list/compare/v0.2.9...v0.2.10) (2023-05-21)
 
 
