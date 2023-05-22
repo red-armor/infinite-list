@@ -719,11 +719,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   pump(
-    data: Array<ItemT>,
+    _data: Array<ItemT>,
     baseIndex = 0,
     keyToMetaMap: Map<string, ItemMeta>,
     intervalTree: PrefixIntervalTree
   ) {
+    const data = _data.slice(baseIndex);
     const len = data.length;
 
     for (let index = 0; index < len; index++) {
@@ -732,7 +733,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const itemKey = this.getItemKey(item, currentIndex);
       const meta =
         this.getKeyMeta(itemKey) ||
-        this.createItemMeta(itemKey, data, currentIndex);
+        this.createItemMeta(itemKey, _data, currentIndex);
 
       if (meta.getLayout()) {
         const itemLength = this._selectValue.selectLength(meta.getLayout());
@@ -750,8 +751,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   append(data: Array<ItemT>) {
     const baseIndex = this._indexKeys.length;
-    const appended = data.slice(baseIndex);
-    this.pump(appended, baseIndex, this._keyToMetaMap, this.intervalTree);
+    this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);
   }
 
   shuffle(data: Array<ItemT>) {

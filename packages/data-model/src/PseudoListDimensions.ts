@@ -55,17 +55,18 @@ class PseudoListDimensions extends BaseDimensions {
   }
 
   pump(
-    keys: Array<string>,
+    _keys: Array<string>,
     baseIndex = 0,
     keyToIndexMap: Map<string, number>,
     keyToIndexArray: Array<string>,
     keyToMetaMap: Map<string, ItemMeta>,
     intervalTree: PrefixIntervalTree
   ) {
+    const keys = _keys.slice(baseIndex);
     const len = keys.length;
     for (let index = 0; index < len; index++) {
       const currentIndex = index + baseIndex;
-      const itemKey = keys[currentIndex];
+      const itemKey = keys[index];
       const meta = this.getKeyMeta(itemKey) || this.createItemMeta(itemKey);
       const itemLength = this._selectValue.selectLength(meta.getLayout());
 
@@ -78,9 +79,8 @@ class PseudoListDimensions extends BaseDimensions {
 
   append(keys: Array<string>) {
     const baseIndex = this._indexKeys.length;
-    const appended = keys.slice(baseIndex);
     this.pump(
-      appended,
+      keys,
       baseIndex,
       this._keyToIndexMap,
       this._indexKeys,
