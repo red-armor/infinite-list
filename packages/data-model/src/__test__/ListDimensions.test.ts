@@ -793,7 +793,7 @@ describe('setData', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
       data: [],
-      id: 'list_group',
+      id: 'list',
       recycleEnabled: true,
       keyExtractor: defaultKeyExtractor,
       maxToRenderPerBatch: 10,
@@ -822,7 +822,7 @@ describe('setData', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
       data,
-      id: 'list_group',
+      id: 'list',
       recycleEnabled: true,
       keyExtractor: defaultKeyExtractor,
       maxToRenderPerBatch: 10,
@@ -861,16 +861,16 @@ describe('setData', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
       data,
-      id: 'list_group',
+      id: 'list',
       recycleEnabled: true,
       keyExtractor: defaultKeyExtractor,
-      maxToRenderPerBatch: 10,
+      maxToRenderPerBatch: 4,
       windowSize: 5,
       initialNumToRender: 4,
       onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
-        y: 2000,
+        y: 0,
         width: 375,
         height: 2000,
       }),
@@ -911,6 +911,37 @@ describe('setData', () => {
         )
     ).toEqual([100, 0, 80, 100, 20, 100, 30, 100, 200, 0]);
 
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1500,
+    });
+
+    // console.log('recycleList ', recycleList.state, recycleList.stateResult)
+
+    // // @ts-ignore
+    // console.log('recycle buffset ', recycleList._bufferSet.indices.slice())
+
+    console.log('recycleList ', recycleList.state, recycleList.stateResult);
+
+    // @ts-ignore
+    console.log('recycle buffset ', recycleList._bufferSet.indices.slice());
+
+    console.log('=====================');
+
+    // @ts-ignore
+    recycleList.updateScrollMetrics({
+      offset: 900,
+      visibleLength: 926,
+      contentLength: 2000,
+    });
+
+    console.log('recycleList ', recycleList.state, recycleList.stateResult);
+
+    // @ts-ignore
+    console.log('recycle buffset ', recycleList._bufferSet.indices.slice());
+
     // remove
     _data = _data.slice();
     _data.splice(3, 1);
@@ -926,6 +957,12 @@ describe('setData', () => {
           recycleList.intervalTree.getSize() + 10
         )
     ).toEqual([100, 0, 80, 20, 100, 30, 100, 200, 0, 0]);
+
+    console.log(
+      'recycleList remove ',
+      recycleList.state,
+      recycleList.stateResult
+    );
 
     // reorder
     _data = _data.slice();
