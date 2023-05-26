@@ -161,13 +161,17 @@ class ItemMeta extends ViewabilityItemMeta {
     return this._owner.getIndexInfo(this._key);
   }
 
-  addStateEventListener(event: string, callback: StateEventListener) {
+  addStateEventListener(
+    event: string,
+    callback: StateEventListener,
+    triggerOnceIfTrue = false
+  ) {
     if (typeof callback !== 'function') return noop;
     const stateEventHelper = this.ensureStateHelper(
       event,
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
-    return stateEventHelper.addListener(callback);
+    return stateEventHelper.addListener(callback, triggerOnceIfTrue);
   }
 }
 

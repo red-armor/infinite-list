@@ -48,12 +48,20 @@ class ItemMetaStateEventHelper {
     }
   }
 
-  addListener(listener: StateEventListener) {
+  addListener(listener: StateEventListener, triggerOnceIfTrue = false) {
     const index = this._listeners.findIndex((cb) => cb === listener);
     if (index === -1) {
       this._handleCountMap.set(listener, 0);
       this._listeners.push(listener);
     }
+
+    if (triggerOnceIfTrue && this._value) {
+      if (this.listenerGuard(listener)) {
+        this.incrementHandleCount(listener);
+        listener(this._value);
+      }
+    }
+
     return () => {
       const index = this._listeners.findIndex((cb) => cb === listener);
       if (index !== -1) {
@@ -97,13 +105,11 @@ class ItemMetaStateEventHelper {
   trigger(value: boolean) {
     const shouldPerformScheduler = this.guard();
     if (!shouldPerformScheduler) return;
-    if (value && this._batchUpdateEnabled) {
-      this._triggerBatchinator.dispose({
-        abort: true,
-      });
+    if (value && !this._batchUpdateEnabled) {
       this._trigger(value);
       return;
     }
+
     this._triggerBatchinator.dispose({
       abort: true,
     });
