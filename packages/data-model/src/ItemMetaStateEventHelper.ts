@@ -95,8 +95,8 @@ class ItemMetaStateEventHelper {
   }
 
   trigger(value: boolean) {
-    const falsy = this.guard();
-    if (falsy) return;
+    const shouldPerformScheduler = this.guard();
+    if (!shouldPerformScheduler) return;
     if (value && this._batchUpdateEnabled) {
       this._triggerBatchinator.dispose({
         abort: true,
