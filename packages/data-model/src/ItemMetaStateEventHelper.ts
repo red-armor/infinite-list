@@ -7,7 +7,7 @@ class ItemMetaStateEventHelper {
   readonly _eventName: string;
   private _listeners: Array<StateEventListener> = [];
   private _triggerBatchinator: Batchinator;
-  private _handleCount = 0;
+  private _handleCountMap = new Map();
   private _once: boolean;
   readonly _key: string;
 
@@ -50,11 +50,26 @@ class ItemMetaStateEventHelper {
 
   addListener(listener: StateEventListener) {
     const index = this._listeners.findIndex((cb) => cb === listener);
-    if (index === -1) this._listeners.push(listener);
+    if (index === -1) {
+      this._handleCountMap.set(listener, 0);
+      this._listeners.push(listener);
+    }
     return () => {
       const index = this._listeners.findIndex((cb) => cb === listener);
-      this._listeners.splice(index, 1);
+      if (index !== -1) {
+        this._listeners.splice(index, 1);
+        this._handleCountMap.delete(listener);
+      }
     };
+  }
+
+  getHandleCount(handler: StateEventListener) {
+    return this._handleCountMap.get(handler) || 0;
+  }
+
+  incrementHandleCount(handler: StateEventListener) {
+    const value = this._handleCountMap.get(handler) || 0;
+    this._handleCountMap.set(handler, value + 1);
   }
 
   get value() {
@@ -63,11 +78,25 @@ class ItemMetaStateEventHelper {
 
   setValue(value: boolean) {
     this.trigger(value);
-    // return value !== this._value;
+  }
+
+  guard() {
+    if (!this._once) return true;
+    for (const value of this._handleCountMap.values()) {
+      if (!value) return true;
+    }
+    return false;
+  }
+
+  listenerGuard(cb: StateEventListener) {
+    if (!this._once) return true;
+    if (this._handleCountMap.get(cb)) return false;
+    return true;
   }
 
   trigger(value: boolean) {
-    if (this._once && this._handleCount) return;
+    const falsy = this.guard();
+    if (falsy) return;
     if (value && this._batchUpdateEnabled) {
       this._triggerBatchinator.dispose({
         abort: true,
@@ -83,8 +112,12 @@ class ItemMetaStateEventHelper {
 
   _trigger(value) {
     if (this._value !== value) {
-      this._handleCount++;
-      this._listeners.forEach((cb) => cb(value));
+      this._listeners.forEach((cb) => {
+        if (this.listenerGuard(cb)) {
+          this.incrementHandleCount(cb);
+          cb(value);
+        }
+      });
     }
     this._value = value;
   }
