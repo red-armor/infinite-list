@@ -10,6 +10,7 @@ class ItemMetaStateEventHelper {
   private _handleCountMap = new Map();
   private _once: boolean;
   readonly _key: string;
+  private _reusableEventListenerMap = new Map();
 
   constructor(props: {
     key: string;
@@ -42,10 +43,39 @@ class ItemMetaStateEventHelper {
         : false;
 
     this._triggerBatchinator = new Batchinator(this._trigger.bind(this), 50);
+    this.remover = this.remover.bind(this);
 
     if (defaultValue) {
       this.trigger(defaultValue);
     }
+  }
+
+  remover(listener: StateEventListener, key?: string) {
+    return () => {
+      const index = this._listeners.findIndex((cb) => cb === listener);
+      if (index !== -1) {
+        this._listeners.splice(index, 1);
+        this._handleCountMap.delete(listener);
+      }
+      if (key) this._reusableEventListenerMap.delete(key);
+    };
+  }
+
+  addReusableListener(
+    listener: StateEventListener,
+    key: string,
+    triggerOnceIfTrue: boolean
+  ) {
+    if (this._reusableEventListenerMap.has(key))
+      return {
+        remover: this.remover(listener, key),
+      };
+
+    this._reusableEventListenerMap.set(key, listener);
+    this.addListener(listener, triggerOnceIfTrue);
+    return {
+      remover: this.remover(listener, key),
+    };
   }
 
   addListener(listener: StateEventListener, triggerOnceIfTrue: boolean) {
@@ -60,13 +90,7 @@ class ItemMetaStateEventHelper {
       listener(this._value);
     }
 
-    return () => {
-      const index = this._listeners.findIndex((cb) => cb === listener);
-      if (index !== -1) {
-        this._listeners.splice(index, 1);
-        this._handleCountMap.delete(listener);
-      }
-    };
+    return this.remover(listener);
   }
 
   getHandleCount(handler: StateEventListener) {
