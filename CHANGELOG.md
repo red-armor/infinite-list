@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.14](https://github.com/red-armor/infinite-list/compare/v0.2.13...v0.2.14) (2023-05-28)
+
+
+### Features
+
+* addStateReusableEventListener to fix duplicate impression ([a528a44](https://github.com/red-armor/infinite-list/commit/a528a4476e4c449d8307118842b1df5408bb3e31))
+
+
+
 ## [0.2.13](https://github.com/red-armor/infinite-list/compare/v0.2.12...v0.2.13) (2023-05-28)
 
 
