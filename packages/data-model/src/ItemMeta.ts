@@ -9,6 +9,7 @@ import {
   StateEventListener,
 } from './types';
 import noop from '@x-oasis/noop';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
 class ItemMeta extends ViewabilityItemMeta {
@@ -164,14 +165,17 @@ class ItemMeta extends ViewabilityItemMeta {
   addStateEventListener(
     event: string,
     callback: StateEventListener,
-    triggerOnceIfTrue = false
+    triggerOnceIfTrue?: boolean
   ) {
     if (typeof callback !== 'function') return noop;
     const stateEventHelper = this.ensureStateHelper(
       event,
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
-    return stateEventHelper.addListener(callback, triggerOnceIfTrue);
+    return stateEventHelper.addListener(
+      callback,
+      defaultBooleanValue(triggerOnceIfTrue, true)
+    );
   }
 }
 

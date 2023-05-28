@@ -48,7 +48,7 @@ class ItemMetaStateEventHelper {
     }
   }
 
-  addListener(listener: StateEventListener, triggerOnceIfTrue = false) {
+  addListener(listener: StateEventListener, triggerOnceIfTrue: boolean) {
     const index = this._listeners.findIndex((cb) => cb === listener);
     if (index === -1) {
       this._handleCountMap.set(listener, 0);
@@ -56,10 +56,8 @@ class ItemMetaStateEventHelper {
     }
 
     if (triggerOnceIfTrue && this._value) {
-      if (this.listenerGuard(listener)) {
-        this.incrementHandleCount(listener);
-        listener(this._value);
-      }
+      this.incrementHandleCount(listener);
+      listener(this._value);
     }
 
     return () => {
