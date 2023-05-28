@@ -5,9 +5,9 @@ import {
   ViewabilityConfigCallbackPairs,
   ViewabilityScrollMetrics,
 } from '../types';
-import ViewabilityItemMeta from './ViewabilityItemMeta';
 import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
+import ItemMeta from '../ItemMeta';
 
 class ViewabilityConfigTuples {
   private _tuple: ViewabilityConfigCallbackPairs = [];
@@ -102,11 +102,12 @@ class ViewabilityConfigTuples {
   }
 
   resolveItemMetaState(
-    itemMeta: ViewabilityItemMeta,
+    itemMeta: ItemMeta,
     viewabilityScrollMetrics: ViewabilityScrollMetrics,
-    getItemOffset?: (itemMeta: ViewabilityItemMeta) => number
+    getItemOffset?: (itemMeta: ItemMeta) => number
   ) {
     if (!viewabilityScrollMetrics || !itemMeta) return {};
+    if (!itemMeta.getLayout()) return {};
     return this.viewabilityHelpers.reduce((value, helper) => {
       const falsy = helper.checkItemViewability(
         itemMeta,

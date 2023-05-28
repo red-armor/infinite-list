@@ -3,7 +3,7 @@ import isClamped from '@x-oasis/is-clamped';
 import noop from '@x-oasis/noop';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import resolveChanged from '@x-oasis/resolve-changed';
-import booleanWithDefault from '@x-oasis/boolean-with-default';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import BaseLayout from './BaseLayout';
 import Dimension from './Dimension';
@@ -1110,8 +1110,8 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     }
   ) {
     const scrollMetrics = _scrollMetrics || this._scrollMetrics;
-    const useCache = booleanWithDefault(_options?.useCache, true);
-    const flush = booleanWithDefault(_options?.flush, false);
+    const useCache = defaultBooleanValue(_options?.useCache, true);
+    const flush = defaultBooleanValue(_options?.flush, false);
 
     if (!scrollMetrics) return;
     if (!this.dispatchScrollMetricsEnabled()) {

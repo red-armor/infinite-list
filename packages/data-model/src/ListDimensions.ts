@@ -1012,15 +1012,17 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const itemLength =
           (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
-        const itemMetaState = this._scrollMetrics
-          ? this._configTuple.resolveItemMetaState(
-              itemMeta,
-              this._scrollMetrics,
-              // should add container offset, because indexToOffsetMap containerOffset is
-              // exclusive.
-              () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
-            )
-          : itemMeta.getState();
+        const itemMetaState =
+          !this._scrollMetrics || !itemMeta?.getLayout()
+            ? itemMeta.getState()
+            : this._configTuple.resolveItemMetaState(
+                itemMeta,
+                this._scrollMetrics,
+                // should add container offset, because indexToOffsetMap containerOffset is
+                // exclusive.
+                () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
+              );
+
         itemMeta?.setItemMetaState(itemMetaState);
 
         recycleStateResult.push({
@@ -1192,13 +1194,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const itemLength =
         (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
-      const itemMetaState = this._scrollMetrics
-        ? this._configTuple.resolveItemMetaState(
-            itemMeta,
-            this._scrollMetrics,
-            () => indexToOffsetMap[index]
-          )
-        : itemMeta.getState();
+      const itemMetaState =
+        !this._scrollMetrics || !itemMeta?.getLayout()
+          ? itemMeta.getState()
+          : this._configTuple.resolveItemMetaState(
+              itemMeta,
+              this._scrollMetrics,
+              () => indexToOffsetMap[index]
+            );
+
       itemMeta?.setItemMetaState(itemMetaState);
 
       spaceState.push({

@@ -9,6 +9,7 @@ import {
   StateEventListener,
 } from './types';
 import noop from '@x-oasis/noop';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
 class ItemMeta extends ViewabilityItemMeta {
@@ -161,22 +162,20 @@ class ItemMeta extends ViewabilityItemMeta {
     return this._owner.getIndexInfo(this._key);
   }
 
-  // addStateListener(setState: Function) {
-  //   if (typeof setState === 'function') this._setState = setState;
-  //   return this.removeStateListener;
-  // }
-
-  // removeStateListener() {
-  //   this._setState = null;
-  // }
-
-  addStateEventListener(event: string, callback: StateEventListener) {
+  addStateEventListener(
+    event: string,
+    callback: StateEventListener,
+    triggerOnceIfTrue?: boolean
+  ) {
     if (typeof callback !== 'function') return noop;
     const stateEventHelper = this.ensureStateHelper(
       event,
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
-    return stateEventHelper.addListener(callback);
+    return stateEventHelper.addListener(
+      callback,
+      defaultBooleanValue(triggerOnceIfTrue, true)
+    );
   }
 }
 
