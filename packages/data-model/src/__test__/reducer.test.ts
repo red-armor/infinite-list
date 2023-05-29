@@ -850,8 +850,8 @@ describe('Has trailing element', () => {
     expect(list.state).toEqual({
       visibleStartIndex: 29,
       visibleEndIndex: 29,
-      bufferedStartIndex: 29,
-      // bufferedStartIndex: 1,
+      // bufferedStartIndex: 29,
+      bufferedStartIndex: 1,
       bufferedEndIndex: 29,
       isEndReached: false,
       distanceFromEnd: 4074,
