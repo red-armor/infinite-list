@@ -8,11 +8,11 @@ class StillnessHelper {
   public startClockBatchinateLast: BatchinateLast;
 
   constructor(props) {
-    const { handler, stillnessThresholdValue } = props;
+    const { handler, stillnessThreshold } = props;
     this._isStill = true;
     this._handler = handler;
 
-    this._thresholdValueMS = stillnessThresholdValue;
+    this._thresholdValueMS = stillnessThreshold;
     this.startClockBatchinateLast = new BatchinateLast(
       this.clock.bind(this),
       this._thresholdValueMS
