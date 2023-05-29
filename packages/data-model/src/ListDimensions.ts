@@ -12,6 +12,7 @@ import {
   isEmpty,
   shallowDiffers,
   buildStateTokenIndexKey,
+  DISPATCH_METRICS_THRESHOLD,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
@@ -128,9 +129,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       getItemSeparatorLength,
       onBatchLayoutFinished,
       persistanceIndices,
-      stillnessThresholdValue,
+      stillnessThreshold,
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
+      dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
     } = props;
     this._keyExtractor = keyExtractor;
     this._getItemLayout = getItemLayout;
@@ -140,7 +142,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._listGroupDimension = listGroupDimension;
     this._dispatchMetricsBatchinator = new Batchinator(
       this.dispatchMetrics.bind(this),
-      50
+      dispatchMetricsThreshold
     );
     this.onEndReachedHelper = new OnEndReachedHelper({
       onEndReached,
@@ -152,7 +154,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     this.stillnessHandler = this.stillnessHandler.bind(this);
     this._stillnessHelper = new StillnessHelper({
-      stillnessThresholdValue,
+      stillnessThreshold,
       handler: this.stillnessHandler,
     });
 
@@ -994,8 +996,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
           const position = this.getPosition(
             index,
-            visibleStartIndex,
-            visibleEndIndex
+            visibleStartIndex - 2,
+            visibleEndIndex + 2
           );
           if (position !== null) targetIndices[position] = index;
         }
@@ -1020,7 +1022,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         if (_beforeCount < 2 || !itemLayout) {
           const position = this.getPosition(
             index,
-            bufferedStartIndex,
+            visibleStartIndex - 2,
             visibleStartIndex
           );
 
@@ -1048,7 +1050,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           const position = this.getPosition(
             index,
             visibleEndIndex + 1,
-            bufferedEndIndex
+            visibleEndIndex + 2
           );
           if (position !== null) targetIndices[position] = index;
         }
@@ -1066,22 +1068,37 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         true
       );
 
+      let negativeStartIndex = visibleStartIndex - 3;
+      let positiveStartIndex = visibleEndIndex + 3;
+
       targetIndices.forEach((targetIndex, index) => {
         const prevStateResult = this._stateResult as RecycleStateResult<ItemT>;
-        if (!targetIndex && typeof targetIndex !== 'number') {
-          const _result = prevStateResult.recycleState[index];
-          if (_result) {
-            const { item, targetKey } = _result;
-            if (item === this._data[this.getKeyIndex(targetKey)]) {
-              recycleStateResult.push(prevStateResult.recycleState[index]);
+        // targetIndex is null or undefined
+        if (targetIndex == null) {
+          if (prevStateResult?.recycleState) {
+            const _result = prevStateResult.recycleState[index];
+            if (_result) {
+              const { item, targetKey } = _result;
+              // maybe item has been deleted
+              if (item === this._data[this.getKeyIndex(targetKey)]) {
+                const { targetIndex, offset: _offset } =
+                  prevStateResult.recycleState[index];
+                if (targetIndex < visibleStartIndex) {
+                  const offset = indexToOffsetMap[negativeStartIndex--];
+                  recycleStateResult.push({
+                    ...prevStateResult.recycleState[index],
+                    offset: offset || _offset,
+                  });
+                } else if (targetIndex > visibleStartIndex) {
+                  const offset = indexToOffsetMap[positiveStartIndex++];
+                  recycleStateResult.push({
+                    ...prevStateResult.recycleState[index],
+                    offset: offset || _offset,
+                  });
+                }
+              }
             }
           }
-          if (
-            prevStateResult.recycleState &&
-            prevStateResult.recycleState[index]?.item ===
-              this._data[targetIndex]
-          )
-            recycleStateResult.push(prevStateResult.recycleState[index]);
           return;
         }
         const item = data[targetIndex];
@@ -1111,6 +1128,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         recycleStateResult.push({
           key: `recycle_${index}`,
           targetKey: itemKey,
+          targetIndex,
           length: itemLength,
           isSpace: false,
           isSticky: false,
