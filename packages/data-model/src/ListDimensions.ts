@@ -1054,18 +1054,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
               const { item, targetKey } = _result;
               // maybe item has been deleted
               if (item === this._data[this.getKeyIndex(targetKey)]) {
-                const { targetIndex } = prevStateResult.recycleState[index];
+                const { targetIndex, offset: _offset } =
+                  prevStateResult.recycleState[index];
                 if (targetIndex < visibleStartIndex) {
                   const offset = indexToOffsetMap[negativeStartIndex--];
                   recycleStateResult.push({
                     ...prevStateResult.recycleState[index],
-                    offset,
+                    offset: offset || _offset,
                   });
                 } else if (targetIndex > visibleStartIndex) {
                   const offset = indexToOffsetMap[positiveStartIndex++];
                   recycleStateResult.push({
                     ...prevStateResult.recycleState[index],
-                    offset,
+                    offset: offset || _offset,
                   });
                 }
               }
