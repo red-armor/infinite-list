@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.15-stillness.0](https://github.com/red-armor/infinite-list/compare/v0.2.14...v0.2.15-stillness.0) (2023-05-29)
+## [0.2.15-stillness.1](https://github.com/red-armor/infinite-list/compare/v0.2.14...v0.2.15-stillness.1) (2023-05-29)
+
+
+
+## 0.2.15-stillness.1 (2023-05-29)
+
+
+### Features
+
+* update ([a65d87e](https://github.com/red-armor/infinite-list/commit/a65d87e4a94c0282e97ed545c67baa0c68325190))
 
 
 
