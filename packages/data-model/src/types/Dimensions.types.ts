@@ -79,7 +79,9 @@ export type ListDimensionsProps<ItemT> = {
 
   recycleEnabled?: boolean;
 
-  stillnessThresholdValue?: number;
+  stillnessThreshold?: number;
+
+  dispatchMetricsThreshold?: number;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
 
@@ -241,6 +243,7 @@ export type RecycleStateToken<
   }
 > = {
   targetKey: string;
+  targetIndex: number;
   offset: number;
 } & SpaceStateToken<ItemT, ViewabilityState>;
 
