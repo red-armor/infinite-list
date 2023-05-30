@@ -1014,7 +1014,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
         const itemMetaState =
           !this._scrollMetrics || !itemMeta?.getLayout()
-            ? itemMeta.getState()
+            ? itemMeta
+              ? itemMeta.getState()
+              : {}
             : this._configTuple.resolveItemMetaState(
                 itemMeta,
                 this._scrollMetrics,
@@ -1196,7 +1198,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
       const itemMetaState =
         !this._scrollMetrics || !itemMeta?.getLayout()
-          ? itemMeta.getState()
+          ? itemMeta
+            ? itemMeta.getState()
+            : {}
           : this._configTuple.resolveItemMetaState(
               itemMeta,
               this._scrollMetrics,
