@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.15](https://github.com/red-armor/infinite-list/compare/v0.2.14...v0.2.15) (2023-05-30)
+
+
+### Features
+
+* getState ([16b2649](https://github.com/red-armor/infinite-list/commit/16b26492b93cf30ea8042db5089d940e5a4e8d70))
+
+
+
 ## [0.2.14](https://github.com/red-armor/infinite-list/compare/v0.2.13...v0.2.14) (2023-05-28)
 
 
