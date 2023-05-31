@@ -1084,16 +1084,18 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
                 const { targetIndex, offset: _offset } = _result;
                 if (targetIndex < visibleStartIndex) {
                   const offset = indexToOffsetMap[negativeStartIndex--];
-                  recycleStateResult.push({
-                    ..._result,
-                    offset: offset || _offset,
-                  });
+                  if (typeof offset === 'number')
+                    recycleStateResult.push({
+                      ..._result,
+                      offset: offset || _offset,
+                    });
                 } else if (targetIndex > visibleStartIndex) {
                   const offset = indexToOffsetMap[positiveStartIndex++];
-                  recycleStateResult.push({
-                    ..._result,
-                    offset: offset || _offset,
-                  });
+                  if (typeof offset === 'number')
+                    recycleStateResult.push({
+                      ..._result,
+                      offset: offset || _offset,
+                    });
                 }
               }
             }
