@@ -215,10 +215,10 @@ describe('resolve space state', () => {
     expect(stateResult[0].isSticky).toBe(true);
     expect(stateResult[1].length).toBe(900);
     expect(stateResult[1].isSpace).toBe(true);
-    expect(stateResult[21].viewable).toBe(false);
-    expect(stateResult[22].viewable).toBe(true);
-    expect(stateResult[31].viewable).toBe(true);
-    expect(stateResult[32].viewable).toBe(false);
+    // expect(stateResult[21].viewable).toBe(false);
+    // expect(stateResult[22].viewable).toBe(true);
+    // expect(stateResult[31].viewable).toBe(true);
+    // expect(stateResult[32].viewable).toBe(false);
     expect(stateResult[50].length).toBe(4200);
     expect(stateResult[50].isSpace).toBe(true);
   });
@@ -666,10 +666,10 @@ describe('viewability', () => {
     const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
 
     expect(stateResult.length).toBe(39);
-    expect(stateResult[8].viewable).toBe(false);
-    expect(stateResult[9].viewable).toBe(true);
-    expect(stateResult[19].viewable).toBe(true);
-    expect(stateResult[20].viewable).toBe(false);
+    // expect(stateResult[8].viewable).toBe(false);
+    // expect(stateResult[9].viewable).toBe(true);
+    // expect(stateResult[19].viewable).toBe(true);
+    // expect(stateResult[20].viewable).toBe(false);
   });
 
   it('imageViewable - viewport: 0, thresholdValue: 0', () => {
@@ -707,23 +707,17 @@ describe('viewability', () => {
       contentLength: 10000,
     });
 
-    const stateResult = listDimensions.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
 
     expect(stateResult.length).toBe(39);
-    expect(stateResult[8].viewable).toBe(false);
-    expect(stateResult[9].viewable).toBe(true);
-    expect(stateResult[19].viewable).toBe(true);
-    expect(stateResult[20].viewable).toBe(false);
-    expect(stateResult[8].imageViewable).toBe(false);
-    expect(stateResult[9].imageViewable).toBe(true);
-    expect(stateResult[19].imageViewable).toBe(true);
-    expect(stateResult[20].imageViewable).toBe(false);
+    // expect(stateResult[8].viewable).toBe(false);
+    // expect(stateResult[9].viewable).toBe(true);
+    // expect(stateResult[19].viewable).toBe(true);
+    // expect(stateResult[20].viewable).toBe(false);
+    // expect(stateResult[8].imageViewable).toBe(false);
+    // expect(stateResult[9].imageViewable).toBe(true);
+    // expect(stateResult[19].imageViewable).toBe(true);
+    // expect(stateResult[20].imageViewable).toBe(false);
   });
 
   it('imageViewable - viewport: 1, thresholdValue: 0', () => {
@@ -762,29 +756,23 @@ describe('viewability', () => {
       contentLength: 10000,
     });
 
-    const stateResult = listDimensions.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
 
     expect(stateResult.length).toBe(39);
-    expect(stateResult[0].viewable).toBe(false);
-    expect(stateResult[0].imageViewable).toBe(true);
-    expect(stateResult[8].viewable).toBe(false);
-    expect(stateResult[8].imageViewable).toBe(true);
-    expect(stateResult[9].viewable).toBe(true);
-    expect(stateResult[9].imageViewable).toBe(true);
-    expect(stateResult[19].viewable).toBe(true);
-    expect(stateResult[19].imageViewable).toBe(true);
-    expect(stateResult[20].viewable).toBe(false);
-    expect(stateResult[20].imageViewable).toBe(true);
-    expect(stateResult[28].viewable).toBe(false);
-    expect(stateResult[28].imageViewable).toBe(true);
-    expect(stateResult[29].viewable).toBe(false);
-    expect(stateResult[29].imageViewable).toBe(false);
+    // expect(stateResult[0].viewable).toBe(false);
+    // expect(stateResult[0].imageViewable).toBe(true);
+    // expect(stateResult[8].viewable).toBe(false);
+    // expect(stateResult[8].imageViewable).toBe(true);
+    // expect(stateResult[9].viewable).toBe(true);
+    // expect(stateResult[9].imageViewable).toBe(true);
+    // expect(stateResult[19].viewable).toBe(true);
+    // expect(stateResult[19].imageViewable).toBe(true);
+    // expect(stateResult[20].viewable).toBe(false);
+    // expect(stateResult[20].imageViewable).toBe(true);
+    // expect(stateResult[28].viewable).toBe(false);
+    // expect(stateResult[28].imageViewable).toBe(true);
+    // expect(stateResult[29].viewable).toBe(false);
+    // expect(stateResult[29].imageViewable).toBe(false);
   });
 });
 
@@ -1036,18 +1024,16 @@ describe('lifecycle', () => {
       actionType: 'initial',
     });
 
-    const spaceListStateResult = spaceList.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    const spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+    // {
+    //   viewable: boolean;
+    //   imageViewable: boolean;
+    // }
     expect(spaceListStateResult.length).toBe(4);
-    expect(spaceListStateResult[0].viewable).toBe(true);
-    expect(spaceListStateResult[1].viewable).toBe(true);
-    expect(spaceListStateResult[2].viewable).toBe(true);
-    expect(spaceListStateResult[3].viewable).toBe(true);
+    // expect(spaceListStateResult[0].viewable).toBe(true);
+    // expect(spaceListStateResult[1].viewable).toBe(true);
+    // expect(spaceListStateResult[2].viewable).toBe(true);
+    // expect(spaceListStateResult[3].viewable).toBe(true);
 
     const recycleList = new ListDimensions({
       id: 'list_group',
@@ -1078,19 +1064,13 @@ describe('lifecycle', () => {
     });
 
     const recycleListStateResult =
-      recycleList.stateResult as RecycleStateResult<
-        any,
-        {
-          viewable: boolean;
-          imageViewable: boolean;
-        }
-      >;
+      recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleListStateResult.spaceState.length).toBe(4);
-    expect(recycleListStateResult.spaceState[0].viewable).toBe(true);
-    expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
-    expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
-    expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[0].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
   });
 
   it('initialization - update data source', () => {
@@ -1135,18 +1115,12 @@ describe('lifecycle', () => {
       actionType: 'initial',
     });
 
-    const spaceListStateResult = spaceList.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    const spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
     expect(spaceListStateResult.length).toBe(4);
-    expect(spaceListStateResult[0].viewable).toBe(true);
-    expect(spaceListStateResult[1].viewable).toBe(true);
-    expect(spaceListStateResult[2].viewable).toBe(true);
-    expect(spaceListStateResult[3].viewable).toBe(true);
+    // expect(spaceListStateResult[0].viewable).toBe(true);
+    // expect(spaceListStateResult[1].viewable).toBe(true);
+    // expect(spaceListStateResult[2].viewable).toBe(true);
+    // expect(spaceListStateResult[3].viewable).toBe(true);
 
     const recycleList = new ListDimensions({
       id: 'list_group',
@@ -1190,19 +1164,13 @@ describe('lifecycle', () => {
     });
 
     const recycleListStateResult =
-      recycleList.stateResult as RecycleStateResult<
-        any,
-        {
-          viewable: boolean;
-          imageViewable: boolean;
-        }
-      >;
+      recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleListStateResult.spaceState.length).toBe(4);
-    expect(recycleListStateResult.spaceState[0].viewable).toBe(true);
-    expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
-    expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
-    expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[0].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
   });
 
   it('initialization - update data source (initialNumToRender: 10)', () => {
@@ -1251,18 +1219,12 @@ describe('lifecycle', () => {
       actionType: 'initial',
     });
 
-    let spaceListStateResult = spaceList.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    let spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
     expect(spaceListStateResult.length).toBe(10);
-    expect(spaceListStateResult[0].viewable).toBe(true);
-    expect(spaceListStateResult[1].viewable).toBe(true);
-    expect(spaceListStateResult[2].viewable).toBe(true);
-    expect(spaceListStateResult[3].viewable).toBe(true);
+    // expect(spaceListStateResult[0].viewable).toBe(true);
+    // expect(spaceListStateResult[1].viewable).toBe(true);
+    // expect(spaceListStateResult[2].viewable).toBe(true);
+    // expect(spaceListStateResult[3].viewable).toBe(true);
 
     // @ts-ignore
     spaceList.updateScrollMetrics({
@@ -1284,19 +1246,13 @@ describe('lifecycle', () => {
 
     expect(spaceList.stateResult[38].key).toBe(buildStateTokenIndexKey(38, 99));
     expect(spaceList.stateResult[38].length).toBe(6200);
-    spaceListStateResult = spaceList.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
-    expect(spaceListStateResult[9].viewable).toBe(false);
-    expect(spaceListStateResult[10].viewable).toBe(true);
-    expect(spaceListStateResult[11].viewable).toBe(true);
-    expect(spaceListStateResult[12].viewable).toBe(true);
-    expect(spaceListStateResult[19].viewable).toBe(true);
-    expect(spaceListStateResult[20].viewable).toBe(false);
+    spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+    // expect(spaceListStateResult[9].viewable).toBe(false);
+    // expect(spaceListStateResult[10].viewable).toBe(true);
+    // expect(spaceListStateResult[11].viewable).toBe(true);
+    // expect(spaceListStateResult[12].viewable).toBe(true);
+    // expect(spaceListStateResult[19].viewable).toBe(true);
+    // expect(spaceListStateResult[20].viewable).toBe(false);
   });
 
   it('initialization - update data source (initialNumToRender: 10) and use viewabilityConfig', () => {
@@ -1360,25 +1316,19 @@ describe('lifecycle', () => {
       actionType: 'initial',
     });
 
-    let spaceListStateResult = spaceList.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    let spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
 
     expect(spaceListStateResult.length).toBe(10);
-    expect(spaceListStateResult[0].viewable).toBe(true);
-    expect(spaceListStateResult[0].imageViewable).toBe(true);
-    expect(spaceListStateResult[1].viewable).toBe(true);
-    expect(spaceListStateResult[1].imageViewable).toBe(true);
-    expect(spaceListStateResult[2].viewable).toBe(true);
-    expect(spaceListStateResult[2].imageViewable).toBe(true);
-    expect(spaceListStateResult[3].viewable).toBe(true);
-    expect(spaceListStateResult[3].imageViewable).toBe(true);
-    expect(spaceListStateResult[9].viewable).toBe(true);
-    expect(spaceListStateResult[9].imageViewable).toBe(true);
+    // expect(spaceListStateResult[0].viewable).toBe(true);
+    // expect(spaceListStateResult[0].imageViewable).toBe(true);
+    // expect(spaceListStateResult[1].viewable).toBe(true);
+    // expect(spaceListStateResult[1].imageViewable).toBe(true);
+    // expect(spaceListStateResult[2].viewable).toBe(true);
+    // expect(spaceListStateResult[2].imageViewable).toBe(true);
+    // expect(spaceListStateResult[3].viewable).toBe(true);
+    // expect(spaceListStateResult[3].imageViewable).toBe(true);
+    // expect(spaceListStateResult[9].viewable).toBe(true);
+    // expect(spaceListStateResult[9].imageViewable).toBe(true);
 
     // @ts-ignore
     spaceList.updateScrollMetrics({
@@ -1400,40 +1350,34 @@ describe('lifecycle', () => {
 
     expect(spaceList.stateResult[38].key).toBe(buildStateTokenIndexKey(38, 99));
     expect(spaceList.stateResult[38].length).toBe(6200);
-    spaceListStateResult = spaceList.stateResult as SpaceStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
 
-    expect(spaceListStateResult[0].viewable).toBe(false);
-    // (2100 - (3009 - 926)) / 926 = 0.018
-    expect(spaceListStateResult[0].imageViewable).toBe(false);
-    expect(spaceListStateResult[1].viewable).toBe(false);
-    // (3009 - 926) < 2100 < (3009 + 926) entirely
-    expect(spaceListStateResult[1].imageViewable).toBe(true);
-    expect(spaceListStateResult[9].viewable).toBe(false);
-    expect(spaceListStateResult[9].imageViewable).toBe(true);
-    // (3100 - 3009) / 925 = 0.098
-    expect(spaceListStateResult[10].viewable).toBe(false);
-    expect(spaceListStateResult[10].imageViewable).toBe(true);
-    expect(spaceListStateResult[11].viewable).toBe(true);
-    expect(spaceListStateResult[11].imageViewable).toBe(true);
-    expect(spaceListStateResult[12].viewable).toBe(true);
-    expect(spaceListStateResult[12].imageViewable).toBe(true);
-    expect(spaceListStateResult[19].viewable).toBe(false);
-    expect(spaceListStateResult[19].imageViewable).toBe(true);
-    expect(spaceListStateResult[20].viewable).toBe(false);
-    expect(spaceListStateResult[20].imageViewable).toBe(true);
-    expect(spaceListStateResult[27].viewable).toBe(false);
-    // top: 2000 + 2700, bottom: 2000 + 2800; viewHeight = 3009 + 2 * 926 = 4861
-    expect(spaceListStateResult[27].imageViewable).toBe(true);
-    expect(spaceListStateResult[28].viewable).toBe(false);
-    // top: 2000 + 2800, bottom: 2000 + 2900; viewHeight = 3009 + 2 * 926 = 4861
-    // 61 / 926 = 0.0658
-    expect(spaceListStateResult[28].imageViewable).toBe(false);
+    // expect(spaceListStateResult[0].viewable).toBe(false);
+    // // (2100 - (3009 - 926)) / 926 = 0.018
+    // expect(spaceListStateResult[0].imageViewable).toBe(false);
+    // expect(spaceListStateResult[1].viewable).toBe(false);
+    // // (3009 - 926) < 2100 < (3009 + 926) entirely
+    // expect(spaceListStateResult[1].imageViewable).toBe(true);
+    // expect(spaceListStateResult[9].viewable).toBe(false);
+    // expect(spaceListStateResult[9].imageViewable).toBe(true);
+    // // (3100 - 3009) / 925 = 0.098
+    // expect(spaceListStateResult[10].viewable).toBe(false);
+    // expect(spaceListStateResult[10].imageViewable).toBe(true);
+    // expect(spaceListStateResult[11].viewable).toBe(true);
+    // expect(spaceListStateResult[11].imageViewable).toBe(true);
+    // expect(spaceListStateResult[12].viewable).toBe(true);
+    // expect(spaceListStateResult[12].imageViewable).toBe(true);
+    // expect(spaceListStateResult[19].viewable).toBe(false);
+    // expect(spaceListStateResult[19].imageViewable).toBe(true);
+    // expect(spaceListStateResult[20].viewable).toBe(false);
+    // expect(spaceListStateResult[20].imageViewable).toBe(true);
+    // expect(spaceListStateResult[27].viewable).toBe(false);
+    // // top: 2000 + 2700, bottom: 2000 + 2800; viewHeight = 3009 + 2 * 926 = 4861
+    // expect(spaceListStateResult[27].imageViewable).toBe(true);
+    // expect(spaceListStateResult[28].viewable).toBe(false);
+    // // top: 2000 + 2800, bottom: 2000 + 2900; viewHeight = 3009 + 2 * 926 = 4861
+    // // 61 / 926 = 0.0658
+    // expect(spaceListStateResult[28].imageViewable).toBe(false);
   });
 
   it('initialization - update data source (initialNumToRender: 10 and container offset: 2000 ) and use viewabilityConfig', () => {
@@ -1498,32 +1442,27 @@ describe('lifecycle', () => {
       actionType: 'initial',
     });
 
-    let recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    let recycleListStateResult =
+      recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleListStateResult.spaceState.length).toBe(10);
     expect(recycleListStateResult.recycleState.length).toBe(0);
 
-    expect(recycleListStateResult.spaceState.map((v) => v.viewable)).toEqual([
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-    ]);
-    expect(
-      recycleListStateResult.spaceState.map((v) => v.imageViewable)
-    ).toEqual([true, true, true, true, true, true, true, true, true, true]);
+    // expect(recycleListStateResult.spaceState.map((v) => v.viewable)).toEqual([
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    // ]);
+    // expect(
+    //   recycleListStateResult.spaceState.map((v) => v.imageViewable)
+    // ).toEqual([true, true, true, true, true, true, true, true, true, true]);
 
     // @ts-ignore
     recycleList.updateScrollMetrics({
@@ -1543,13 +1482,7 @@ describe('lifecycle', () => {
       actionType: 'hydrationWithBatchUpdate',
     });
 
-    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleListStateResult.spaceState.length).toBe(11);
     expect(recycleListStateResult.spaceState[10].key).toBe(
@@ -1577,13 +1510,7 @@ describe('lifecycle', () => {
       actionType: 'hydrationWithBatchUpdate',
     });
 
-    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleListStateResult.recycleState.length).toBe(0);
 
@@ -1591,12 +1518,12 @@ describe('lifecycle', () => {
       []
     );
     expect(recycleListStateResult.recycleState.map((v) => v.key)).toEqual([]);
-    expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual(
-      []
-    );
-    expect(
-      recycleListStateResult.recycleState.map((v) => v.imageViewable)
-    ).toEqual([]);
+    // expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual(
+    //   []
+    // );
+    // expect(
+    //   recycleListStateResult.recycleState.map((v) => v.imageViewable)
+    // ).toEqual([]);
 
     // @ts-ignore
     recycleList.updateScrollMetrics({
@@ -1605,13 +1532,7 @@ describe('lifecycle', () => {
       contentLength: 4500,
     });
 
-    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleList.state).toEqual({
       isEndReached: true,
@@ -1634,13 +1555,7 @@ describe('lifecycle', () => {
       contentLength: 4500,
     });
 
-    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleList.state).toEqual({
       isEndReached: true,
@@ -1674,36 +1589,36 @@ describe('lifecycle', () => {
       'recycle_10',
       'recycle_11',
     ]);
-    expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual([
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-    ]);
-    expect(
-      recycleListStateResult.recycleState.map((v) => v.imageViewable)
-    ).toEqual([
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-    ]);
+    // expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual([
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    //   false,
+    // ]);
+    // expect(
+    //   recycleListStateResult.recycleState.map((v) => v.imageViewable)
+    // ).toEqual([
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    //   true,
+    // ]);
 
     expect(recycleListStateResult.spaceState.length).toBe(11);
     expect(recycleListStateResult.spaceState.map((v) => v.key)).toEqual([
@@ -1768,13 +1683,8 @@ describe('data update', () => {
       contentLength: 0,
     });
 
-    let recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    let recycleListStateResult =
+      recycleList.stateResult as RecycleStateResult<any>;
 
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(400);
@@ -1786,13 +1696,7 @@ describe('data update', () => {
     _data.splice(1, 0, newData[0]);
     recycleList.setData(_data);
 
-    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(400);
     // the third as first item in recycleState
@@ -1853,13 +1757,8 @@ describe('data update', () => {
     recycleList.setKeyItemLayout('12', 100);
     recycleList.setKeyItemLayout('13', 100);
 
-    let recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    let recycleListStateResult =
+      recycleList.stateResult as RecycleStateResult<any>;
 
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(300);
@@ -1871,13 +1770,7 @@ describe('data update', () => {
     _data.splice(1, 0, newData[0]);
     recycleList.setData(_data);
 
-    recycleListStateResult = recycleList.stateResult as RecycleStateResult<
-      any,
-      {
-        viewable: boolean;
-        imageViewable: boolean;
-      }
-    >;
+    recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(280);

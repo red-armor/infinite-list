@@ -51,7 +51,7 @@ importers:
       '@x-oasis/prefix-interval-tree': ^0.1.2
       '@x-oasis/resolve-changed': ^0.0.6
       '@x-oasis/select-value': ^0.0.6
-      '@x-oasis/shallow-array-equal': ^0.0.6
+      '@x-oasis/shallow-array-equal': ^0.1.6
       '@x-oasis/shallow-equal': ^0.0.6
       '@x-oasis/unique-array-object': ^0.1.2
       memoize-one: ^6.0.0
@@ -69,7 +69,7 @@ importers:
       '@x-oasis/prefix-interval-tree': 0.1.2
       '@x-oasis/resolve-changed': 0.0.6
       '@x-oasis/select-value': 0.0.6
-      '@x-oasis/shallow-array-equal': 0.0.6
+      '@x-oasis/shallow-array-equal': 0.1.6
       '@x-oasis/shallow-equal': 0.0.6
       '@x-oasis/unique-array-object': 0.1.2
       memoize-one: 6.0.0
@@ -2593,8 +2593,8 @@ packages:
     resolution: {integrity: sha512-macr1DtVHd23AGOwVEw5DatPKvVRNsfbeVIEOZR79L4UmCs3BC417ZGWWTDnt6RSbgUKsBBcSp5G0WY8dJfdWw==}
     dev: false
 
-  /@x-oasis/shallow-array-equal/0.0.6:
-    resolution: {integrity: sha512-OBQ5eOvv9uahv3YX0EtPCZrs1saRB956rmeE7zrL6+u4N1cUY+/Msti2oidnCCdck9v4/2SNVyjXI/filz90Iw==}
+  /@x-oasis/shallow-array-equal/0.1.6:
+    resolution: {integrity: sha512-GaFtcnjOkf/ZNAohO6tEeVvrY9idVUp48rm2vZPRT/SJw630Ua+4tF0uhP+YWJv+NTmn0ygrAf0z0W8SO0yRQw==}
     dev: false
 
   /@x-oasis/shallow-equal/0.0.6:
@@ -3667,8 +3667,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      JSONStream: 1.3.5
       is-text-path: 1.0.1
+      JSONStream: 1.3.5
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2

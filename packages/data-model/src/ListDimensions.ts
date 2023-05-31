@@ -44,6 +44,8 @@ import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
 import IntegerBufferSet from '@x-oasis/integer-buffer-set';
 import memoizeOne from 'memoize-one';
+import shallowEqual from '@x-oasis/shallow-equal';
+import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -848,23 +850,48 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     };
   }
 
+  applyStateResult(stateResult: ListStateResult<ItemT>) {
+    let shouldStateUpdate = false;
+
+    if (!this._stateResult && stateResult) {
+      shouldStateUpdate = true;
+    } else if (this.fillingMode === FillingMode.SPACE) {
+      shouldStateUpdate = !shallowEqual(stateResult, this._stateResult);
+    } else if (this.fillingMode === FillingMode.RECYCLE) {
+      const _stateResult = stateResult as RecycleStateResult<ItemT>;
+      const _oldStateResult = this._stateResult as RecycleStateResult<ItemT>;
+      shouldStateUpdate = !(
+        shallowArrayEqual(
+          _stateResult.recycleState,
+          _oldStateResult.recycleState,
+          shallowEqual
+        ) &&
+        shallowArrayEqual(
+          _stateResult.spaceState,
+          _oldStateResult.spaceState,
+          shallowEqual
+        )
+      );
+    }
+
+    if (shouldStateUpdate && typeof this._stateListener === 'function') {
+      this._stateListener(stateResult, this._stateResult);
+    }
+
+    this._stateResult = stateResult;
+  }
+
   setState(state: ListState<ItemT>, force = false) {
     if (this.fillingMode === FillingMode.SPACE) {
       const stateResult = force
         ? this.resolveSpaceState(state)
         : this.memoizedResolveSpaceState(state);
-      if (typeof this._stateListener === 'function') {
-        this._stateListener(stateResult, this._stateResult);
-      }
-      this._stateResult = stateResult;
+      this.applyStateResult(stateResult);
     } else if (this.fillingMode === FillingMode.RECYCLE) {
       const stateResult = force
         ? this.resolveRecycleState(state)
         : this.memoizedResolveRecycleState(state);
-      if (typeof this._stateListener === 'function') {
-        this._stateListener(stateResult, this._stateResult);
-      }
-      this._stateResult = stateResult;
+      this.applyStateResult(stateResult);
     }
   }
 
@@ -1216,7 +1243,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isSticky,
         isReserved,
         length: itemLength,
-        ...itemMetaState,
+        // ...itemMetaState,
       });
     });
 

@@ -110,9 +110,6 @@ export type BoundInfo = {
   index: number;
 };
 
-// export interface PseudoListDimensionsInterface
-//   extends CommonListDimensionsInterface {}
-
 export type PseudoListDimensionsProps = {
   indexKeys: Array<string>;
 } & BaseDimensionsProps;
@@ -126,7 +123,6 @@ export type DimensionProps = {
   listGroupDimension: ListGroupDimensions;
 };
 
-// export type ContainerOffsetGetter = () => { length: number };
 export type ContainerLayoutGetter = () => {
   x: number;
   y: number;
@@ -218,12 +214,7 @@ export type InspectingListener = (props: InspectingAPI) => void;
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
-export type SpaceStateToken<
-  ItemT,
-  ViewabilityState = {
-    viewable: boolean;
-  }
-> = {
+export type SpaceStateToken<ItemT> = {
   item: ItemT;
   key: string;
   length: number;
@@ -231,38 +222,19 @@ export type SpaceStateToken<
   isSticky: boolean;
   isReserved: boolean;
   position: SpaceStateTokenPosition;
-} & ViewabilityState;
-export type RecycleStateToken<
-  ItemT,
-  ViewabilityState = {
-    viewable: boolean;
-  }
-> = {
+};
+
+export type RecycleStateToken<ItemT> = {
   targetKey: string;
   offset: number;
-} & SpaceStateToken<ItemT, ViewabilityState>;
+} & SpaceStateToken<ItemT>;
 
-export type SpaceStateResult<
-  ItemT,
-  ViewabilityState = {
-    viewable: boolean;
-  }
-> = Array<SpaceStateToken<ItemT, ViewabilityState>>;
-export type RecycleState<
-  ItemT,
-  ViewabilityState = {
-    viewable: boolean;
-  }
-> = Array<RecycleStateToken<ItemT, ViewabilityState>>;
+export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
+export type RecycleState<ItemT> = Array<RecycleStateToken<ItemT>>;
 
-export type RecycleStateResult<
-  ItemT,
-  ViewabilityState = {
-    viewable: boolean;
-  }
-> = {
-  spaceState: SpaceStateResult<ItemT, ViewabilityState>;
-  recycleState: RecycleState<ItemT, ViewabilityState>;
+export type RecycleStateResult<ItemT> = {
+  spaceState: SpaceStateResult<ItemT>;
+  recycleState: RecycleState<ItemT>;
 };
 
 export type ListStateResult<ItemT> =
