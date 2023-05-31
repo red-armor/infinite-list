@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.19](https://github.com/red-armor/infinite-list/compare/v0.2.18...v0.2.19) (2023-05-31)
+
+
+### Features
+
+* add reason ([08bce4d](https://github.com/red-armor/infinite-list/commit/08bce4d7e2be2d152bcd825bc20121a43dc46140))
+
+
+
 ## [0.2.18](https://github.com/red-armor/infinite-list/compare/v0.2.17...v0.2.18) (2023-05-31)
 
 
