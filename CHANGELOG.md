@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.17](https://github.com/red-armor/infinite-list/compare/v0.2.16...v0.2.17) (2023-05-31)
+
+
+### Features
+
+* shallowArrayEqual ([2660e4c](https://github.com/red-armor/infinite-list/commit/2660e4c433f355cea93bbae1544c978e622499f4))
+
+
+
 ## [0.2.16](https://github.com/red-armor/infinite-list/compare/v0.2.15...v0.2.16) (2023-05-30)
 
 
