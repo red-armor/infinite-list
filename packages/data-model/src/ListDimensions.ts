@@ -1023,7 +1023,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           const position = this.getPosition(
             index,
             visibleStartIndex - 2,
-            visibleStartIndex
+            visibleEndIndex + 2
           );
 
           if (position !== null) targetIndices[position] = index;
@@ -1049,7 +1049,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         if (_afterCount < 2 || !itemLayout) {
           const position = this.getPosition(
             index,
-            visibleEndIndex + 1,
+            visibleStartIndex - 2,
             visibleEndIndex + 2
           );
           if (position !== null) targetIndices[position] = index;
@@ -1081,18 +1081,17 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
               const { item, targetKey } = _result;
               // maybe item has been deleted
               if (item === this._data[this.getKeyIndex(targetKey)]) {
-                const { targetIndex, offset: _offset } =
-                  prevStateResult.recycleState[index];
+                const { targetIndex, offset: _offset } = _result;
                 if (targetIndex < visibleStartIndex) {
                   const offset = indexToOffsetMap[negativeStartIndex--];
                   recycleStateResult.push({
-                    ...prevStateResult.recycleState[index],
+                    ..._result,
                     offset: offset || _offset,
                   });
                 } else if (targetIndex > visibleStartIndex) {
                   const offset = indexToOffsetMap[positiveStartIndex++];
                   recycleStateResult.push({
-                    ...prevStateResult.recycleState[index],
+                    ..._result,
                     offset: offset || _offset,
                   });
                 }
