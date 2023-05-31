@@ -1068,38 +1068,60 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         true
       );
 
-      let negativeStartIndex = visibleStartIndex - 3;
-      let positiveStartIndex = visibleEndIndex + 3;
+      const negativeStartIndex = visibleStartIndex - 3;
+      const positiveStartIndex = visibleEndIndex + 3;
 
       targetIndices.forEach((targetIndex, index) => {
-        const prevStateResult = this._stateResult as RecycleStateResult<ItemT>;
+        // const prevStateResult = this._stateResult as RecycleStateResult<ItemT>;
         // targetIndex is null or undefined
         if (targetIndex == null) {
-          if (prevStateResult?.recycleState) {
-            const _result = prevStateResult.recycleState[index];
-            if (_result) {
-              const { item, targetKey } = _result;
-              // maybe item has been deleted
-              if (item === this._data[this.getKeyIndex(targetKey)]) {
-                const { targetIndex, offset: _offset } = _result;
-                if (targetIndex < visibleStartIndex) {
-                  const offset = indexToOffsetMap[negativeStartIndex--];
-                  if (typeof offset === 'number')
-                    recycleStateResult.push({
-                      ..._result,
-                      offset: offset || _offset,
-                    });
-                } else if (targetIndex > visibleStartIndex) {
-                  const offset = indexToOffsetMap[positiveStartIndex++];
-                  if (typeof offset === 'number')
-                    recycleStateResult.push({
-                      ..._result,
-                      offset: offset || _offset,
-                    });
-                }
-              }
-            }
-          }
+          // if (prevStateResult?.recycleState) {
+          //   const _result = prevStateResult.recycleState[index];
+          //   if (_result) {
+          //     const { item, targetKey } = _result;
+          //     // maybe item has been deleted
+          //     if (item === this._data[this.getKeyIndex(targetKey)]) {
+          //       const { targetIndex, offset: _offset } = _result;
+          //       if (targetIndex < visibleStartIndex) {
+          //         const offset = indexToOffsetMap[negativeStartIndex--];
+          //         if (typeof offset === 'number')
+          //           recycleStateResult.push({
+          //             ..._result,
+          //             offset: offset || _offset,
+          //           });
+          //       } else if (targetIndex > visibleStartIndex) {
+          //         const offset = indexToOffsetMap[positiveStartIndex++];
+          //         if (typeof offset === 'number')
+          //           recycleStateResult.push({
+          //             ..._result,
+          //             offset: offset || _offset,
+          //           });
+          //       }
+          //     }
+          //   }
+          // }
+          // return;
+          targetIndex = _targetIndices[index];
+          const item = data[targetIndex];
+          if (!item) return;
+          const itemKey = this.getItemKey(item, targetIndex);
+          const itemMeta = this.getItemMeta(item, targetIndex);
+          const itemLayout = itemMeta?.getLayout();
+          const itemLength =
+            (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+          recycleStateResult.push({
+            key: `recycle_${index}`,
+            targetKey: itemKey,
+            targetIndex,
+            length: itemLength,
+            isSpace: false,
+            isSticky: false,
+            item,
+            // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+            offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
+            position: 'buffered',
+            // ...itemMetaState,
+          });
           return;
         }
         const item = data[targetIndex];
