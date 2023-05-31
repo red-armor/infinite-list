@@ -1064,7 +1064,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
           offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
           position: 'buffered',
-          ...itemMetaState,
+          // ...itemMetaState,
         });
       });
     }
@@ -1243,7 +1243,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isSticky,
         isReserved,
         length: itemLength,
-        // ...itemMetaState,
       });
     });
 
