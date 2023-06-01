@@ -1,6 +1,16 @@
 # CHANGELOG
 
-## [0.2.20-stillness.0](https://github.com/red-armor/infinite-list/compare/v0.2.19...v0.2.20-stillness.0) (2023-05-31)
+## [0.2.20-stillness.1](https://github.com/red-armor/infinite-list/compare/v0.2.19...v0.2.20-stillness.1) (2023-06-01)
+
+
+
+## 0.2.20-stillness.1 (2023-06-01)
+
+
+### Features
+
+* strategy on scroll ([1961ccb](https://github.com/red-armor/infinite-list/commit/1961ccb08d345014d0a4ae0360f56c1fa60a4b93))
+* update ([8df80f9](https://github.com/red-armor/infinite-list/commit/8df80f995dc45da9a2bfc7ec3d59cbaf2d9dc524))
 
 
 
