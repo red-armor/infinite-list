@@ -1008,6 +1008,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const afterSize = this.recycleThreshold - visibleSize - beforeSize;
 
       let _beforeCount = 0;
+      let _topMinIndex = visibleStartIndex;
 
       for (
         let index = visibleStartIndex, size = beforeSize;
@@ -1026,7 +1027,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             visibleEndIndex + 2
           );
 
+          _topMinIndex = index;
           if (position !== null) targetIndices[position] = index;
+        } else {
+          break;
         }
 
         if (index >= this.initialNumToRender) {
@@ -1035,6 +1039,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
 
       let _afterCount = 0;
+      let _bottomMaxIndex = visibleEndIndex + 1;
 
       for (
         let index = visibleEndIndex + 1, size = afterSize;
@@ -1052,7 +1057,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             visibleStartIndex - 2,
             visibleEndIndex + 2
           );
+          _bottomMaxIndex = index;
           if (position !== null) targetIndices[position] = index;
+        } else {
+          break;
         }
 
         if (index >= this.initialNumToRender) {
@@ -1068,8 +1076,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         true
       );
 
-      const negativeStartIndex = visibleStartIndex - 3;
-      const positiveStartIndex = visibleEndIndex + 3;
+      let topOffset = indexToOffsetMap[Math.max(_topMinIndex, 0)] || 0;
+      let bottomOffset = indexToOffsetMap[Math.max(_bottomMaxIndex, 0)] || 0;
 
       targetIndices.forEach((targetIndex, index) => {
         // const prevStateResult = this._stateResult as RecycleStateResult<ItemT>;
@@ -1109,6 +1117,30 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           const itemLayout = itemMeta?.getLayout();
           const itemLength =
             (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+          let offset = 0;
+
+          if (this._scrollMetrics && itemLayout) {
+            const velocity = this._scrollMetrics.velocity;
+            // scroll up, preserve start
+            if (velocity < 0) {
+              topOffset -= itemLength;
+              offset = topOffset;
+              // scroll down, preserve end
+            } else if (velocity > 0) {
+              bottomOffset += itemLength;
+              offset = bottomOffset;
+            } else {
+              if (targetIndex < visibleStartIndex) {
+                topOffset -= itemLength;
+                offset = topOffset;
+              } else {
+                bottomOffset += itemLength;
+                offset = bottomOffset;
+              }
+            }
+          }
+
           recycleStateResult.push({
             key: `recycle_${index}`,
             targetKey: itemKey,
@@ -1118,9 +1150,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             isSticky: false,
             item,
             // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-            offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
+            offset: itemLayout ? offset : 0,
             position: 'buffered',
-            // ...itemMetaState,
           });
           return;
         }
