@@ -4,6 +4,7 @@ import {
   MAX_TO_RENDER_PER_BATCH,
   ON_END_REACHED_THRESHOLD,
   WINDOW_SIZE,
+  RECYCLE_BUFFERED_COUNT,
 } from './common';
 import SelectValue, {
   selectHorizontalValue,
@@ -27,6 +28,7 @@ class BaseLayout {
   private _recycleThreshold: number;
   readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
+  private _recycleBufferedCount: number;
 
   constructor(props: {
     id: string;
@@ -40,6 +42,7 @@ class BaseLayout {
     stickyHeaderIndices?: Array<number>;
 
     recycleThreshold?: number;
+    recycleBufferedCount?: number;
     recycleEnabled?: boolean;
   }) {
     const {
@@ -51,6 +54,7 @@ class BaseLayout {
       getContainerLayout,
       stickyHeaderIndices = [],
       windowSize = WINDOW_SIZE,
+      recycleBufferedCount = RECYCLE_BUFFERED_COUNT,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
       onEndReachedThreshold = ON_END_REACHED_THRESHOLD,
@@ -69,10 +73,12 @@ class BaseLayout {
     this._recycleThreshold = recycleEnabled
       ? recycleThreshold || maxToRenderPerBatch * 2
       : 0;
+    this._recycleBufferedCount = recycleBufferedCount;
     this._stickyHeaderIndices = stickyHeaderIndices;
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
+    this._recycleBufferedCount = recycleBufferedCount;
     this.persistanceIndices = persistanceIndices;
     this.stickyHeaderIndices = stickyHeaderIndices;
   }
@@ -87,6 +93,10 @@ class BaseLayout {
 
   get reservedIndices() {
     return this._reservedIndices;
+  }
+
+  get recycleBufferedCount() {
+    return this._recycleBufferedCount;
   }
 
   updateReservedIndices() {

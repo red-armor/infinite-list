@@ -93,6 +93,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _onBatchLayoutFinished: () => boolean;
 
   public updateStateBatchinator: Batchinator;
+
   private _recalculateRecycleResultStateBatchinator: Batchinator;
 
   private _selector = new EnabledSelector({
@@ -1032,21 +1033,28 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return position;
   }
 
+  getRecycleReuseOffsetBuilder(props: {
+    maxIndex: number;
+    minIndex: number;
+    topStartOffset: number;
+    bottomStartOffset: number;
+  }) {
+    const { maxIndex, minIndex, topStartOffset, bottomStartOffset } = props;
+
+    return (info: { targetIndex: number; length: number }) => {};
+  }
+
   resolveRecycleState(state: ListState<ItemT>) {
     const {
       visibleEndIndex,
       bufferedEndIndex,
       visibleStartIndex,
       bufferedStartIndex,
-      // actionType,
       data,
     } = state;
 
     const _targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
     const targetIndices = new Array(_targetIndices.length).fill(null);
-
-    // const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
-    // const originalPositionSize = this._bufferSet.getSize();
 
     const recycleEnabled = this._recycleEnabled();
     const recycleStateResult = [];
@@ -1058,8 +1066,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
           const position = this.getPosition(
             index,
-            visibleStartIndex - 2,
-            visibleEndIndex + 2
+            visibleStartIndex - this.recycleBufferedCount,
+            visibleEndIndex + this.recycleBufferedCount
           );
           if (position !== null) targetIndices[position] = index;
         }
@@ -1082,11 +1090,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const itemMeta = this.getItemMeta(item, index);
         const itemLayout = itemMeta?.getLayout();
 
-        if (_beforeCount < 2 || !itemLayout) {
+        if (_beforeCount < this.recycleBufferedCount || !itemLayout) {
           const position = this.getPosition(
             index,
-            visibleStartIndex - 2,
-            visibleEndIndex + 2
+            visibleStartIndex - this.recycleBufferedCount,
+            visibleEndIndex + this.recycleBufferedCount
           );
 
           _topMinIndex = index;
@@ -1113,11 +1121,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const itemMeta = this.getItemMeta(item, index);
         const itemLayout = itemMeta?.getLayout();
 
-        if (_afterCount < 2 || !itemLayout) {
+        if (_afterCount < this.recycleBufferedCount || !itemLayout) {
           const position = this.getPosition(
             index,
-            visibleStartIndex - 2,
-            visibleEndIndex + 2
+            visibleStartIndex - this.recycleBufferedCount,
+            visibleEndIndex + this.recycleBufferedCount
           );
           _bottomMaxIndex = index;
           if (position !== null) targetIndices[position] = index;
@@ -1142,35 +1150,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       let bottomOffset = indexToOffsetMap[Math.max(_bottomMaxIndex, 0)] || 0;
 
       targetIndices.forEach((targetIndex, index) => {
-        // const prevStateResult = this._stateResult as RecycleStateResult<ItemT>;
-        // targetIndex is null or undefined
         if (targetIndex == null) {
-          // if (prevStateResult?.recycleState) {
-          //   const _result = prevStateResult.recycleState[index];
-          //   if (_result) {
-          //     const { item, targetKey } = _result;
-          //     // maybe item has been deleted
-          //     if (item === this._data[this.getKeyIndex(targetKey)]) {
-          //       const { targetIndex, offset: _offset } = _result;
-          //       if (targetIndex < visibleStartIndex) {
-          //         const offset = indexToOffsetMap[negativeStartIndex--];
-          //         if (typeof offset === 'number')
-          //           recycleStateResult.push({
-          //             ..._result,
-          //             offset: offset || _offset,
-          //           });
-          //       } else if (targetIndex > visibleStartIndex) {
-          //         const offset = indexToOffsetMap[positiveStartIndex++];
-          //         if (typeof offset === 'number')
-          //           recycleStateResult.push({
-          //             ..._result,
-          //             offset: offset || _offset,
-          //           });
-          //       }
-          //     }
-          //   }
-          // }
-          // return;
           targetIndex = _targetIndices[index];
           const item = data[targetIndex];
           if (!item) return;
@@ -1186,8 +1166,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             const velocity = this._scrollMetrics.velocity;
             // scroll up, preserve start
             if (velocity < 0) {
-              topOffset -= itemLength;
+              const _topOffset = topOffset - itemLength;
+              topOffset = _topOffset;
               offset = topOffset;
+
               // scroll down, preserve end
             } else if (velocity > 0) {
               bottomOffset += itemLength;
