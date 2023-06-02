@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.20](https://github.com/red-armor/infinite-list/compare/v0.2.19...v0.2.20) (2023-06-02)
+
+
+### Features
+
+* add dispatchMetricsThreshold ([68d48af](https://github.com/red-armor/infinite-list/commit/68d48af4af99afb0151d422fa3c6131d68ef9d33))
+
+
+
 ## [0.2.19](https://github.com/red-armor/infinite-list/compare/v0.2.18...v0.2.19) (2023-05-31)
 
 
