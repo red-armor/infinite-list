@@ -40,6 +40,7 @@ importers:
 
   packages/data-model:
     specifiers:
+      '@x-oasis/batchinate-last': ^0.1.8
       '@x-oasis/batchinator': ^0.0.13
       '@x-oasis/capitalize': ^0.0.6
       '@x-oasis/default-boolean-value': ^0.1.4
@@ -58,6 +59,7 @@ importers:
       rimraf: ~4.4.0
       tsdx: ^0.14.1
     dependencies:
+      '@x-oasis/batchinate-last': 0.1.8
       '@x-oasis/batchinator': 0.0.13
       '@x-oasis/capitalize': 0.0.6
       '@x-oasis/default-boolean-value': 0.1.4
@@ -2537,6 +2539,10 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
+  /@x-oasis/batchinate-last/0.1.8:
+    resolution: {integrity: sha512-LA6ro2kCdvFmt3C+vAeW3XV1ew1lrKVe/JjMwjzIcrwZl6kvhkXHERF462zZT7Lddu6Z22QHIBgrZ91S7+TjVg==}
+    dev: false
+
   /@x-oasis/batchinator/0.0.13:
     resolution: {integrity: sha512-roGBZ9KR9YcQCwYiLtmCJeg3NyUifnwGcGQutfx51s8x5FUWAtyAqOw5u0HwLcm0dm2BJKW6MpQiB2RduaafyA==}
     dev: false
@@ -3667,8 +3673,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      is-text-path: 1.0.1
       JSONStream: 1.3.5
+      is-text-path: 1.0.1
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2
