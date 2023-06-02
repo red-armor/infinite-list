@@ -76,8 +76,8 @@ export type ListDimensionsProps<ItemT> = {
   onBatchLayoutFinished?: () => boolean;
 
   recycleThreshold?: number;
-
   recycleEnabled?: boolean;
+  recycleBufferedCount?: number;
 
   stillnessThreshold?: number;
 

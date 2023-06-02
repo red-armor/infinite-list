@@ -23,6 +23,7 @@
     "tsdx": "^0.14.1"
   },
   "dependencies": {
+    "@x-oasis/batchinate-last": "^0.1.8",
     "@x-oasis/batchinator": "^0.0.13",
     "@x-oasis/capitalize": "^0.0.6",
     "@x-oasis/default-boolean-value": "^0.1.4",
