@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [0.2.21-stillness-a.0](https://github.com/red-armor/infinite-list/compare/v0.2.20...v0.2.21-stillness-a.0) (2023-06-02)
+
+
+
+## 0.2.21-stillness-a.0 (2023-06-02)
+
+
+### Features
+
+* add stillness helper ([ef019c7](https://github.com/red-armor/infinite-list/commit/ef019c749b22d06a3c7b7dbef9e6be859c8d7329))
+* update ([3a1e24a](https://github.com/red-armor/infinite-list/commit/3a1e24ae82c6a41f82bf9f3a1fa445a595803001))
+
+
+
 ## [0.2.20](https://github.com/red-armor/infinite-list/compare/v0.2.19...v0.2.20) (2023-06-02)
 
 
