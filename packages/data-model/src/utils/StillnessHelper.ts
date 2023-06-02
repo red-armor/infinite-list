@@ -1,4 +1,4 @@
-import BatchinateLast from './BatchinateLast';
+import BatchinateLast from '@x-oasis/batchinate-last';
 
 class StillnessHelper {
   private _thresholdValueMS: number;
