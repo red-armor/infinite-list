@@ -12,6 +12,7 @@ import {
   isEmpty,
   shallowDiffers,
   buildStateTokenIndexKey,
+  DISPATCH_METRICS_THRESHOLD,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
@@ -125,6 +126,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       getItemSeparatorLength,
       onBatchLayoutFinished,
       persistanceIndices,
+      dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
     } = props;
@@ -136,7 +138,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._listGroupDimension = listGroupDimension;
     this._dispatchMetricsBatchinator = new Batchinator(
       this.dispatchMetrics.bind(this),
-      50
+      dispatchMetricsThreshold
     );
     this.onEndReachedHelper = new OnEndReachedHelper({
       onEndReached,
