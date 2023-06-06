@@ -94,7 +94,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   public updateStateBatchinator: Batchinator;
   private _recalculateRecycleResultStateBatchinator: Batchinator;
 
-  private _selector = new EnabledSelector();
+  private _selector = new EnabledSelector({
+    onEnabled: this.onEnableDispatchScrollMetrics.bind(this),
+  });
 
   private _bufferSet = new IntegerBufferSet();
 
@@ -1341,6 +1343,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         ? this._listGroupDimension.dispatchScrollMetricsEnabled()
         : true)
     );
+  }
+
+  onEnableDispatchScrollMetrics() {
+    this.dispatchMetrics(this._scrollMetrics);
   }
 
   /**
