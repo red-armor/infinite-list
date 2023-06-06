@@ -1,4 +1,5 @@
 export type OnEndReachedHelperProps = {
+  id: string;
   onEndReached?: OnEndReached;
   onEndReachedThreshold?: number;
   onEndReachedTimeoutThreshold?: number;

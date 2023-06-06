@@ -7,6 +7,7 @@ import {
 import { OnEndReached, OnEndReachedHelperProps, ScrollMetrics } from '../types';
 
 class OnEndReachedHelper {
+  readonly id: string;
   readonly onEndReachedThreshold: number;
   readonly onEndReachedTimeoutThreshold: number;
   readonly onEndReachedHandlerTimeoutThreshold: number;
@@ -18,12 +19,14 @@ class OnEndReachedHelper {
 
   constructor(props: OnEndReachedHelperProps) {
     const {
+      id,
       onEndReached,
       onEndReachedThreshold = ON_END_REACHED_THRESHOLD,
       onEndReachedTimeoutThreshold = ON_END_REACHED_TIMEOUT_THRESHOLD,
       onEndReachedHandlerTimeoutThreshold = ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD,
     } = props;
 
+    this.id = id;
     this.onEndReached = onEndReached;
     this.onEndReachedThreshold = onEndReachedThreshold;
     this.onEndReachedTimeoutThreshold = onEndReachedTimeoutThreshold;
@@ -73,12 +76,16 @@ class OnEndReachedHelper {
     };
   }
 
-  releaseHandlerMutex() {
-    this._waitingForDataChangedSinceEndReached = false;
+  clearTimer() {
     if (this._onEndReachedTimeoutHandler) {
       clearTimeout(this._onEndReachedTimeoutHandler);
     }
     this._onEndReachedTimeoutHandler = null;
+  }
+
+  releaseHandlerMutex() {
+    this._waitingForDataChangedSinceEndReached = false;
+    this.clearTimer();
   }
 
   performEndReached(info: { isEndReached: boolean; distanceFromEnd: number }) {
@@ -86,16 +93,19 @@ class OnEndReachedHelper {
     const { isEndReached, distanceFromEnd } = info;
 
     if (typeof this.onEndReached !== 'function') return;
-    if (isEndReached)
+    if (isEndReached) {
+      this._waitingForDataChangedSinceEndReached = true;
       this.onEndReachedHandlerBatchinator.schedule({
         distanceFromEnd,
       });
+    }
   }
 
   onEndReachedHandler(opts: { distanceFromEnd: number }) {
     if (typeof this.onEndReached !== 'function') return;
     this._waitingForDataChangedSinceEndReached = true;
     const { distanceFromEnd } = opts;
+    this.clearTimer();
     this._onEndReachedTimeoutHandler = setTimeout(() => {
       this._waitingForDataChangedSinceEndReached = false;
     }, this.onEndReachedHandlerTimeoutThreshold);

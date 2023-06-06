@@ -143,6 +143,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       dispatchMetricsThreshold
     );
     this.onEndReachedHelper = new OnEndReachedHelper({
+      id: this.id,
       onEndReached,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
@@ -632,7 +633,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         });
       }
     } else {
-      this.updateScrollMetrics(this._scrollMetrics, false);
+      // disable onEndReached; which may cause loop
+      if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
+      // this.updateScrollMetrics(this._scrollMetrics, false);
     }
 
     return changedType;
@@ -642,26 +645,23 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this.onEndReachedHelper.setHandler(onEndReached);
   }
 
-  _setData(data: Array<ItemT>) {
-    if (data === this._data) return KeysChangedType.Equal;
+  _setData(_data: Array<ItemT>) {
+    if (_data === this._data) return KeysChangedType.Equal;
     const keyToIndexMap: Map<string, number> = new Map();
     const keyToIndexArray: Array<string> = [];
     const itemToKeyMap: Map<ItemT, string> = new Map();
     // TODO: optimization
-    data.forEach((item, index) => {
-      let itemKey = this.getItemKey(item, index);
+    const data = _data.filter((item, index) => {
+      const itemKey = this.getItemKey(item, index);
       const _index = keyToIndexArray.findIndex((key) => key === itemKey);
-
-      if (_index !== -1 && _index !== index) {
-        itemKey = `${itemKey}_${index}`;
-        keyToIndexArray.push(itemKey);
-        keyToIndexMap.set(itemKey, index);
-      } else {
+      if (_index === -1) {
         keyToIndexMap.set(itemKey, index);
         keyToIndexArray.push(itemKey);
+        itemToKeyMap.set(item, itemKey);
+        return true;
       }
 
-      itemToKeyMap.set(item, itemKey);
+      return false;
     });
     const dataChangedType = this.resolveKeysChangedType(
       keyToIndexArray,
@@ -864,12 +864,24 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     } else if (this.fillingMode === FillingMode.RECYCLE) {
       const _stateResult = stateResult as RecycleStateResult<ItemT>;
       const _oldStateResult = this._stateResult as RecycleStateResult<ItemT>;
+
+      const newRecycleState = [];
+      const oldRecycleState = [];
+
+      for (let index = 0; index < _stateResult.recycleState.length; index++) {
+        // @ts-ignore
+        const { itemMeta } = _stateResult.recycleState[index];
+        if (!itemMeta || (itemMeta && itemMeta.getState().viewable)) {
+          newRecycleState.push(_stateResult.recycleState[index]);
+          oldRecycleState.push(_oldStateResult.recycleState[index]);
+        } else {
+          newRecycleState.push(null);
+          oldRecycleState.push(null);
+        }
+      }
+
       shouldStateUpdate = !(
-        shallowArrayEqual(
-          _stateResult.recycleState,
-          _oldStateResult.recycleState,
-          shallowEqual
-        ) &&
+        shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
         shallowArrayEqual(
           _stateResult.spaceState,
           _oldStateResult.spaceState,
@@ -879,6 +891,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     if (shouldStateUpdate && typeof this._stateListener === 'function') {
+      if (this.fillingMode === FillingMode.RECYCLE) {
+        // @ts-ignore
+        stateResult.recycleState = stateResult.recycleState.map((state) => {
+          if (!state) return;
+          // @ts-ignore
+          const { viewable, ...rest } = state;
+          return rest;
+        });
+      }
       this._stateListener(stateResult, this._stateResult);
     }
 
@@ -908,7 +929,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       position: 'before' as SpaceStateTokenPosition,
       isSticky: false,
       isReserved: false,
-      viewable: false,
       ...options,
     };
   }
@@ -1005,8 +1025,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       ) {
         const position = this.getPosition(
           index,
-          bufferedStartIndex,
-          visibleStartIndex
+          visibleStartIndex,
+          visibleEndIndex
         );
 
         if (position !== null) targetIndices[position] = index;
@@ -1019,8 +1039,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       ) {
         const position = this.getPosition(
           index,
-          visibleEndIndex + 1,
-          bufferedEndIndex
+          visibleStartIndex,
+          visibleEndIndex
         );
         if (position !== null) targetIndices[position] = index;
       }
@@ -1065,10 +1085,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           isSpace: false,
           isSticky: false,
           item,
+          itemMeta,
+          viewable: itemMeta.getState().viewable,
           // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
           offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
           position: 'buffered',
-          // ...itemMetaState,
         });
       });
     }
@@ -1319,14 +1340,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
-  dispatchMetrics(scrollMetrics: ScrollMetrics) {
+  dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
       dimension: this,
       scrollMetrics,
     });
 
-    if (isEmpty(state)) return;
+    if (isEmpty(state)) return state;
     this.updateState(state, scrollMetrics);
+    return state;
+  }
+
+  dispatchMetrics(scrollMetrics: ScrollMetrics) {
+    const state = this.dispatchStoreMetrics(scrollMetrics);
     const { isEndReached, distanceFromEnd } = state;
 
     this.onEndReachedHelper.performEndReached({
