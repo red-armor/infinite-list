@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.21](https://github.com/red-armor/infinite-list/compare/v0.2.20...v0.2.21) (2023-06-06)
+
+
+### Features
+
+* dispatchScrollMetricsEnabled ([18d3b86](https://github.com/red-armor/infinite-list/commit/18d3b86b92d7197897bc5642f7d312e1a81fa644))
+
+
+
 ## [0.2.20](https://github.com/red-armor/infinite-list/compare/v0.2.19...v0.2.20) (2023-06-02)
 
 
