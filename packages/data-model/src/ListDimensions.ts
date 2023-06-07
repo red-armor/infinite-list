@@ -109,7 +109,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     state: ListState<ItemT>
   ) => RecycleStateResult<ItemT>;
 
-  private _dataChangeTriggerOnEndReachedTimer: any;
+  // private _dataChangeTriggerOnEndReachedTimer: any;
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -638,13 +638,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       // disable onEndReached; which may cause loop
       if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
 
-      if (this._dataChangeTriggerOnEndReachedTimer) {
-        clearTimeout(this._dataChangeTriggerOnEndReachedTimer);
-      }
+      // if (this._dataChangeTriggerOnEndReachedTimer) {
+      //   clearTimeout(this._dataChangeTriggerOnEndReachedTimer);
+      // }
 
-      this._dataChangeTriggerOnEndReachedTimer = setTimeout(() => {
-        this.updateScrollMetrics(this._scrollMetrics, false);
-      }, 350);
+      // this._dataChangeTriggerOnEndReachedTimer = setTimeout(() => {
+      //   this.updateScrollMetrics(this._scrollMetrics, false);
+      // }, 350);
 
       // temp fix
       // this.updateScrollMetrics(this._scrollMetrics, false);

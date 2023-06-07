@@ -94,7 +94,6 @@ class OnEndReachedHelper {
 
     if (typeof this.onEndReached !== 'function') return;
     if (isEndReached) {
-      this._waitingForDataChangedSinceEndReached = true;
       this.onEndReachedHandlerBatchinator.schedule({
         distanceFromEnd,
       });
@@ -103,6 +102,7 @@ class OnEndReachedHelper {
 
   onEndReachedHandler(opts: { distanceFromEnd: number }) {
     if (typeof this.onEndReached !== 'function') return;
+    if (this._waitingForDataChangedSinceEndReached) return;
     this._waitingForDataChangedSinceEndReached = true;
     const { distanceFromEnd } = opts;
     this.clearTimer();
