@@ -1376,6 +1376,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
     const state = this.dispatchStoreMetrics(scrollMetrics);
     const { isEndReached, distanceFromEnd } = state;
+    console.log(
+      '[list dimensions ]dispatch metrics ',
+      this.id,
+      scrollMetrics ? { ...scrollMetrics } : {},
+      { ...state }
+    );
 
     this.onEndReachedHelper.performEndReached({
       isEndReached,

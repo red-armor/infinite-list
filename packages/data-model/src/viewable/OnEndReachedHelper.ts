@@ -89,6 +89,16 @@ class OnEndReachedHelper {
   }
 
   performEndReached(info: { isEndReached: boolean; distanceFromEnd: number }) {
+    console.log(
+      'perform end ',
+      this.id,
+      this._waitingForDataChangedSinceEndReached
+    );
+    console.log(
+      '[onEndReachedHelper] performEndReached ',
+      this.id,
+      this._waitingForDataChangedSinceEndReached
+    );
     if (this._waitingForDataChangedSinceEndReached) return;
     const { isEndReached, distanceFromEnd } = info;
 
@@ -109,6 +119,7 @@ class OnEndReachedHelper {
     this._onEndReachedTimeoutHandler = setTimeout(() => {
       this._waitingForDataChangedSinceEndReached = false;
     }, this.onEndReachedHandlerTimeoutThreshold);
+    console.log('[onEndReachedHelper] onEndReachedHandler ', this.id);
 
     this.onEndReached({
       distanceFromEnd,
