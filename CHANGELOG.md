@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.24](https://github.com/red-armor/infinite-list/compare/v0.2.23...v0.2.24) (2023-06-07)
+
+
+### Features
+
+* update ([172c7ef](https://github.com/red-armor/infinite-list/commit/172c7eff2fd3bfd7cd13c29a844d46697e7e56d4))
+
+
+
 ## [0.2.23](https://github.com/red-armor/infinite-list/compare/v0.2.22...v0.2.23) (2023-06-07)
 
 
