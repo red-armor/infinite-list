@@ -892,15 +892,25 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     if (shouldStateUpdate && typeof this._stateListener === 'function') {
       if (this.fillingMode === FillingMode.RECYCLE) {
+        const { recycleState: _recycleState, spaceState } =
+          stateResult as RecycleStateResult<ItemT>;
         // @ts-ignore
-        stateResult.recycleState = stateResult.recycleState.map((state) => {
-          if (!state) return;
+        const recycleState = _recycleState.map((state) => {
+          if (!state) return null;
           // @ts-ignore
           const { viewable, ...rest } = state;
           return rest;
         });
+        this._stateListener(
+          {
+            recycleState,
+            spaceState,
+          },
+          this._stateResult
+        );
+      } else {
+        this._stateListener(stateResult, this._stateResult);
       }
-      this._stateListener(stateResult, this._stateResult);
     }
 
     this._stateResult = stateResult;
