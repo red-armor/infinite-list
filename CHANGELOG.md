@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.27](https://github.com/red-armor/infinite-list/compare/v0.2.26...v0.2.27) (2023-06-08)
+
+
+### Bug Fixes
+
+* getItemMeta issue when has same item key ([5a91fbb](https://github.com/red-armor/infinite-list/commit/5a91fbbe25e95cb761a88c6e1026c96cfcfe314f))
+
+
+
 ## [0.2.26](https://github.com/red-armor/infinite-list/compare/v0.2.25...v0.2.26) (2023-06-07)
 
 
