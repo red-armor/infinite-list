@@ -12,8 +12,10 @@ import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
+let count = 0;
 class ItemMeta extends ViewabilityItemMeta {
   private _isListItem: boolean;
+  private _id: string;
   private _layout?: ItemLayout;
   private _separatorLength?: number;
   private _owner?: ItemMetaOwner;
@@ -44,6 +46,7 @@ class ItemMeta extends ViewabilityItemMeta {
       isInitialItem = false,
     } = props;
     this._owner = owner;
+    this._id = `item_meta_${count++}`;
     this._layout = layout;
     this._separatorLength = separatorLength || 0;
     this._isListItem = isListItem || false;
@@ -56,6 +59,10 @@ class ItemMeta extends ViewabilityItemMeta {
     // this.addStateListener = this.addStateListener.bind(this);
     // this.removeStateListener = this.removeStateListener.bind(this);
     this.addStateEventListener = this.addStateEventListener.bind(this);
+  }
+
+  get id() {
+    return this._id;
   }
 
   setLayout(layout: ItemLayout) {

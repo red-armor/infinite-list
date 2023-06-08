@@ -368,9 +368,22 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
    */
   ensureKeyMeta(key: string) {
     let meta = this.getKeyMeta(key);
+
     if (!meta && this._parentItemsDimensions) {
       meta = this._parentItemsDimensions.ensureKeyMeta(key);
     }
+
+    if (meta) return meta;
+
+    // TODO: separatorLength may be included!!!!
+    meta = new ItemMeta({
+      key,
+      owner: this,
+      isListItem: true,
+      isInitialItem: false,
+    });
+    this.setKeyMeta(key, meta);
+
     return meta;
   }
 
@@ -675,6 +688,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
       return false;
     });
+
     const dataChangedType = this.resolveKeysChangedType(
       keyToIndexArray,
       (index: number) => this._data[index] === data[index]
@@ -700,6 +714,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     this._data = data;
+
     this._keyToIndexMap = keyToIndexMap;
     this._indexKeys = keyToIndexArray;
     this._itemToKeyMap = itemToKeyMap;
@@ -802,8 +817,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       return false;
     }
     const index = this.getKeyIndex(key);
-    const item = this._data[index];
-    const meta = this.getItemMeta(item, index);
+    // const item = this._data[index];
+    const meta = this.getKeyMeta(key);
+    // const meta = this.getItemMeta(item, index);
 
     if (!meta) return false;
 
@@ -1110,7 +1126,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           itemMeta,
           viewable: itemMeta.getState().viewable,
           // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-          offset: itemLayout ? indexToOffsetMap[targetIndex] : 0,
+          offset: itemLength ? indexToOffsetMap[targetIndex] : 0,
           position: 'buffered',
         });
       });
