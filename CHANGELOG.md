@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.28](https://github.com/red-armor/infinite-list/compare/v0.2.27...v0.2.28) (2023-06-08)
+
+
+### Features
+
+* dulplicate key should be delete ([76446d6](https://github.com/red-armor/infinite-list/commit/76446d67d17fba2770a475fe4205e54a5b4a03fb))
+
+
+
 ## [0.2.27](https://github.com/red-armor/infinite-list/compare/v0.2.26...v0.2.27) (2023-06-08)
 
 
