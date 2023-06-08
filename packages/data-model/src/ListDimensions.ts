@@ -675,16 +675,18 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const keyToIndexMap: Map<string, number> = new Map();
     const keyToIndexArray: Array<string> = [];
     const itemToKeyMap: Map<ItemT, string> = new Map();
+    let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {
       const itemKey = this.getItemKey(item, index);
       const _index = keyToIndexArray.findIndex((key) => key === itemKey);
       if (_index === -1) {
-        keyToIndexMap.set(itemKey, index);
+        keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);
         return true;
       }
+      duplicateKeyCount += 1;
 
       return false;
     });
