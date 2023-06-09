@@ -1236,6 +1236,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             isSpace: false,
             isSticky: false,
             item,
+            itemMeta,
+            viewable: itemMeta.getState().viewable,
             // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
             offset: itemLayout ? offset : 0,
             position: 'buffered',
