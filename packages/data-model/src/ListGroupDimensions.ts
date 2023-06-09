@@ -115,6 +115,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     );
 
     this.onEndReachedHelper = new OnEndReachedHelper({
+      id,
       onEndReached,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
