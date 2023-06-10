@@ -845,6 +845,50 @@ describe('setData', () => {
     expect(recycleList.intervalTree.get(20)).toBe(100);
   });
 
+  it('append with duplicate key', () => {
+    const data = buildData(20);
+    const recycleList = new ListDimensions({
+      data,
+      id: 'list_group',
+      recycleEnabled: true,
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 10,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+      getItemLayout: (data, index) => ({
+        length: 100,
+        index,
+      }),
+      getItemSeparatorLength: () => ({
+        length: 20,
+      }),
+    });
+
+    const _intervalTree = recycleList.intervalTree;
+    expect(recycleList.intervalTree.get(19)).toBe(100);
+    const newData = [].concat(data, buildData(10, 19));
+
+    const type = recycleList.setData(newData);
+
+    expect(type).toBe(KeysChangedType.Append);
+    expect(recycleList.getData().length).toBe(29);
+    // on initial interval tree should not change.
+    expect(_intervalTree).toBe(recycleList.intervalTree);
+    expect(recycleList.getKeyIndex('20')).toBe(20);
+    expect(recycleList.intervalTree.getHeap()[1]).toBe(3460);
+
+    // expect(recycleList.intervalTree.get(19)).toBe(120);
+    // expect(recycleList.getKeyItemLength('20')).toBe(120);
+    // expect(recycleList.intervalTree.get(20)).toBe(100);
+  });
+
   it('shuffle', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
