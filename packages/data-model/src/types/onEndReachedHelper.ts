@@ -3,7 +3,9 @@ export type OnEndReachedHelperProps = {
   onEndReached?: OnEndReached;
   onEndReachedThreshold?: number;
   onEndReachedTimeoutThreshold?: number;
+  distanceFromEndThresholdValue?: number;
   onEndReachedHandlerTimeoutThreshold?: number;
+  maxCountOfHandleOnEndReachedAfterStillness?: number;
 };
 
 export type OnEndReached = (props: {
@@ -11,3 +13,10 @@ export type OnEndReached = (props: {
   cb: Function;
   releaseHandlerMutex?: Function;
 }) => void;
+
+export type SendOnEndReachedDistanceFromBottomStack = Array<{
+  distancesFromEnd: Array<number>;
+  ts: Array<number>;
+  hit: number;
+  resetCount: number;
+}>;
