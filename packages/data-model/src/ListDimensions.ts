@@ -131,8 +131,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       onBatchLayoutFinished,
       persistanceIndices,
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
+
       onEndReachedTimeoutThreshold,
+      distanceFromEndThresholdValue,
       onEndReachedHandlerTimeoutThreshold,
+      maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
     this._keyExtractor = keyExtractor;
     this._getItemLayout = getItemLayout;
@@ -149,7 +152,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       onEndReached,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
+      distanceFromEndThresholdValue,
       onEndReachedHandlerTimeoutThreshold,
+      maxCountOfHandleOnEndReachedAfterStillness,
     });
     this._onBatchLayoutFinished = onBatchLayoutFinished;
 
@@ -1094,7 +1099,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       );
 
       targetIndices.forEach((targetIndex, index) => {
-        const item = data[targetIndex];
+        const item = this._data[targetIndex];
         if (!item) return;
 
         const itemKey = this.getItemKey(item, targetIndex);
@@ -1249,7 +1254,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     beforeTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
-        const item = data[startIndex];
+        const item = this._data[startIndex];
         spaceState.push({
           item,
           key: this.getItemKey(item, startIndex),
@@ -1316,7 +1321,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     afterTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
-        const item = data[startIndex];
+        const item = this._data[startIndex];
         spaceState.push({
           item,
           isSpace: false,
