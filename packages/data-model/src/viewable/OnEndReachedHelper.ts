@@ -18,15 +18,17 @@ class OnEndReachedHelper {
   readonly onEndReachedTimeoutThreshold: number;
   readonly onEndReachedHandlerTimeoutThreshold: number;
   readonly onEndReachedHandlerBatchinator: Batchinator;
+  readonly _consecutiveDistanceTimeoutThresholdValue = 800;
   readonly sendOnEndReachedDistanceFromEndStack: SendOnEndReachedDistanceFromBottomStack;
 
   private onEndReached: OnEndReached;
+  private _scrollMetrics: ScrollMetrics;
   private _maxCountOfHandleOnEndReachedAfterStillness: number;
   private _distanceFromEndThresholdValue: number;
   private _waitingForDataChangedSinceEndReached = false;
   private _onEndReachedTimeoutHandler: NodeJS.Timeout;
 
-  readonly _consecutiveDistanceTimeoutThresholdValue = 800;
+  public attemptToHandleOnEndReachedBatchinator: Batchinator;
 
   constructor(props: OnEndReachedHelperProps) {
     const {
@@ -53,6 +55,10 @@ class OnEndReachedHelper {
     this.releaseHandlerMutex = this.releaseHandlerMutex.bind(this);
     this.onEndReachedHandlerBatchinator = new Batchinator(
       this.onEndReachedHandler.bind(this),
+      50
+    );
+    this.attemptToHandleOnEndReachedBatchinator = new Batchinator(
+      this.attemptToHandleOnEndReached.bind(this),
       50
     );
   }
@@ -84,10 +90,14 @@ class OnEndReachedHelper {
    * @param positive
    * @returns
    */
-  perform(scrollMetrics: ScrollMetrics, positive = false) {
+  perform(
+    scrollMetrics: ScrollMetrics = this._scrollMetrics,
+    positive = false
+  ) {
     const { contentLength, offset, visibleLength } = scrollMetrics;
     const distanceFromEnd = contentLength - visibleLength - offset;
     const threshold = this.onEndReachedThreshold * visibleLength;
+    this._scrollMetrics = scrollMetrics;
 
     if (positive && distanceFromEnd < 0) {
       return {
@@ -100,6 +110,16 @@ class OnEndReachedHelper {
       distanceFromEnd,
       isEndReached: distanceFromEnd < threshold,
     };
+  }
+
+  attemptToHandleOnEndReached() {
+    const { isEndReached, distanceFromEnd } = this._scrollMetrics
+      ? this.perform(this._scrollMetrics)
+      : {
+          distanceFromEnd: 0,
+          isEndReached: true,
+        };
+    this.performEndReached({ isEndReached, distanceFromEnd });
   }
 
   clearTimer() {
