@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.30](https://github.com/red-armor/infinite-list/compare/v0.2.29...v0.2.30) (2023-06-11)
+
+
+### Features
+
+* close [#23](https://github.com/red-armor/infinite-list/issues/23), setState should be delay a tick ([#24](https://github.com/red-armor/infinite-list/issues/24)) ([21c9a9a](https://github.com/red-armor/infinite-list/commit/21c9a9ab982393656da6ced6f99a3cebc66121c1))
+
+
+
 ## [0.2.29](https://github.com/red-armor/infinite-list/compare/v0.2.28...v0.2.29) (2023-06-11)
 
 
