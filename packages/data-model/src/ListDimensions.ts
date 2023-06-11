@@ -548,9 +548,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         this.setData(this._softData);
       }
       // 无脑调用一次触底
-      this.onEndReachedHelper.onEndReachedHandler({
-        distanceFromEnd: 0,
-      });
+      // this.onEndReachedHelper.onEndReachedHandler({
+      //   distanceFromEnd: 0,
+      // });
+      this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
   }
 
@@ -604,9 +605,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   attemptToHandleEndReached() {
     if (!this._listGroupDimension) {
       if (this.initialNumToRender)
-        this.onEndReachedHelper.onEndReachedHandler({
-          distanceFromEnd: 0,
-        });
+        this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
   }
 
@@ -632,9 +631,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     // 如果没有值，这个时候要触发一次触底
     if (!data.length && this.initialNumToRender) {
-      this.onEndReachedHelper.onEndReachedHandler({
-        distanceFromEnd: 0,
-      });
+      this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
 
     if (this._listGroupDimension) {
@@ -654,7 +651,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     } else {
       // disable onEndReached; which may cause loop
-      if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
+      setTimeout(() => {
+        if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
+      });
+
+      // if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
 
       // if (this._dataChangeTriggerOnEndReachedTimer) {
       //   clearTimeout(this._dataChangeTriggerOnEndReachedTimer);

@@ -7,7 +7,7 @@ import {
 } from '../types';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { buildStateTokenIndexKey } from '../common';
-import { vi, describe, it, expect } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index + startIndex,
@@ -1685,6 +1685,14 @@ describe('lifecycle', () => {
 });
 
 describe('data update', () => {
+  beforeEach(() => {
+    // tell vitest we use mocked time
+    vi.useFakeTimers();
+  });
+  afterEach(() => {
+    // restoring date after each test run
+    vi.useRealTimers();
+  });
   it('insert a data item', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
@@ -1739,6 +1747,7 @@ describe('data update', () => {
     const newData = buildData(1, 20);
     _data.splice(1, 0, newData[0]);
     recycleList.setData(_data);
+    vi.runAllTimers();
 
     recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
     // offset should be recalculate
@@ -1813,6 +1822,7 @@ describe('data update', () => {
     const newData = buildData(1, 20);
     _data.splice(1, 0, newData[0]);
     recycleList.setData(_data);
+    vi.runAllTimers();
 
     recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
@@ -1874,6 +1884,7 @@ describe('data update', () => {
     _data.splice(1, 1);
 
     spaceList.setData(_data);
+    vi.runAllTimers();
 
     expect(spaceList.state).toEqual({
       visibleStartIndex: -1,
@@ -1943,6 +1954,7 @@ describe('data update', () => {
     _data.splice(1, 1);
 
     spaceList.setData(_data);
+    vi.runAllTimers();
 
     // data should be updated
     expect(spaceList.state).toEqual({
