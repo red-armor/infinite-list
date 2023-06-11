@@ -1004,6 +1004,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (rowIndex < this.initialNumToRender) return null;
     let position = this._bufferSet.getValuePosition(rowIndex);
 
+    console.log('row ', rowIndex, position);
+
     if (
       position === null &&
       this._bufferSet.getSize() >= this.recycleThreshold
@@ -1034,6 +1036,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
 
+    console.log('target indece ', targetIndices.slice());
+
     // const scrolling = actionType === 'scrollDown' || actionType === 'scrollUp';
     // const originalPositionSize = this._bufferSet.getSize();
 
@@ -1050,6 +1054,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             visibleStartIndex,
             visibleEndIndex
           );
+          console.log('index ', index, position);
           if (position !== null) targetIndices[position] = index;
         }
       }
@@ -1057,6 +1062,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const visibleSize = Math.max(visibleEndIndex - visibleStartIndex + 1, 0);
       const beforeSize = Math.floor((this.recycleThreshold - visibleSize) / 2);
       const afterSize = this.recycleThreshold - visibleSize - beforeSize;
+
+      console.log('visible ', visibleSize, beforeSize, afterSize);
 
       for (
         let index = visibleStartIndex, size = beforeSize;
