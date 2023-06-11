@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react-native",
-  "version": "0.2.29-stillness.0",
+  "version": "0.2.29-stillness.1",
   "main": "src/index.ts",
   "publishConfig": {
     "access": "public",

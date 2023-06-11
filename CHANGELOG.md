@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [0.2.29-stillness.1](https://github.com/red-armor/infinite-list/compare/v0.2.28...v0.2.29-stillness.1) (2023-06-11)
+
+
+
+## 0.2.29-stillness.1 (2023-06-11)
+
+
+### Features
+
+* add stillness helper ([eeaad75](https://github.com/red-armor/infinite-list/commit/eeaad7548ddb4d5f0d690d4fbe7757ecb0d61ea3))
+* add testing ([ef6abbb](https://github.com/red-armor/infinite-list/commit/ef6abbba0f1eb3aae6b672e7ea8fb6162415c70d))
+* OnEndReachedHelper add limitation ([5a3af79](https://github.com/red-armor/infinite-list/commit/5a3af7940e5ed70646a0f27d3989c6644559e436))
+* update replace strategy with velocity ([3374106](https://github.com/red-armor/infinite-list/commit/3374106b390b449344fc02632b197f0227057e5d))
+
+
+
 ## [0.2.28](https://github.com/red-armor/infinite-list/compare/v0.2.27...v0.2.28) (2023-06-08)
 
 
