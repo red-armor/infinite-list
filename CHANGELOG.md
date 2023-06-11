@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [0.2.29](https://github.com/red-armor/infinite-list/compare/v0.2.28...v0.2.29) (2023-06-11)
+
+
+### Features
+
+* add testing ([ef6abbb](https://github.com/red-armor/infinite-list/commit/ef6abbba0f1eb3aae6b672e7ea8fb6162415c70d))
+* OnEndReachedHelper add limitation ([da42570](https://github.com/red-armor/infinite-list/commit/da425704a42ff256b45efecc6360562c54dc43a8))
+
+
+
 ## [0.2.28](https://github.com/red-armor/infinite-list/compare/v0.2.27...v0.2.28) (2023-06-08)
 
 
