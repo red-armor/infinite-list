@@ -1107,31 +1107,36 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     visibleEndIndex: number;
   }) {
     const { visibleStartIndex, visibleEndIndex } = props;
-    const velocity = this._scrollMetrics?.velocity || 0;
+    // const velocity = this._scrollMetrics?.velocity || 0;
 
-    if (velocity < 0) {
-      return {
-        startIndex: Math.max(
-          visibleStartIndex - this.recycleBufferedCount * 2,
-          0
-        ),
-        endIndex: visibleEndIndex,
-      };
-    } else if (velocity > 0) {
-      return {
-        startIndex: visibleStartIndex,
-        endIndex: Math.min(
-          visibleEndIndex + this.recycleBufferedCount * 2,
-          this._data.length
-        ),
-      };
-    }
+    // let startIndex = visibleStartIndex
+    // let endIndex = visibleEndIndex
+
+    // if (velocity < 0) {
+    //   startIndex = Math.max(
+    //       visibleStartIndex - this.recycleBufferedCount * 2,
+    //       0
+    //     )
+    //   endIndex = visibleEndIndex
+    // } else if (velocity > 0) {
+    //     startIndex = visibleStartIndex
+    //     endIndex = Math.min(
+    //       visibleEndIndex + this.recycleBufferedCount * 2,
+    //       this._data.length
+    //     )
+    // } else {
+    //   startIndex = Math.max(visibleStartIndex - this.recycleBufferedCount, 0)
+    //   endIndex = Math.min(
+    //     visibleEndIndex + this.recycleBufferedCount,
+    //     this._data.length
+    //   )
+    // }
 
     return {
-      startIndex: Math.max(visibleStartIndex - this.recycleBufferedCount, 0),
+      startIndex: visibleStartIndex,
       endIndex: Math.min(
-        visibleEndIndex + this.recycleBufferedCount,
-        this._data.length
+        visibleEndIndex,
+        visibleStartIndex + this.recycleThreshold - 1
       ),
     };
   }
@@ -1151,6 +1156,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const { startIndex, safeRange, step, maxCount } = props;
     let finalIndex = startIndex;
     let count = 0;
+    if (maxCount < 0) return finalIndex;
     for (
       let index = startIndex;
       step > 0 ? index <= this._data.length - 1 : index >= 0;
@@ -1183,8 +1189,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   resolveRecycleRecycleState(state: ListState<ItemT>) {
     const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
-    const _targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
-    const targetIndices = new Array(_targetIndices.length).fill(null);
+    const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
 
@@ -1209,34 +1214,41 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     }
 
-    let topStartIndex = visibleStartIndex;
-    let bottomStartIndex = visibleEndIndex + 1;
+    const remainingPosition = Math.max(
+      this.recycleThreshold - (safeRange.endIndex - safeRange.startIndex + 1),
+      0
+    );
+    const remainingCount = Math.min(
+      this.recycleBufferedCount * 2,
+      remainingPosition
+    );
 
     if (velocity > 0) {
-      bottomStartIndex = this.updateIndices(targetIndices, {
+      this.updateIndices(targetIndices, {
         safeRange,
         startIndex: visibleEndIndex + 1,
-        maxCount: this.recycleBufferedCount * 2,
+        maxCount: remainingCount,
         step: 1,
       });
     } else if (velocity < 0) {
-      topStartIndex = this.updateIndices(targetIndices, {
+      this.updateIndices(targetIndices, {
         safeRange,
-        startIndex: visibleStartIndex,
-        maxCount: this.recycleBufferedCount * 2,
+        startIndex: visibleStartIndex - 1,
+        maxCount: remainingCount,
         step: -1,
       });
     } else {
-      topStartIndex = this.updateIndices(targetIndices, {
+      const part = Math.floor(remainingCount / 2);
+      this.updateIndices(targetIndices, {
         safeRange,
-        startIndex: visibleStartIndex,
-        maxCount: this.recycleBufferedCount,
+        startIndex: visibleStartIndex - 1,
+        maxCount: part,
         step: -1,
       });
-      bottomStartIndex = this.updateIndices(targetIndices, {
+      this.updateIndices(targetIndices, {
         safeRange,
         startIndex: visibleEndIndex + 1,
-        maxCount: this.recycleBufferedCount,
+        maxCount: remainingCount - part,
         step: 1,
       });
     }
@@ -1249,52 +1261,52 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       true
     );
 
-    const getOffset = this.getRecycleReuseOffsetBuilder({
-      topStartOffset: indexToOffsetMap[Math.max(topStartIndex, 0)] || 0,
-      bottomStartOffset: indexToOffsetMap[Math.max(bottomStartIndex, 0)] || 0,
-      minIndex: this.initialNumToRender,
-      topStartIndex,
-      bottomStartIndex,
-    });
+    // const getOffset = this.getRecycleReuseOffsetBuilder({
+    //   topStartOffset: indexToOffsetMap[Math.max(topStartIndex, 0)] || 0,
+    //   bottomStartOffset: indexToOffsetMap[Math.max(bottomStartIndex, 0)] || 0,
+    //   minIndex: this.initialNumToRender,
+    //   topStartIndex,
+    //   bottomStartIndex,
+    // });
 
     targetIndices.forEach((targetIndex, index) => {
-      if (targetIndex == null) {
-        targetIndex = _targetIndices[index];
-        const item = this._data[targetIndex];
-        if (!item) return;
-        const itemKey = this.getItemKey(item, targetIndex);
-        const itemMeta = this.getItemMeta(item, targetIndex);
-        const itemLayout = itemMeta?.getLayout();
-        const itemLength =
-          (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+      // if (targetIndex == null) {
+      //   targetIndex = _targetIndices[index];
+      //   const item = this._data[targetIndex];
+      //   if (!item) return;
+      //   const itemKey = this.getItemKey(item, targetIndex);
+      //   const itemMeta = this.getItemMeta(item, targetIndex);
+      //   const itemLayout = itemMeta?.getLayout();
+      //   const itemLength =
+      //     (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
-        let offset = 0;
+      //   let offset = 0;
 
-        if (this._scrollMetrics && itemLayout) {
-          const velocity = this._scrollMetrics.velocity;
-          offset = getOffset({
-            currentIndex: targetIndex,
-            length: itemLength,
-            velocity,
-          });
-        }
+      //   if (this._scrollMetrics && itemLayout) {
+      //     const velocity = this._scrollMetrics.velocity;
+      //     offset = getOffset({
+      //       currentIndex: targetIndex,
+      //       length: itemLength,
+      //       velocity,
+      //     });
+      //   }
 
-        recycleStateResult.push({
-          key: `recycle_${index}`,
-          targetKey: itemKey,
-          targetIndex,
-          length: itemLength,
-          isSpace: false,
-          isSticky: false,
-          item,
-          itemMeta,
-          viewable: itemMeta.getState().viewable,
-          // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-          offset: itemLayout ? offset : 0,
-          position: 'buffered',
-        });
-        return;
-      }
+      //   recycleStateResult.push({
+      //     key: `recycle_${index}`,
+      //     targetKey: itemKey,
+      //     targetIndex,
+      //     length: itemLength,
+      //     isSpace: false,
+      //     isSticky: false,
+      //     item,
+      //     itemMeta,
+      //     viewable: itemMeta.getState().viewable,
+      //     // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+      //     offset: itemLayout ? offset : 0,
+      //     position: 'buffered',
+      //   });
+      //   return;
+      // }
       const item = this._data[targetIndex];
       if (!item) return;
 

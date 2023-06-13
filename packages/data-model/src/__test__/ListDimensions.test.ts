@@ -1490,7 +1490,7 @@ describe('lifecycle', () => {
       recycleList.stateResult as RecycleStateResult<any>;
 
     expect(recycleListStateResult.spaceState.length).toBe(10);
-    expect(recycleListStateResult.recycleState.length).toBe(2);
+    expect(recycleListStateResult.recycleState.length).toBe(4);
 
     // expect(recycleListStateResult.spaceState.map((v) => v.viewable)).toEqual([
     //   true,
@@ -1534,7 +1534,7 @@ describe('lifecycle', () => {
     );
     expect(recycleListStateResult.spaceState[10].length).toBe(9000);
 
-    expect(recycleListStateResult.recycleState.length).toBe(2);
+    expect(recycleListStateResult.recycleState.length).toBe(4);
 
     // @ts-ignore
     recycleList.updateScrollMetrics({
@@ -1556,14 +1556,16 @@ describe('lifecycle', () => {
 
     recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
-    expect(recycleListStateResult.recycleState.length).toBe(2);
+    expect(recycleListStateResult.recycleState.length).toBe(4);
 
     expect(recycleListStateResult.recycleState.map((v) => v.item.key)).toEqual([
-      10, 11,
+      10, 11, 12, 13,
     ]);
     expect(recycleListStateResult.recycleState.map((v) => v.key)).toEqual([
       'recycle_0',
       'recycle_1',
+      'recycle_2',
+      'recycle_3',
     ]);
     // expect(recycleListStateResult.recycleState.map((v) => v.viewable)).toEqual(
     //   []
@@ -1646,13 +1648,25 @@ describe('lifecycle', () => {
       contentLength: 4500,
     });
 
+    expect(recycleList.state).toEqual({
+      isEndReached: true,
+      distanceFromEnd: 74,
+      actionType: 'hydrationWithBatchUpdate',
+      visibleStartIndex: 14,
+      visibleEndIndex: 24,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 49,
+      data,
+    });
+
     expect(
       (recycleList.stateResult as RecycleStateResult<any>).recycleState.map(
         (v) => v.item.key
       )
     ).toEqual([
       // 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-      24, 25, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 26,
+      24, 25, 26, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+      // 24, 25, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 26,
     ]);
     expect(
       (recycleList.stateResult as RecycleStateResult<any>).recycleState.map(
@@ -1660,8 +1674,8 @@ describe('lifecycle', () => {
       )
     ).toEqual([
       // 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100,
-      2400, 2500, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100,
-      2200, 2300, 2600,
+      2400, 2500, 2600, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100,
+      2200, 2300,
     ]);
 
     expect(
@@ -1701,14 +1715,14 @@ describe('lifecycle', () => {
       (recycleList.stateResult as RecycleStateResult<any>).recycleState.map(
         (v) => v.item.key
       )
-    ).toEqual([50, 51, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 38, 26]);
+    ).toEqual([38, 50, 51, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]);
     expect(
       (recycleList.stateResult as RecycleStateResult<any>).recycleState.map(
         (v) => v.offset
       )
     ).toEqual([
-      5000, 5100, 3900, 4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800,
-      4900, 3800, 3700,
+      3800, 5000, 5100, 3900, 4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700,
+      4800, 4900,
     ]);
 
     // @ts-ignore
@@ -1723,14 +1737,14 @@ describe('lifecycle', () => {
       (recycleList.stateResult as RecycleStateResult<any>).recycleState.map(
         (v) => v.item.key
       )
-    ).toEqual([34, 33, 39, 40, 41, 42, 43, 44, 30, 32, 37, 36, 35, 38, 31]);
+    ).toEqual([38, 34, 33, 39, 40, 41, 42, 43, 44, 30, 32, 37, 36, 35]);
     expect(
       (recycleList.stateResult as RecycleStateResult<any>).recycleState.map(
         (v) => v.offset
       )
     ).toEqual([
-      3400, 3300, 3900, 4000, 4100, 4200, 4300, 2900, 3000, 3200, 3700, 3600,
-      3500, 3800, 3100,
+      3800, 3400, 3300, 3900, 4000, 4100, 4200, 4300, 4400, 3000, 3200, 3700,
+      3600, 3500,
     ]);
   });
 });
