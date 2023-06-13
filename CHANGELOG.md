@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.31-stillness.0](https://github.com/red-armor/infinite-list/compare/v0.2.30...v0.2.31-stillness.0) (2023-06-12)
+## [0.2.31-stillness.1](https://github.com/red-armor/infinite-list/compare/v0.2.30...v0.2.31-stillness.1) (2023-06-13)
+
+
+
+## 0.2.31-stillness.1 (2023-06-13)
+
+
+### Features
+
+* update ([#25](https://github.com/red-armor/infinite-list/issues/25)) ([fa8f9de](https://github.com/red-armor/infinite-list/commit/fa8f9deb9097869b0e9dbff61eae6acf8f1e808d))
 
 
 
