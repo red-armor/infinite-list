@@ -76,8 +76,10 @@ export type ListDimensionsProps<ItemT> = {
   onBatchLayoutFinished?: () => boolean;
 
   recycleThreshold?: number;
-
   recycleEnabled?: boolean;
+  recycleBufferedCount?: number;
+
+  stillnessThreshold?: number;
 
   dispatchMetricsThreshold?: number;
 } & BaseDimensionsProps &
@@ -228,6 +230,7 @@ export type SpaceStateToken<ItemT> = {
 
 export type RecycleStateToken<ItemT> = {
   targetKey: string;
+  targetIndex: number;
   offset: number;
 } & SpaceStateToken<ItemT>;
 

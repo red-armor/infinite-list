@@ -27,6 +27,7 @@ class OnEndReachedHelper {
   private _distanceFromEndThresholdValue: number;
   private _waitingForDataChangedSinceEndReached = false;
   private _onEndReachedTimeoutHandler: NodeJS.Timeout;
+  private _currentMutexMS = 0;
 
   public attemptToHandleOnEndReachedBatchinator: Batchinator;
 
@@ -70,10 +71,6 @@ class OnEndReachedHelper {
       distancesFromEnd: [distanceFromEnd],
       resetCount: 0,
     };
-  }
-
-  clear() {
-    this.releaseHandlerMutex();
   }
 
   setHandler(onEndReached: OnEndReached) {
@@ -129,18 +126,24 @@ class OnEndReachedHelper {
     this._onEndReachedTimeoutHandler = null;
   }
 
-  releaseHandlerMutex() {
-    this._waitingForDataChangedSinceEndReached = false;
-    this.clearTimer();
+  releaseHandlerMutex(mutexMS: number) {
+    return (() => {
+      if (mutexMS < this._currentMutexMS) return;
+      this._waitingForDataChangedSinceEndReached = false;
+      this.clearTimer();
+    }).bind(this);
   }
 
-  timeoutReleaseHandlerMutex() {
+  timeoutReleaseHandlerMutex(now) {
     console.warn(
       'OnEndReachedHelper ',
+      this.id,
+      now,
+      Date.now() - now,
       this.lastStack,
       "' mutex is released due to timeout"
     );
-    this.releaseHandlerMutex();
+    this.releaseHandlerMutex(now).call(this);
   }
 
   get lastStack() {
@@ -251,16 +254,18 @@ class OnEndReachedHelper {
     this._waitingForDataChangedSinceEndReached = true;
     const { distanceFromEnd } = opts;
     this.clearTimer();
+    const now = Date.now();
     this._onEndReachedTimeoutHandler = setTimeout(() => {
-      this.timeoutReleaseHandlerMutex();
+      this.timeoutReleaseHandlerMutex(now);
     }, this.onEndReachedHandlerTimeoutThreshold);
+    this._currentMutexMS = now;
 
     this.updateStack(distanceFromEnd);
 
     this.onEndReached({
       distanceFromEnd,
-      cb: this.releaseHandlerMutex,
-      releaseHandlerMutex: this.releaseHandlerMutex,
+      cb: this.releaseHandlerMutex(this._currentMutexMS),
+      releaseHandlerMutex: this.releaseHandlerMutex(this._currentMutexMS),
     });
   }
 }

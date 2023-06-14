@@ -3,6 +3,12 @@ import { INVALID_LENGTH } from '../common';
 import { ScrollMetrics } from '../types';
 import { Action, ActionType, ReducerResult } from './types';
 
+// const resolvePseudoVelocity = (velocity: number) => {
+//   if (velocity > 0) return 1;
+//   if (velocity < 0) return -1;
+//   return 0;
+// };
+
 export const resolveAction = <State extends ReducerResult = ReducerResult>(
   state: State,
   props: {
@@ -12,6 +18,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
 ): Action | null => {
   const { scrollMetrics, dimension } = props;
   const { velocity } = scrollMetrics;
+  // const pseudoVelocity = resolvePseudoVelocity(velocity);
 
   const _info = dimension.getOnEndReachedHelper().perform(scrollMetrics);
   const isEndReached = _info.isEndReached;
@@ -39,6 +46,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
     return {
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
+        // pseudoVelocity,
         dimension,
         scrollMetrics,
         isEndReached,
@@ -55,6 +63,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
         scrollMetrics,
         isEndReached,
         distanceFromEnd,
+        // pseudoVelocity,
       },
     };
   }
@@ -63,6 +72,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
     return {
       type: ActionType.ScrollUp,
       payload: {
+        // pseudoVelocity,
         dimension,
         scrollMetrics,
         isEndReached,
@@ -79,6 +89,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
       scrollMetrics,
       isEndReached,
       distanceFromEnd,
+      // pseudoVelocity,
     },
   };
 };

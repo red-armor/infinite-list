@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## [0.2.31-stillness.2](https://github.com/red-armor/infinite-list/compare/v0.2.30...v0.2.31-stillness.2) (2023-06-14)
+
+
+
+## 0.2.31-stillness.2 (2023-06-14)
+
+
+### Bug Fixes
+
+* onEndReached will not trigger state update issue ([c639ba3](https://github.com/red-armor/infinite-list/commit/c639ba342e4a91dbf7d4847b2a4c68a215fbba74))
+
+
+
+## 0.2.31-stillness.1 (2023-06-13)
+
+
+### Features
+
+* update ([#25](https://github.com/red-armor/infinite-list/issues/25)) ([fa8f9de](https://github.com/red-armor/infinite-list/commit/fa8f9deb9097869b0e9dbff61eae6acf8f1e808d))
+
+
+
+## 0.2.31-stillness.0 (2023-06-12)
+
+
+### Features
+
+* add stillness helper ([d972e80](https://github.com/red-armor/infinite-list/commit/d972e8006dd998a385db2429d54e7867eeee9323))
+* bump packages ([a4b8ffa](https://github.com/red-armor/infinite-list/commit/a4b8ffaacfb7e8f60b990a5ffe2d8d391818e6cc))
+* update replace strategy with velocity ([0c3d6af](https://github.com/red-armor/infinite-list/commit/0c3d6af5699f5c5df53696fb22cb03a6847c84e9))
+
+
+
 ## [0.2.30](https://github.com/red-armor/infinite-list/compare/v0.2.29...v0.2.30) (2023-06-11)
 
 
