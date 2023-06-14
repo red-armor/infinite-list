@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.31-stillness.1](https://github.com/red-armor/infinite-list/compare/v0.2.30...v0.2.31-stillness.1) (2023-06-13)
+## [0.2.31-stillness.2](https://github.com/red-armor/infinite-list/compare/v0.2.30...v0.2.31-stillness.2) (2023-06-14)
+
+
+
+## 0.2.31-stillness.2 (2023-06-14)
+
+
+### Bug Fixes
+
+* onEndReached will not trigger state update issue ([c639ba3](https://github.com/red-armor/infinite-list/commit/c639ba342e4a91dbf7d4847b2a4c68a215fbba74))
 
 
 
