@@ -915,26 +915,50 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const newRecycleState = [];
       const oldRecycleState = [];
 
+      let maxIndex = 0;
+
       for (let index = 0; index < _stateResult.recycleState.length; index++) {
         // @ts-ignore
-        const { itemMeta } = _stateResult.recycleState[index];
+        const { itemMeta, targetIndex } = _stateResult.recycleState[index];
         if (!itemMeta || (itemMeta && itemMeta.getState().viewable)) {
           newRecycleState.push(_stateResult.recycleState[index]);
           oldRecycleState.push(_oldStateResult.recycleState[index]);
+          maxIndex = Math.max(targetIndex, index);
         } else {
           newRecycleState.push(null);
           oldRecycleState.push(null);
         }
       }
 
-      shouldStateUpdate = !(
-        shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
-        shallowArrayEqual(
-          _stateResult.spaceState,
-          _oldStateResult.spaceState,
-          shallowEqual
-        )
-      );
+      let exists = true;
+
+      // To fix onEndReached condition, data is updated.
+      if (isClamped(0, maxIndex + 1, this._data.length - 1)) {
+        exists =
+          _oldStateResult.recycleState.findIndex(
+            (s) => s?.targetIndex === maxIndex + 1
+          ) !== -1;
+      }
+
+      // if (this.id === 'component-list-all') {
+      //   console.log(
+      //     'applyStateResult ',
+      //     minIndex,
+      //     maxIndex,
+      //     this._data.length,
+      //     exists
+      //   );
+      // }
+
+      shouldStateUpdate =
+        !(
+          shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
+          shallowArrayEqual(
+            _stateResult.spaceState,
+            _oldStateResult.spaceState,
+            shallowEqual
+          )
+        ) || !exists;
     }
 
     if (shouldStateUpdate && typeof this._stateListener === 'function') {
@@ -1039,68 +1063,68 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return position;
   }
 
-  getRecycleReuseOffsetBuilder(props: {
-    minIndex: number;
-    topStartOffset: number;
-    topStartIndex: number;
-    bottomStartOffset: number;
-    bottomStartIndex: number;
-  }) {
-    const {
-      minIndex,
-      topStartOffset: _topStartOffset,
-      topStartIndex: _topStartIndex,
-      bottomStartOffset: _bottomStartOffset,
-      bottomStartIndex: _bottomStartIndex,
-    } = props;
+  // getRecycleReuseOffsetBuilder(props: {
+  //   minIndex: number;
+  //   topStartOffset: number;
+  //   topStartIndex: number;
+  //   bottomStartOffset: number;
+  //   bottomStartIndex: number;
+  // }) {
+  //   const {
+  //     minIndex,
+  //     topStartOffset: _topStartOffset,
+  //     topStartIndex: _topStartIndex,
+  //     bottomStartOffset: _bottomStartOffset,
+  //     bottomStartIndex: _bottomStartIndex,
+  //   } = props;
 
-    let topStartIndex = _topStartIndex;
-    let topStartOffset = _topStartOffset;
-    let bottomStartIndex = _bottomStartIndex;
-    let bottomStartOffset = _bottomStartOffset;
+  //   let topStartIndex = _topStartIndex;
+  //   let topStartOffset = _topStartOffset;
+  //   let bottomStartIndex = _bottomStartIndex;
+  //   let bottomStartOffset = _bottomStartOffset;
 
-    const placeOnTop = (length: number) => {
-      let offset = 0;
-      if (topStartIndex < minIndex) {
-        offset = bottomStartOffset + length;
-        bottomStartIndex += 1;
-        bottomStartOffset = offset;
-      } else {
-        offset = topStartOffset - length;
-        if (offset >= 0) {
-          topStartIndex -= 1;
-          topStartOffset = offset;
-        }
-      }
-      return offset;
-    };
+  //   const placeOnTop = (length: number) => {
+  //     let offset = 0;
+  //     if (topStartIndex < minIndex) {
+  //       offset = bottomStartOffset + length;
+  //       bottomStartIndex += 1;
+  //       bottomStartOffset = offset;
+  //     } else {
+  //       offset = topStartOffset - length;
+  //       if (offset >= 0) {
+  //         topStartIndex -= 1;
+  //         topStartOffset = offset;
+  //       }
+  //     }
+  //     return offset;
+  //   };
 
-    const placeOnBottom = (length: number) => {
-      let offset = 0;
-      offset = bottomStartOffset + length;
-      bottomStartIndex += 1;
-      bottomStartOffset = offset;
-      return offset;
-    };
+  //   const placeOnBottom = (length: number) => {
+  //     let offset = 0;
+  //     offset = bottomStartOffset + length;
+  //     bottomStartIndex += 1;
+  //     bottomStartOffset = offset;
+  //     return offset;
+  //   };
 
-    return (info: {
-      currentIndex: number;
-      length: number;
-      velocity: number;
-    }) => {
-      const { velocity, currentIndex, length } = info;
-      // scroll up, preserve start
-      if (velocity < 0) {
-        return placeOnTop(length);
-      } else if (velocity > 0) {
-        return placeOnBottom(length);
-      }
-      if (currentIndex < _topStartIndex) {
-        return placeOnTop(length);
-      }
-      return placeOnBottom(length);
-    };
-  }
+  //   return (info: {
+  //     currentIndex: number;
+  //     length: number;
+  //     velocity: number;
+  //   }) => {
+  //     const { velocity, currentIndex, length } = info;
+  //     // scroll up, preserve start
+  //     if (velocity < 0) {
+  //       return placeOnTop(length);
+  //     } else if (velocity > 0) {
+  //       return placeOnBottom(length);
+  //     }
+  //     if (currentIndex < _topStartIndex) {
+  //       return placeOnTop(length);
+  //     }
+  //     return placeOnBottom(length);
+  //   };
+  // }
 
   resolveSafeRange(props: {
     visibleStartIndex: number;
@@ -1164,10 +1188,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     ) {
       const item = this._data[index];
       if (!item) continue;
-      const itemMeta = this.getItemMeta(item, index);
-      const itemLayout = itemMeta?.getLayout();
+      // const itemMeta = this.getItemMeta(item, index);
+      // const itemLayout = itemMeta?.getLayout();
 
-      if (count < maxCount || !itemLayout) {
+      // itemLayout should not be a condition, may cause too many unLayout item
+      if (count < maxCount) {
         const position = this.getPosition(
           index,
           safeRange.startIndex,
@@ -1192,6 +1217,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
+    // const targetIndicesCopy = targetIndices.slice();
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
@@ -1268,6 +1294,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     //   topStartIndex,
     //   bottomStartIndex,
     // });
+
+    // if (this.id === 'component-list-all') {
+    //   console.log('targetIndices ', targetIndicesCopy, targetIndices.slice());
+    // }
 
     targetIndices.forEach((targetIndex, index) => {
       // if (targetIndex == null) {
@@ -1589,6 +1619,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       dimension: this,
       scrollMetrics,
     });
+
+    // if (this.id === 'component-list-all') {
+    //   console.log('dispatchStoreMetrics ', { ...state });
+    // }
 
     if (isEmpty(state)) return state;
     this.updateState(state, scrollMetrics);

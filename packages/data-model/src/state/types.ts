@@ -17,6 +17,7 @@ export type ActionPayload = {
   scrollMetrics: ScrollMetrics;
   isEndReached: boolean;
   distanceFromEnd: number;
+  // pseudoVelocity: number;
 };
 
 export enum ActionType {
