@@ -932,7 +932,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
       let exists = true;
 
-      // To fix onEndReached condition, data is updated.
+      // To fix onEndReached condition, data is updated. it will not trigger update issue.
       if (isClamped(0, maxIndex + 1, this._data.length - 1)) {
         exists =
           _oldStateResult.recycleState.findIndex(
