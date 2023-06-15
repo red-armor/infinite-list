@@ -665,19 +665,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       setTimeout(() => {
         if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
       });
-
-      // if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
-
-      // if (this._dataChangeTriggerOnEndReachedTimer) {
-      //   clearTimeout(this._dataChangeTriggerOnEndReachedTimer);
-      // }
-
-      // this._dataChangeTriggerOnEndReachedTimer = setTimeout(() => {
-      //   this.updateScrollMetrics(this._scrollMetrics, false);
-      // }, 350);
-
-      // temp fix
-      // this.updateScrollMetrics(this._scrollMetrics, false);
     }
 
     return changedType;
@@ -1089,98 +1076,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return position;
   }
 
-  // getRecycleReuseOffsetBuilder(props: {
-  //   minIndex: number;
-  //   topStartOffset: number;
-  //   topStartIndex: number;
-  //   bottomStartOffset: number;
-  //   bottomStartIndex: number;
-  // }) {
-  //   const {
-  //     minIndex,
-  //     topStartOffset: _topStartOffset,
-  //     topStartIndex: _topStartIndex,
-  //     bottomStartOffset: _bottomStartOffset,
-  //     bottomStartIndex: _bottomStartIndex,
-  //   } = props;
-
-  //   let topStartIndex = _topStartIndex;
-  //   let topStartOffset = _topStartOffset;
-  //   let bottomStartIndex = _bottomStartIndex;
-  //   let bottomStartOffset = _bottomStartOffset;
-
-  //   const placeOnTop = (length: number) => {
-  //     let offset = 0;
-  //     if (topStartIndex < minIndex) {
-  //       offset = bottomStartOffset + length;
-  //       bottomStartIndex += 1;
-  //       bottomStartOffset = offset;
-  //     } else {
-  //       offset = topStartOffset - length;
-  //       if (offset >= 0) {
-  //         topStartIndex -= 1;
-  //         topStartOffset = offset;
-  //       }
-  //     }
-  //     return offset;
-  //   };
-
-  //   const placeOnBottom = (length: number) => {
-  //     let offset = 0;
-  //     offset = bottomStartOffset + length;
-  //     bottomStartIndex += 1;
-  //     bottomStartOffset = offset;
-  //     return offset;
-  //   };
-
-  //   return (info: {
-  //     currentIndex: number;
-  //     length: number;
-  //     velocity: number;
-  //   }) => {
-  //     const { velocity, currentIndex, length } = info;
-  //     // scroll up, preserve start
-  //     if (velocity < 0) {
-  //       return placeOnTop(length);
-  //     } else if (velocity > 0) {
-  //       return placeOnBottom(length);
-  //     }
-  //     if (currentIndex < _topStartIndex) {
-  //       return placeOnTop(length);
-  //     }
-  //     return placeOnBottom(length);
-  //   };
-  // }
-
   resolveSafeRange(props: {
     visibleStartIndex: number;
     visibleEndIndex: number;
   }) {
     const { visibleStartIndex, visibleEndIndex } = props;
-    // const velocity = this._scrollMetrics?.velocity || 0;
-
-    // let startIndex = visibleStartIndex
-    // let endIndex = visibleEndIndex
-
-    // if (velocity < 0) {
-    //   startIndex = Math.max(
-    //       visibleStartIndex - this.recycleBufferedCount * 2,
-    //       0
-    //     )
-    //   endIndex = visibleEndIndex
-    // } else if (velocity > 0) {
-    //     startIndex = visibleStartIndex
-    //     endIndex = Math.min(
-    //       visibleEndIndex + this.recycleBufferedCount * 2,
-    //       this._data.length
-    //     )
-    // } else {
-    //   startIndex = Math.max(visibleStartIndex - this.recycleBufferedCount, 0)
-    //   endIndex = Math.min(
-    //     visibleEndIndex + this.recycleBufferedCount,
-    //     this._data.length
-    //   )
-    // }
 
     return {
       startIndex: visibleStartIndex,
@@ -1313,56 +1213,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       true
     );
 
-    // const getOffset = this.getRecycleReuseOffsetBuilder({
-    //   topStartOffset: indexToOffsetMap[Math.max(topStartIndex, 0)] || 0,
-    //   bottomStartOffset: indexToOffsetMap[Math.max(bottomStartIndex, 0)] || 0,
-    //   minIndex: this.initialNumToRender,
-    //   topStartIndex,
-    //   bottomStartIndex,
-    // });
-
-    // if (this.id === 'component-list-all') {
-    //   console.log('targetIndices ', targetIndicesCopy, targetIndices.slice());
-    // }
-
     targetIndices.forEach((targetIndex, index) => {
-      // if (targetIndex == null) {
-      //   targetIndex = _targetIndices[index];
-      //   const item = this._data[targetIndex];
-      //   if (!item) return;
-      //   const itemKey = this.getItemKey(item, targetIndex);
-      //   const itemMeta = this.getItemMeta(item, targetIndex);
-      //   const itemLayout = itemMeta?.getLayout();
-      //   const itemLength =
-      //     (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-
-      //   let offset = 0;
-
-      //   if (this._scrollMetrics && itemLayout) {
-      //     const velocity = this._scrollMetrics.velocity;
-      //     offset = getOffset({
-      //       currentIndex: targetIndex,
-      //       length: itemLength,
-      //       velocity,
-      //     });
-      //   }
-
-      //   recycleStateResult.push({
-      //     key: `recycle_${index}`,
-      //     targetKey: itemKey,
-      //     targetIndex,
-      //     length: itemLength,
-      //     isSpace: false,
-      //     isSticky: false,
-      //     item,
-      //     itemMeta,
-      //     viewable: itemMeta.getState().viewable,
-      //     // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-      //     offset: itemLayout ? offset : 0,
-      //     position: 'buffered',
-      //   });
-      //   return;
-      // }
       const item = this._data[targetIndex];
       if (!item) return;
 
