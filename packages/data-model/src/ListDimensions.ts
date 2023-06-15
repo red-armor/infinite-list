@@ -801,6 +801,32 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
+  viewableItemsOnly() {
+    if (this._fillingMode === FillingMode.RECYCLE) {
+      const { recycleState, spaceState } = this
+        ._stateResult as RecycleStateResult<ItemT>;
+      const nextRecycleState = recycleState.filter((info) => {
+        const { itemMeta } = info;
+        if (itemMeta) {
+          if (itemMeta?.getState().viewable) return true;
+          return false;
+        }
+        return true;
+      });
+      this._stateListener(
+        {
+          recycleState: nextRecycleState,
+          spaceState,
+        },
+        this._stateResult
+      );
+    }
+  }
+
+  resetViewableItems() {
+    if (this._scrollMetrics) this.dispatchMetrics(this._scrollMetrics);
+  }
+
   append(data: Array<ItemT>) {
     const baseIndex = this._indexKeys.length;
     this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);

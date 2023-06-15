@@ -4,6 +4,7 @@ import ItemsDimensions from '../ItemsDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
 import { ActionType } from '../state/types';
 import { OnEndReachedHelperProps } from './onEndReachedHelper';
+import ItemMeta from '../ItemMeta';
 import {
   OnViewableItemsChanged,
   ViewabilityConfig,
@@ -225,6 +226,7 @@ export type SpaceStateToken<ItemT> = {
   isSpace: boolean;
   isSticky: boolean;
   isReserved: boolean;
+  itemMeta: ItemMeta;
   position: SpaceStateTokenPosition;
 };
 

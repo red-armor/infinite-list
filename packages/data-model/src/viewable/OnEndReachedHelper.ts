@@ -248,6 +248,13 @@ class OnEndReachedHelper {
     );
   }
 
+  timeoutTrailingHandler() {
+    if (this._scrollMetrics) {
+      const info = this.perform(this._scrollMetrics);
+      this.performEndReached(info);
+    }
+  }
+
   onEndReachedHandler(opts: { distanceFromEnd: number }) {
     if (typeof this.onEndReached !== 'function') return;
     if (this._waitingForDataChangedSinceEndReached) return;
@@ -257,6 +264,7 @@ class OnEndReachedHelper {
     const now = Date.now();
     this._onEndReachedTimeoutHandler = setTimeout(() => {
       this.timeoutReleaseHandlerMutex(now);
+      this.timeoutTrailingHandler();
     }, this.onEndReachedHandlerTimeoutThreshold);
     this._currentMutexMS = now;
 

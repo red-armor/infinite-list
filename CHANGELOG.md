@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## [0.2.32-perf.2](https://github.com/red-armor/infinite-list/compare/v0.2.31...v0.2.32-perf.2) (2023-06-15)
+
+
+
+## 0.2.32-perf.2 (2023-06-15)
+
+
+### Features
+
+* add viewableItemsOnly and resetViewableItems ([cd5252f](https://github.com/red-armor/infinite-list/commit/cd5252f76216635a82dc148c99fd3c7606fa0d18))
+
+
+
+## 0.2.32-perf.1 (2023-06-15)
+
+
+
+## 0.2.32-perf.0 (2023-06-15)
+
+
+### Features
+
+* perf ([44be0b9](https://github.com/red-armor/infinite-list/commit/44be0b977f291fce34714845d7c7eacae3da8b19))
+* ts error ([9bf9418](https://github.com/red-armor/infinite-list/commit/9bf9418364529cc729526f374a6fefbb0c996cf4))
+
+
+
 ## [0.2.31](https://github.com/red-armor/infinite-list/compare/v0.2.30...v0.2.31) (2023-06-14)
 
 

@@ -11,6 +11,9 @@ class ItemMetaStateEventHelper {
   private _once: boolean;
   readonly _key: string;
   private _reusableEventListenerMap = new Map();
+  private _callbackId: number;
+  private _setupCallbackMs: number;
+  private _callbackStartMinMs: number;
 
   constructor(props: {
     key: string;
@@ -22,7 +25,7 @@ class ItemMetaStateEventHelper {
     const {
       key,
       eventName,
-      batchUpdateEnabled = true,
+      batchUpdateEnabled,
       defaultValue = false,
       once,
     } = props;
@@ -124,11 +127,19 @@ class ItemMetaStateEventHelper {
     return true;
   }
 
+  cancelIdleCallbackPolyfill(callbackId: number) {
+    // @ts-ignore
+    if (typeof cancelIdleCallback === 'function') {
+      // @ts-ignore
+      cancelIdleCallback(callbackId);
+    }
+  }
+
   trigger(value: boolean) {
     const shouldPerformScheduler = this.guard();
     if (!shouldPerformScheduler) return;
     if (value && !this._batchUpdateEnabled) {
-      this._trigger(value);
+      this._trigger(value, true);
       return;
     }
 
@@ -138,16 +149,47 @@ class ItemMetaStateEventHelper {
     this._triggerBatchinator.schedule(value);
   }
 
-  _trigger(value) {
-    if (this._value !== value) {
-      this._listeners.forEach((cb) => {
-        if (this.listenerGuard(cb)) {
-          this.incrementHandleCount(cb);
-          cb(value);
+  _trigger(value: boolean, immediately: boolean) {
+    const now = Date.now();
+
+    if (immediately) {
+      this._callbackStartMinMs = now;
+      if (this._callbackId) {
+        this.cancelIdleCallbackPolyfill(this._callbackId);
+        this._callbackId = null;
+      }
+      if (this._value !== value) {
+        this._listeners.forEach((cb) => {
+          if (this.listenerGuard(cb)) {
+            this.incrementHandleCount(cb);
+            cb(value);
+          }
+        });
+      }
+      this._value = value;
+    } else {
+      if (this._callbackId) {
+        this.cancelIdleCallbackPolyfill(this._callbackId);
+        this._callbackId = null;
+      }
+
+      this._setupCallbackMs = now;
+      this._callbackStartMinMs = now;
+
+      // @ts-ignore
+      this._callbackId = requestIdleCallback(() => {
+        if (now < this._callbackStartMinMs) return;
+        if (this._value !== value) {
+          this._listeners.forEach((cb) => {
+            if (this.listenerGuard(cb)) {
+              this.incrementHandleCount(cb);
+              cb(value);
+            }
+          });
         }
+        this._value = value;
       });
     }
-    this._value = value;
   }
 }
 
