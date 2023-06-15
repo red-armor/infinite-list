@@ -11,6 +11,7 @@ class ItemMetaStateEventHelper {
   private _once: boolean;
   readonly _key: string;
   private _reusableEventListenerMap = new Map();
+  private _callbackId: number;
 
   constructor(props: {
     key: string;
@@ -128,7 +129,7 @@ class ItemMetaStateEventHelper {
     const shouldPerformScheduler = this.guard();
     if (!shouldPerformScheduler) return;
     if (value && !this._batchUpdateEnabled) {
-      this._trigger(value);
+      this._trigger(value, true);
       return;
     }
 
@@ -138,16 +139,38 @@ class ItemMetaStateEventHelper {
     this._triggerBatchinator.schedule(value);
   }
 
-  _trigger(value) {
-    if (this._value !== value) {
-      this._listeners.forEach((cb) => {
-        if (this.listenerGuard(cb)) {
-          this.incrementHandleCount(cb);
-          cb(value);
+  _trigger(value: boolean, immediately: boolean) {
+    if (immediately) {
+      if (this._callbackId) {
+        cancelIdleCallback(this._callbackId);
+        this._callbackId = null;
+      }
+      if (this._value !== value) {
+        this._listeners.forEach((cb) => {
+          if (this.listenerGuard(cb)) {
+            this.incrementHandleCount(cb);
+            cb(value);
+          }
+        });
+      }
+      this._value = value;
+    } else {
+      if (this._callbackId) {
+        cancelIdleCallback(this._callbackId);
+        this._callbackId = null;
+      }
+      this._callbackId = requestIdleCallback(() => {
+        if (this._value !== value) {
+          this._listeners.forEach((cb) => {
+            if (this.listenerGuard(cb)) {
+              this.incrementHandleCount(cb);
+              cb(value);
+            }
+          });
         }
+        this._value = value;
       });
     }
-    this._value = value;
   }
 }
 
