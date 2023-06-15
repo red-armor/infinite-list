@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/data-model",
-  "version": "0.2.32-perf.0",
+  "version": "0.2.32-perf.1",
   "files": [
     "dist",
     "src"

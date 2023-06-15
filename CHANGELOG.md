@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## [0.2.32-perf.0](https://github.com/red-armor/infinite-list/compare/v0.2.31...v0.2.32-perf.0) (2023-06-15)
+## [0.2.32-perf.1](https://github.com/red-armor/infinite-list/compare/v0.2.31...v0.2.32-perf.1) (2023-06-15)
+
+
+
+## 0.2.32-perf.1 (2023-06-15)
 
 
 
