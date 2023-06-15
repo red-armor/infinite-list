@@ -25,7 +25,7 @@ class ItemMetaStateEventHelper {
     const {
       key,
       eventName,
-      batchUpdateEnabled = true,
+      batchUpdateEnabled,
       defaultValue = false,
       once,
     } = props;
