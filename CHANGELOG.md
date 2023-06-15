@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.32](https://github.com/red-armor/infinite-list/compare/v0.2.31...v0.2.32) (2023-06-15)
+
+
+### Features
+
+* clear reuse item with new offset ([a580702](https://github.com/red-armor/infinite-list/commit/a580702cdf744224681aa47cae35845b01592a79))
+
+
+
 ## [0.2.31](https://github.com/red-armor/infinite-list/compare/v0.2.30...v0.2.31) (2023-06-14)
 
 
