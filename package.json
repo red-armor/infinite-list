@@ -1,6 +1,6 @@
 {
   "name": "infinite-list",
-  "version": "0.2.32-perf.1",
+  "version": "0.2.32-perf.2",
   "description": "Data model for list rendering",
   "repository": {
     "type": "git",
