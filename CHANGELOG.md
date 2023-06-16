@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.33](https://github.com/red-armor/infinite-list/compare/v0.2.32...v0.2.33) (2023-06-16)
+
+
+### Bug Fixes
+
+* reservedIndices is a Set cant be iterated issue ([14a6987](https://github.com/red-armor/infinite-list/commit/14a69871a2450c0f584d21fc99c607ef09be79e2))
+
+
+
 ## [0.2.32](https://github.com/red-armor/infinite-list/compare/v0.2.31...v0.2.32) (2023-06-15)
 
 
