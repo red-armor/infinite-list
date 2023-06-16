@@ -1296,6 +1296,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         if (lastToken.startIndex === index) {
           lastToken.isSticky = isSticky;
           lastToken.isReserved = isReserved;
+          lastToken.isSpace = !isSticky && !isReserved;
           if (index + 1 !== endIndex) tokens.push(createToken(index + 1));
         } else {
           lastToken.endIndex = index;

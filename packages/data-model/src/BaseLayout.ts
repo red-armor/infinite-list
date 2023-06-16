@@ -103,7 +103,7 @@ class BaseLayout {
     const indices = new Set(
       [].concat(this.persistanceIndices, this.stickyHeaderIndices)
     );
-    this._reservedIndices = [...indices].sort((a, b) => a - b);
+    this._reservedIndices = Array.from(indices).sort((a, b) => a - b);
   }
 
   get persistanceIndices() {
