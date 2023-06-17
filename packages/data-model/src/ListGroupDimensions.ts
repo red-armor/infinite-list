@@ -641,6 +641,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       horizontal: this.getHorizontal(),
       initialStartIndex: startIndex,
       ignoredToPerBatch,
+      canIUseRIC: this.canIUseRIC,
     });
     this.setDimension(key, dimensions);
 

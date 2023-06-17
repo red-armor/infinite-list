@@ -113,8 +113,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     state: ListState<ItemT>
   ) => RecycleStateResult<ItemT>;
 
-  // private _dataChangeTriggerOnEndReachedTimer: any;
-
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
       ...props,
@@ -397,6 +395,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       owner: this,
       isListItem: true,
       isInitialItem: false,
+      canIUseRIC: this.canIUseRIC,
     });
     this.setKeyMeta(key, meta);
 
@@ -494,6 +493,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       owner: this,
       isListItem: true,
       isInitialItem,
+      canIUseRIC: this.canIUseRIC,
     });
 
     if (typeof this._getItemLayout === 'function') {

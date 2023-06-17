@@ -23,6 +23,7 @@ class ItemMeta extends ViewabilityItemMeta {
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
   readonly getMetaOnViewableItemsChanged?: any;
   readonly _ownerId: string;
+  readonly _canIUseRIC?: boolean;
 
   constructor(props: {
     onViewable?: StateEventListener;
@@ -35,6 +36,7 @@ class ItemMeta extends ViewabilityItemMeta {
     setState?: Function;
     state?: ItemMetaState;
     isInitialItem?: boolean;
+    canIUseRIC?: boolean;
   }) {
     super(props);
     const {
@@ -43,6 +45,7 @@ class ItemMeta extends ViewabilityItemMeta {
       layout,
       state,
       isListItem,
+      canIUseRIC,
       isInitialItem = false,
     } = props;
     this._owner = owner;
@@ -55,6 +58,8 @@ class ItemMeta extends ViewabilityItemMeta {
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
         : {};
+
+    this._canIUseRIC = canIUseRIC;
 
     // this.addStateListener = this.addStateListener.bind(this);
     // this.removeStateListener = this.removeStateListener.bind(this);
@@ -158,6 +163,7 @@ class ItemMeta extends ViewabilityItemMeta {
         eventName,
         key: this._key,
         defaultValue: value,
+        canIUseRIC: this._canIUseRIC,
       });
       this._stateEventSubscriptions.set(eventName, helper);
     }
