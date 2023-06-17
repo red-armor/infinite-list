@@ -19,12 +19,14 @@ class Dimension {
   private _offsetInListGroup: number;
   private _requireRendered: boolean;
   private _onRender: Function;
+  private _canIUseRIC: boolean;
 
   constructor(props: DimensionProps) {
     const {
       horizontal,
       id,
       onRender,
+      canIUseRIC,
       listGroupDimension,
       initialStartIndex,
       ignoredToPerBatch,
@@ -36,10 +38,12 @@ class Dimension {
     this._listGroupDimension = listGroupDimension;
     this._initialStartIndex = initialStartIndex;
     this._ignoredToPerBatch = !!ignoredToPerBatch;
+    this._canIUseRIC = canIUseRIC;
     this._meta = new ItemMeta({
       key: this.id,
       isListItem: false,
       owner: this,
+      canIUseRIC: this._canIUseRIC,
     });
     this.resolveConfigTuplesDefaultState =
       this.resolveConfigTuplesDefaultState.bind(this);
@@ -189,6 +193,7 @@ class Dimension {
     this._meta = new ItemMeta({
       key: this.id,
       owner: this,
+      canIUseRIC: this._canIUseRIC,
     });
     return this._meta;
   }

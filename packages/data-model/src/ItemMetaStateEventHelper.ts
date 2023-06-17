@@ -12,8 +12,8 @@ class ItemMetaStateEventHelper {
   readonly _key: string;
   private _reusableEventListenerMap = new Map();
   private _callbackId: number;
-  private _setupCallbackMs: number;
   private _callbackStartMinMs: number;
+  readonly _canIUseRIC: boolean;
 
   constructor(props: {
     key: string;
@@ -21,12 +21,14 @@ class ItemMetaStateEventHelper {
     batchUpdateEnabled?: boolean;
     defaultValue: boolean;
     once?: boolean;
+    canIUseRIC?: boolean;
   }) {
     const {
       key,
       eventName,
       batchUpdateEnabled,
       defaultValue = false,
+      canIUseRIC = true,
       once,
     } = props;
 
@@ -51,6 +53,9 @@ class ItemMetaStateEventHelper {
     if (defaultValue) {
       this.trigger(defaultValue);
     }
+
+    // ric in RN can not be triggered. https://github.com/facebook/react-native/issues/28602
+    this._canIUseRIC = canIUseRIC;
   }
 
   remover(listener: StateEventListener, key?: string) {
@@ -128,11 +133,15 @@ class ItemMetaStateEventHelper {
   }
 
   cancelIdleCallbackPolyfill(callbackId: number) {
-    // @ts-ignore
-    if (typeof cancelIdleCallback === 'function') {
+    if (this._canIUseRIC) {
       // @ts-ignore
-      cancelIdleCallback(callbackId);
+      if (typeof cancelIdleCallback === 'function') {
+        // @ts-ignore
+        cancelIdleCallback(callbackId);
+      }
     }
+
+    this._callbackId = null;
   }
 
   trigger(value: boolean) {
@@ -156,7 +165,6 @@ class ItemMetaStateEventHelper {
       this._callbackStartMinMs = now;
       if (this._callbackId) {
         this.cancelIdleCallbackPolyfill(this._callbackId);
-        this._callbackId = null;
       }
       if (this._value !== value) {
         this._listeners.forEach((cb) => {
@@ -170,14 +178,10 @@ class ItemMetaStateEventHelper {
     } else {
       if (this._callbackId) {
         this.cancelIdleCallbackPolyfill(this._callbackId);
-        this._callbackId = null;
       }
-
-      this._setupCallbackMs = now;
       this._callbackStartMinMs = now;
 
-      // @ts-ignore
-      this._callbackId = requestIdleCallback(() => {
+      const handler = (() => {
         if (now < this._callbackStartMinMs) return;
         if (this._value !== value) {
           this._listeners.forEach((cb) => {
@@ -188,7 +192,12 @@ class ItemMetaStateEventHelper {
           });
         }
         this._value = value;
-      });
+      }).bind(this);
+
+      // @ts-ignore
+      this._callbackId = this._canIUseRIC
+        ? requestIdleCallback(handler)
+        : handler();
     }
   }
 }

@@ -24,6 +24,9 @@ export type KeyExtractor<ItemT> = (item: ItemT, index: number) => string;
 export type BaseDimensionsProps = {
   id: string;
   horizontal?: boolean;
+
+  canIUseRIC?: boolean;
+
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;
   isIntervalTreeItems?: boolean;
@@ -83,6 +86,8 @@ export type ListDimensionsProps<ItemT> = {
   stillnessThreshold?: number;
 
   dispatchMetricsThreshold?: number;
+
+  canIUseRIC?: boolean;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
 
@@ -117,10 +122,12 @@ export type BoundInfo = {
 
 export type PseudoListDimensionsProps = {
   indexKeys: Array<string>;
+  canIUseRIC?: boolean;
 } & BaseDimensionsProps;
 
 export type DimensionProps = {
   id: string;
+  canIUseRIC?: boolean;
   onRender?: Function;
   horizontal?: boolean;
   initialStartIndex?: number;

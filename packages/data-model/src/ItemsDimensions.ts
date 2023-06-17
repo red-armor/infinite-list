@@ -62,6 +62,7 @@ class ItemsDimensions extends BaseDimensions {
         new ItemMeta({
           key,
           owner: this,
+          canIUseRIC: this.canIUseRIC,
         })
       );
     }

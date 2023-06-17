@@ -29,6 +29,7 @@ class BaseLayout {
   readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
   private _recycleBufferedCount: number;
+  private _canIUseRIC: boolean;
 
   constructor(props: {
     id: string;
@@ -44,6 +45,8 @@ class BaseLayout {
     recycleThreshold?: number;
     recycleBufferedCount?: number;
     recycleEnabled?: boolean;
+
+    canIUseRIC?: boolean;
   }) {
     const {
       id,
@@ -52,6 +55,7 @@ class BaseLayout {
       recycleEnabled = false,
       horizontal = false,
       getContainerLayout,
+      canIUseRIC,
       stickyHeaderIndices = [],
       windowSize = WINDOW_SIZE,
       recycleBufferedCount = RECYCLE_BUFFERED_COUNT,
@@ -81,6 +85,7 @@ class BaseLayout {
     this._recycleBufferedCount = recycleBufferedCount;
     this.persistanceIndices = persistanceIndices;
     this.stickyHeaderIndices = stickyHeaderIndices;
+    this._canIUseRIC = canIUseRIC;
   }
 
   get initialNumToRender() {
@@ -97,6 +102,10 @@ class BaseLayout {
 
   get recycleBufferedCount() {
     return this._recycleBufferedCount;
+  }
+
+  get canIUseRIC() {
+    return this._canIUseRIC;
   }
 
   updateReservedIndices() {

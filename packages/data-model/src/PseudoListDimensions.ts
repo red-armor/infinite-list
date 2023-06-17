@@ -49,6 +49,7 @@ class PseudoListDimensions extends BaseDimensions {
       key,
       owner: this,
       separatorLength: 0,
+      canIUseRIC: this.canIUseRIC,
       layout: { x: 0, y: 0, height: 0, width: 0 },
     });
     return meta;
