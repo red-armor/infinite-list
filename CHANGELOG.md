@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [0.2.34](https://github.com/red-armor/infinite-list/compare/v0.2.33...v0.2.34) (2023-06-17)
+
+
+### Bug Fixes
+
+* add canIUseRIC to handle RN iOS not called bug closed [#28](https://github.com/red-armor/infinite-list/issues/28) ([#29](https://github.com/red-armor/infinite-list/issues/29)) ([c43cb74](https://github.com/red-armor/infinite-list/commit/c43cb74e04fd5db6b947fef5198bc675dd223c1d))
+
+
+### Features
+
+* upadte ([c3d87c4](https://github.com/red-armor/infinite-list/commit/c3d87c40acbcf5696ee095c935172ff0e10c0deb))
+
+
+
 ## [0.2.33](https://github.com/red-armor/infinite-list/compare/v0.2.32...v0.2.33) (2023-06-16)
 
 
