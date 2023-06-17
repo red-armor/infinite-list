@@ -194,9 +194,9 @@ class ItemMetaStateEventHelper {
         this._value = value;
       }).bind(this);
 
-      // @ts-ignore
       this._callbackId = this._canIUseRIC
-        ? requestIdleCallback(handler)
+        ? // @ts-ignore
+          requestIdleCallback(handler)
         : handler();
     }
   }
