@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [0.2.35](https://github.com/red-armor/infinite-list/compare/v0.2.34...v0.2.35) (2023-06-24)
+
+
+### Features
+
+* close [#30](https://github.com/red-armor/infinite-list/issues/30) ([#32](https://github.com/red-armor/infinite-list/issues/32)) ([b64e854](https://github.com/red-armor/infinite-list/commit/b64e854a09ebb8273da259a69000af1baac224da))
+* close [#31](https://github.com/red-armor/infinite-list/issues/31), integerBufferSet get position method ([#33](https://github.com/red-armor/infinite-list/issues/33)) ([a9c1158](https://github.com/red-armor/infinite-list/commit/a9c115835a655498bab7859f70090ca7a166af6e))
+
+
+
 ## [0.2.34](https://github.com/red-armor/infinite-list/compare/v0.2.33...v0.2.34) (2023-06-17)
 
 
