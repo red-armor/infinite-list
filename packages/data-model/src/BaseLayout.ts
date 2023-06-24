@@ -5,6 +5,7 @@ import {
   ON_END_REACHED_THRESHOLD,
   WINDOW_SIZE,
   RECYCLE_BUFFERED_COUNT,
+  LENGTH_PRECISION,
 } from './common';
 import SelectValue, {
   selectHorizontalValue,
@@ -28,6 +29,7 @@ class BaseLayout {
   private _recycleThreshold: number;
   readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
+  readonly _lengthPrecision: number;
   private _recycleBufferedCount: number;
   private _canIUseRIC: boolean;
 
@@ -47,6 +49,8 @@ class BaseLayout {
     recycleEnabled?: boolean;
 
     canIUseRIC?: boolean;
+
+    lengthPrecision?: number;
   }) {
     const {
       id,
@@ -58,6 +62,7 @@ class BaseLayout {
       canIUseRIC,
       stickyHeaderIndices = [],
       windowSize = WINDOW_SIZE,
+      lengthPrecision = LENGTH_PRECISION,
       recycleBufferedCount = RECYCLE_BUFFERED_COUNT,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
@@ -77,15 +82,17 @@ class BaseLayout {
     this._recycleThreshold = recycleEnabled
       ? recycleThreshold || maxToRenderPerBatch * 2
       : 0;
-    this._recycleBufferedCount = recycleBufferedCount;
+
+    // recycleBufferedCount should greater than 0.
+    this._recycleBufferedCount = Math.max(recycleBufferedCount, 1);
     this._stickyHeaderIndices = stickyHeaderIndices;
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
     this._onEndReachedThreshold = onEndReachedThreshold;
-    this._recycleBufferedCount = recycleBufferedCount;
     this.persistanceIndices = persistanceIndices;
     this.stickyHeaderIndices = stickyHeaderIndices;
     this._canIUseRIC = canIUseRIC;
+    this._lengthPrecision = lengthPrecision;
   }
 
   get initialNumToRender() {
@@ -227,6 +234,19 @@ class BaseLayout {
 
   getSelectValue() {
     return this._selectValue;
+  }
+
+  normalizeLengthNumber(length: number) {
+    return +length.toPrecision(this._lengthPrecision);
+  }
+
+  normalizeLengthInfo(info: ItemLayout) {
+    const { width, height, ...rest } = info;
+    return {
+      width: this.normalizeLengthNumber(width),
+      height: this.normalizeLengthNumber(height),
+      ...rest,
+    };
   }
 }
 

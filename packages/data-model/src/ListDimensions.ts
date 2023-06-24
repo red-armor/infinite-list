@@ -856,7 +856,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (!meta) return false;
 
     if (typeof info === 'number') {
-      let length = info;
+      let length = this.normalizeLengthNumber(info);
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
@@ -868,14 +868,23 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           return true;
         }
       }
+      return false;
     }
+    const _info = this.normalizeLengthInfo(info);
 
-    if (!layoutEqual(meta.getLayout(), info as ItemLayout)) {
+    if (!layoutEqual(meta.getLayout(), _info as ItemLayout)) {
+      if (meta.getLayout()) {
+        console.warn(
+          '[infinite-list/data-model] override existing key item ',
+          `${+key}from value ${meta.getLayout()}to ${_info}`
+        );
+      }
+
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );
-      let length = this._selectValue.selectLength((info as ItemLayout) || {});
-      meta.setLayout(info as ItemLayout);
+      let length = this._selectValue.selectLength((_info as ItemLayout) || {});
+      meta.setLayout(_info as ItemLayout);
       // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
       if (currentLength !== length && _update) {
         if (index !== this._data.length - 1) {

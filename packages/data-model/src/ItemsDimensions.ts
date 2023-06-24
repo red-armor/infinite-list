@@ -37,16 +37,19 @@ class ItemsDimensions extends BaseDimensions {
     if (!meta) return false;
 
     if (typeof info === 'number') {
-      const length = info;
+      const length = this.normalizeLengthNumber(info);
       if (this._selectValue.selectLength(meta.getLayout()) !== length) {
         this._selectValue.setLength(meta.getLayout(), length);
         this._sortedItems.add(meta);
         return true;
       }
+      return false;
     }
 
-    if (!layoutEqual(meta.getLayout(), info as ItemLayout)) {
-      meta.setLayout(info as ItemLayout);
+    const _info = this.normalizeLengthInfo(info);
+
+    if (!layoutEqual(meta.getLayout(), _info as ItemLayout)) {
+      meta.setLayout(_info as ItemLayout);
       this._sortedItems.add(meta);
       return true;
     }

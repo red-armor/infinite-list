@@ -27,6 +27,8 @@ export type BaseDimensionsProps = {
 
   canIUseRIC?: boolean;
 
+  lengthPrecision?: number;
+
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;
   isIntervalTreeItems?: boolean;

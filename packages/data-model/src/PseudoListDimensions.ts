@@ -140,7 +140,7 @@ class PseudoListDimensions extends BaseDimensions {
     if (!meta) return false;
 
     if (typeof info === 'number') {
-      const length = info;
+      const length = this.normalizeLengthNumber(info);
       if (meta && this._selectValue.selectLength(meta.getLayout()) !== length) {
         this._selectValue.setLength(meta.getLayout(), length);
         if (_update) {
@@ -148,14 +148,19 @@ class PseudoListDimensions extends BaseDimensions {
           return true;
         }
       }
+      return false;
     }
 
-    if (!layoutEqual(meta.getLayout(), info as ItemLayout)) {
+    const _info = this.normalizeLengthInfo(info);
+
+    if (!layoutEqual(meta.getLayout(), _info as ItemLayout)) {
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );
-      const length = this._selectValue.selectLength((info as ItemLayout) || {});
-      meta.setLayout(info as ItemLayout);
+      const length = this._selectValue.selectLength(
+        (_info as ItemLayout) || {}
+      );
+      meta.setLayout(_info as ItemLayout);
 
       if (currentLength !== length && _update) {
         this.setIntervalTreeValue(index, length);
