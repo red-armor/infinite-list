@@ -44,9 +44,9 @@ importers:
       '@x-oasis/batchinator': 0.1.10
       '@x-oasis/capitalize': 0.1.10
       '@x-oasis/default-boolean-value': ^0.1.10
-      '@x-oasis/integer-buffer-set': 0.1.10
+      '@x-oasis/integer-buffer-set': 0.1.13
       '@x-oasis/is-clamped': 0.1.10
-      '@x-oasis/layout-equal': 0.1.10
+      '@x-oasis/layout-equal': 0.1.13
       '@x-oasis/noop': 0.1.10
       '@x-oasis/omit': 0.1.10
       '@x-oasis/prefix-interval-tree': ^0.1.10
@@ -63,9 +63,9 @@ importers:
       '@x-oasis/batchinator': 0.1.10
       '@x-oasis/capitalize': 0.1.10
       '@x-oasis/default-boolean-value': 0.1.10
-      '@x-oasis/integer-buffer-set': 0.1.10
+      '@x-oasis/integer-buffer-set': 0.1.13
       '@x-oasis/is-clamped': 0.1.10
-      '@x-oasis/layout-equal': 0.1.10
+      '@x-oasis/layout-equal': 0.1.13
       '@x-oasis/noop': 0.1.10
       '@x-oasis/omit': 0.1.10
       '@x-oasis/prefix-interval-tree': 0.1.10
@@ -2584,22 +2584,22 @@ packages:
     resolution: {integrity: sha512-35WVj3HvnhjhCHch6pipc7aIu+Kn8KEpVArke8h+t360plqC+WHGxbTn0j2ae2Cjhzp3fwO7vTpcKM/FIoLUQg==}
     dev: false
 
-  /@x-oasis/heap/0.1.10:
-    resolution: {integrity: sha512-MjMdd2faKevrO+e78sRVtD2ip+WV5Roy4IAgKVvA2+GrFWlMRpohTIXpD/jUBTixEjiP5VVo/PGCjjDzV8Iunw==}
+  /@x-oasis/heap/0.1.13:
+    resolution: {integrity: sha512-YqW6CphHxf3xvzYWNuxEeaxRdVorr/3tJcOVrKoWvy5UUwdDTj/nNdQ834DTHk3XcLmAfVz9HAc7IH7qkZd9Lg==}
     dev: false
 
-  /@x-oasis/integer-buffer-set/0.1.10:
-    resolution: {integrity: sha512-bmi6er9rCauJWS/xdC+9iaAs/FRLBNmqFiNdC0iR/L5luXu9b7W+oiOiZrupxmgHsGgidjWXd0rsuE1vQKLUnQ==}
+  /@x-oasis/integer-buffer-set/0.1.13:
+    resolution: {integrity: sha512-LuJW3s0le/r5wF9UTQsLFXl8dWaVE8DtZhfrA95fleNiiOURTaeNtZmzN4AeHKIylGb87B7bTpk9wFZ25Ja41Q==}
     dependencies:
-      '@x-oasis/heap': 0.1.10
+      '@x-oasis/heap': 0.1.13
     dev: false
 
   /@x-oasis/is-clamped/0.1.10:
     resolution: {integrity: sha512-D8LTq0aRee3mN+penAi1AWIpNYe8AvR4acxwPH4PGVQ3xV/zNN+p3MnSkxWiy21g1Jg5YB01BwwDrTF/Cw2Q7A==}
     dev: false
 
-  /@x-oasis/layout-equal/0.1.10:
-    resolution: {integrity: sha512-QqMEkd+inSz0+TAoqNQbT3T7kmorEV/5NKLbPij2yTUAKpSh3t8+4VagdP0FXnN5Ni3GyI/Oc4mkkzFWO9Jv1g==}
+  /@x-oasis/layout-equal/0.1.13:
+    resolution: {integrity: sha512-BAvhFNT9FxhYpIu7gLHrpnUq60880JoY9/doI2ECqAB/UyUuGgFQeWXc5Wvm680BHr6CUHLCjDRmiK4j+RMJWg==}
     dev: false
 
   /@x-oasis/noop/0.1.10:

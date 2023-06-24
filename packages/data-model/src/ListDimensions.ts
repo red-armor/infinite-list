@@ -872,13 +872,21 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
     const _info = this.normalizeLengthInfo(info);
 
-    if (!layoutEqual(meta.getLayout(), _info as ItemLayout)) {
-      if (meta.getLayout()) {
-        console.warn(
-          '[infinite-list/data-model] override existing key item ',
-          `${+key}from value ${meta.getLayout()}to ${_info}`
-        );
-      }
+    if (
+      !layoutEqual(
+        meta.getLayout(),
+        _info as ItemLayout,
+        this.horizontal ? ['width'] : ['height']
+      )
+    ) {
+      // if (meta.getLayout()) {
+      //   console.warn(
+      //     '[infinite-list/data-model] override existing key item ',
+      //     `${key} from value ${JSON.stringify(
+      //       meta.getLayout()
+      //     )}to ${JSON.stringify(_info)}`
+      //   );
+      // }
 
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
@@ -1074,7 +1082,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       position = this._bufferSet.replaceFurthestValuePosition(
         startIndex,
         endIndex,
-        rowIndex
+        rowIndex,
+        (options) => {
+          const { bufferSetRange, currentIndex } = options;
+          const { maxValue } = bufferSetRange;
+          if (currentIndex > maxValue) return true;
+          return false;
+        }
       );
     }
 
@@ -1148,8 +1162,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   resolveRecycleRecycleState(state: ListState<ItemT>) {
-    const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
+    const {
+      visibleEndIndex,
+      visibleStartIndex: _visibleStartIndex,
+      isEndReached,
+    } = state;
     const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    const targetIndicesCopy = targetIndices.slice();
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
     // const targetIndicesCopy = targetIndices.slice();
@@ -1175,31 +1194,35 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     }
 
-    const remainingPosition = Math.max(
-      this.recycleThreshold - (safeRange.endIndex - safeRange.startIndex + 1),
-      0
-    );
-    const remainingCount = Math.min(
-      this.recycleBufferedCount * 2,
-      remainingPosition
-    );
+    // const remainingPosition = Math.max(
+    //   this.recycleThreshold - (safeRange.endIndex - safeRange.startIndex + 1),
+    //   0
+    // );
+    // const remainingCount = Math.min(
+    //   this.recycleBufferedCount * 2,
+    //   remainingPosition
+    // );
 
     if (velocity > 0) {
-      this.updateIndices(targetIndices, {
-        safeRange,
-        startIndex: visibleEndIndex + 1,
-        maxCount: remainingCount,
-        step: 1,
-      });
+      if (isEndReached || Math.abs(velocity) < 0.5) {
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleEndIndex + 1,
+          maxCount: this.recycleBufferedCount,
+          step: 1,
+        });
+      }
     } else if (velocity < 0) {
-      this.updateIndices(targetIndices, {
-        safeRange,
-        startIndex: visibleStartIndex - 1,
-        maxCount: remainingCount,
-        step: -1,
-      });
+      if (Math.abs(velocity) < 0.5) {
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex - 1,
+          maxCount: this.recycleBufferedCount,
+          step: -1,
+        });
+      }
     } else {
-      const part = Math.floor(remainingCount / 2);
+      const part = Math.floor(this.recycleBufferedCount / 2);
       this.updateIndices(targetIndices, {
         safeRange,
         startIndex: visibleStartIndex - 1,
@@ -1209,10 +1232,30 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.updateIndices(targetIndices, {
         safeRange,
         startIndex: visibleEndIndex + 1,
-        maxCount: remainingCount - part,
+        maxCount: this.recycleBufferedCount - part,
         step: 1,
       });
     }
+
+    // let changed = '';
+
+    // for (let index = 0; index < targetIndices.length; index++) {
+    //   const next = targetIndices[index];
+    //   const current = targetIndicesCopy[index];
+    //   if (current && next !== current) {
+    //     changed += `${index} occurs update, ${current} -> ${next}\n`;
+    //   }
+    // }
+
+    // if (changed)
+    //   console.warn(
+    //     '[infinite-list] replace info ',
+    //     `visibleStartIndex : ${visibleStartIndex}, visibleEndIndex: ${visibleEndIndex} \n`,
+    //     changed,
+    //     `velocity: ${velocity}\n`,
+    //     `prev: ${JSON.stringify(targetIndicesCopy)}\n`,
+    //     `next: ${JSON.stringify(targetIndices)}\n`
+    //   );
 
     const minValue = this._bufferSet.getMinValue();
     const maxValue = this._bufferSet.getMaxValue();
