@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [0.2.36](https://github.com/red-armor/infinite-list/compare/v0.2.35...v0.2.36) (2023-06-25)
+
+
+### Features
+
+* ignore testing ([335f564](https://github.com/red-armor/infinite-list/commit/335f564cdcbbfa18301416ed1ff2ad1faf5198b6))
+* ignore testing ([97abd58](https://github.com/red-armor/infinite-list/commit/97abd587ea109dba84198eb561d5a6a3d3482453))
+
+
+
 ## [0.2.35](https://github.com/red-armor/infinite-list/compare/v0.2.34...v0.2.35) (2023-06-24)
 
 
