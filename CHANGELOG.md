@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.37](https://github.com/red-armor/infinite-list/compare/v0.2.36...v0.2.37) (2023-06-26)
+
+
+### Features
+
+* only add buffer on Math.abs(velocity) < 1 ([57c8c96](https://github.com/red-armor/infinite-list/commit/57c8c969c528b19f151f768d8cec295e9c353604))
+
+
+
 ## [0.2.36](https://github.com/red-armor/infinite-list/compare/v0.2.35...v0.2.36) (2023-06-25)
 
 
