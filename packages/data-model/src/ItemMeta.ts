@@ -24,6 +24,7 @@ class ItemMeta extends ViewabilityItemMeta {
   readonly getMetaOnViewableItemsChanged?: any;
   readonly _ownerId: string;
   readonly _canIUseRIC?: boolean;
+  private _isApproximateLayout: boolean;
 
   constructor(props: {
     onViewable?: StateEventListener;
@@ -60,6 +61,7 @@ class ItemMeta extends ViewabilityItemMeta {
         : {};
 
     this._canIUseRIC = canIUseRIC;
+    this._isApproximateLayout = false;
 
     // this.addStateListener = this.addStateListener.bind(this);
     // this.removeStateListener = this.removeStateListener.bind(this);
@@ -68,6 +70,14 @@ class ItemMeta extends ViewabilityItemMeta {
 
   get id() {
     return this._id;
+  }
+
+  get isApproximateLayout() {
+    return this._isApproximateLayout;
+  }
+
+  set isApproximateLayout(value: boolean) {
+    this._isApproximateLayout = value;
   }
 
   setLayout(layout: ItemLayout) {

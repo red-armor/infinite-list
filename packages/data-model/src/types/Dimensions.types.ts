@@ -92,6 +92,7 @@ export type ListDimensionsProps<ItemT> = {
   canIUseRIC?: boolean;
 
   itemApproximateLength?: number;
+  useItemApproximateLength?: boolean;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
 
