@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.38](https://github.com/red-armor/infinite-list/compare/v0.2.37...v0.2.38) (2023-06-26)
+
+
+### Features
+
+* add itemApproximateLength support ([f927a70](https://github.com/red-armor/infinite-list/commit/f927a701ee56e64221df69ed6042a75ea88e85e2))
+
+
+
 ## [0.2.37](https://github.com/red-armor/infinite-list/compare/v0.2.36...v0.2.37) (2023-06-26)
 
 
