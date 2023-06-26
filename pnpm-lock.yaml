@@ -40,40 +40,40 @@ importers:
 
   packages/data-model:
     specifiers:
-      '@x-oasis/batchinate-last': ^0.1.10
-      '@x-oasis/batchinator': 0.1.10
-      '@x-oasis/capitalize': 0.1.10
-      '@x-oasis/default-boolean-value': ^0.1.10
-      '@x-oasis/integer-buffer-set': 0.1.13
-      '@x-oasis/is-clamped': 0.1.10
-      '@x-oasis/layout-equal': 0.1.13
-      '@x-oasis/noop': 0.1.10
-      '@x-oasis/omit': 0.1.10
-      '@x-oasis/prefix-interval-tree': ^0.1.10
-      '@x-oasis/resolve-changed': 0.1.10
-      '@x-oasis/select-value': 0.1.10
-      '@x-oasis/shallow-array-equal': ^0.1.10
-      '@x-oasis/shallow-equal': 0.1.10
-      '@x-oasis/unique-array-object': ^0.1.10
+      '@x-oasis/batchinate-last': ^0.1.14
+      '@x-oasis/batchinator': ^0.1.14
+      '@x-oasis/capitalize': ^0.1.14
+      '@x-oasis/default-boolean-value': ^0.1.14
+      '@x-oasis/integer-buffer-set': ^0.1.14
+      '@x-oasis/is-clamped': ^0.1.14
+      '@x-oasis/layout-equal': ^0.1.14
+      '@x-oasis/noop': ^0.1.14
+      '@x-oasis/omit': ^0.1.14
+      '@x-oasis/prefix-interval-tree': ^0.1.14
+      '@x-oasis/resolve-changed': ^0.1.14
+      '@x-oasis/select-value': ^0.1.14
+      '@x-oasis/shallow-array-equal': ^0.1.14
+      '@x-oasis/shallow-equal': ^0.1.14
+      '@x-oasis/unique-array-object': ^0.1.14
       memoize-one: ^6.0.0
       rimraf: ^5.0.1
       tsdx: ^0.14.1
     dependencies:
-      '@x-oasis/batchinate-last': 0.1.10
-      '@x-oasis/batchinator': 0.1.10
-      '@x-oasis/capitalize': 0.1.10
-      '@x-oasis/default-boolean-value': 0.1.10
-      '@x-oasis/integer-buffer-set': 0.1.13
-      '@x-oasis/is-clamped': 0.1.10
-      '@x-oasis/layout-equal': 0.1.13
-      '@x-oasis/noop': 0.1.10
-      '@x-oasis/omit': 0.1.10
-      '@x-oasis/prefix-interval-tree': 0.1.10
-      '@x-oasis/resolve-changed': 0.1.10
-      '@x-oasis/select-value': 0.1.10
-      '@x-oasis/shallow-array-equal': 0.1.10
-      '@x-oasis/shallow-equal': 0.1.10
-      '@x-oasis/unique-array-object': 0.1.10
+      '@x-oasis/batchinate-last': 0.1.14
+      '@x-oasis/batchinator': 0.1.14
+      '@x-oasis/capitalize': 0.1.14
+      '@x-oasis/default-boolean-value': 0.1.14
+      '@x-oasis/integer-buffer-set': 0.1.14
+      '@x-oasis/is-clamped': 0.1.14
+      '@x-oasis/layout-equal': 0.1.14
+      '@x-oasis/noop': 0.1.14
+      '@x-oasis/omit': 0.1.14
+      '@x-oasis/prefix-interval-tree': 0.1.14
+      '@x-oasis/resolve-changed': 0.1.14
+      '@x-oasis/select-value': 0.1.14
+      '@x-oasis/shallow-array-equal': 0.1.14
+      '@x-oasis/shallow-equal': 0.1.14
+      '@x-oasis/unique-array-object': 0.1.14
       memoize-one: 6.0.0
     devDependencies:
       rimraf: 5.0.1
@@ -2560,78 +2560,78 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
-  /@x-oasis/batchinate-last/0.1.10:
-    resolution: {integrity: sha512-U55v1vzDRpAupWUQ2mfTCeAILGREPxPa6Sv9y3f7Sui/cXwhgbkmHNTrAxw2wCY4R04SdAADb1v1W6xT+YRiAA==}
+  /@x-oasis/batchinate-last/0.1.14:
+    resolution: {integrity: sha512-nnxj6VBe2ghRSrhKDr/JlDLPjYAiUdU2vitpgDx/sxWZgPB0yXabekDBSAvMD2g+4nJH+n6ZdhnDdmveqOVPJA==}
     dev: false
 
-  /@x-oasis/batchinator/0.1.10:
-    resolution: {integrity: sha512-ucXzf0V2ZbQ1A9nN4XCHbqtP6Lv+JzGIqmte2tnOzkV+6WHNt4Haz7BdMrgaIDpp9JeNQGNItKPk2Z1LFlRlxg==}
+  /@x-oasis/batchinator/0.1.14:
+    resolution: {integrity: sha512-BAwjPY0ZdlyNYROuWa/RHoaqE7dY544a72UeQ+yWeL7EbKKFK01tfawd8OBPmFvD/Ob1sWYsnDT5Rytk1hqlIA==}
     dependencies:
-      '@x-oasis/default-boolean-value': 0.1.10
+      '@x-oasis/default-boolean-value': 0.1.14
     dev: false
 
-  /@x-oasis/capitalize/0.1.10:
-    resolution: {integrity: sha512-vz49CJmVaIeiSJ0EzQtF5eLXOJONpGuWeSgff1wCJr6N784zQLxj8Gg6Wa6eWEyAuCHS2IisILNiXAk2ktneZA==}
+  /@x-oasis/capitalize/0.1.14:
+    resolution: {integrity: sha512-yW2ZbvxvcsLZY3z+Glfqvzt6XJDUZCzzE8fBLqOJFdoTOsKuegG75KKIk75Bv0HwcJxYoEj5kgs4w4LVRdzRAg==}
     dev: false
 
-  /@x-oasis/default-boolean-value/0.1.10:
-    resolution: {integrity: sha512-RFwhgEo9zLDOxtI2vNutKiAjUZD4o+dGLsEah2/chQApqz0Hh9X2O5E5O/nr+4ViC5Wqw3HV8zaCpUVkJrrqtg==}
+  /@x-oasis/default-boolean-value/0.1.14:
+    resolution: {integrity: sha512-ffeR1P2EWmiOr/d4++p2w+haKIs/bL3Ejs07jGOsIjzT9alqjkP2nvBXFqSyG6Kk7VxG7dGirQZ/tUR2EuwNEQ==}
     dependencies:
-      '@x-oasis/default-value': 0.1.10
+      '@x-oasis/default-value': 0.1.14
     dev: false
 
-  /@x-oasis/default-value/0.1.10:
-    resolution: {integrity: sha512-35WVj3HvnhjhCHch6pipc7aIu+Kn8KEpVArke8h+t360plqC+WHGxbTn0j2ae2Cjhzp3fwO7vTpcKM/FIoLUQg==}
+  /@x-oasis/default-value/0.1.14:
+    resolution: {integrity: sha512-X3cfmPlv/3K3Tklj3LShnYcZdP4pmpAv7SJp/XLP+jEee37QKaXxkochZPkI81H5wMCl/6/UHP8iNMhcxdNlfA==}
     dev: false
 
-  /@x-oasis/heap/0.1.13:
-    resolution: {integrity: sha512-YqW6CphHxf3xvzYWNuxEeaxRdVorr/3tJcOVrKoWvy5UUwdDTj/nNdQ834DTHk3XcLmAfVz9HAc7IH7qkZd9Lg==}
+  /@x-oasis/heap/0.1.14:
+    resolution: {integrity: sha512-mjiY1Lwxj7InAzDvrF+cbkoHNxlaFFL92klrCPe/3i0mLQwa6+YNM9G4/sYOb6vYWqDMZ39A7Jns7syq5efYBw==}
     dev: false
 
-  /@x-oasis/integer-buffer-set/0.1.13:
-    resolution: {integrity: sha512-LuJW3s0le/r5wF9UTQsLFXl8dWaVE8DtZhfrA95fleNiiOURTaeNtZmzN4AeHKIylGb87B7bTpk9wFZ25Ja41Q==}
+  /@x-oasis/integer-buffer-set/0.1.14:
+    resolution: {integrity: sha512-AzR8zLwS2QkFy1V6EsM9Q2mqYu6xyPG+F+SpjRIm4otdDyvvTFPnuBzJl80CGbwYQ3tW7al89M3KwFIjdfPA/A==}
     dependencies:
-      '@x-oasis/heap': 0.1.13
+      '@x-oasis/heap': 0.1.14
     dev: false
 
-  /@x-oasis/is-clamped/0.1.10:
-    resolution: {integrity: sha512-D8LTq0aRee3mN+penAi1AWIpNYe8AvR4acxwPH4PGVQ3xV/zNN+p3MnSkxWiy21g1Jg5YB01BwwDrTF/Cw2Q7A==}
+  /@x-oasis/is-clamped/0.1.14:
+    resolution: {integrity: sha512-BoVtp1VB6jZcpjABE4YLMoxJw1tWGYeCvVuxE1irxHfo9GWBt7qIHGtTkmpsZNB+oSrLKP4OlhGljzNXxTIn1A==}
     dev: false
 
-  /@x-oasis/layout-equal/0.1.13:
-    resolution: {integrity: sha512-BAvhFNT9FxhYpIu7gLHrpnUq60880JoY9/doI2ECqAB/UyUuGgFQeWXc5Wvm680BHr6CUHLCjDRmiK4j+RMJWg==}
+  /@x-oasis/layout-equal/0.1.14:
+    resolution: {integrity: sha512-ExvYho7yBhiaUg07hUWKon3OPqVJrSm5WTZj8OlfNXXmYkxWpDNPZQslUbdqZFeKhFu21GH1fJ0lobRxxGOXIA==}
     dev: false
 
-  /@x-oasis/noop/0.1.10:
-    resolution: {integrity: sha512-jQKhd2b1u8qkygJnAsxZaTxD3ScMkN7tztHet+fyNk1pEMBtLqRKtlpUhUbZkqSuSidtsYAdhQn3bpRNoSLWPA==}
+  /@x-oasis/noop/0.1.14:
+    resolution: {integrity: sha512-9vin956KlGwxlQzoUYsZjoAzOoPV+Oxkzu4rojD090dS/Qwxr1jauNyaVW0ByCvvMF+BW2CzXwxwtoNG2pFvNg==}
     dev: false
 
-  /@x-oasis/omit/0.1.10:
-    resolution: {integrity: sha512-3nZ2xptkD8MYiwLsBTWK8glt6cPrS4X9JWy8iPjFbmAlU0LQkBGJSEgBA+gfzEx6ayZybRGSOx0M471tk+6Ggg==}
+  /@x-oasis/omit/0.1.14:
+    resolution: {integrity: sha512-1PMPI8ppdm+Byv+HLYVxqn4LE00LlpVh4SS0nlfBozalom7nABlcNavZ+H5h6HSv8vSMVAdnIVJDOHzY8Q3SaQ==}
     dev: false
 
-  /@x-oasis/prefix-interval-tree/0.1.10:
-    resolution: {integrity: sha512-PyJQC4Kqd4aOSxRWzbV4qMDqPTyOhl+d+dvAbuCxEKz/59R9EizHNhM8kKa284CgQeqgQazPIwvRZy9P+C6jGQ==}
+  /@x-oasis/prefix-interval-tree/0.1.14:
+    resolution: {integrity: sha512-AM1j8UMl3hxFwgtlAL3Uvr98778/kSrFSg1jHPqvbZagQoUvBO93Q6IJ5/hlqlDYZYiqVVgunXoQAze58PpEYQ==}
     dev: false
 
-  /@x-oasis/resolve-changed/0.1.10:
-    resolution: {integrity: sha512-cjz1yib1kMKDDVkeR9XaCgvVJ5yosXJy9RGRxmkSH6CU/yqvGfnljb37ip6T0IIPTx7TfMOLaCLUfFd5ZW+Qaw==}
+  /@x-oasis/resolve-changed/0.1.14:
+    resolution: {integrity: sha512-pnprNOmeMPBkv3rNkHSkdxI/DGfc3r+YMruBJ9a7n9UVqI7EyJmnBECEQUfIumstpCRpkLwAn28ivl2wOam9Yw==}
     dev: false
 
-  /@x-oasis/select-value/0.1.10:
-    resolution: {integrity: sha512-nuKlz1nzfvwfX421ITCNuAE5IdbaATqgEDuMFdQZE2EaEZ3Egzs6eiuq2PiKy61l2pNigxd1AMgdEAuxwLdSQw==}
+  /@x-oasis/select-value/0.1.14:
+    resolution: {integrity: sha512-wyCUynRv+V4JSWZ9PsExpr1CGWXvesTlGhKIlitE2gsTLq1PpE9z1fXWtVlzX8hWlHkEFOwXiESkA11HHQZndw==}
     dev: false
 
-  /@x-oasis/shallow-array-equal/0.1.10:
-    resolution: {integrity: sha512-yvHimM/rKbaqw4cQ2tLY3GA3YlfERt+n1O/YiRiE2Hyd+UdpQ+cP6fbBBrg6WdABEVV/m7O6HqqIS0UsYCm4Qw==}
+  /@x-oasis/shallow-array-equal/0.1.14:
+    resolution: {integrity: sha512-ncrhyOmme2jReQUxtR66RS5Z/en70UDagA0fYRqxK8jZka1JA4nnkPvsjidqyQ5VtdUutttT/gpv1NfkdFgm2g==}
     dev: false
 
-  /@x-oasis/shallow-equal/0.1.10:
-    resolution: {integrity: sha512-jOTSnjFKJlx41GlRfhYrR4/5C9zv1aQ6w1xe/RnREhGucZIyZbAIZel3yHMZnuvuE26JwKva0DCvwtNs8GsV2w==}
+  /@x-oasis/shallow-equal/0.1.14:
+    resolution: {integrity: sha512-ZHbUEpiWKH/qYi3f36nrns1dqxASOjv4X/ue1/nveLbhVJawSmtqIFAXrlIiR0wBu9vGtjzLrLkzPQ3WwtzpRw==}
     dev: false
 
-  /@x-oasis/unique-array-object/0.1.10:
-    resolution: {integrity: sha512-K7YKYKYIPUoDSnwtMJwur5jlUnS1lmS1B2GVysvjJn6QZA8eogAfFjOBCcYTGOUEkwBDxRI4O3c4Zo9e39SerA==}
+  /@x-oasis/unique-array-object/0.1.14:
+    resolution: {integrity: sha512-hLdrtl91fMQ+ZbBrMvzwhIB/R63iKiCJ3a7g160Lt9iYjOc1rdCWNNAjfMgSkonvMn0OztLJ87eI6zp9C2GIFQ==}
     dev: false
 
   /JSONStream/1.3.5:

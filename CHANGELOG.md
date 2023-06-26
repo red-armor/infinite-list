@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.39](https://github.com/red-armor/infinite-list/compare/v0.2.38...v0.2.39) (2023-06-26)
+
+
+### Features
+
+* bump @x-oasis/layout-equal ([229cc9e](https://github.com/red-armor/infinite-list/commit/229cc9e25c903296b84e89ba800c91d05b05de4f))
+
+
+
 ## [0.2.38](https://github.com/red-armor/infinite-list/compare/v0.2.37...v0.2.38) (2023-06-26)
 
 
