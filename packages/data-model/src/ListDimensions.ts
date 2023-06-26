@@ -1203,57 +1203,74 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     //   remainingPosition
     // );
 
-    if (velocity >= 0) {
-      const maxValue = this._bufferSet.getMaxValue();
-      if (
-        isEndReached &&
-        maxValue - (visibleEndIndex + 1) < this.maxToRenderPerBatch
-      ) {
-        // const remainingSpace = this.recycleThreshold - (visibleEndIndex - visibleStartIndex + 2)
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: maxValue + 1,
-          maxCount: Math.max(
-            Math.min(
-              this.recycleThreshold - (maxValue - visibleStartIndex + 2),
-              this.recycleBufferedCount
-            ),
-            0
-          ),
-          step: 1,
-        });
-      } else if (!velocity) {
-        const part = Math.floor(this.recycleBufferedCount / 2);
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex - 1,
-          maxCount: part,
-          step: -1,
-        });
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleEndIndex + 1,
-          maxCount: this.recycleBufferedCount - part,
-          step: 1,
-        });
-      } else if (Math.abs(velocity) < 0.5) {
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleEndIndex + 1,
-          maxCount: this.recycleBufferedCount,
-          step: 1,
-        });
-      }
-    } else {
-      if (Math.abs(velocity) < 0.5) {
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex - 1,
-          maxCount: this.recycleBufferedCount,
-          step: -1,
-        });
-      }
+    if (Math.abs(velocity) <= 1) {
+      this.updateIndices(targetIndices, {
+        safeRange,
+        startIndex: visibleStartIndex - 1,
+        maxCount: 1,
+        step: -1,
+      });
+      this.updateIndices(targetIndices, {
+        safeRange,
+        startIndex: visibleEndIndex + 1,
+        maxCount: 1,
+        step: 1,
+      });
     }
+
+    // ********************** commented on 0626 begin ************************//
+    // if (velocity >= 0) {
+    //   const maxValue = this._bufferSet.getMaxValue();
+    //   if (
+    //     isEndReached &&
+    //     maxValue - (visibleEndIndex + 1) < this.maxToRenderPerBatch
+    //   ) {
+    //     // const remainingSpace = this.recycleThreshold - (visibleEndIndex - visibleStartIndex + 2)
+    //     this.updateIndices(targetIndices, {
+    //       safeRange,
+    //       startIndex: maxValue + 1,
+    //       maxCount: Math.max(
+    //         Math.min(
+    //           this.recycleThreshold - (maxValue - visibleStartIndex + 2),
+    //           this.recycleBufferedCount
+    //         ),
+    //         0
+    //       ),
+    //       step: 1,
+    //     });
+    //   } else if (!velocity) {
+    //     const part = Math.floor(this.recycleBufferedCount / 2);
+    //     this.updateIndices(targetIndices, {
+    //       safeRange,
+    //       startIndex: visibleStartIndex - 1,
+    //       maxCount: part,
+    //       step: -1,
+    //     });
+    //     this.updateIndices(targetIndices, {
+    //       safeRange,
+    //       startIndex: visibleEndIndex + 1,
+    //       maxCount: this.recycleBufferedCount - part,
+    //       step: 1,
+    //     });
+    //   } else if (Math.abs(velocity) < 0.5) {
+    //     this.updateIndices(targetIndices, {
+    //       safeRange,
+    //       startIndex: visibleEndIndex + 1,
+    //       maxCount: this.recycleBufferedCount,
+    //       step: 1,
+    //     });
+    //   }
+    // } else {
+    //   if (Math.abs(velocity) < 0.5) {
+    //     this.updateIndices(targetIndices, {
+    //       safeRange,
+    //       startIndex: visibleStartIndex - 1,
+    //       maxCount: this.recycleBufferedCount,
+    //       step: -1,
+    //     });
+    //   }
+    // }
+    // ********************** commented on 0626 end ************************//
 
     // if (velocity > 0) {
     //   if (isEndReached || Math.abs(velocity) < 0.5) {
