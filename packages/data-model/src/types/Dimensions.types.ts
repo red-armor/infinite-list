@@ -90,6 +90,8 @@ export type ListDimensionsProps<ItemT> = {
   dispatchMetricsThreshold?: number;
 
   canIUseRIC?: boolean;
+
+  itemApproximateLength?: number;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps;
 

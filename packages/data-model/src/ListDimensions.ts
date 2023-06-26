@@ -134,14 +134,24 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       persistanceIndices,
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
+      itemApproximateLength,
+
       stillnessThreshold,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
       onEndReachedHandlerTimeoutThreshold,
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
+    // this.approximateLayoutGetter = this.approximateLayoutGetter.bind(this)
     this._keyExtractor = keyExtractor;
-    this._getItemLayout = getItemLayout;
+    this._getItemLayout =
+      getItemLayout ||
+      (itemApproximateLength
+        ? (_, index) => ({
+            length: itemApproximateLength,
+            index,
+          })
+        : null);
     this._getItemSeparatorLength = getItemSeparatorLength;
     // for ListItem include a basic items condition
     this._parentItemsDimensions = parentItemsDimensions;
@@ -258,6 +268,21 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._removeList?.();
     this._renderStateListeners = [];
   }
+
+  // approximateLayoutGetter(data, index) {
+  //   const totalLength = this.getTotalLength() || 0
+  //   const dataLength = this._data.length
+  //   if (typeof totalLength === 'number')
+  //   return {
+  //     length: +(totalLength / dataLength).toPrecision(4),
+  //     index,
+  //   }
+
+  //   return {
+  //     length: 80,
+  //     index,
+  //   }
+  // }
 
   resolveInitialActiveValue(active: boolean) {
     if (this._deps.length) {
@@ -1203,74 +1228,76 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     //   remainingPosition
     // );
 
-    if (Math.abs(velocity) <= 1) {
-      this.updateIndices(targetIndices, {
-        safeRange,
-        startIndex: visibleStartIndex - 1,
-        maxCount: 1,
-        step: -1,
-      });
-      this.updateIndices(targetIndices, {
-        safeRange,
-        startIndex: visibleEndIndex + 1,
-        maxCount: 1,
-        step: 1,
-      });
+    if (this._getItemLayout) {
+      if (Math.abs(velocity) <= 1) {
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex - 1,
+          maxCount: 1,
+          step: -1,
+        });
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleEndIndex + 1,
+          maxCount: 1,
+          step: 1,
+        });
+      }
+    } else {
+      // ********************** commented on 0626 begin ************************//
+      if (velocity >= 0) {
+        const maxValue = this._bufferSet.getMaxValue();
+        if (
+          isEndReached &&
+          maxValue - (visibleEndIndex + 1) < this.maxToRenderPerBatch
+        ) {
+          // const remainingSpace = this.recycleThreshold - (visibleEndIndex - visibleStartIndex + 2)
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: maxValue + 1,
+            maxCount: Math.max(
+              Math.min(
+                this.recycleThreshold - (maxValue - visibleStartIndex + 2),
+                this.recycleBufferedCount
+              ),
+              0
+            ),
+            step: 1,
+          });
+        } else if (!velocity) {
+          const part = Math.floor(this.recycleBufferedCount / 2);
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleStartIndex - 1,
+            maxCount: part,
+            step: -1,
+          });
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleEndIndex + 1,
+            maxCount: this.recycleBufferedCount - part,
+            step: 1,
+          });
+        } else if (Math.abs(velocity) < 0.5) {
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleEndIndex + 1,
+            maxCount: this.recycleBufferedCount,
+            step: 1,
+          });
+        }
+      } else {
+        if (Math.abs(velocity) < 0.5) {
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleStartIndex - 1,
+            maxCount: this.recycleBufferedCount,
+            step: -1,
+          });
+        }
+      }
+      // ********************** commented on 0626 end ************************//
     }
-
-    // ********************** commented on 0626 begin ************************//
-    // if (velocity >= 0) {
-    //   const maxValue = this._bufferSet.getMaxValue();
-    //   if (
-    //     isEndReached &&
-    //     maxValue - (visibleEndIndex + 1) < this.maxToRenderPerBatch
-    //   ) {
-    //     // const remainingSpace = this.recycleThreshold - (visibleEndIndex - visibleStartIndex + 2)
-    //     this.updateIndices(targetIndices, {
-    //       safeRange,
-    //       startIndex: maxValue + 1,
-    //       maxCount: Math.max(
-    //         Math.min(
-    //           this.recycleThreshold - (maxValue - visibleStartIndex + 2),
-    //           this.recycleBufferedCount
-    //         ),
-    //         0
-    //       ),
-    //       step: 1,
-    //     });
-    //   } else if (!velocity) {
-    //     const part = Math.floor(this.recycleBufferedCount / 2);
-    //     this.updateIndices(targetIndices, {
-    //       safeRange,
-    //       startIndex: visibleStartIndex - 1,
-    //       maxCount: part,
-    //       step: -1,
-    //     });
-    //     this.updateIndices(targetIndices, {
-    //       safeRange,
-    //       startIndex: visibleEndIndex + 1,
-    //       maxCount: this.recycleBufferedCount - part,
-    //       step: 1,
-    //     });
-    //   } else if (Math.abs(velocity) < 0.5) {
-    //     this.updateIndices(targetIndices, {
-    //       safeRange,
-    //       startIndex: visibleEndIndex + 1,
-    //       maxCount: this.recycleBufferedCount,
-    //       step: 1,
-    //     });
-    //   }
-    // } else {
-    //   if (Math.abs(velocity) < 0.5) {
-    //     this.updateIndices(targetIndices, {
-    //       safeRange,
-    //       startIndex: visibleStartIndex - 1,
-    //       maxCount: this.recycleBufferedCount,
-    //       step: -1,
-    //     });
-    //   }
-    // }
-    // ********************** commented on 0626 end ************************//
 
     // if (velocity > 0) {
     //   if (isEndReached || Math.abs(velocity) < 0.5) {
