@@ -13,6 +13,7 @@ import {
   shallowDiffers,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
+  DEFAULT_ITEM_APPROXIMATE_LENGTH,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
@@ -48,6 +49,7 @@ import memoizeOne from 'memoize-one';
 import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import StillnessHelper from './utils/StillnessHelper';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -113,6 +115,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     state: ListState<ItemT>
   ) => RecycleStateResult<ItemT>;
 
+  private _itemApproximateLength: number;
+  private _approximateMode: boolean;
+
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
       ...props,
@@ -120,6 +125,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
     const {
       store,
+      recycleEnabled,
       data = [],
       deps = [],
       keyExtractor,
@@ -134,24 +140,29 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       persistanceIndices,
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
-      itemApproximateLength,
+      useItemApproximateLength,
+      itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
 
       stillnessThreshold,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
       onEndReachedHandlerTimeoutThreshold,
+
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-    // this.approximateLayoutGetter = this.approximateLayoutGetter.bind(this)
+
     this._keyExtractor = keyExtractor;
-    this._getItemLayout =
-      getItemLayout ||
-      (itemApproximateLength
-        ? (_, index) => ({
-            length: itemApproximateLength,
-            index,
-          })
-        : null);
+    this._itemApproximateLength = itemApproximateLength || 0;
+    this._getItemLayout = getItemLayout;
+
+    // `_approximateMode` is enabled on default
+    this._approximateMode = recycleEnabled
+      ? defaultBooleanValue(
+          useItemApproximateLength,
+          typeof this._getItemLayout !== 'function' ||
+            !this._itemApproximateLength
+        )
+      : false;
     this._getItemSeparatorLength = getItemSeparatorLength;
     // for ListItem include a basic items condition
     this._parentItemsDimensions = parentItemsDimensions;
@@ -473,6 +484,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
     const nextLength = this.intervalTree.getHeap()[1];
+    const len = this.intervalTree.getMaxUsefulLength();
+
+    if (typeof nextLength === 'number')
+      this._itemApproximateLength = this.normalizeLengthNumber(
+        nextLength / Math.max(len, 1)
+      );
 
     if (oldLength !== nextLength && this._listGroupDimension) {
       this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
@@ -520,6 +537,17 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isInitialItem,
       canIUseRIC: this.canIUseRIC,
     });
+
+    if (this._approximateMode) {
+      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
+      this._selectValue.setLength(
+        meta.getLayout(),
+        this._itemApproximateLength
+      );
+      meta.isApproximateLayout = true;
+
+      return meta;
+    }
 
     if (typeof this._getItemLayout === 'function') {
       const { length } = this._getItemLayout(data, index);
@@ -884,6 +912,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       let length = this.normalizeLengthNumber(info);
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
         this._selectValue.setLength(meta.ensureLayout(), length);
+        meta.isApproximateLayout = false;
 
         if (index !== this._data.length - 1) {
           length = meta.getSeparatorLength() + length;
@@ -918,6 +947,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       );
       let length = this._selectValue.selectLength((_info as ItemLayout) || {});
       meta.setLayout(_info as ItemLayout);
+      meta.isApproximateLayout = false;
       // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
       if (currentLength !== length && _update) {
         if (index !== this._data.length - 1) {
@@ -1228,7 +1258,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     //   remainingPosition
     // );
 
-    if (this._getItemLayout) {
+    if (this._getItemLayout || this._approximateMode) {
       if (Math.abs(velocity) <= 1) {
         this.updateIndices(targetIndices, {
           safeRange,

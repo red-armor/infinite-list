@@ -906,6 +906,7 @@ describe('setData', () => {
         width: 375,
         height: 2000,
       }),
+      useItemApproximateLength: false,
     });
 
     let _intervalTree = recycleList.intervalTree;
@@ -1891,8 +1892,8 @@ describe('data update', () => {
 
     recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
-    // offset should be recalculate
-    expect(recycleListStateResult.recycleState[0].offset).toBe(280);
+    // offset should be recalculate, approximateItemLength will be included.
+    expect(recycleListStateResult.recycleState[0].offset).toBe(370.5);
     // the third as first item in recycleState
     expect(recycleListStateResult.recycleState[0].targetKey).toBe('3');
   });
