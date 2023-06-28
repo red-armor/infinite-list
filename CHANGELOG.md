@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.41](https://github.com/red-armor/infinite-list/compare/v0.2.40...v0.2.41) (2023-06-28)
+
+
+### Bug Fixes
+
+* _stateListener may set to null issue ([27e43da](https://github.com/red-armor/infinite-list/commit/27e43da75c8bbd2a8025492e0ac17c669ff587ff))
+
+
+
 ## [0.2.40](https://github.com/red-armor/infinite-list/compare/v0.2.39...v0.2.40) (2023-06-27)
 
 
