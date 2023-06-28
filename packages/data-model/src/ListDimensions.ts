@@ -842,7 +842,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   viewableItemsOnly() {
-    if (this._fillingMode === FillingMode.RECYCLE) {
+    // this._stateListener maybe set to null on unmount. but list instance still exist
+    if (this._fillingMode === FillingMode.RECYCLE && this._stateListener) {
       const { recycleState, spaceState } = this
         ._stateResult as RecycleStateResult<ItemT>;
       const nextRecycleState = recycleState.filter((info) => {
