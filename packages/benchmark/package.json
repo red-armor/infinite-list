@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/benchmark",
-  "version": "0.2.41",
+  "version": "0.2.42",
   "scripts": {
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "clean": "rimraf ./dist"
