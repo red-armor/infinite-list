@@ -14,6 +14,7 @@ import {
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
+  LAYOUT_EQUAL_CORRECTION_VALUE,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
@@ -897,7 +898,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     if (typeof info === 'number') {
       let length = this.normalizeLengthNumber(info);
-      if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
+      if (
+        Math.abs(
+          length - (this._selectValue.selectLength(meta.getLayout() || {}) || 0)
+        ) > LAYOUT_EQUAL_CORRECTION_VALUE
+      ) {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (index !== this._data.length - 1) {
@@ -913,11 +918,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const _info = this.normalizeLengthInfo(info);
 
     if (
-      !layoutEqual(
-        meta.getLayout(),
-        _info as ItemLayout,
-        this.horizontal ? ['width'] : ['height']
-      )
+      !layoutEqual(meta.getLayout(), _info as ItemLayout, {
+        keysToCheck: this.horizontal ? ['width'] : ['height'],
+        correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
+      })
     ) {
       // if (meta.getLayout()) {
       //   console.warn(

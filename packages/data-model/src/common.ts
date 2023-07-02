@@ -23,6 +23,7 @@ export const MAX_TO_RENDER_PER_BATCH = 10;
 export const INVALID_LENGTH = 'invalid_length';
 
 export const ITEM_OFFSET_BEFORE_LAYOUT_READY = -4000;
+export const LAYOUT_EQUAL_CORRECTION_VALUE = 0.5;
 
 export const removeItemsKeyword = (configKey) =>
   (configKey.match(/(.*)[iI]tems/) || [])[1] || configKey;
