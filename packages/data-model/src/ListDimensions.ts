@@ -280,21 +280,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._renderStateListeners = [];
   }
 
-  // approximateLayoutGetter(data, index) {
-  //   const totalLength = this.getTotalLength() || 0
-  //   const dataLength = this._data.length
-  //   if (typeof totalLength === 'number')
-  //   return {
-  //     length: +(totalLength / dataLength).toPrecision(4),
-  //     index,
-  //   }
-
-  //   return {
-  //     length: 80,
-  //     index,
-  //   }
-  // }
-
   resolveInitialActiveValue(active: boolean) {
     if (this._deps.length) {
       let isActive = true;
@@ -1461,7 +1446,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         itemMeta,
         viewable: itemMeta.getState().viewable,
         // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-        offset: itemLength ? indexToOffsetMap[targetIndex] : 0,
+        offset:
+          itemLength && !itemMeta.isApproximateLayout
+            ? indexToOffsetMap[targetIndex]
+            : this.itemOffsetBeforeLayoutReady,
         position: 'buffered',
       });
     });

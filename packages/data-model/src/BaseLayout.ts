@@ -6,12 +6,18 @@ import {
   WINDOW_SIZE,
   RECYCLE_BUFFERED_COUNT,
   LENGTH_PRECISION,
+  ITEM_OFFSET_BEFORE_LAYOUT_READY,
 } from './common';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-import { ContainerLayoutGetter, ItemLayout, FillingMode } from './types';
+import {
+  ContainerLayoutGetter,
+  ItemLayout,
+  FillingMode,
+  BaseLayoutProps,
+} from './types';
 
 class BaseLayout {
   private _layout: ItemLayout = DEFAULT_LAYOUT;
@@ -32,26 +38,9 @@ class BaseLayout {
   readonly _lengthPrecision: number;
   private _recycleBufferedCount: number;
   private _canIUseRIC: boolean;
+  private _itemOffsetBeforeLayoutReady: number;
 
-  constructor(props: {
-    id: string;
-    horizontal?: boolean;
-    getContainerLayout?: ContainerLayoutGetter;
-    onEndReachedThreshold?: number;
-    windowSize?: number;
-    maxToRenderPerBatch?: number;
-    initialNumToRender?: number;
-    persistanceIndices?: Array<number>;
-    stickyHeaderIndices?: Array<number>;
-
-    recycleThreshold?: number;
-    recycleBufferedCount?: number;
-    recycleEnabled?: boolean;
-
-    canIUseRIC?: boolean;
-
-    lengthPrecision?: number;
-  }) {
+  constructor(props: BaseLayoutProps) {
     const {
       id,
       recycleThreshold,
@@ -67,6 +56,7 @@ class BaseLayout {
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
       onEndReachedThreshold = ON_END_REACHED_THRESHOLD,
+      itemOffsetBeforeLayoutReady = ITEM_OFFSET_BEFORE_LAYOUT_READY,
     } = props;
 
     this.id = id;
@@ -93,6 +83,7 @@ class BaseLayout {
     this.stickyHeaderIndices = stickyHeaderIndices;
     this._canIUseRIC = canIUseRIC;
     this._lengthPrecision = lengthPrecision;
+    this._itemOffsetBeforeLayoutReady = itemOffsetBeforeLayoutReady;
   }
 
   get initialNumToRender() {
@@ -109,6 +100,10 @@ class BaseLayout {
 
   get recycleBufferedCount() {
     return this._recycleBufferedCount;
+  }
+
+  get itemOffsetBeforeLayoutReady() {
+    return this._itemOffsetBeforeLayoutReady;
   }
 
   get canIUseRIC() {
