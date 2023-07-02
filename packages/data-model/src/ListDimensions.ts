@@ -1127,6 +1127,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getPosition(rowIndex: number, startIndex: number, endIndex: number) {
+    if (rowIndex < 0) return null;
     // 初始化的item不参与absolute替换
     if (rowIndex < this.initialNumToRender) return null;
     let position = this._bufferSet.getValuePosition(rowIndex);
@@ -1250,20 +1251,24 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     if (this._getItemLayout || this._approximateMode) {
       if (velocity > 4) {
-        if (visibleEndIndex >= 0) {
-          for (
-            let index = visibleStartIndex + 4;
-            index <= visibleEndIndex;
-            index++
-          ) {
-            const position = this.getPosition(
-              index,
-              safeRange.startIndex,
-              safeRange.endIndex
-            );
-            if (position !== null) targetIndices[position] = index;
-          }
-        }
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex + 4,
+          maxCount: visibleEndIndex - visibleStartIndex - 4 + 1,
+          step: 1,
+        });
+        // for (
+        //   let index = visibleStartIndex + 4;
+        //   index <= visibleEndIndex;
+        //   index++
+        // ) {
+        //   const position = this.getPosition(
+        //     index,
+        //     safeRange.startIndex,
+        //     safeRange.endIndex
+        //   );
+        //   if (position !== null) targetIndices[position] = index;
+        // }
         this.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleEndIndex + 1,
@@ -1271,20 +1276,25 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           step: 1,
         });
       } else if (velocity < -4) {
-        if (visibleEndIndex >= 0) {
-          for (
-            let index = visibleStartIndex;
-            index <= visibleEndIndex - 4;
-            index++
-          ) {
-            const position = this.getPosition(
-              index,
-              safeRange.startIndex,
-              safeRange.endIndex
-            );
-            if (position !== null) targetIndices[position] = index;
-          }
-        }
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex,
+          maxCount: visibleEndIndex - visibleStartIndex - 4 + 1,
+          step: 1,
+        });
+
+        // for (
+        //   let index = visibleStartIndex;
+        //   index <= visibleEndIndex - 4;
+        //   index++
+        // ) {
+        //   const position = this.getPosition(
+        //     index,
+        //     safeRange.startIndex,
+        //     safeRange.endIndex
+        //   );
+        //   if (position !== null) targetIndices[position] = index;
+        // }
         this.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleStartIndex - 1,
@@ -1292,20 +1302,26 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           step: 1,
         });
       } else {
-        if (visibleEndIndex >= 0) {
-          for (
-            let index = visibleStartIndex;
-            index <= visibleEndIndex;
-            index++
-          ) {
-            const position = this.getPosition(
-              index,
-              safeRange.startIndex,
-              safeRange.endIndex
-            );
-            if (position !== null) targetIndices[position] = index;
-          }
-        }
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex,
+          maxCount: visibleEndIndex - visibleStartIndex + 1,
+          step: 1,
+        });
+        // if (visibleEndIndex >= 0) {
+        //   for (
+        //     let index = visibleStartIndex;
+        //     index <= visibleEndIndex;
+        //     index++
+        //   ) {
+        //     const position = this.getPosition(
+        //       index,
+        //       safeRange.startIndex,
+        //       safeRange.endIndex
+        //     );
+        //     if (position !== null) targetIndices[position] = index;
+        //   }
+        // }
 
         if (Math.abs(velocity) <= 1) {
           this.updateIndices(targetIndices, {
@@ -1323,6 +1339,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         }
       }
     } else {
+      this.updateIndices(targetIndices, {
+        safeRange,
+        startIndex: visibleStartIndex,
+        maxCount: visibleEndIndex - visibleStartIndex + 1,
+        step: 1,
+      });
       // ********************** commented on 0626 begin ************************//
       if (velocity >= 0) {
         const maxValue = this._bufferSet.getMaxValue();
