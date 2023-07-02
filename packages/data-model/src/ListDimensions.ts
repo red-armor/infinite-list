@@ -1183,7 +1183,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       step: number;
     }
   ) {
-    const { startIndex, safeRange, step, maxCount } = props;
+    const { startIndex: _startIndex, safeRange, step, maxCount } = props;
+    const startIndex = Math.max(_startIndex, 0);
     let finalIndex = startIndex;
     let count = 0;
     if (maxCount < 0) return finalIndex;
@@ -1240,6 +1241,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       visibleEndIndex,
     });
 
+    // for (
+    //   let index = visibleStartIndex;
+    //   index <= visibleEndIndex - 4;
+    //   index++
+    // ) {
+    //   const position = this.getPosition(
+    //     index,
+    //     safeRange.startIndex,
+    //     safeRange.endIndex
+    //   );
+    //   if (position !== null) targetIndices[position] = index;
+    // }
+
     // const remainingPosition = Math.max(
     //   this.recycleThreshold - (safeRange.endIndex - safeRange.startIndex + 1),
     //   0
@@ -1254,86 +1268,29 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         this.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleStartIndex + 4,
-          maxCount: visibleEndIndex - visibleStartIndex - 4 + 1,
-          step: 1,
-        });
-        // for (
-        //   let index = visibleStartIndex + 4;
-        //   index <= visibleEndIndex;
-        //   index++
-        // ) {
-        //   const position = this.getPosition(
-        //     index,
-        //     safeRange.startIndex,
-        //     safeRange.endIndex
-        //   );
-        //   if (position !== null) targetIndices[position] = index;
-        // }
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleEndIndex + 1,
-          maxCount: 4,
+          maxCount: visibleEndIndex - visibleStartIndex + 1,
           step: 1,
         });
       } else if (velocity < -4) {
         this.updateIndices(targetIndices, {
           safeRange,
-          startIndex: visibleStartIndex,
-          maxCount: visibleEndIndex - visibleStartIndex - 4 + 1,
-          step: 1,
-        });
-
-        // for (
-        //   let index = visibleStartIndex;
-        //   index <= visibleEndIndex - 4;
-        //   index++
-        // ) {
-        //   const position = this.getPosition(
-        //     index,
-        //     safeRange.startIndex,
-        //     safeRange.endIndex
-        //   );
-        //   if (position !== null) targetIndices[position] = index;
-        // }
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex - 1,
-          maxCount: 4,
-          step: 1,
-        });
-      } else {
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex,
+          startIndex: visibleStartIndex - 4,
           maxCount: visibleEndIndex - visibleStartIndex + 1,
           step: 1,
         });
-        // if (visibleEndIndex >= 0) {
-        //   for (
-        //     let index = visibleStartIndex;
-        //     index <= visibleEndIndex;
-        //     index++
-        //   ) {
-        //     const position = this.getPosition(
-        //       index,
-        //       safeRange.startIndex,
-        //       safeRange.endIndex
-        //     );
-        //     if (position !== null) targetIndices[position] = index;
-        //   }
-        // }
-
+      } else {
         if (Math.abs(velocity) <= 1) {
           this.updateIndices(targetIndices, {
             safeRange,
             startIndex: visibleStartIndex - 1,
-            maxCount: 1,
-            step: -1,
+            maxCount: visibleEndIndex - visibleStartIndex + 3,
+            step: 1,
           });
+        } else {
           this.updateIndices(targetIndices, {
             safeRange,
-            startIndex: visibleEndIndex + 1,
-            maxCount: 1,
+            startIndex: visibleStartIndex,
+            maxCount: visibleEndIndex - visibleStartIndex + 1,
             step: 1,
           });
         }
