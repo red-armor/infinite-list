@@ -8,7 +8,7 @@ export const DEFAULT_LAYOUT = {
 export const INTERVAL_TREE_INITIAL_SIZE = 16;
 export const ON_END_REACHED_TIMEOUT_THRESHOLD = 200;
 export const ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD = 2000;
-export const DISPATCH_METRICS_THRESHOLD = 50;
+export const DISPATCH_METRICS_THRESHOLD = 16;
 export const RECYCLE_BUFFERED_COUNT = 4;
 export const LENGTH_PRECISION = 4;
 export const DEFAULT_ITEM_APPROXIMATE_LENGTH = 80;
@@ -21,6 +21,9 @@ export const WINDOW_SIZE = 5;
 export const INITIAL_NUM_TO_RENDER = 10;
 export const MAX_TO_RENDER_PER_BATCH = 10;
 export const INVALID_LENGTH = 'invalid_length';
+
+export const ITEM_OFFSET_BEFORE_LAYOUT_READY = -4000;
+export const LAYOUT_EQUAL_CORRECTION_VALUE = 0.5;
 
 export const removeItemsKeyword = (configKey) =>
   (configKey.match(/(.*)[iI]tems/) || [])[1] || configKey;

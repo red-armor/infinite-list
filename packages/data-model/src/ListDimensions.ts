@@ -14,6 +14,7 @@ import {
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
+  LAYOUT_EQUAL_CORRECTION_VALUE,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
@@ -279,21 +280,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._removeList?.();
     this._renderStateListeners = [];
   }
-
-  // approximateLayoutGetter(data, index) {
-  //   const totalLength = this.getTotalLength() || 0
-  //   const dataLength = this._data.length
-  //   if (typeof totalLength === 'number')
-  //   return {
-  //     length: +(totalLength / dataLength).toPrecision(4),
-  //     index,
-  //   }
-
-  //   return {
-  //     length: 80,
-  //     index,
-  //   }
-  // }
 
   resolveInitialActiveValue(active: boolean) {
     if (this._deps.length) {
@@ -908,12 +894,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // const meta = this.getItemMeta(item, index);
 
     if (!meta) return false;
+    meta.isApproximateLayout = false;
 
     if (typeof info === 'number') {
       let length = this.normalizeLengthNumber(info);
-      if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
+      if (
+        Math.abs(
+          length - (this._selectValue.selectLength(meta.getLayout() || {}) || 0)
+        ) > LAYOUT_EQUAL_CORRECTION_VALUE
+      ) {
         this._selectValue.setLength(meta.ensureLayout(), length);
-        meta.isApproximateLayout = false;
 
         if (index !== this._data.length - 1) {
           length = meta.getSeparatorLength() + length;
@@ -928,11 +918,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const _info = this.normalizeLengthInfo(info);
 
     if (
-      !layoutEqual(
-        meta.getLayout(),
-        _info as ItemLayout,
-        this.horizontal ? ['width'] : ['height']
-      )
+      !layoutEqual(meta.getLayout(), _info as ItemLayout, {
+        keysToCheck: this.horizontal ? ['width'] : ['height'],
+        correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
+      })
     ) {
       // if (meta.getLayout()) {
       //   console.warn(
@@ -948,7 +937,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       );
       let length = this._selectValue.selectLength((_info as ItemLayout) || {});
       meta.setLayout(_info as ItemLayout);
-      meta.isApproximateLayout = false;
       // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
       if (currentLength !== length && _update) {
         if (index !== this._data.length - 1) {
@@ -1127,6 +1115,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getPosition(rowIndex: number, startIndex: number, endIndex: number) {
+    if (rowIndex < 0) return null;
     // 初始化的item不参与absolute替换
     if (rowIndex < this.initialNumToRender) return null;
     let position = this._bufferSet.getValuePosition(rowIndex);
@@ -1182,7 +1171,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       step: number;
     }
   ) {
-    const { startIndex, safeRange, step, maxCount } = props;
+    const { startIndex: _startIndex, safeRange, step, maxCount } = props;
+    const startIndex = Math.max(_startIndex, 0);
     let finalIndex = startIndex;
     let count = 0;
     if (maxCount < 0) return finalIndex;
@@ -1239,16 +1229,18 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       visibleEndIndex,
     });
 
-    if (visibleEndIndex >= 0) {
-      for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
-        const position = this.getPosition(
-          index,
-          safeRange.startIndex,
-          safeRange.endIndex
-        );
-        if (position !== null) targetIndices[position] = index;
-      }
-    }
+    // for (
+    //   let index = visibleStartIndex;
+    //   index <= visibleEndIndex - 4;
+    //   index++
+    // ) {
+    //   const position = this.getPosition(
+    //     index,
+    //     safeRange.startIndex,
+    //     safeRange.endIndex
+    //   );
+    //   if (position !== null) targetIndices[position] = index;
+    // }
 
     // const remainingPosition = Math.max(
     //   this.recycleThreshold - (safeRange.endIndex - safeRange.startIndex + 1),
@@ -1260,21 +1252,50 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // );
 
     if (this._getItemLayout || this._approximateMode) {
-      if (Math.abs(velocity) <= 1) {
+      // if velocity greater than 4, the below on high priority. then start position
+      // forward 4,
+      if (velocity > 4) {
         this.updateIndices(targetIndices, {
           safeRange,
-          startIndex: visibleStartIndex - 1,
-          maxCount: 1,
-          step: -1,
-        });
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleEndIndex + 1,
-          maxCount: 1,
+          startIndex: visibleStartIndex + 4,
+          maxCount: visibleEndIndex - visibleStartIndex + 1,
           step: 1,
         });
+        // if velocity less than -4, the above on high priority. then start position
+        // forward 4,
+      } else if (velocity < -4) {
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex - 4,
+          maxCount: visibleEndIndex - visibleStartIndex + 1,
+          step: 1,
+        });
+      } else {
+        // if velocity less than 1, scroll will stop soon, so add 1 element
+        // on heading and trailing as buffer
+        if (Math.abs(velocity) <= 1) {
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleStartIndex - 1,
+            maxCount: visibleEndIndex - visibleStartIndex + 3,
+            step: 1,
+          });
+        } else {
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleStartIndex,
+            maxCount: visibleEndIndex - visibleStartIndex + 1,
+            step: 1,
+          });
+        }
       }
     } else {
+      this.updateIndices(targetIndices, {
+        safeRange,
+        startIndex: visibleStartIndex,
+        maxCount: visibleEndIndex - visibleStartIndex + 1,
+        step: 1,
+      });
       // ********************** commented on 0626 begin ************************//
       if (velocity >= 0) {
         const maxValue = this._bufferSet.getMaxValue();
@@ -1428,7 +1449,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         itemMeta,
         viewable: itemMeta.getState().viewable,
         // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-        offset: itemLength ? indexToOffsetMap[targetIndex] : 0,
+        offset:
+          itemLength && !itemMeta.isApproximateLayout
+            ? indexToOffsetMap[targetIndex]
+            : this.itemOffsetBeforeLayoutReady,
         position: 'buffered',
       });
     });

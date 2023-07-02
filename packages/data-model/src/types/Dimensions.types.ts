@@ -21,6 +21,28 @@ export type GetItemLayout<ItemT> = (
 ) => { length: number; index: number };
 export type KeyExtractor<ItemT> = (item: ItemT, index: number) => string;
 
+export type BaseLayoutProps = {
+  id: string;
+  horizontal?: boolean;
+  getContainerLayout?: ContainerLayoutGetter;
+  onEndReachedThreshold?: number;
+  windowSize?: number;
+  maxToRenderPerBatch?: number;
+  initialNumToRender?: number;
+  persistanceIndices?: Array<number>;
+  stickyHeaderIndices?: Array<number>;
+
+  recycleThreshold?: number;
+  recycleBufferedCount?: number;
+  recycleEnabled?: boolean;
+
+  canIUseRIC?: boolean;
+
+  lengthPrecision?: number;
+
+  itemOffsetBeforeLayoutReady?: number;
+};
+
 export type BaseDimensionsProps = {
   id: string;
   horizontal?: boolean;
@@ -94,7 +116,8 @@ export type ListDimensionsProps<ItemT> = {
   itemApproximateLength?: number;
   useItemApproximateLength?: boolean;
 } & BaseDimensionsProps &
-  OnEndReachedHelperProps;
+  OnEndReachedHelperProps &
+  BaseLayoutProps;
 
 export type ItemsDimensionsProps = BaseDimensionsProps;
 
