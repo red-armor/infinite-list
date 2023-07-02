@@ -1264,6 +1264,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // );
 
     if (this._getItemLayout || this._approximateMode) {
+      // if velocity greater than 4, the below on high priority. then start position
+      // forward 4,
       if (velocity > 4) {
         this.updateIndices(targetIndices, {
           safeRange,
@@ -1271,6 +1273,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           maxCount: visibleEndIndex - visibleStartIndex + 1,
           step: 1,
         });
+        // if velocity less than -4, the above on high priority. then start position
+        // forward 4,
       } else if (velocity < -4) {
         this.updateIndices(targetIndices, {
           safeRange,
@@ -1279,6 +1283,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           step: 1,
         });
       } else {
+        // if velocity less than 1, scroll will stop soon, so add 1 element
+        // on heading and trailing as buffer
         if (Math.abs(velocity) <= 1) {
           this.updateIndices(targetIndices, {
             safeRange,
