@@ -50,6 +50,7 @@ import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import StillnessHelper from './utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import Buffer from './Buffer';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
@@ -118,6 +119,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
 
+  private _buffer: Buffer;
+
+  private _rafId: number;
+
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
       ...props,
@@ -181,6 +186,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       maxCountOfHandleOnEndReachedAfterStillness,
     });
     this._onBatchLayoutFinished = onBatchLayoutFinished;
+    this._buffer = new Buffer();
 
     this.stillnessHandler = this.stillnessHandler.bind(this);
     this._stillnessHelper = new StillnessHelper({
@@ -1058,13 +1064,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           const { viewable, ...rest } = state;
           return rest;
         });
-        this._stateListener(
-          {
-            recycleState,
-            spaceState,
-          },
-          this._stateResult
-        );
+
+        if (this._rafId) {
+          cancelAnimationFrame(this._rafId);
+        }
+        this._rafId = requestAnimationFrame(() => {
+          this._stateListener(
+            {
+              recycleState,
+              spaceState,
+            },
+            this._stateResult
+          );
+        });
       } else {
         this._stateListener(stateResult, this._stateResult);
       }
@@ -1223,7 +1235,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       visibleStartIndex: _visibleStartIndex,
       isEndReached,
     } = state;
-    const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    // let targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    // const targetIndicesCopy = targetIndices.slice()
     // const targetIndicesCopy = targetIndices.slice();
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
@@ -1239,14 +1252,26 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       visibleEndIndex,
     });
 
+    let count = 0;
+
+    const targetIndices = this._buffer.getIndices();
+    const targetIndicesCopy = targetIndices.slice();
+
     if (visibleEndIndex >= 0) {
       for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
-        const position = this.getPosition(
+        const position = this._buffer.getPosition(
           index,
           safeRange.startIndex,
           safeRange.endIndex
         );
-        if (position !== null) targetIndices[position] = index;
+        // const position = this.getPosition(
+        //   index,
+        //   safeRange.startIndex,
+        //   safeRange.endIndex
+        // );
+        if (targetIndicesCopy[position] !== index) count++;
+        // if (position !== null) targetIndices[position] = index;
+        // if (count >= 3) break;
       }
     }
 
@@ -1260,20 +1285,20 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // );
 
     if (this._getItemLayout || this._approximateMode) {
-      if (Math.abs(velocity) <= 1) {
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex - 1,
-          maxCount: 1,
-          step: -1,
-        });
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleEndIndex + 1,
-          maxCount: 1,
-          step: 1,
-        });
-      }
+      // if (Math.abs(velocity) <= 1) {
+      //   this.updateIndices(targetIndices, {
+      //     safeRange,
+      //     startIndex: visibleStartIndex - 1,
+      //     maxCount: 1,
+      //     step: -1,
+      //   });
+      //   this.updateIndices(targetIndices, {
+      //     safeRange,
+      //     startIndex: visibleEndIndex + 1,
+      //     maxCount: 1,
+      //     step: 1,
+      //   });
+      // }
     } else {
       // ********************** commented on 0626 begin ************************//
       if (velocity >= 0) {
@@ -1386,13 +1411,35 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const minValue = this._bufferSet.getMinValue();
     const maxValue = this._bufferSet.getMaxValue();
-    const indexToOffsetMap = this.getIndexRangeOffsetMap(
+    const _indexToOffsetMap = this.getIndexRangeOffsetMap(
       minValue,
       maxValue,
       true
     );
 
-    targetIndices.forEach((targetIndex, index) => {
+    const indexToOffsetMap = this.getIndexRangeOffsetMap(
+      this._buffer.getMinValue(),
+      this._buffer.getMaxValue(),
+      true
+    );
+
+    // let count = 0
+
+    // for (let index = 0; index < targetIndices.length; index++) {
+    //   const next = targetIndices[index]
+    //   const prev = targetIndicesCopy[index]
+
+    //   if (next !== prev) {
+    //     count++
+    //   }
+
+    //   if (count >= 4) {
+    //     targetIndices = [].concat(targetIndices.slice(0, index + 1), targetIndicesCopy.slice(index + 1))
+    //     break;
+    //   }
+    // }
+
+    this._buffer.getIndices().forEach((targetIndex, index) => {
       const item = this._data[targetIndex];
       if (!item) return;
 
