@@ -232,7 +232,7 @@ class BaseLayout {
   }
 
   normalizeLengthNumber(length: number) {
-    return +length.toPrecision(this._lengthPrecision);
+    return +length.toFixed(this._lengthPrecision);
   }
 
   normalizeLengthInfo(info: ItemLayout) {
