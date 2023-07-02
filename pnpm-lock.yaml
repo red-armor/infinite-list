@@ -46,7 +46,7 @@ importers:
       '@x-oasis/default-boolean-value': ^0.1.14
       '@x-oasis/integer-buffer-set': ^0.1.14
       '@x-oasis/is-clamped': ^0.1.14
-      '@x-oasis/layout-equal': ^0.1.15
+      '@x-oasis/layout-equal': ^0.1.16
       '@x-oasis/noop': ^0.1.14
       '@x-oasis/omit': ^0.1.14
       '@x-oasis/prefix-interval-tree': ^0.1.14
@@ -65,7 +65,7 @@ importers:
       '@x-oasis/default-boolean-value': 0.1.14
       '@x-oasis/integer-buffer-set': 0.1.14
       '@x-oasis/is-clamped': 0.1.14
-      '@x-oasis/layout-equal': 0.1.15
+      '@x-oasis/layout-equal': 0.1.16
       '@x-oasis/noop': 0.1.14
       '@x-oasis/omit': 0.1.14
       '@x-oasis/prefix-interval-tree': 0.1.14
@@ -2598,8 +2598,8 @@ packages:
     resolution: {integrity: sha512-BoVtp1VB6jZcpjABE4YLMoxJw1tWGYeCvVuxE1irxHfo9GWBt7qIHGtTkmpsZNB+oSrLKP4OlhGljzNXxTIn1A==}
     dev: false
 
-  /@x-oasis/layout-equal/0.1.15:
-    resolution: {integrity: sha512-jDuHv09T/3/XRXeDEUZJiTwrGIciJuf1eHW3xXUVPoaBdz2PLgbSxUXs/noyKWtNHFUwGdzkasYtLvRbDS8GTQ==}
+  /@x-oasis/layout-equal/0.1.16:
+    resolution: {integrity: sha512-eT9Kyy1cSfvB9QIsL9kwS/f65yCrCNxhIbwd7556629ejgIbuFsgtZsMq5z6iaWZCyrWIc7nc/PkRIVm2wUK6Q==}
     dev: false
 
   /@x-oasis/noop/0.1.14:
