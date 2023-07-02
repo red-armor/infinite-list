@@ -1239,17 +1239,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       visibleEndIndex,
     });
 
-    if (visibleEndIndex >= 0) {
-      for (let index = visibleStartIndex; index <= visibleEndIndex; index++) {
-        const position = this.getPosition(
-          index,
-          safeRange.startIndex,
-          safeRange.endIndex
-        );
-        if (position !== null) targetIndices[position] = index;
-      }
-    }
-
     // const remainingPosition = Math.max(
     //   this.recycleThreshold - (safeRange.endIndex - safeRange.startIndex + 1),
     //   0
@@ -1260,19 +1249,78 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // );
 
     if (this._getItemLayout || this._approximateMode) {
-      if (Math.abs(velocity) <= 1) {
-        this.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex - 1,
-          maxCount: 1,
-          step: -1,
-        });
+      if (velocity > 4) {
+        if (visibleEndIndex >= 0) {
+          for (
+            let index = visibleStartIndex + 4;
+            index <= visibleEndIndex;
+            index++
+          ) {
+            const position = this.getPosition(
+              index,
+              safeRange.startIndex,
+              safeRange.endIndex
+            );
+            if (position !== null) targetIndices[position] = index;
+          }
+        }
         this.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleEndIndex + 1,
-          maxCount: 1,
+          maxCount: 4,
           step: 1,
         });
+      } else if (velocity < -4) {
+        if (visibleEndIndex >= 0) {
+          for (
+            let index = visibleStartIndex;
+            index <= visibleEndIndex - 4;
+            index++
+          ) {
+            const position = this.getPosition(
+              index,
+              safeRange.startIndex,
+              safeRange.endIndex
+            );
+            if (position !== null) targetIndices[position] = index;
+          }
+        }
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex - 1,
+          maxCount: 4,
+          step: 1,
+        });
+      } else {
+        if (visibleEndIndex >= 0) {
+          for (
+            let index = visibleStartIndex;
+            index <= visibleEndIndex;
+            index++
+          ) {
+            const position = this.getPosition(
+              index,
+              safeRange.startIndex,
+              safeRange.endIndex
+            );
+            if (position !== null) targetIndices[position] = index;
+          }
+        }
+
+        if (Math.abs(velocity) <= 1) {
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleStartIndex - 1,
+            maxCount: 1,
+            step: -1,
+          });
+          this.updateIndices(targetIndices, {
+            safeRange,
+            startIndex: visibleEndIndex + 1,
+            maxCount: 1,
+            step: 1,
+          });
+        }
       }
     } else {
       // ********************** commented on 0626 begin ************************//
