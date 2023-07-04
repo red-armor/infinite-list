@@ -1252,43 +1252,67 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // );
 
     if (this._getItemLayout || this._approximateMode) {
-      // if velocity greater than 4, the below on high priority. then start position
-      // forward 4,
-      if (velocity > 4) {
+      if (Math.abs(velocity) <= 1) {
         this.updateIndices(targetIndices, {
           safeRange,
-          startIndex: visibleStartIndex + 4,
-          maxCount: visibleEndIndex - visibleStartIndex + 1,
+          startIndex: visibleStartIndex - 1,
+          maxCount: visibleEndIndex - visibleStartIndex + 1 + 2,
           step: 1,
         });
-        // if velocity less than -4, the above on high priority. then start position
-        // forward 4,
-      } else if (velocity < -4) {
+      } else if (velocity > 0) {
         this.updateIndices(targetIndices, {
           safeRange,
-          startIndex: visibleStartIndex - 4,
-          maxCount: visibleEndIndex - visibleStartIndex + 1,
+          startIndex: visibleStartIndex,
+          maxCount:
+            visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
           step: 1,
         });
       } else {
-        // if velocity less than 1, scroll will stop soon, so add 1 element
-        // on heading and trailing as buffer
-        if (Math.abs(velocity) <= 1) {
-          this.updateIndices(targetIndices, {
-            safeRange,
-            startIndex: visibleStartIndex - 1,
-            maxCount: visibleEndIndex - visibleStartIndex + 3,
-            step: 1,
-          });
-        } else {
-          this.updateIndices(targetIndices, {
-            safeRange,
-            startIndex: visibleStartIndex,
-            maxCount: visibleEndIndex - visibleStartIndex + 1,
-            step: 1,
-          });
-        }
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex - 2,
+          maxCount:
+            visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
+          step: 1,
+        });
       }
+      // if velocity greater than 4, the below on high priority. then start position
+      // forward 4,
+      // if (velocity > 4) {
+      //   this.updateIndices(targetIndices, {
+      //     safeRange,
+      //     startIndex: visibleStartIndex + 4,
+      //     maxCount: visibleEndIndex - visibleStartIndex + 1,
+      //     step: 1,
+      //   });
+      //   // if velocity less than -4, the above on high priority. then start position
+      //   // forward 4,
+      // } else if (velocity < -4) {
+      //   this.updateIndices(targetIndices, {
+      //     safeRange,
+      //     startIndex: visibleStartIndex - 4,
+      //     maxCount: visibleEndIndex - visibleStartIndex + 1,
+      //     step: 1,
+      //   });
+      // } else {
+      //   // if velocity less than 1, scroll will stop soon, so add 1 element
+      //   // on heading and trailing as buffer
+      //   if (Math.abs(velocity) <= 1) {
+      //     this.updateIndices(targetIndices, {
+      //       safeRange,
+      //       startIndex: visibleStartIndex - 1,
+      //       maxCount: visibleEndIndex - visibleStartIndex + 3,
+      //       step: 1,
+      //     });
+      //   } else {
+      //     this.updateIndices(targetIndices, {
+      //       safeRange,
+      //       startIndex: visibleStartIndex,
+      //       maxCount: visibleEndIndex - visibleStartIndex + 1,
+      //       step: 1,
+      //     });
+      //   }
+      // }
     } else {
       this.updateIndices(targetIndices, {
         safeRange,
