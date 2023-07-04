@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## [0.2.43-buffer-alpha.0](https://github.com/red-armor/infinite-list/compare/v0.2.42...v0.2.43-buffer-alpha.0) (2023-07-04)
+
+
+
+## 0.2.43-buffer-alpha.0 (2023-07-04)
+
+
+### Features
+
+* update ([2be2fff](https://github.com/red-armor/infinite-list/commit/2be2fff530cff09a019ad3e097cb8e3899d98a76))
+
+
+
 ## [0.2.42](https://github.com/red-armor/infinite-list/compare/v0.2.41...v0.2.42) (2023-07-02)
 
 
