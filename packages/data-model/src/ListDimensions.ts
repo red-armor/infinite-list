@@ -1259,11 +1259,18 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           maxCount: visibleEndIndex - visibleStartIndex + 3,
           step: 1,
         });
-      } else {
+      } else if (velocity > 0) {
         this.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleStartIndex,
-          maxCount: visibleEndIndex - visibleStartIndex + 1,
+          maxCount: visibleEndIndex - visibleStartIndex + 3,
+          step: 1,
+        });
+      } else {
+        this.updateIndices(targetIndices, {
+          safeRange,
+          startIndex: visibleStartIndex - 2,
+          maxCount: visibleEndIndex - visibleStartIndex + 3,
           step: 1,
         });
       }
