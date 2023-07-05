@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.2.43](https://github.com/red-armor/infinite-list/compare/v0.2.42...v0.2.43) (2023-07-05)
+
+
+### Features
+
+* adjust recycle strategy ([2b0f0dc](https://github.com/red-armor/infinite-list/commit/2b0f0dc46b0824aebc311801fe37334c99780dbf))
+
+
+
 ## [0.2.42](https://github.com/red-armor/infinite-list/compare/v0.2.41...v0.2.42) (2023-07-02)
 
 
