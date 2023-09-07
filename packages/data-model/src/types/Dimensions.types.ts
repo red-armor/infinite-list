@@ -43,6 +43,16 @@ export type BaseLayoutProps = {
   itemOffsetBeforeLayoutReady?: number;
 };
 
+export type ListBaseDimensionsProps<ItemT> = ListDimensionsProps<ItemT> & {
+  fillingMode?: FillingMode;
+  initialNumToRender?: number;
+  recyclerTypes?: Array<string>;
+
+  getData?: () => any
+
+  provider: any
+};
+
 export type BaseDimensionsProps = {
   id: string;
   horizontal?: boolean;
@@ -59,6 +69,8 @@ export type BaseDimensionsProps = {
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
 };
 
+export type ListGroupData = {};
+
 export type ListGroupDimensionsProps = {
   id: string;
   horizontal?: boolean;
@@ -74,6 +86,12 @@ export type ListGroupDimensionsProps = {
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
   onBatchLayoutFinished?: () => boolean;
   persistanceIndices?: Array<number>;
+
+  /**
+   * support list group recycle
+   */
+
+  recycleEnabled?: boolean;
 } & OnEndReachedHelperProps;
 
 export type ListDimensionsProps<ItemT> = {
@@ -115,6 +133,8 @@ export type ListDimensionsProps<ItemT> = {
 
   itemApproximateLength?: number;
   useItemApproximateLength?: boolean;
+  recyclerType?: string
+
 } & BaseDimensionsProps &
   OnEndReachedHelperProps &
   BaseLayoutProps;
@@ -155,6 +175,7 @@ export type PseudoListDimensionsProps = {
 
 export type DimensionProps = {
   id: string;
+  recyclerType?: string;
   canIUseRIC?: boolean;
   onRender?: Function;
   horizontal?: boolean;

@@ -8,6 +8,9 @@ import SelectValue, {
 } from '@x-oasis/select-value';
 import { DimensionProps, IndexInfo, ItemLayout } from './types';
 
+/**
+ * Abstraction of singleton item, It is used in ListGroup Condition.
+ */
 class Dimension {
   public id: string;
   private _layout: ItemLayout;
@@ -17,9 +20,8 @@ class Dimension {
   readonly _initialStartIndex: number;
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup: number;
-  private _requireRendered: boolean;
-  private _onRender: Function;
   private _canIUseRIC: boolean;
+  private _data: Array<any>
 
   constructor(props: DimensionProps) {
     const {
@@ -31,6 +33,11 @@ class Dimension {
       initialStartIndex,
       ignoredToPerBatch,
     } = props;
+
+    this._data = [{
+      key: id,
+    }]
+
     this._selectValue = horizontal
       ? selectHorizontalValue
       : selectVerticalValue;
@@ -50,24 +57,33 @@ class Dimension {
     this._requireRendered =
       this._initialStartIndex <= this._listGroupDimension.initialNumToRender;
     this._onRender = onRender;
+
+  }
+
+  getData() {
+    return this._data
   }
 
   get length() {
     return 1;
   }
 
-  render() {
-    if (this._requireRendered) return;
-    if (typeof this._onRender === 'function') this._onRender();
+  // render() {
+  //   if (this._requireRendered) return;
+  //   if (typeof this._onRender === 'function') this._onRender();
+  // }
+
+  // onRequireRender(onRender: Function) {
+  //   if (typeof onRender === 'function') this._onRender = onRender;
+  // }
+
+  hasKey(key: string) {
+    return this.id === key
   }
 
-  onRequireRender(onRender: Function) {
-    if (typeof onRender === 'function') this._onRender = onRender;
-  }
-
-  getRequireRendered() {
-    return this._requireRendered;
-  }
+  // getRequireRendered() {
+  //   return this._requireRendered;
+  // }
 
   getReflowItemsLength() {
     const meta = this.getMeta();
@@ -98,10 +114,12 @@ class Dimension {
     this._offsetInListGroup = value;
   }
 
-  getContainerOffset() {
-    return (
-      this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
-    );
+  getContainerOffset(exclusive?: boolean | number) {
+    return exclusive ? 0 : this._offsetInListGroup
+  }
+
+  getIndexKeyOffset(exclusive?: boolean | number) {
+    return exclusive ? 0 : this._offsetInListGroup
   }
 
   getItemOffset() {
@@ -138,6 +156,24 @@ class Dimension {
    */
   getLayout() {
     return this._layout;
+  }
+
+  getFinalItemMeta(item: any) {
+    return this.getItemMeta(item)
+  }
+
+  getItemMeta(item: any) {
+    if (item === this.getData()[0]) return this._meta;
+    return null
+  }
+
+  getItemKey(item: any) {
+    if (item === this.getData()[0]) return this.getKey();
+    return null
+  }
+
+  getFinalItemKey(item: any) {
+    return this.getItemKey(item)
   }
 
   getMeta() {

@@ -63,6 +63,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
+  private _itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap();
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
@@ -132,7 +133,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       keyExtractor,
       getItemLayout,
       onEndReached,
-      active = true,
       listGroupDimension,
       onEndReachedThreshold,
       parentItemsDimensions,
@@ -160,8 +160,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._approximateMode = recycleEnabled
       ? defaultBooleanValue(
           useItemApproximateLength,
-          typeof this._getItemLayout !== 'function' ||
-            !this._itemApproximateLength
+          typeof this._getItemLayout !== 'function'
         )
       : false;
     this._getItemSeparatorLength = getItemSeparatorLength;
@@ -190,7 +189,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
 
     this._deps = deps;
-    this._isActive = this.resolveInitialActiveValue(active);
+    // this._isActive = this.resolveInitialActiveValue(active);
+    this._isActive = true
 
     if (this._listGroupDimension && this.initialNumToRender) {
       if (process.env.NODE_ENV === 'development')
@@ -354,9 +354,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   getContainerOffset(): number {
     if (this._listGroupDimension) {
-      return (
-        this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
-      );
+      return this._offsetInListGroup
+      // return (
+      //   this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
+      // );
+      // return (
+      //   this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
+      // );
     }
     const layout = this.getContainerLayout();
     if (!layout) return 0;
@@ -389,6 +393,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     return meta;
+  }
+
+  getFinalKeyMeta(key: string) {
+    return this.getKeyMeta(key)
+  }
+
+  getFinalItemMeta(item: ItemT) {
+    const key = this.getFinalItemKey(item);
+    if (key) return this.getKeyMeta(key);
+    return null;
   }
 
   getItemMeta(item: ItemT, index: number) {
@@ -436,6 +450,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (cachedKey) return cachedKey;
     if (!item) return null;
     return this._keyExtractor(item, index);
+  }
+
+  getFinalItemKey(item: ItemT) {
+    const cachedKey = this._itemToKeyMap.get(item);
+    if (cachedKey) return cachedKey;
+    return null;
   }
 
   createIntervalTree() {
@@ -548,6 +568,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     return meta;
+  }
+
+  hasKey(key: string) {
+    return this._indexKeys.indexOf(key) !== -1;
   }
 
   performKeyOperationGuard(key: string) {
@@ -717,7 +741,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (_data === this._data) return KeysChangedType.Equal;
     const keyToIndexMap: Map<string, number> = new Map();
     const keyToIndexArray: Array<string> = [];
-    const itemToKeyMap: Map<ItemT, string> = new Map();
+    const itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
+    const itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap();
     let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {
@@ -727,6 +752,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);
+        itemToDimensionMap.set(item, this);
         return true;
       }
       duplicateKeyCount += 1;
@@ -763,6 +789,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._keyToIndexMap = keyToIndexMap;
     this._indexKeys = keyToIndexArray;
     this._itemToKeyMap = itemToKeyMap;
+    this._itemToDimensionMap = itemToDimensionMap;
     return dataChangedType;
   }
 
@@ -1014,16 +1041,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           ) !== -1;
       }
 
-      // if (this.id === 'component-list-all') {
-      //   console.log(
-      //     'applyStateResult ',
-      //     minIndex,
-      //     maxIndex,
-      //     this._data.length,
-      //     exists
-      //   );
-      // }
-
       shouldStateUpdate =
         !(
           shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
@@ -1214,10 +1231,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isEndReached,
     } = state;
     const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
-    // const targetIndicesCopy = targetIndices.slice();
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
-    // const targetIndicesCopy = targetIndices.slice();
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
@@ -1724,11 +1739,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       dimension: this,
       scrollMetrics,
     });
-
-    // if (this.id === 'component-list-all') {
-    //   console.log('dispatchStoreMetrics ', { ...state });
-    // }
-
     if (isEmpty(state)) return state;
     this.updateState(state, scrollMetrics);
     return state;

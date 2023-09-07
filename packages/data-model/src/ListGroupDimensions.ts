@@ -16,6 +16,7 @@ import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
+  FillingMode,
   InspectingAPI,
   InspectingListener,
   ItemLayout,
@@ -26,15 +27,29 @@ import {
   OnEndReached,
   ScrollMetrics,
   StateListener,
+  ListGroupData,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
+import ListBaseDimensions from './ListBaseDimensions';
+import ListProvider from './ListProvider';
 
 // TODO: indexRange should be another intervalTree
-class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
+/**
+ * ListGroupDimensions has two kinds of data model
+ * - normal list: group of same item.
+ * - singleton item: abstraction of specified item.
+ *
+ * ListGroup is just like a router.
+ */
+class ListGroupDimensions<ItemT extends {} = {}>
+  extends BaseLayout
+  implements ListProvider
+{
   public indexKeys: Array<string> = [];
   private _selector = new EnabledSelector();
+  itemToDimensionMap: WeakMap<any, any> = new WeakMap();
   private keyToListDimensionsMap: Map<string, ListDimensions | Dimension> =
     new Map();
   private _itemsDimensions: ItemsDimensions;
@@ -51,11 +66,17 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _onBatchLayoutFinished: () => boolean;
   private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
   private _updateScrollMetricsWithCacheBatchinator: Batchinator;
-  private _updateChildPersistanceIndicesBatchinator: Batchinator;
+  // private _updateChildPersistanceIndicesBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   private _heartBeatingIndexKeys: Array<string> = [];
   private _heartBeatResolveChangedBatchinator: Batchinator;
   private _inspectingListener: InspectingListener;
+  /**
+   * _flattenData could be considered as the final data model after transform
+   * 1. dimension
+   * 2. normal list
+   */
+  private _flattenData: Array<ListGroupData> = [];
 
   private _rangeResult: {
     bufferedMetaRanges: ListRangeResult;
@@ -71,6 +92,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _inspectingTime: number = +Date.now();
   private _heartBeatingIndexKeysSentCommit: Array<string> = [];
   private _startInspectBatchinator: Batchinator;
+  private _listBaseDimension: ListBaseDimensions<any>;
 
   private _reflowItemsLength = 0;
   private _dimensionsIndexRange: Array<{
@@ -82,7 +104,10 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _removeList: Function;
 
   constructor(props: ListGroupDimensionsProps) {
-    super(props);
+    super({
+      recycleEnabled: true,
+      ...props,
+    });
     const {
       id,
       onUpdateItemLayout,
@@ -95,6 +120,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       onEndReachedTimeoutThreshold,
       onBatchLayoutFinished,
       onEndReachedHandlerTimeoutThreshold,
+      recycleEnabled = true,
     } = props;
 
     this._itemsDimensions = new ItemsDimensions({
@@ -103,7 +129,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
     this._configTuples = new ViewabilityConfigTuples({
-      // horizontal: this.getHorizontal(),
       viewabilityConfig,
       onViewableItemsChanged,
       isListItem: true,
@@ -137,12 +162,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       this.heartBeatResolveChanged.bind(this),
       50
     );
-
-    this._updateChildPersistanceIndicesBatchinator = new Batchinator(
-      this.updateChildPersistanceIndices.bind(this),
-      50
-    );
-
     this.recalculateDimensionsIntervalTreeBatchinator = new Batchinator(
       this.recalculateDimensionsIntervalTree.bind(this),
       50
@@ -156,6 +175,15 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._removeList = manager.addList(this);
     this.heartBeat = this.heartBeat.bind(this);
     this.startInspection = this.startInspection.bind(this);
+
+    this._listBaseDimension = new ListBaseDimensions({
+      keyExtractor: () => null,
+      id: 'listGroupDimensions',
+      data: this._flattenData,
+      getData: this.getData.bind(this),
+      recycleEnabled,
+      provider: this,
+    });
   }
 
   get selector() {
@@ -232,6 +260,77 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return len;
   }
 
+  getFinalIndexItemMeta(index: number) {
+    const info = this.getFinalIndexInfo(index);
+    if (info) {
+      const dimension = info.dimensions;
+      return dimension.getIndexItemMeta(info.index);
+    }
+    return null;
+  }
+
+  getFinalItemKey(item: any) {
+    const len = this.indexKeys.length;
+    for (let index = 0; index < len; index++) {
+      const key = this.indexKeys[index];
+      const dimension = this.getDimension(key);
+      const itemKey = dimension.getFinalItemKey(item);
+      if (itemKey) return itemKey;
+    }
+    return null;
+  }
+
+  getFinalItemMeta(item: any) {
+    const len = this.indexKeys.length;
+    for (let index = 0; index < len; index++) {
+      const key = this.indexKeys[index];
+      const dimension = this.getDimension(key);
+      const itemMeta = dimension.getFinalItemMeta(item);
+      if (itemMeta) return itemMeta;
+    }
+    return null;
+  }
+
+  getFinalIndexKeyOffset(index: number, exclusive?: boolean) {
+    const listOffset = exclusive ? 0 : this.getContainerOffset();
+
+    if (typeof index === 'number') {
+      const indexInfo = this.getFinalIndexInfo(index);
+      if (indexInfo) {
+        const { dimensions, index: _index } = indexInfo;
+        // _offsetInListGroup should be included. so exclusive should be false on default.
+        return listOffset + dimensions.getIndexKeyOffset(_index);
+      }
+    }
+    return 0;
+  }
+
+  getFinalIndexRangeOffsetMap(
+    startIndex: number,
+    endIndex: number,
+    exclusive?: boolean
+  ) {
+    const indexToOffsetMap = {};
+    let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
+    for (let index = startIndex; index <= endIndex; index++) {
+      indexToOffsetMap[index] = startOffset;
+      const itemMeta = this.getFinalIndexItemMeta(index);
+      if (itemMeta) {
+        // @ts-ignore
+        startOffset +=
+          (itemMeta?.getLayout()?.height || 0) +
+          (itemMeta?.getSeparatorLength() || 0);
+      }
+    }
+    return indexToOffsetMap;
+  }
+
+  getFinalIndexItemLength(index: number) {
+    const itemMeta = this.getFinalIndexItemMeta(index);
+    if (itemMeta) return itemMeta.getItemLength();
+    return 0;
+  }
+
   getReflowItemsLength() {
     return this._reflowItemsLength;
   }
@@ -276,10 +375,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._renderStateListeners = [];
   }
 
-  getState(listKey: string) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions) return dimensions.stateResult;
-    return {};
+  getState() {
+    return this._listBaseDimension.state;
+  }
+
+  getStateResult() {
+    return this._listBaseDimension.stateResult;
   }
 
   getKeyIndex(key: string, listKey: string) {
@@ -320,7 +421,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       const info = this._dimensionsIndexRange[index];
       const { startIndex, endIndex, dimensions } = info;
 
-      if (startIndex <= idx && idx <= endIndex)
+      if (startIndex <= idx && idx < endIndex)
         return {
           dimensions,
           index: idx - startIndex,
@@ -355,6 +456,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return -1;
   }
 
+  /**
+   *
+   * @param listKey dimension key; It could be list key or singleton item key
+   * @param ignoreDimension ignore singleton item key
+   * @returns
+   */
   getDimensionStartIndex(listKey: string, ignoreDimension = false) {
     const listKeyIndex = this.indexKeys.findIndex((key) => key === listKey);
     if (!listKeyIndex) return 0;
@@ -367,7 +474,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
         ({ dimensions }) => dimensions === _dimensions
       );
       if (info) {
-        let startIndex = info.endIndex + 1;
+        let startIndex = info.endIndex;
 
         if (ignoreDimension) {
           for (let i = 0; i < info.endIndex + 1; i++) {
@@ -399,6 +506,13 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   removeListDimensions(listKey: string) {
     const index = this.indexKeys.findIndex((indexKey) => indexKey === listKey);
     if (index !== -1) {
+      const dimension = this.getDimension(listKey);
+
+      dimension.getData().forEach(item => {
+        const index = this._flattenData.findIndex(v => v === item)
+        if (index !== -1) this._flattenData.splice(index, 1)
+      })
+
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
@@ -442,6 +556,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     // such getItemLayout)
     this.recalculateDimensionsIntervalTreeBatchinator.schedule();
     this.registeredKeys.push(listKey);
+    this.updateFlattenData(listKey, listDimensionsProps.data);
 
     this._startInspectBatchinator.schedule();
 
@@ -455,27 +570,30 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   /**
    * should be run immediately...
+   *
+   * To cache dimension index range, startIndex included, endIndex exclusive.
+   * just like [].slice(startIndex, endIndex)
    */
   calculateDimensionsIndexRange() {
     let startIndex = 0;
     this._dimensionsIndexRange = this.indexKeys.reduce((acc, key) => {
       const dimensions = this.getDimension(key);
       if (dimensions instanceof Dimension) {
-        const endIndex = startIndex + dimensions.length - 1;
+        const endIndex = startIndex + dimensions.length;
         acc.push({
           startIndex,
           endIndex,
           dimensions,
         });
-        startIndex = endIndex + 1;
+        startIndex = endIndex;
       } else if (dimensions instanceof ListDimensions) {
-        const endIndex = startIndex + dimensions.length - 1;
+        const endIndex = startIndex + dimensions.length;
         acc.push({
           startIndex,
           endIndex,
           dimensions,
         });
-        startIndex = endIndex + 1;
+        startIndex = endIndex;
       }
       return acc;
     }, []);
@@ -486,17 +604,17 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.calculateReflowItemsLength();
     this.updateChildDimensionsOffsetInContainer();
     this.updateScrollMetrics(this._scrollMetrics, { useCache });
-    this._updateChildPersistanceIndicesBatchinator.schedule();
+    // this._updateChildPersistanceIndicesBatchinator.schedule();
   }
 
-  updateChildPersistanceIndices() {
-    this.indexKeys.forEach((key) => {
-      const dimension = this.getDimension(key);
-      if (dimension instanceof ListDimensions) {
-        dimension?.updatePersistanceIndicesDueToListGroup();
-      }
-    });
-  }
+  // updateChildPersistanceIndices() {
+  //   this.indexKeys.forEach((key) => {
+  //     const dimension = this.getDimension(key);
+  //     if (dimension instanceof ListDimensions) {
+  //       dimension?.updatePersistanceIndicesDueToListGroup();
+  //     }
+  //   });
+  // }
 
   /**
    * 当item layout发生变化以后，这个时候要将子 dimension的相对高度重新计算一下
@@ -530,6 +648,13 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   removeItem(key: string) {
     const index = this.indexKeys.findIndex((indexKey) => indexKey === key);
     if (index !== -1) {
+      const dimension = this.getDimension(key);
+
+      dimension.getData().forEach(item => {
+        const index = this._flattenData.findIndex(v => v === item)
+        if (index !== -1) this._flattenData.splice(index, 1)
+      })
+
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(key);
@@ -557,6 +682,20 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       }
 
       this._inspectingTime += 1;
+
+      /**
+       * holdout: Attention.
+       * To fix insert a element
+       */
+      let _data = []
+      for (let index = 0; index < this.indexKeys.length; index++) {
+        const listKey = this.indexKeys[index]
+        const _dimensions = this.getDimension(listKey);
+        _data = _data.concat(_dimensions.getData())
+      }
+
+      this._flattenData = _data
+      this.calculateDimensionsIndexRange();
     }
   }
 
@@ -648,6 +787,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.onItemsCountChanged();
     this.recalculateDimensionsIntervalTreeBatchinator.schedule();
     this.registeredKeys.push(key);
+    this.updateFlattenData(key, dimensions.getData());
     this._startInspectBatchinator.schedule();
     return {
       dimensions,
@@ -657,11 +797,50 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     };
   }
 
+  getData() {
+    return this._flattenData;
+  }
+
+  /**
+   *
+   * @param listKey dimension key.
+   * @param data list data or a dimension...
+   */
+  updateFlattenData(listKey: string, data: any) {
+    const _dimensions = this.getDimension(listKey);
+    const info = this._dimensionsIndexRange.find(
+      ({ dimensions }) => dimensions === _dimensions
+    );
+    if (info) {
+      const { startIndex, endIndex } = info;
+      const before = this._flattenData.slice(0, startIndex);
+      const after = this._flattenData.slice(endIndex);
+      this._flattenData = [].concat(before, data, after);
+      if (data.length !== endIndex - startIndex) {
+        // the flattenData
+        this.calculateDimensionsIndexRange();
+      }
+
+      // this._listBaseDimension.setData(this.getData());
+    }
+  }
+
+  getItemKey() {}
+
+  getKeyItem() {}
+
+  getItemDimension() {}
+
+  getKeyDimension() {}
+
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
+    this.updateFlattenData(listKey, data);
+
     if (listDimensions) {
-      (listDimensions as ListDimensions).setData(data);
+      const changedType = (listDimensions as ListDimensions).setData(data);
     }
+
   }
 
   setOnEndReached(listKey: string, onEndReached: OnEndReached) {
@@ -677,6 +856,31 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return [];
   }
 
+  getItemKeyDimension(itemKey: string) {
+    const len = this.indexKeys.length;
+    for (let index = 0; index < len; index++) {
+      const key = this.indexKeys[index];
+      const dimension = this.getDimension(key);
+      // @ts-ignore
+      if (dimension.hasKey(itemKey)) {
+        return dimension
+      }
+    }
+    return null
+  }
+
+  getFinalKeyItemOffset(itemKey: string, exclusive?: boolean) {
+    const dimension = this.getItemKeyDimension(itemKey)
+    if (dimension) {
+      const containerOffset = exclusive ? 0 : this.getContainerOffset();
+      return (
+        (dimension as ListDimensions).getKeyItemOffset(itemKey) +
+        containerOffset
+      );
+    }
+    return 0
+  }
+
   getKeyItemOffset(key: string, listKey: string, exclusive?: boolean) {
     const containerOffset = exclusive ? 0 : this.getContainerOffset();
     const listDimensions = this.getDimension(listKey);
@@ -689,11 +893,61 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return null;
   }
 
+  getFinalKeyMeta(itemKey: string) {
+    const dimension = this.getItemKeyDimension(itemKey)
+    if (dimension instanceof ListDimensions) return dimension.getKeyMeta(itemKey);
+    else if (dimension instanceof Dimension) return dimension.getMeta();
+    return null;
+  }
+
+  getKeyMeta(key: string, listKey: string) {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions instanceof ListDimensions) return dimensions.getKeyMeta(key);
+    else if (dimensions instanceof Dimension) return dimensions.getMeta();
+    return null;
+  }
+
+  setFinalKeyMeta(itemKey: string, itemMeta: ItemMeta) {
+    const dimensions = this.getItemKeyDimension(itemKey);
+    if (dimensions instanceof ListDimensions)
+      return dimensions.setKeyMeta(itemKey, itemMeta);
+    else if (dimensions instanceof Dimension)
+      return dimensions.setMeta(itemMeta);
+    return null;
+  }
+
+  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta) {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions instanceof ListDimensions)
+      return dimensions.setKeyMeta(key, itemMeta);
+    else if (dimensions instanceof Dimension)
+      return dimensions.setMeta(itemMeta);
+    return null;
+  }
+
+  ensureKeyMeta(key: string, listKey: string) {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions instanceof ListDimensions)
+      return dimensions.ensureKeyMeta(key);
+    else if (dimensions instanceof Dimension) return dimensions.ensureKeyMeta();
+    return null;
+  }
+
   getKeyItemLayout(key: string, listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      (listDimensions as ListDimensions).getKeyItemLayout(key);
+      return (listDimensions as ListDimensions).getKeyItemLayout(key);
     }
+
+    return null
+  }
+
+  getFinalKeyItemLayout(itemKey: string) {
+    const dimensions = this.getItemKeyDimension(itemKey);
+    if (dimensions) {
+      return (dimensions as ListDimensions).getKeyItemLayout(itemKey);
+    }
+    return null
   }
 
   getIndexItemLayout(index: number, listKey: string) {
@@ -706,12 +960,25 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.setKeyItemLayout(key, listKey, layout);
   }
 
+  setFinalKeyItemLayout(itemKey: string, layout: ItemLayout | number) {
+    const dimensions = this.getItemKeyDimension(itemKey);
+    if (dimensions) {
+      if (dimensions instanceof ListDimensions) {
+          dimensions.setKeyItemLayout(itemKey, layout);
+        } else if (dimensions instanceof Dimension) {
+          dimensions.setItemLayout(layout);
+        }
+    }
+  }
+
   setKeyItemLayout(key: string, listKey: string, layout: ItemLayout | number) {
     const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions) {
-      dimensions.setKeyItemLayout(key, layout);
-    } else if (dimensions instanceof Dimension) {
-      dimensions.setItemLayout(layout);
+    if (dimensions) {
+      if (dimensions instanceof ListDimensions) {
+        dimensions.setKeyItemLayout(key, layout);
+      } else if (dimensions instanceof Dimension) {
+        dimensions.setItemLayout(layout);
+      }
     }
   }
 
@@ -830,6 +1097,14 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return result;
   }
 
+  /**
+   *
+   * @param minOffset
+   * @param maxOffset
+   * @returns
+   *
+   * used in state reducer.
+   */
   computeIndexRange(minOffset: number, maxOffset: number) {
     const dimensionResult = this._dimensionsIntervalTree.computeRange(
       minOffset,
@@ -919,35 +1194,8 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return this.findListRange(startIndex, endIndex);
   }
 
-  getKeyMeta(key: string, listKey: string) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions) return dimensions.getKeyMeta(key);
-    else if (dimensions instanceof Dimension) return dimensions.getMeta();
-    return null;
-  }
-
-  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions)
-      return dimensions.setKeyMeta(key, itemMeta);
-    else if (dimensions instanceof Dimension)
-      return dimensions.setMeta(itemMeta);
-    return null;
-  }
-
-  ensureKeyMeta(key: string, listKey: string) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions)
-      return dimensions.ensureKeyMeta(key);
-    else if (dimensions instanceof Dimension) return dimensions.ensureKeyMeta();
-    return null;
-  }
-
-  addStateListener(listKey: string, listener: StateListener) {
-    const dimension = this.getDimension(listKey) as ListDimensions;
-    if (dimension) {
-      dimension.addStateListener(listener);
-    }
+  addStateListener(listener: StateListener) {
+    return this._listBaseDimension.addStateListener(listener);
   }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
@@ -957,89 +1205,13 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     if (isEmpty(state)) return;
-
-    const bufferedMetaRanges = this.computeIndexRangeMeta({
-      startIndex: state.bufferedStartIndex,
-      endIndex: state.bufferedEndIndex,
-    });
-    const visibleMetaRanges = this.computeIndexRangeMeta({
-      startIndex: state.visibleStartIndex,
-      endIndex: state.visibleEndIndex,
-    });
-
-    const { removed } = resolveChanged(
-      this._rangeResult?.bufferedMetaRanges || [],
-      bufferedMetaRanges,
-      (a, b) => a.listKey === b.listKey
-    );
-    const groupListItemsMeta = [];
-
-    // trigger ListDimensions viewable config
-    bufferedMetaRanges.forEach((range) => {
-      const { listKey, value } = range;
-      const dimension = this.getDimension(listKey);
-
-      const visibleMetaRange = visibleMetaRanges.find(
-        (v) => v.listKey === listKey
-      );
-
-      if (dimension instanceof ListDimensions) {
-        dimension.updateState(
-          {
-            ...state,
-
-            visibleStartIndex: visibleMetaRange
-              ? visibleMetaRange.value.startIndex
-              : -1,
-            visibleEndIndex: visibleMetaRange
-              ? visibleMetaRange.value.endIndex
-              : -1,
-            // visibleEndIndex: value.endIndex,
-            // visibleStartIndex: value.startIndex,
-            bufferedEndIndex: value.endIndex,
-            bufferedStartIndex: value.startIndex,
-          },
-          scrollMetrics
-        );
-      } else {
-        dimension.render();
-        if (dimension.getMeta().getLayout()) {
-          groupListItemsMeta.push(dimension.getMeta());
-        }
-      }
-    });
-
-    // trigger Dimensions viewable config
-    this._onUpdateDimensionItemsMetaChangeBatchinator.schedule(
-      groupListItemsMeta,
-      scrollMetrics
-    );
-
-    removed.forEach((range) => {
-      const { listKey } = range;
-      const dimension = this.getDimension(listKey);
-      if (dimension instanceof ListDimensions) {
-        dimension.updateState(
-          {
-            ...state,
-            visibleStartIndex: -1,
-            visibleEndIndex: -1,
-            bufferedEndIndex: dimension.length - 1,
-            // should be Infinity or bigger than bufferedEndIndex to make
-            // item release possible.
-            bufferedStartIndex: Infinity,
-          },
-          scrollMetrics
-        );
-      }
-    });
-
-    this._rangeResult = {
-      bufferedMetaRanges,
-      visibleMetaRanges,
-    };
-    this._dispatchedMetricsResult = state;
-    this._itemsDimensions.dispatchMetrics(scrollMetrics);
+    if (this.fillingMode === FillingMode.RECYCLE) {
+      this._listBaseDimension.setState({
+        ...state,
+        data: this.getData(),
+      });
+      return;
+    }
   }
 
   onUpdateDimensionItemsMetaChange(
