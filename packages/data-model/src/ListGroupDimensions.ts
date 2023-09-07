@@ -16,6 +16,7 @@ import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
+  FillingMode,
   InspectingAPI,
   InspectingListener,
   ItemLayout,
@@ -957,6 +958,10 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     if (isEmpty(state)) return;
+    if (this.fillingMode === FillingMode.RECYCLE) {
+      this.setState(state)
+      return
+    }
 
     const bufferedMetaRanges = this.computeIndexRangeMeta({
       startIndex: state.bufferedStartIndex,

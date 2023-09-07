@@ -1014,16 +1014,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           ) !== -1;
       }
 
-      // if (this.id === 'component-list-all') {
-      //   console.log(
-      //     'applyStateResult ',
-      //     minIndex,
-      //     maxIndex,
-      //     this._data.length,
-      //     exists
-      //   );
-      // }
-
       shouldStateUpdate =
         !(
           shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
