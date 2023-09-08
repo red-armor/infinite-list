@@ -43,6 +43,11 @@ export type BaseLayoutProps = {
   itemOffsetBeforeLayoutReady?: number;
 };
 
+export interface ListBaseDimensionsProps extends BaseDimensionsProps {
+  fillingMode: FillingMode;
+  initialNumToRender: number;
+}
+
 export type BaseDimensionsProps = {
   id: string;
   horizontal?: boolean;
@@ -58,6 +63,8 @@ export type BaseDimensionsProps = {
   onViewableItemsChanged?: OnViewableItemsChanged;
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
 };
+
+export type ListGroupData = {};
 
 export type ListGroupDimensionsProps = {
   id: string;

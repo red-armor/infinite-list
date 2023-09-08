@@ -8,6 +8,9 @@ import SelectValue, {
 } from '@x-oasis/select-value';
 import { DimensionProps, IndexInfo, ItemLayout } from './types';
 
+/**
+ * Abstraction of singleton item, It is used in ListGroup Condition.
+ */
 class Dimension {
   public id: string;
   private _layout: ItemLayout;

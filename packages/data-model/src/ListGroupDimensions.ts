@@ -16,7 +16,6 @@ import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
-  FillingMode,
   InspectingAPI,
   InspectingListener,
   ItemLayout,
@@ -27,12 +26,18 @@ import {
   OnEndReached,
   ScrollMetrics,
   StateListener,
+  ListGroupData,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 
 // TODO: indexRange should be another intervalTree
+/**
+ * ListGroupDimensions has two kinds of data model
+ * - normal list: group of same item.
+ * - singleton item: abstraction of specified item.
+ */
 class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   public indexKeys: Array<string> = [];
   private _selector = new EnabledSelector();
@@ -57,6 +62,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _heartBeatingIndexKeys: Array<string> = [];
   private _heartBeatResolveChangedBatchinator: Batchinator;
   private _inspectingListener: InspectingListener;
+  private _flattenData: Array<ListGroupData> = [];
 
   private _rangeResult: {
     bufferedMetaRanges: ListRangeResult;
@@ -321,7 +327,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       const info = this._dimensionsIndexRange[index];
       const { startIndex, endIndex, dimensions } = info;
 
-      if (startIndex <= idx && idx <= endIndex)
+      if (startIndex <= idx && idx < endIndex)
         return {
           dimensions,
           index: idx - startIndex,
@@ -356,6 +362,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return -1;
   }
 
+  /**
+   *
+   * @param listKey dimension key; It could be list key or singleton item key
+   * @param ignoreDimension ignore singleton item key
+   * @returns
+   */
   getDimensionStartIndex(listKey: string, ignoreDimension = false) {
     const listKeyIndex = this.indexKeys.findIndex((key) => key === listKey);
     if (!listKeyIndex) return 0;
@@ -368,7 +380,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
         ({ dimensions }) => dimensions === _dimensions
       );
       if (info) {
-        let startIndex = info.endIndex + 1;
+        let startIndex = info.endIndex;
 
         if (ignoreDimension) {
           for (let i = 0; i < info.endIndex + 1; i++) {
@@ -456,27 +468,30 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   /**
    * should be run immediately...
+   *
+   * To cache dimension index range, startIndex included, endIndex exclusive.
+   * just like [].slice(startIndex, endIndex)
    */
   calculateDimensionsIndexRange() {
     let startIndex = 0;
     this._dimensionsIndexRange = this.indexKeys.reduce((acc, key) => {
       const dimensions = this.getDimension(key);
       if (dimensions instanceof Dimension) {
-        const endIndex = startIndex + dimensions.length - 1;
+        const endIndex = startIndex + dimensions.length;
         acc.push({
           startIndex,
           endIndex,
           dimensions,
         });
-        startIndex = endIndex + 1;
+        startIndex = endIndex;
       } else if (dimensions instanceof ListDimensions) {
-        const endIndex = startIndex + dimensions.length - 1;
+        const endIndex = startIndex + dimensions.length;
         acc.push({
           startIndex,
           endIndex,
           dimensions,
         });
-        startIndex = endIndex + 1;
+        startIndex = endIndex;
       }
       return acc;
     }, []);
@@ -658,11 +673,38 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     };
   }
 
+  getData() {
+    return this._flattenData;
+  }
+
+  /**
+   *
+   * @param listKey dimension key.
+   * @param data list data or a dimension...
+   */
+  updateFlattenData(listKey: string, data: any) {
+    const _dimensions = this.getDimension(listKey);
+    const info = this._dimensionsIndexRange.find(
+      ({ dimensions }) => dimensions === _dimensions
+    );
+    if (info) {
+      const { startIndex, endIndex } = info;
+      const before = this._flattenData.slice(0, startIndex);
+      const after = this._flattenData.slice(endIndex);
+      this._flattenData = [].concat(before, data, after);
+      if (data.length !== endIndex - startIndex) {
+        this.calculateDimensionsIndexRange();
+      }
+    }
+  }
+
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
       (listDimensions as ListDimensions).setData(data);
     }
+
+    this.updateFlattenData(listKey, data);
   }
 
   setOnEndReached(listKey: string, onEndReached: OnEndReached) {
@@ -958,10 +1000,10 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     if (isEmpty(state)) return;
-    if (this.fillingMode === FillingMode.RECYCLE) {
-      this.setState(state)
-      return
-    }
+    // if (this.fillingMode === FillingMode.RECYCLE) {
+    //   this.setState(state)
+    //   return
+    // }
 
     const bufferedMetaRanges = this.computeIndexRangeMeta({
       startIndex: state.bufferedStartIndex,

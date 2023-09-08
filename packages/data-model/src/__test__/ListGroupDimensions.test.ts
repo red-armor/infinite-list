@@ -578,32 +578,32 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 15,
+        endIndex: 16,
         dimensionsKey: 'list_2',
       },
       {
         startIndex: 16,
-        endIndex: 28,
+        endIndex: 29,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 29,
-        endIndex: 29,
+        endIndex: 30,
         dimensionsKey: 'banner2',
       },
       {
         startIndex: 30,
-        endIndex: 49,
+        endIndex: 50,
         dimensionsKey: 'list_4',
       },
     ]);
@@ -664,27 +664,27 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 23,
+        endIndex: 24,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 24,
-        endIndex: 24,
+        endIndex: 25,
         dimensionsKey: 'banner2',
       },
       {
         startIndex: 25,
-        endIndex: 44,
+        endIndex: 45,
         dimensionsKey: 'list_4',
       },
     ]);
@@ -700,22 +700,22 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 23,
+        endIndex: 24,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 24,
-        endIndex: 43,
+        endIndex: 44,
         dimensionsKey: 'list_4',
       },
     ]);
@@ -731,22 +731,22 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 15,
+        endIndex: 16,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 16,
-        endIndex: 35,
+        endIndex: 36,
         dimensionsKey: 'list_4',
       },
     ]);
@@ -1218,7 +1218,3 @@ describe('heartBeat', () => {
     expect(list_4_dimensions.persistanceIndices).toEqual([3, 6, 16]);
   });
 });
-
-describe('recycle mode', () => {
-  
-})
