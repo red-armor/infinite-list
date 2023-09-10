@@ -31,6 +31,7 @@ import {
 import ListSpyUtils from './utils/ListSpyUtils';
 import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
+import ListBaseDimensions from './ListBaseDimensions';
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -62,6 +63,11 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _heartBeatingIndexKeys: Array<string> = [];
   private _heartBeatResolveChangedBatchinator: Batchinator;
   private _inspectingListener: InspectingListener;
+  /**
+   * _flattenData could be considered as the final data model after transform
+   * 1. dimension
+   * 2. normal list
+   */
   private _flattenData: Array<ListGroupData> = [];
 
   private _rangeResult: {
@@ -78,6 +84,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _inspectingTime: number = +Date.now();
   private _heartBeatingIndexKeysSentCommit: Array<string> = [];
   private _startInspectBatchinator: Batchinator;
+  private _listBaseDimension: ListBaseDimensions<any>;
 
   private _reflowItemsLength = 0;
   private _dimensionsIndexRange: Array<{
@@ -102,6 +109,8 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       onEndReachedTimeoutThreshold,
       onBatchLayoutFinished,
       onEndReachedHandlerTimeoutThreshold,
+
+      recycleEnabled,
     } = props;
 
     this._itemsDimensions = new ItemsDimensions({
@@ -163,6 +172,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._removeList = manager.addList(this);
     this.heartBeat = this.heartBeat.bind(this);
     this.startInspection = this.startInspection.bind(this);
+
+    this._listBaseDimension = new ListBaseDimensions({
+      id: 'listGroupDimensions',
+      data: this._flattenData,
+      keyExtractor: (item, index) => `${index}`,
+    });
   }
 
   get selector() {
@@ -693,15 +708,26 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       const after = this._flattenData.slice(endIndex);
       this._flattenData = [].concat(before, data, after);
       if (data.length !== endIndex - startIndex) {
+        // the flattenData
         this.calculateDimensionsIndexRange();
       }
+
+      this._listBaseDimension.setData(this.getData());
     }
   }
+
+  getItemKey() {}
+
+  getKeyItem() {}
+
+  getItemDimension() {}
+
+  getKeyDimension() {}
 
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      (listDimensions as ListDimensions).setData(data);
+      const changedType = (listDimensions as ListDimensions).setData(data);
     }
 
     this.updateFlattenData(listKey, data);
@@ -873,6 +899,14 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return result;
   }
 
+  /**
+   *
+   * @param minOffset
+   * @param maxOffset
+   * @returns
+   *
+   * used in state reducer.
+   */
   computeIndexRange(minOffset: number, maxOffset: number) {
     const dimensionResult = this._dimensionsIntervalTree.computeRange(
       minOffset,

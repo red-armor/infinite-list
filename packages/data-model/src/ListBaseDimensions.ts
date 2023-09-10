@@ -51,7 +51,13 @@ import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import StillnessHelper from './utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import FixedBuffer from './FixedBuffer';
 
+/**
+ * item should be first class data model; item's value reference change will
+ * cause recalculation of item key. However, if key is not changed, its itemMeta
+ * will not change.
+ */
 class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
 
@@ -108,6 +114,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _offsetTriggerCachedState = 0;
 
   private _stillnessHelper: StillnessHelper;
+
+  private _fixedBuffer: FixedBuffer;
 
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
@@ -250,6 +258,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.recalculateRecycleResultState.bind(this),
       50
     );
+
+    this._fixedBuffer = new FixedBuffer({
+      thresholdIndexValue: this.initialNumToRender,
+      size: this.recycleThreshold,
+    });
   }
 
   get length() {
@@ -1219,28 +1232,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       visibleEndIndex,
     });
 
-    // for (
-    //   let index = visibleStartIndex;
-    //   index <= visibleEndIndex - 4;
-    //   index++
-    // ) {
-    //   const position = this.getPosition(
-    //     index,
-    //     safeRange.startIndex,
-    //     safeRange.endIndex
-    //   );
-    //   if (position !== null) targetIndices[position] = index;
-    // }
-
-    // const remainingPosition = Math.max(
-    //   this.recycleThreshold - (safeRange.endIndex - safeRange.startIndex + 1),
-    //   0
-    // );
-    // const remainingCount = Math.min(
-    //   this.recycleBufferedCount * 2,
-    //   remainingPosition
-    // );
-
     if (this._getItemLayout || this._approximateMode) {
       if (Math.abs(velocity) <= 1) {
         this.updateIndices(targetIndices, {
@@ -1266,43 +1257,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
           step: 1,
         });
       }
-      // if velocity greater than 4, the below on high priority. then start position
-      // forward 4,
-      // if (velocity > 4) {
-      //   this.updateIndices(targetIndices, {
-      //     safeRange,
-      //     startIndex: visibleStartIndex + 4,
-      //     maxCount: visibleEndIndex - visibleStartIndex + 1,
-      //     step: 1,
-      //   });
-      //   // if velocity less than -4, the above on high priority. then start position
-      //   // forward 4,
-      // } else if (velocity < -4) {
-      //   this.updateIndices(targetIndices, {
-      //     safeRange,
-      //     startIndex: visibleStartIndex - 4,
-      //     maxCount: visibleEndIndex - visibleStartIndex + 1,
-      //     step: 1,
-      //   });
-      // } else {
-      //   // if velocity less than 1, scroll will stop soon, so add 1 element
-      //   // on heading and trailing as buffer
-      //   if (Math.abs(velocity) <= 1) {
-      //     this.updateIndices(targetIndices, {
-      //       safeRange,
-      //       startIndex: visibleStartIndex - 1,
-      //       maxCount: visibleEndIndex - visibleStartIndex + 3,
-      //       step: 1,
-      //     });
-      //   } else {
-      //     this.updateIndices(targetIndices, {
-      //       safeRange,
-      //       startIndex: visibleStartIndex,
-      //       maxCount: visibleEndIndex - visibleStartIndex + 1,
-      //       step: 1,
-      //     });
-      //   }
-      // }
     } else {
       this.updateIndices(targetIndices, {
         safeRange,
@@ -1364,60 +1318,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
       // ********************** commented on 0626 end ************************//
     }
-
-    // if (velocity > 0) {
-    //   if (isEndReached || Math.abs(velocity) < 0.5) {
-    //     this.updateIndices(targetIndices, {
-    //       safeRange,
-    //       startIndex: visibleEndIndex + 1,
-    //       maxCount: this.recycleBufferedCount,
-    //       step: 1,
-    //     });
-    //   }
-    // } else if (velocity < 0) {
-    //   if (Math.abs(velocity) < 0.5) {
-    //     this.updateIndices(targetIndices, {
-    //       safeRange,
-    //       startIndex: visibleStartIndex - 1,
-    //       maxCount: this.recycleBufferedCount,
-    //       step: -1,
-    //     });
-    //   }
-    // } else {
-    //   const part = Math.floor(this.recycleBufferedCount / 2);
-    //   this.updateIndices(targetIndices, {
-    //     safeRange,
-    //     startIndex: visibleStartIndex - 1,
-    //     maxCount: part,
-    //     step: -1,
-    //   });
-    //   this.updateIndices(targetIndices, {
-    //     safeRange,
-    //     startIndex: visibleEndIndex + 1,
-    //     maxCount: this.recycleBufferedCount - part,
-    //     step: 1,
-    //   });
-    // }
-
-    // let changed = '';
-
-    // for (let index = 0; index < targetIndices.length; index++) {
-    //   const next = targetIndices[index];
-    //   const current = targetIndicesCopy[index];
-    //   if (current && next !== current) {
-    //     changed += `${index} occurs update, ${current} -> ${next}\n`;
-    //   }
-    // }
-
-    // if (changed)
-    //   console.warn(
-    //     '[infinite-list] replace info ',
-    //     `visibleStartIndex : ${visibleStartIndex}, visibleEndIndex: ${visibleEndIndex} \n`,
-    //     changed,
-    //     `velocity: ${velocity}\n`,
-    //     `prev: ${JSON.stringify(targetIndicesCopy)}\n`,
-    //     `next: ${JSON.stringify(targetIndices)}\n`
-    //   );
 
     const minValue = this._bufferSet.getMinValue();
     const maxValue = this._bufferSet.getMaxValue();

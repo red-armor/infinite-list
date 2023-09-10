@@ -81,6 +81,12 @@ export type ListGroupDimensionsProps = {
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
   onBatchLayoutFinished?: () => boolean;
   persistanceIndices?: Array<number>;
+
+  /**
+   * support list group recycle
+   */
+
+  recycleEnabled?: boolean;
 } & OnEndReachedHelperProps;
 
 export type ListDimensionsProps<ItemT> = {
