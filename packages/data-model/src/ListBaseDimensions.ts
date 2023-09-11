@@ -251,8 +251,8 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       /**
        * TODO temp set 0,
        */
-      // thresholdIndexValue: this.initialNumToRender,
-      thresholdIndexValue: 0,
+      thresholdIndexValue: this.initialNumToRender,
+      // thresholdIndexValue: 0,
       size: this._recycleThreshold,
     });
 
@@ -283,10 +283,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
     this._store = createStore<ReducerResult>() || store;
 
-    // this._offsetInListGroup = 0;
-
     this.attemptToHandleEndReached();
-    // this.handleDeps = this.handleDeps.bind(this);
 
     // 比如刚开始就有值，并且给了`getItemLayout`的话，需要手动更新Parent中的layout
     // this.hydrateParentIntervalTree();

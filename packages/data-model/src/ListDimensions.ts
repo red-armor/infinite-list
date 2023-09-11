@@ -161,8 +161,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._approximateMode = recycleEnabled
       ? defaultBooleanValue(
           useItemApproximateLength,
-          typeof this._getItemLayout !== 'function' ||
-            !this._itemApproximateLength
+          typeof this._getItemLayout !== 'function'
         )
       : false;
     this._getItemSeparatorLength = getItemSeparatorLength;
