@@ -247,15 +247,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       isListItem: true,
     });
 
-    this._fixedBuffer = new FixedBuffer({
-      /**
-       * TODO temp set 0,
-       */
-      thresholdIndexValue: this.initialNumToRender,
-      // thresholdIndexValue: 0,
-      size: this._recycleThreshold,
-    });
-
     this.stillnessHandler = this.stillnessHandler.bind(this);
     this._stillnessHelper = new StillnessHelper({
       stillnessThreshold,
@@ -265,6 +256,15 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._deps = deps;
     this._isActive = this.resolveInitialActiveValue(active);
     this.initialNumToRender = initialNumToRender;
+
+    this._fixedBuffer = new FixedBuffer({
+      /**
+       * TODO temp set 0,
+       */
+      thresholdIndexValue: this.initialNumToRender,
+      // thresholdIndexValue: 0,
+      size: this._recycleThreshold,
+    });
 
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
@@ -1056,7 +1056,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       });
     });
 
-    const afterTokens = this.resolveToken(nextEnd, data.length);
+    const afterTokens = this.resolveToken(nextEnd, data.length - 1);
 
     afterTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;

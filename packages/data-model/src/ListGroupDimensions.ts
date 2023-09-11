@@ -564,6 +564,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     // such getItemLayout)
     this.recalculateDimensionsIntervalTreeBatchinator.schedule();
     this.registeredKeys.push(listKey);
+    this.updateFlattenData(listKey, listDimensionsProps.data);
 
     this._startInspectBatchinator.schedule();
 
