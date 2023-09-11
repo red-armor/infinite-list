@@ -47,6 +47,10 @@ export type ListBaseDimensionsProps<ItemT> = ListDimensionsProps<ItemT> & {
   fillingMode?: FillingMode;
   initialNumToRender?: number;
   recyclerTypeKeys?: Array<string>;
+
+  getData?: () => any
+
+  provider: any
 };
 
 export type BaseDimensionsProps = {

@@ -63,6 +63,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
+  private _itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap();
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
@@ -717,7 +718,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (_data === this._data) return KeysChangedType.Equal;
     const keyToIndexMap: Map<string, number> = new Map();
     const keyToIndexArray: Array<string> = [];
-    const itemToKeyMap: Map<ItemT, string> = new Map();
+    const itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
+    const itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap()
     let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {
@@ -727,6 +729,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);
+        itemToDimensionMap.set(item, this)
         return true;
       }
       duplicateKeyCount += 1;
@@ -763,6 +766,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._keyToIndexMap = keyToIndexMap;
     this._indexKeys = keyToIndexArray;
     this._itemToKeyMap = itemToKeyMap;
+    this._itemToDimensionMap = itemToDimensionMap
     return dataChangedType;
   }
 

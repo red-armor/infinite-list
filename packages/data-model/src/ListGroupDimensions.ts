@@ -33,16 +33,20 @@ import ListSpyUtils from './utils/ListSpyUtils';
 import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import ListBaseDimensions from './ListBaseDimensions';
+import ListProvider from './ListProvider';
 
 // TODO: indexRange should be another intervalTree
 /**
  * ListGroupDimensions has two kinds of data model
  * - normal list: group of same item.
  * - singleton item: abstraction of specified item.
+ *
+ * ListGroup is just like a router.
  */
-class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
+class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements ListProvider {
   public indexKeys: Array<string> = [];
   private _selector = new EnabledSelector();
+  itemToDimensionMap: WeakMap<any, any> = new WeakMap();
   private keyToListDimensionsMap: Map<string, ListDimensions | Dimension> =
     new Map();
   private _itemsDimensions: ItemsDimensions;
@@ -97,7 +101,10 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _removeList: Function;
 
   constructor(props: ListGroupDimensionsProps) {
-    super(props);
+    super({
+      recycleEnabled: true,
+      ...props
+    });
     const {
       id,
       onUpdateItemLayout,
@@ -176,8 +183,19 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._listBaseDimension = new ListBaseDimensions({
       id: 'listGroupDimensions',
       data: this._flattenData,
+      getData: this.getData.bind(this),
       recycleEnabled,
+      /**
+       *
+       * @param item
+       * @param index
+       * @returns
+       *
+       * TODO: should passing item keyExtractor....
+       */
       keyExtractor: (item, index) => `${index}`,
+
+      provider: this,
     });
   }
 
@@ -253,6 +271,26 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       len += dimensions.length;
     }
     return len;
+  }
+
+  getIndexItemMeta(index: number) {
+    const info = this.getFinalIndexInfo(index)
+    const dimension = info.dimensions
+    if (dimension) {
+      return dimension.getIndexItemMeta(info.index)
+    }
+    return null
+  }
+
+  getItemMeta(item: any) {
+    const len = this.indexKeys.length;
+    for (let index = 0; index < len; index++) {
+      const key = this.indexKeys[index];
+      const dimension = this.getDimension(key);
+      const itemMeta = dimension.getItemMeta(item, 0)
+      if (itemMeta) return itemMeta
+    }
+    return null
   }
 
   getReflowItemsLength() {
@@ -759,6 +797,30 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return null;
   }
 
+  getKeyMeta(key: string, listKey: string) {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions instanceof ListDimensions) return dimensions.getKeyMeta(key);
+    else if (dimensions instanceof Dimension) return dimensions.getMeta();
+    return null;
+  }
+
+  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta) {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions instanceof ListDimensions)
+      return dimensions.setKeyMeta(key, itemMeta);
+    else if (dimensions instanceof Dimension)
+      return dimensions.setMeta(itemMeta);
+    return null;
+  }
+
+  ensureKeyMeta(key: string, listKey: string) {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions instanceof ListDimensions)
+      return dimensions.ensureKeyMeta(key);
+    else if (dimensions instanceof Dimension) return dimensions.ensureKeyMeta();
+    return null;
+  }
+
   getKeyItemLayout(key: string, listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
@@ -997,30 +1059,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     return this.findListRange(startIndex, endIndex);
   }
 
-  getKeyMeta(key: string, listKey: string) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions) return dimensions.getKeyMeta(key);
-    else if (dimensions instanceof Dimension) return dimensions.getMeta();
-    return null;
-  }
-
-  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions)
-      return dimensions.setKeyMeta(key, itemMeta);
-    else if (dimensions instanceof Dimension)
-      return dimensions.setMeta(itemMeta);
-    return null;
-  }
-
-  ensureKeyMeta(key: string, listKey: string) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions)
-      return dimensions.ensureKeyMeta(key);
-    else if (dimensions instanceof Dimension) return dimensions.ensureKeyMeta();
-    return null;
-  }
-
   addStateListener(listKey: string, listener: StateListener) {
     const dimension = this.getDimension(listKey) as ListDimensions;
     if (dimension) {
@@ -1033,6 +1071,8 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       dimension: this,
       scrollMetrics,
     });
+
+    console.log('list =========== ', this.fillingMode)
 
     if (isEmpty(state)) return;
     if (this.fillingMode === FillingMode.RECYCLE) {

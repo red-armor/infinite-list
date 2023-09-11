@@ -59,7 +59,7 @@ import FixedBuffer from './FixedBuffer';
  * will not change.
  */
 class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
-  private _data: Array<ItemT> = [];
+  // private _data: Array<ItemT> = [];
 
   // to save data before list is active
   private _softData: Array<ItemT> = [];
@@ -95,8 +95,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _deps: Array<string>;
 
-  // private _removeList: Function;
-
   private _initializeMode = false;
 
   private _onBatchLayoutFinished: () => boolean;
@@ -126,6 +124,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
+  private _getData: {(): any}
+  /**
+   *
+   */
+  private _provider: ListGroupDimensions
 
   constructor(props: ListBaseDimensionsProps<ItemT>) {
     super({
@@ -134,6 +137,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
     const {
       store,
+      getData,
+
+      provider,
+
       recycleEnabled,
       recyclerTypeKeys = ['default_recycler'],
       data = [],
@@ -160,11 +167,12 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-
+    this._provider = provider
     this._keyExtractor = keyExtractor;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._recyclerTypeKeys = recyclerTypeKeys;
+    this._getData = getData
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -192,6 +200,15 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       maxCountOfHandleOnEndReachedAfterStillness,
     });
     this._onBatchLayoutFinished = onBatchLayoutFinished;
+
+    this._fixedBuffer = new FixedBuffer({
+      /**
+       * TODO temp set 0,
+       */
+      // thresholdIndexValue: this.initialNumToRender,
+      thresholdIndexValue: 0,
+      size: this.recycleThreshold,
+    });
 
     this.stillnessHandler = this.stillnessHandler.bind(this);
     this._stillnessHelper = new StillnessHelper({
@@ -263,11 +280,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.recalculateRecycleResultState.bind(this),
       50
     );
-
-    this._fixedBuffer = new FixedBuffer({
-      thresholdIndexValue: this.initialNumToRender,
-      size: this.recycleThreshold,
-    });
   }
 
   get length() {
@@ -381,8 +393,12 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._selectValue.selectOffset(layout);
   }
 
+  get _data() {
+    return this._provider.getData()
+  }
+
   getData() {
-    return this._data;
+    return this._provider.getData()
   }
 
   getTotalLength() {
@@ -392,12 +408,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getReflowItemsLength() {
-    return this.intervalTree.getMaxUsefulLength();
+    return this._provider.getReflowItemsLength()
   }
 
   getIndexItemMeta(index: number) {
-    const item = this._data[index];
-    return this.getItemMeta(item, index);
+    this._provider.getIndexItemMeta(index)
   }
 
   getKeyMeta(key: string) {
@@ -409,10 +424,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return meta;
   }
 
-  getItemMeta(item: ItemT, index: number) {
-    const key = this.getItemKey(item, index);
-    if (key) return this.getKeyMeta(key);
-    return null;
+  getItemMeta(item: ItemT) {
+    return this._provider.getItemMeta(item)
   }
 
   /**
@@ -442,14 +455,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return meta;
   }
 
-  setItemMeta(item: ItemT, index: number, meta: ItemMeta) {
-    const key = this.getItemKey(item, index);
-    if (key) {
-      this.setKeyMeta(key, meta);
-    }
-  }
+  // setItemMeta(item: ItemT, index: number, meta: ItemMeta) {
+  //   const key = this.getItemKey(item, index);
+  //   if (key) {
+  //     this.setKeyMeta(key, meta);
+  //   }
+  // }
 
-  getItemKey(item: ItemT, index: number) {
+  getFinalItemKey(item: ItemT, index: number) {
     const cachedKey = this._itemToKeyMap.get(item);
     if (cachedKey) return cachedKey;
     if (!item) return null;
@@ -677,111 +690,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
   }
 
-  /**
-   * Data change will trigger `state` update for one times.
-   */
-  setData(data: Array<ItemT>) {
-    if (!this._isActive) {
-      this._softData = data;
-      return KeysChangedType.Idle;
-    }
-
-    const changedType = this._setData(data);
-
-    if (!this._listGroupDimension && changedType === KeysChangedType.Initial) {
-      const state = this.resolveInitialState();
-      this.setState(state);
-      this._state = state;
-      return changedType;
-    }
-
-    if (changedType === KeysChangedType.Equal) return KeysChangedType.Equal;
-
-    // 如果没有值，这个时候要触发一次触底
-    if (!data.length && this.initialNumToRender) {
-      this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
-    }
-
-    if (this._listGroupDimension) {
-      if (
-        [KeysChangedType.Add, KeysChangedType.Remove].indexOf(changedType) !==
-        -1
-      ) {
-        this._listGroupDimension.onItemsCountChanged(false);
-      } else if (changedType === KeysChangedType.Reorder) {
-        // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实
-        // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
-        // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
-        this._listGroupDimension.updateScrollMetrics(this._scrollMetrics, {
-          flush: true,
-          useCache: false,
-        });
-      }
-    } else {
-      // disable onEndReached; which may cause loop
-      setTimeout(() => {
-        if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
-      });
-    }
-
-    return changedType;
-  }
-
   setOnEndReached(onEndReached: OnEndReached) {
     this.onEndReachedHelper.setHandler(onEndReached);
-  }
-
-  _setData(_data: Array<ItemT>) {
-    if (_data === this._data) return KeysChangedType.Equal;
-    const keyToIndexMap: Map<string, number> = new Map();
-    const keyToIndexArray: Array<string> = [];
-    const itemToKeyMap: Map<ItemT, string> = new Map();
-    let duplicateKeyCount = 0;
-    // TODO: optimization
-    const data = _data.filter((item, index) => {
-      const itemKey = this.getItemKey(item, index);
-      const _index = keyToIndexArray.findIndex((key) => key === itemKey);
-      if (_index === -1) {
-        keyToIndexMap.set(itemKey, index - duplicateKeyCount);
-        keyToIndexArray.push(itemKey);
-        itemToKeyMap.set(item, itemKey);
-        return true;
-      }
-      duplicateKeyCount += 1;
-
-      return false;
-    });
-
-    const dataChangedType = this.resolveKeysChangedType(
-      keyToIndexArray,
-      (index: number) => this._data[index] === data[index]
-    );
-
-    switch (dataChangedType) {
-      case KeysChangedType.Equal:
-        break;
-      case KeysChangedType.Append:
-        this.updateTheLastItemIntervalValue();
-        this.append(data);
-        break;
-      case KeysChangedType.Initial:
-        this._initializeMode = true;
-        this.append(data);
-        this._initializeMode = false;
-        break;
-      case KeysChangedType.Add:
-      case KeysChangedType.Remove:
-      case KeysChangedType.Reorder:
-        this.shuffle(data);
-        break;
-    }
-
-    this._data = data;
-
-    this._keyToIndexMap = keyToIndexMap;
-    this._indexKeys = keyToIndexArray;
-    this._itemToKeyMap = itemToKeyMap;
-    return dataChangedType;
   }
 
   /**
@@ -812,37 +722,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       info.indexInGroup = this._listGroupDimension.getFinalIndex(key, this.id);
     }
     return info;
-  }
-
-  pump(
-    _data: Array<ItemT>,
-    baseIndex = 0,
-    keyToMetaMap: Map<string, ItemMeta>,
-    intervalTree: PrefixIntervalTree
-  ) {
-    const data = _data.slice(baseIndex);
-    const len = data.length;
-
-    for (let index = 0; index < len; index++) {
-      const item = data[index];
-      const currentIndex = index + baseIndex;
-      const itemKey = this.getItemKey(item, currentIndex);
-      const meta =
-        this.getKeyMeta(itemKey) ||
-        this.createItemMeta(itemKey, _data, currentIndex);
-
-      if (meta.getLayout()) {
-        const itemLength = this._selectValue.selectLength(meta.getLayout());
-        const separatorLength = meta.getSeparatorLength();
-
-        // 最后一个不包含separatorLength
-        const length =
-          index === len - 1 ? itemLength : itemLength + separatorLength;
-        intervalTree.set(currentIndex, length);
-      }
-
-      keyToMetaMap.set(itemKey, meta);
-    }
   }
 
   viewableItemsOnly() {
@@ -941,15 +820,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
         correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
       })
     ) {
-      // if (meta.getLayout()) {
-      //   console.warn(
-      //     '[infinite-list/data-model] override existing key item ',
-      //     `${key} from value ${JSON.stringify(
-      //       meta.getLayout()
-      //     )}to ${JSON.stringify(_info)}`
-      //   );
-      // }
-
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );
@@ -1155,7 +1025,9 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
-      this.initialNumToRender
+      /** TODO: temp set to 0 */
+      // this.initialNumToRender
+      0,
     );
 
     const safeRange = this.resolveSafeRange({
@@ -1170,7 +1042,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
           startIndex: visibleStartIndex - 1,
           maxCount: visibleEndIndex - visibleStartIndex + 1 + 2,
           step: 1,
-          /** TODO */
+          /** TODO !!!!!! */
           maxIndex: this.getData().length,
         });
       } else if (velocity > 0) {
@@ -1310,6 +1182,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
         isSticky: false,
         item,
         itemMeta,
+
+        /**
+         * itemMeta should get from parent
+         */
         viewable: itemMeta.getState().viewable,
         // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
         offset:
