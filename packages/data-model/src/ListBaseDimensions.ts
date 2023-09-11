@@ -1,7 +1,6 @@
 import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
 import ItemMeta from './ItemMeta';
-import ItemsDimensions from './ItemsDimensions';
 import ListGroupDimensions from './ListGroupDimensions';
 import omit from '@x-oasis/omit';
 
@@ -78,7 +77,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   private _stateResult: ListStateResult<ItemT>;
 
   private _listGroupDimension: ListGroupDimensions;
-  private _parentItemsDimensions: ItemsDimensions;
 
   private _dispatchMetricsBatchinator: Batchinator;
 
@@ -87,8 +85,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   readonly onEndReachedHelper: OnEndReachedHelper;
 
   private _scrollMetrics: ScrollMetrics;
-
-  private _offsetInListGroup: number;
 
   private _isActive = true;
 
@@ -216,7 +212,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       : false;
     this._getItemSeparatorLength = getItemSeparatorLength;
     // for ListItem include a basic items condition
-    this._parentItemsDimensions = parentItemsDimensions;
+    // this._parentItemsDimensions = parentItemsDimensions;
     this._listGroupDimension = listGroupDimension;
     this._dispatchMetricsBatchinator = new Batchinator(
       this.dispatchMetrics.bind(this),
@@ -284,7 +280,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
     this._store = createStore<ReducerResult>() || store;
 
-    this._offsetInListGroup = 0;
+    // this._offsetInListGroup = 0;
 
     this.attemptToHandleEndReached();
     // this.handleDeps = this.handleDeps.bind(this);
@@ -375,9 +371,9 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._scrollMetrics = scrollMetrics;
   }
 
-  set offsetInListGroup(offset: number) {
-    this._offsetInListGroup = offset;
-  }
+  // set offsetInListGroup(offset: number) {
+  //   this._offsetInListGroup = offset;
+  // }
 
   get state() {
     return this._state;
