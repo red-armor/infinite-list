@@ -411,9 +411,9 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._provider.getReflowItemsLength()
   }
 
-  getIndexItemMeta(index: number) {
-    this._provider.getIndexItemMeta(index)
-  }
+  // getIndexItemMeta(index: number) {
+  //   this._provider.getIndexItemMeta(index)
+  // }
 
   getKeyMeta(key: string) {
     let meta = this._getKeyMeta(key);
@@ -455,18 +455,12 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return meta;
   }
 
-  // setItemMeta(item: ItemT, index: number, meta: ItemMeta) {
-  //   const key = this.getItemKey(item, index);
-  //   if (key) {
-  //     this.setKeyMeta(key, meta);
-  //   }
-  // }
+  getFinalItemKey(item: any) {
+    this._provider.getFinalItemKey(item)
+  }
 
-  getFinalItemKey(item: ItemT, index: number) {
-    const cachedKey = this._itemToKeyMap.get(item);
-    if (cachedKey) return cachedKey;
-    if (!item) return null;
-    return this._keyExtractor(item, index);
+  getFinalItemMeta(item: any) {
+    return this._provider.getFinalItemMeta(item)
   }
 
   createIntervalTree() {
@@ -699,21 +693,21 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
    * 这个时候其实要加上separatorLength的
    * @returns void
    */
-  updateTheLastItemIntervalValue() {
-    const len = this._data.length;
-    const index = len - 1;
-    const item = this._data[index];
-    if (!item) return;
+  // updateTheLastItemIntervalValue() {
+  //   const len = this._data.length;
+  //   const index = len - 1;
+  //   const item = this._data[index];
+  //   if (!item) return;
 
-    const meta = this.getItemMeta(item, index);
-    const layout = meta?.getLayout();
+  //   const meta = this.getItemMeta(item, index);
+  //   const layout = meta?.getLayout();
 
-    if (meta && layout) {
-      const separatorLength = meta.getSeparatorLength();
-      const length = this._selectValue.selectLength(layout) + separatorLength;
-      this.setIntervalTreeValue(index, length);
-    }
-  }
+  //   if (meta && layout) {
+  //     const separatorLength = meta.getSeparatorLength();
+  //     const length = this._selectValue.selectLength(layout) + separatorLength;
+  //     this.setIntervalTreeValue(index, length);
+  //   }
+  // }
 
   getIndexInfo(key: string): IndexInfo {
     const info = {} as IndexInfo;
@@ -838,23 +832,23 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return false;
   }
 
-  computeIndexRange(minOffset: number, maxOffset: number) {
-    const result = this.intervalTree.computeRange(minOffset, maxOffset);
-    return result;
-  }
+  // computeIndexRange(minOffset: number, maxOffset: number) {
+  //   const result = this.intervalTree.computeRange(minOffset, maxOffset);
+  //   return result;
+  // }
 
-  computeIndexRangeMeta(minOffset: number, maxOffset: number): Array<ItemMeta> {
-    const result = this.intervalTree.computeRange(minOffset, maxOffset);
-    if (result.startIndex === -1 && result.endIndex === -1) return [];
+  // computeIndexRangeMeta(minOffset: number, maxOffset: number): Array<ItemMeta> {
+  //   const result = this.intervalTree.computeRange(minOffset, maxOffset);
+  //   if (result.startIndex === -1 && result.endIndex === -1) return [];
 
-    const { startIndex, endIndex } = result;
-    const returnValue = [];
-    for (let index = startIndex; index <= endIndex; index++) {
-      const meta = this.getIndexItemMeta(index);
-      if (meta) returnValue.push(meta);
-    }
-    return returnValue;
-  }
+  //   const { startIndex, endIndex } = result;
+  //   const returnValue = [];
+  //   for (let index = startIndex; index <= endIndex; index++) {
+  //     const meta = this.getFinalIndexItemMeta(index);
+  //     if (meta) returnValue.push(meta);
+  //   }
+  //   return returnValue;
+  // }
 
   addStateListener(listener: StateListener<ItemT>) {
     if (typeof listener === 'function') this._stateListener = listener;
@@ -1152,8 +1146,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       const item = this._data[targetIndex];
       if (!item) return;
 
-      const itemKey = this.getItemKey(item, targetIndex);
-      const itemMeta = this.getItemMeta(item, targetIndex);
+      const itemKey = this.getFinalItemKey(item);
+      const itemMeta = this.getFinalItemMeta(item);
       const itemLayout = itemMeta?.getLayout();
       const itemLength =
         (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);

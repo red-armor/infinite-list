@@ -273,7 +273,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
     return len;
   }
 
-  getIndexItemMeta(index: number) {
+  getFinalIndexItemMeta(index: number) {
     const info = this.getFinalIndexInfo(index)
     const dimension = info.dimensions
     if (dimension) {
@@ -282,7 +282,18 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
     return null
   }
 
-  getItemMeta(item: any) {
+  getFinalItemKey(item: any) {
+    const len = this.indexKeys.length;
+    for (let index = 0; index < len; index++) {
+      const key = this.indexKeys[index];
+      const dimension = this.getDimension(key);
+      const itemKey = dimension.getItemKey(item, 0)
+      if (itemKey) return itemKey
+    }
+    return null
+  }
+
+  getFinalItemMeta(item: any) {
     const len = this.indexKeys.length;
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
@@ -291,6 +302,42 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
       if (itemMeta) return itemMeta
     }
     return null
+  }
+
+  getFinalIndexKeyOffset(
+    index: number, exclusive?: boolean
+  ) {
+    const listOffset = exclusive ? 0 : this.getContainerOffset();
+
+    if (typeof index === 'number') {
+      return (
+        listOffset +
+        (index >= this._intervalTree.getMaxUsefulLength()
+          ? this.intervalTree.getHeap()[1]
+          : this._intervalTree.sumUntil(index))
+      );
+    }
+    return 0;
+  }
+
+  getFinalIndexRangeOffsetMap(
+    startIndex: number,
+    endIndex: number,
+    exclusive?: boolean
+  ) {
+    const indexToOffsetMap = {};
+    let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
+    for (let index = startIndex; index <= endIndex; index++) {
+      indexToOffsetMap[index] = startOffset;
+      const itemMeta = this.getFinalIndexItemMeta(index);
+      if (itemMeta) {
+        // @ts-ignore
+        startOffset +=
+          (itemMeta?.getLayout()?.height || 0) +
+          (itemMeta?.getSeparatorLength() || 0);
+      }
+    }
+    return indexToOffsetMap;
   }
 
   getReflowItemsLength() {

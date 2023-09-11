@@ -147,6 +147,10 @@ class Dimension {
     return this._meta
   }
 
+  getItemKey() {
+    return this.getKey()
+  }
+
   getMeta() {
     return this._meta;
   }
