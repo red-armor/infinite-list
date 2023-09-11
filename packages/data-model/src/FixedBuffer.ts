@@ -13,7 +13,13 @@ type FixedBufferProps = {
 
 class FixedBuffer {
   private _bufferSet = new IntegerBufferSet();
+  /**
+   * buffer size, the oversize node will run into recycle strategy
+   */
   private _size = 10;
+  /**
+   * start index
+   */
   private _thresholdIndexValue = 0;
 
   constructor(props: FixedBufferProps) {
@@ -96,6 +102,18 @@ class FixedBuffer {
       }
     }
     return finalIndex;
+  }
+
+  getMaxValue() {
+    return this._bufferSet.getMaxValue();
+  }
+
+  getMinValue() {
+    return this._bufferSet.getMinValue();
+  }
+
+  getIndices() {
+    return this._bufferSet.indices;
   }
 }
 

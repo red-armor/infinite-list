@@ -45,7 +45,7 @@ import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
-import IntegerBufferSet from '@x-oasis/integer-buffer-set';
+// import IntegerBufferSet from '@x-oasis/integer-buffer-set';
 import memoizeOne from 'memoize-one';
 import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
@@ -108,8 +108,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _selector = new EnabledSelector({
     onEnabled: this.onEnableDispatchScrollMetrics.bind(this),
   });
-
-  private _bufferSet = new IntegerBufferSet();
 
   private _offsetTriggerCachedState = 0;
 
@@ -1117,36 +1115,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return indexToOffsetMap;
   }
 
-  getPosition(rowIndex: number, startIndex: number, endIndex: number) {
-    if (rowIndex < 0) return null;
-    // 初始化的item不参与absolute替换
-    if (rowIndex < this.initialNumToRender) return null;
-    let position = this._bufferSet.getValuePosition(rowIndex);
-
-    if (
-      position === null &&
-      this._bufferSet.getSize() >= this.recycleThreshold
-    ) {
-      position = this._bufferSet.replaceFurthestValuePosition(
-        startIndex,
-        endIndex,
-        rowIndex,
-        (options) => {
-          const { bufferSetRange, currentIndex } = options;
-          const { maxValue } = bufferSetRange;
-          if (currentIndex > maxValue) return true;
-          return false;
-        }
-      );
-    }
-
-    if (position === null) {
-      position = this._bufferSet.getNewPositionForValue(rowIndex);
-    }
-
-    return position;
-  }
-
   resolveSafeRange(props: {
     visibleStartIndex: number;
     visibleEndIndex: number;
@@ -1162,61 +1130,15 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     };
   }
 
-  updateIndices(
-    targetIndices: Array<number>,
-    props: {
-      safeRange: {
-        startIndex: number;
-        endIndex: number;
-      };
-      startIndex: number;
-      maxCount: number;
-      step: number;
-    }
-  ) {
-    const { startIndex: _startIndex, safeRange, step, maxCount } = props;
-    const startIndex = Math.max(_startIndex, 0);
-    let finalIndex = startIndex;
-    let count = 0;
-    if (maxCount < 0) return finalIndex;
-    for (
-      let index = startIndex;
-      step > 0 ? index <= this._data.length - 1 : index >= 0;
-      index += step
-    ) {
-      const item = this._data[index];
-      if (!item) continue;
-      // const itemMeta = this.getItemMeta(item, index);
-      // const itemLayout = itemMeta?.getLayout();
-
-      // itemLayout should not be a condition, may cause too many unLayout item
-      if (count < maxCount) {
-        const position = this.getPosition(
-          index,
-          safeRange.startIndex,
-          safeRange.endIndex
-        );
-
-        finalIndex = index;
-        if (position !== null) targetIndices[position] = index;
-      } else {
-        break;
-      }
-
-      if (index >= this.initialNumToRender) {
-        count++;
-      }
-    }
-    return finalIndex;
-  }
-
   resolveRecycleRecycleState(state: ListState<ItemT>) {
     const {
       visibleEndIndex,
       visibleStartIndex: _visibleStartIndex,
       isEndReached,
     } = state;
-    const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    const targetIndices = this._fixedBuffer
+      .getIndices()
+      .map((i) => parseInt(i));
     // const targetIndicesCopy = targetIndices.slice();
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
@@ -1234,45 +1156,53 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     if (this._getItemLayout || this._approximateMode) {
       if (Math.abs(velocity) <= 1) {
-        this.updateIndices(targetIndices, {
+        this._fixedBuffer.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleStartIndex - 1,
           maxCount: visibleEndIndex - visibleStartIndex + 1 + 2,
           step: 1,
+          /** TODO */
+          maxIndex: this.getData().length,
         });
       } else if (velocity > 0) {
-        this.updateIndices(targetIndices, {
+        this._fixedBuffer.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleStartIndex,
           maxCount:
             visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
           step: 1,
+          /** TODO */
+          maxIndex: this.getData().length,
         });
       } else {
-        this.updateIndices(targetIndices, {
+        this._fixedBuffer.updateIndices(targetIndices, {
           safeRange,
           startIndex: visibleStartIndex - 2,
           maxCount:
             visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
           step: 1,
+          /** TODO */
+          maxIndex: this.getData().length,
         });
       }
     } else {
-      this.updateIndices(targetIndices, {
+      this._fixedBuffer.updateIndices(targetIndices, {
         safeRange,
         startIndex: visibleStartIndex,
         maxCount: visibleEndIndex - visibleStartIndex + 1,
         step: 1,
+        /** TODO */
+        maxIndex: this.getData().length,
       });
       // ********************** commented on 0626 begin ************************//
       if (velocity >= 0) {
-        const maxValue = this._bufferSet.getMaxValue();
+        const maxValue = this._fixedBuffer.getMaxValue();
         if (
           isEndReached &&
           maxValue - (visibleEndIndex + 1) < this.maxToRenderPerBatch
         ) {
           // const remainingSpace = this.recycleThreshold - (visibleEndIndex - visibleStartIndex + 2)
-          this.updateIndices(targetIndices, {
+          this._fixedBuffer.updateIndices(targetIndices, {
             safeRange,
             startIndex: maxValue + 1,
             maxCount: Math.max(
@@ -1283,44 +1213,54 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
               0
             ),
             step: 1,
+            /** TODO */
+            maxIndex: this.getData().length,
           });
         } else if (!velocity) {
           const part = Math.floor(this.recycleBufferedCount / 2);
-          this.updateIndices(targetIndices, {
+          this._fixedBuffer.updateIndices(targetIndices, {
             safeRange,
             startIndex: visibleStartIndex - 1,
             maxCount: part,
             step: -1,
+            /** TODO */
+            maxIndex: this.getData().length,
           });
-          this.updateIndices(targetIndices, {
+          this._fixedBuffer.updateIndices(targetIndices, {
             safeRange,
             startIndex: visibleEndIndex + 1,
             maxCount: this.recycleBufferedCount - part,
             step: 1,
+            /** TODO */
+            maxIndex: this.getData().length,
           });
         } else if (Math.abs(velocity) < 0.5) {
-          this.updateIndices(targetIndices, {
+          this._fixedBuffer.updateIndices(targetIndices, {
             safeRange,
             startIndex: visibleEndIndex + 1,
             maxCount: this.recycleBufferedCount,
             step: 1,
+            /** TODO */
+            maxIndex: this.getData().length,
           });
         }
       } else {
         if (Math.abs(velocity) < 0.5) {
-          this.updateIndices(targetIndices, {
+          this._fixedBuffer.updateIndices(targetIndices, {
             safeRange,
             startIndex: visibleStartIndex - 1,
             maxCount: this.recycleBufferedCount,
             step: -1,
+            /** TODO */
+            maxIndex: this.getData().length,
           });
         }
       }
       // ********************** commented on 0626 end ************************//
     }
 
-    const minValue = this._bufferSet.getMinValue();
-    const maxValue = this._bufferSet.getMaxValue();
+    const minValue = this._fixedBuffer.getMinValue();
+    const maxValue = this._fixedBuffer.getMaxValue();
     const indexToOffsetMap = this.getIndexRangeOffsetMap(
       minValue,
       maxValue,
