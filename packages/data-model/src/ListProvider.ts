@@ -8,17 +8,17 @@ interface ListProvider {
   getItemKey();
   getItemDimension();
   getKeyDimension();
-  getItemMeta(item: any): any;
-  getIndexItemMeta(index: number): any;
+  // getItemMeta(item: any): any;
+  // getIndexItemMeta(index: number): any;
   getReflowItemsLength(): number;
 
-  getFinalKeyItem();
-  getFinalItemKey(item: any): any;
-  getFinalItemDimension();
-  getFinalKeyDimension();
+  // getFinalKeyItem();
+  // getFinalItemKey(item: any): any;
+  // getFinalItemDimension();
+  // getFinalKeyDimension();
   getFinalItemMeta(item: any): any;
-  getFinalIndexItemMeta(index: number): any;
-  getFinalReflowItemsLength(): number;
+  // getFinalIndexItemMeta(index: number): any;
+  // getFinalReflowItemsLength(): number;
 }
 
-export default ListProvider
+export default ListProvider;

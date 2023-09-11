@@ -1,22 +1,25 @@
 import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
-import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListGroupDimensions from './ListGroupDimensions';
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal';
 import omit from '@x-oasis/omit';
+
+import SelectValue, {
+  selectHorizontalValue,
+  selectVerticalValue,
+} from '@x-oasis/select-value';
+
 import {
-  INVALID_LENGTH,
   isEmpty,
   shallowDiffers,
   INITIAL_NUM_TO_RENDER,
   MAX_TO_RENDER_PER_BATCH,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
+  RECYCLE_BUFFERED_COUNT,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
-  LAYOUT_EQUAL_CORRECTION_VALUE,
+  ITEM_OFFSET_BEFORE_LAYOUT_READY,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
@@ -26,10 +29,6 @@ import {
   SpaceStateToken,
   GetItemLayout,
   GetItemSeparatorLength,
-  IndexInfo,
-  ItemLayout,
-  KeyExtractor,
-  KeysChangedType,
   ListBaseDimensionsProps,
   ListRenderState,
   ListState,
@@ -54,6 +53,7 @@ import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import StillnessHelper from './utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import FixedBuffer from './FixedBuffer';
+import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -65,6 +65,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
   // to save data before list is active
   // private _softData: Array<ItemT> = [];
+  public _selectValue: SelectValue;
 
   // private _keyExtractor: KeyExtractor<ItemT>;
   private _getItemLayout: GetItemLayout<ItemT>;
@@ -120,6 +121,16 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   readonly _fillingMode: FillingMode;
   private _fixedBuffer: FixedBuffer;
   initialNumToRender: number;
+  private _recycleBufferedCount: number;
+
+  // private _initialNumToRender: number;
+  private _persistanceIndices = [];
+  private _stickyHeaderIndices = [];
+  private _reservedIndices = [];
+  private _maxToRenderPerBatch: number;
+  private _canIUseRIC: boolean;
+  private _itemOffsetBeforeLayoutReady: number;
+  _configTuple: ViewabilityConfigTuples;
 
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
@@ -130,11 +141,11 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
-  private _getData: {(): any}
+  private _getData: { (): any };
   /**
    *
    */
-  private _provider: ListGroupDimensions
+  private _provider: ListGroupDimensions;
 
   constructor(props: ListBaseDimensionsProps<ItemT>) {
     // super({
@@ -144,11 +155,18 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     const {
       store,
       getData,
+      horizontal,
 
       provider,
+      canIUseRIC,
       recycleThreshold,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
+      recycleBufferedCount = RECYCLE_BUFFERED_COUNT,
+      itemOffsetBeforeLayoutReady = ITEM_OFFSET_BEFORE_LAYOUT_READY,
+      viewabilityConfig,
+      onViewableItemsChanged,
+      viewabilityConfigCallbackPairs,
 
       recycleEnabled,
       recyclerTypeKeys = ['default_recycler'],
@@ -164,6 +182,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       getItemSeparatorLength,
       onBatchLayoutFinished,
       persistanceIndices,
+
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
       useItemApproximateLength,
@@ -176,12 +195,16 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-    this._provider = provider
+    this._provider = provider;
     // this._keyExtractor = keyExtractor;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._recyclerTypeKeys = recyclerTypeKeys;
-    this._getData = getData
+    this._getData = getData;
+    this._recycleBufferedCount = Math.max(recycleBufferedCount, 1);
+    this._maxToRenderPerBatch = maxToRenderPerBatch;
+    this._itemOffsetBeforeLayoutReady = itemOffsetBeforeLayoutReady;
+    this._canIUseRIC = canIUseRIC;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -211,12 +234,23 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     });
     // this._onBatchLayoutFinished = onBatchLayoutFinished;
 
+    this._selectValue = horizontal
+      ? selectHorizontalValue
+      : selectVerticalValue;
+
     this._fillingMode = recycleEnabled
-    ? FillingMode.RECYCLE
-    : FillingMode.SPACE;
-  this._recycleThreshold = recycleEnabled
-    ? recycleThreshold || maxToRenderPerBatch * 2
-    : 0;
+      ? FillingMode.RECYCLE
+      : FillingMode.SPACE;
+    this._recycleThreshold = recycleEnabled
+      ? recycleThreshold || maxToRenderPerBatch * 2
+      : 0;
+
+    this._configTuple = new ViewabilityConfigTuples({
+      viewabilityConfig,
+      onViewableItemsChanged,
+      viewabilityConfigCallbackPairs,
+      isListItem: true,
+    });
 
     this._fixedBuffer = new FixedBuffer({
       /**
@@ -235,36 +269,8 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
     this._deps = deps;
     this._isActive = this.resolveInitialActiveValue(active);
-    this.initialNumToRender = initialNumToRender
+    this.initialNumToRender = initialNumToRender;
 
-    // if (this._listGroupDimension && this.initialNumToRender) {
-    //   if (process.env.NODE_ENV === 'development')
-    //     console.warn(
-    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-    //         ' initialNumToRender value should be controlled' +
-    //         'by `ListGroup` commander. So value is reset to `0`.'
-    //     );
-    //   this.initialNumToRender = 0;
-    // }
-
-    // if (this._listGroupDimension && persistanceIndices) {
-    //   if (process.env.NODE_ENV === 'development')
-    //     console.warn(
-    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-    //         ' persistanceIndices value should be controlled' +
-    //         'by `ListGroup` commander. So value is reset to `[]`.'
-    //     );
-    //   this.persistanceIndices = [];
-    // }
-
-    // this.updateInitialNumDueToListGroup(data);
-    // this.updatePersistanceIndicesDueToListGroup(data);
-    // if (!this._isActive) {
-    //   this._softData = data;
-    // } else {
-    //   this._setData(data);
-    // }
-    // this._state = this.resolveInitialState();
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
     );
@@ -281,7 +287,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._offsetInListGroup = 0;
 
     this.attemptToHandleEndReached();
-    this.handleDeps = this.handleDeps.bind(this);
+    // this.handleDeps = this.handleDeps.bind(this);
 
     // 比如刚开始就有值，并且给了`getItemLayout`的话，需要手动更新Parent中的layout
     // this.hydrateParentIntervalTree();
@@ -300,8 +306,57 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     );
   }
 
+  get recycleBufferedCount() {
+    return this._recycleBufferedCount;
+  }
+
+  get itemOffsetBeforeLayoutReady() {
+    return this._itemOffsetBeforeLayoutReady;
+  }
+
   get fillingMode() {
     return this._fillingMode;
+  }
+
+  get reservedIndices() {
+    return this._reservedIndices;
+  }
+
+  get maxToRenderPerBatch() {
+    return this._maxToRenderPerBatch;
+  }
+
+  get canIUseRIC() {
+    return this._canIUseRIC;
+  }
+
+  updateReservedIndices() {
+    const indices = new Set(
+      [].concat(this.persistanceIndices, this.stickyHeaderIndices)
+    );
+    this._reservedIndices = Array.from(indices).sort((a, b) => a - b);
+  }
+
+  get persistanceIndices() {
+    return this._persistanceIndices;
+  }
+
+  set persistanceIndices(indices: Array<number>) {
+    this._persistanceIndices = indices.sort((a, b) => a - b);
+    this.updateReservedIndices();
+  }
+
+  get stickyHeaderIndices() {
+    return this._stickyHeaderIndices;
+  }
+
+  set stickyHeaderIndices(indices: Array<number>) {
+    this._stickyHeaderIndices = indices.sort((a, b) => a - b);
+    this.updateReservedIndices();
+  }
+
+  get recycleThreshold() {
+    return this._recycleThreshold;
   }
 
   get length() {
@@ -335,20 +390,20 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
   resolveInitialActiveValue(active: boolean) {
     if (this._deps.length) {
-      let isActive = true;
+      const isActive = true;
       for (let index = 0; index < this._deps.length; index++) {
         const listKey = this._deps[index];
         const listHandler = manager.getKeyList(listKey);
         if (!listHandler) continue;
 
-        if (
-          listHandler.getRenderState() !== ListRenderState.ON_RENDER_FINISHED
-        ) {
-          this._renderStateListenersCleaner.push(
-            listHandler.addRenderStateListener(this.handleDeps.bind(this))
-          );
-          isActive = false;
-        }
+        // if (
+        //   listHandler.getRenderState() !== ListRenderState.ON_RENDER_FINISHED
+        // ) {
+        //   this._renderStateListenersCleaner.push(
+        //     listHandler.addRenderStateListener(this.handleDeps.bind(this))
+        //   );
+        //   isActive = false;
+        // }
       }
       return isActive;
     }
@@ -404,89 +459,47 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     return this.onEndReachedHelper;
   }
 
+  /**
+   *
+   * @returns TODO: temp
+   */
   getContainerOffset(): number {
-    if (this._listGroupDimension) {
-      return (
-        this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
-      );
-    }
-    const layout = this.getContainerLayout();
-    if (!layout) return 0;
-    return this._selectValue.selectOffset(layout);
+    return 0;
+    // if (this._listGroupDimension) {
+    //   return (
+    //     this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
+    //   );
+    // }
+    // const layout = this.getContainerLayout();
+    // if (!layout) return 0;
+    // return this._selectValue.selectOffset(layout);
   }
 
   get _data() {
-    return this._provider.getData()
+    return this._provider.getData();
   }
 
   getData() {
-    return this._provider.getData()
+    return this._provider.getData();
   }
-
-  // getTotalLength() {
-  //   return this.intervalTree.getMaxUsefulLength()
-  //     ? this.intervalTree.getHeap()[1]
-  //     : INVALID_LENGTH;
-  // }
 
   getReflowItemsLength() {
-    return this._provider.getReflowItemsLength()
+    return this._provider.getReflowItemsLength();
   }
-
-  // getIndexItemMeta(index: number) {
-  //   this._provider.getIndexItemMeta(index)
-  // }
-
-  // getKeyMeta(key: string) {
-  //   let meta = this._getKeyMeta(key);
-  //   if (!meta && this._parentItemsDimensions) {
-  //     meta = this._parentItemsDimensions.getKeyMeta(key);
-  //   }
-
-  //   return meta;
-  // }
-
-  // getItemMeta(item: ItemT) {
-  //   return this._provider.getItemMeta(item)
-  // }
-
-  // /**
-  //  * Basically, List item meta should be created first or has some error condition
-  //  * @param key ItemMeta key
-  //  * @returns ItemMeta
-  //  */
-  // ensureKeyMeta(key: string) {
-  //   let meta = this.getKeyMeta(key);
-
-  //   if (!meta && this._parentItemsDimensions) {
-  //     meta = this._parentItemsDimensions.ensureKeyMeta(key);
-  //   }
-
-  //   if (meta) return meta;
-
-  //   // TODO: separatorLength may be included!!!!
-  //   meta = new ItemMeta({
-  //     key,
-  //     owner: this,
-  //     isListItem: true,
-  //     isInitialItem: false,
-  //     canIUseRIC: this.canIUseRIC,
-  //   });
-  //   this.setKeyMeta(key, meta);
-
-  //   return meta;
-  // }
-
   getFinalItemKey(item: any) {
-    this._provider.getFinalItemKey(item)
+    this._provider.getFinalItemKey(item);
   }
 
   getFinalItemMeta(item: any) {
-    return this._provider.getFinalItemMeta(item)
+    return this._provider.getFinalItemMeta(item);
   }
 
   getFinalIndexItemLength(index: number) {
-    return this._provider.getFinalIndexItemLength(index)
+    return this._provider.getFinalIndexItemLength(index);
+  }
+
+  getFinalIndexKeyOffset(index: number) {
+    return this._provider.getFinalIndexKeyOffset(index);
   }
 
   hasUnLayoutItems() {
@@ -514,6 +527,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
     const meta = new ItemMeta({
       key,
+      // @ts-ignore
       owner: this,
       isListItem: true,
       isInitialItem,
@@ -546,11 +560,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     return meta;
   }
 
-  performKeyOperationGuard(key: string) {
-    if (this._indexKeys.indexOf(key) !== -1) return true;
-    return false;
-  }
-
   addRenderStateListener(fn: Function) {
     if (typeof fn === 'function') {
       const index = this._renderStateListeners.findIndex((s) => s === fn);
@@ -569,22 +578,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._renderStateListenersCleaner.forEach((cleaner) => cleaner());
   }
 
-  // handleDeps() {
-  //   for (let index = 0; index < this._deps.length; index++) {
-  //     const listKey = this._deps[index];
-  //     const dep = this._deps[index];
-  //     const listHandler = manager.getKeyList(listKey);
-  //     if (!listHandler) continue;
-
-  //     if (listHandler.getRenderState() === ListRenderState.ON_RENDER_FINISHED) {
-  //       const index = this._deps.findIndex((d) => d === dep);
-  //       if (index !== -1) this._deps.splice(index, 1);
-  //     }
-  //   }
-
-  //   if (!this._deps.length) this.performActiveChange(true);
-  // }
-
   attemptToHandleEndReached() {
     if (!this._listGroupDimension) {
       if (this.initialNumToRender)
@@ -595,59 +588,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   setOnEndReached(onEndReached: OnEndReached) {
     this.onEndReachedHelper.setHandler(onEndReached);
   }
-
-  /**
-   * 当追加data的时候，假如说有separator存在的话，本来最后一个的item，不再是最后一个了；
-   * 这个时候其实要加上separatorLength的
-   * @returns void
-   */
-  // updateTheLastItemIntervalValue() {
-  //   const len = this._data.length;
-  //   const index = len - 1;
-  //   const item = this._data[index];
-  //   if (!item) return;
-
-  //   const meta = this.getItemMeta(item, index);
-  //   const layout = meta?.getLayout();
-
-  //   if (meta && layout) {
-  //     const separatorLength = meta.getSeparatorLength();
-  //     const length = this._selectValue.selectLength(layout) + separatorLength;
-  //     this.setIntervalTreeValue(index, length);
-  //   }
-  // }
-
-  // getIndexInfo(key: string): IndexInfo {
-  //   const info = {} as IndexInfo;
-  //   info.index = this._indexKeys.indexOf(key);
-  //   if (this._listGroupDimension) {
-  //     info.indexInGroup = this._listGroupDimension.getFinalIndex(key, this.id);
-  //   }
-  //   return info;
-  // }
-
-  // viewableItemsOnly() {
-  //   // this._stateListener maybe set to null on unmount. but list instance still exist
-  //   if (this._fillingMode === FillingMode.RECYCLE && this._stateListener) {
-  //     const { recycleState, spaceState } = this
-  //       ._stateResult as RecycleStateResult<ItemT>;
-  //     const nextRecycleState = recycleState.filter((info) => {
-  //       const { itemMeta } = info;
-  //       if (itemMeta) {
-  //         if (itemMeta?.getState().viewable) return true;
-  //         return false;
-  //       }
-  //       return true;
-  //     });
-  //     this._stateListener(
-  //       {
-  //         recycleState: nextRecycleState,
-  //         spaceState,
-  //       },
-  //       this._stateResult
-  //     );
-  //   }
-  // }
 
   resetViewableItems() {
     if (this._scrollMetrics) this.dispatchMetrics(this._scrollMetrics);
@@ -779,8 +719,8 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     return this._provider.getFinalIndexRangeOffsetMap(
       startIndex,
       endIndex,
-      exclusive,
-    )
+      exclusive
+    );
   }
 
   recognizeLengthBeforeLayout() {
@@ -818,7 +758,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       _visibleStartIndex,
       /** TODO: temp set to 0 */
       // this.initialNumToRender
-      0,
+      0
     );
 
     const safeRange = this.resolveSafeRange({
@@ -1219,7 +1159,9 @@ class ListBaseDimensions<ItemT extends {} = {}> {
         data: this._data.slice(0, nextDataLength),
       };
 
+      // @ts-ignore
       this.setState(state);
+      // @ts-ignore
       this._state = state;
       this._offsetTriggerCachedState = scrollMetrics.offset;
     }

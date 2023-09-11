@@ -43,7 +43,10 @@ import ListProvider from './ListProvider';
  *
  * ListGroup is just like a router.
  */
-class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements ListProvider {
+class ListGroupDimensions<ItemT extends {} = {}>
+  extends BaseLayout
+  implements ListProvider
+{
   public indexKeys: Array<string> = [];
   private _selector = new EnabledSelector();
   itemToDimensionMap: WeakMap<any, any> = new WeakMap();
@@ -103,7 +106,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
   constructor(props: ListGroupDimensionsProps) {
     super({
       recycleEnabled: true,
-      ...props
+      ...props,
     });
     const {
       id,
@@ -274,12 +277,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
   }
 
   getFinalIndexItemMeta(index: number) {
-    const info = this.getFinalIndexInfo(index)
-    const dimension = info.dimensions
+    const info = this.getFinalIndexInfo(index);
+    const dimension = info.dimensions;
     if (dimension) {
-      return dimension.getIndexItemMeta(info.index)
+      return dimension.getIndexItemMeta(info.index);
     }
-    return null
+    return null;
   }
 
   getFinalItemKey(item: any) {
@@ -287,10 +290,10 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemKey = dimension.getItemKey(item, 0)
-      if (itemKey) return itemKey
+      const itemKey = dimension.getItemKey(item, 0);
+      if (itemKey) return itemKey;
     }
-    return null
+    return null;
   }
 
   getFinalItemMeta(item: any) {
@@ -298,22 +301,20 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemMeta = dimension.getItemMeta(item, 0)
-      if (itemMeta) return itemMeta
+      const itemMeta = dimension.getItemMeta(item, 0);
+      if (itemMeta) return itemMeta;
     }
-    return null
+    return null;
   }
 
-  getFinalIndexKeyOffset(
-    index: number, exclusive?: boolean
-  ) {
+  getFinalIndexKeyOffset(index: number, exclusive?: boolean) {
     const listOffset = exclusive ? 0 : this.getContainerOffset();
 
     if (typeof index === 'number') {
-      const indexInfo = this.getFinalIndexInfo(index)
-      const { dimensions, index: _index } = indexInfo
+      const indexInfo = this.getFinalIndexInfo(index);
+      const { dimensions, index: _index } = indexInfo;
       if (indexInfo.dimensions) {
-        return listOffset + dimensions.getIndexKeyOffset(_index)
+        return listOffset + dimensions.getIndexKeyOffset(_index);
       }
     }
     return 0;
@@ -340,9 +341,9 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
   }
 
   getFinalIndexItemLength(index: number) {
-    const itemMeta = this.getFinalIndexItemMeta(index)
-    if (itemMeta) return itemMeta.getItemLength()
-    return 0
+    const itemMeta = this.getFinalIndexItemMeta(index);
+    if (itemMeta) return itemMeta.getItemLength();
+    return 0;
   }
 
   getReflowItemsLength() {
@@ -803,7 +804,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
         this.calculateDimensionsIndexRange();
       }
 
-      this._listBaseDimension.setData(this.getData());
+      // this._listBaseDimension.setData(this.getData());
     }
   }
 
@@ -1123,8 +1124,6 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
       dimension: this,
       scrollMetrics,
     });
-
-    console.log('list =========== ', this.fillingMode)
 
     if (isEmpty(state)) return;
     if (this.fillingMode === FillingMode.RECYCLE) {
