@@ -57,6 +57,9 @@ class FixedBuffer {
   updateIndices(
     targetIndices: Array<number>,
     props: {
+      /**
+       * index in range should not be recycled
+       */
       safeRange: {
         startIndex: number;
         endIndex: number;
@@ -64,6 +67,8 @@ class FixedBuffer {
       startIndex: number;
       maxCount: number;
       step: number;
+
+      /** the max index value, always be the length of data */
       maxIndex: number;
     }
   ) {

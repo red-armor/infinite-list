@@ -43,10 +43,11 @@ export type BaseLayoutProps = {
   itemOffsetBeforeLayoutReady?: number;
 };
 
-export interface ListBaseDimensionsProps extends BaseDimensionsProps {
-  fillingMode: FillingMode;
-  initialNumToRender: number;
-}
+export type ListBaseDimensionsProps<ItemT> = ListDimensionsProps<ItemT> & {
+  fillingMode?: FillingMode;
+  initialNumToRender?: number;
+  recyclerTypeKeys?: Array<string>;
+};
 
 export type BaseDimensionsProps = {
   id: string;

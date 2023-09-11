@@ -28,7 +28,7 @@ import {
   ItemLayout,
   KeyExtractor,
   KeysChangedType,
-  ListDimensionsProps,
+  ListBaseDimensionsProps,
   ListRenderState,
   ListState,
   OnEndReached,
@@ -95,7 +95,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _deps: Array<string>;
 
-  private _removeList: Function;
+  // private _removeList: Function;
 
   private _initializeMode = false;
 
@@ -104,6 +104,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   public updateStateBatchinator: Batchinator;
 
   private _recalculateRecycleResultStateBatchinator: Batchinator;
+
+  private _recyclerTypeKeys: Array<string>;
 
   private _selector = new EnabledSelector({
     onEnabled: this.onEnableDispatchScrollMetrics.bind(this),
@@ -125,7 +127,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
 
-  constructor(props: ListDimensionsProps<ItemT>) {
+  constructor(props: ListBaseDimensionsProps<ItemT>) {
     super({
       ...props,
       isIntervalTreeItems: true,
@@ -133,6 +135,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const {
       store,
       recycleEnabled,
+      recyclerTypeKeys = ['default_recycler'],
       data = [],
       deps = [],
       keyExtractor,
@@ -161,6 +164,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._keyExtractor = keyExtractor;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
+    this._recyclerTypeKeys = recyclerTypeKeys;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -247,7 +251,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // 比如刚开始就有值，并且给了`getItemLayout`的话，需要手动更新Parent中的layout
     // this.hydrateParentIntervalTree();
 
-    this._removeList = this._listGroupDimension ? noop : manager.addList(this);
+    /**
+     * 0911 temp ignore
+     */
+    // this._removeList = this._listGroupDimension ? noop : manager.addList(this);
     this.updateStateBatchinator = new Batchinator(
       this.updateState.bind(this),
       50
@@ -288,7 +295,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   cleanup() {
-    this._removeList?.();
+    // this._removeList?.();
     this._renderStateListeners = [];
   }
 
@@ -1115,6 +1122,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return indexToOffsetMap;
   }
 
+  recognizeLengthBeforeLayout() {
+    return this._getItemLayout || this._approximateMode;
+  }
+
   resolveSafeRange(props: {
     visibleStartIndex: number;
     visibleEndIndex: number;
@@ -1139,10 +1150,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const targetIndices = this._fixedBuffer
       .getIndices()
       .map((i) => parseInt(i));
-    // const targetIndicesCopy = targetIndices.slice();
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
-    // const targetIndicesCopy = targetIndices.slice();
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
@@ -1154,7 +1163,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       visibleEndIndex,
     });
 
-    if (this._getItemLayout || this._approximateMode) {
+    if (this.recognizeLengthBeforeLayout()) {
       if (Math.abs(velocity) <= 1) {
         this._fixedBuffer.updateIndices(targetIndices, {
           safeRange,
@@ -1551,6 +1560,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
+      // @ts-ignore
       dimension: this,
       scrollMetrics,
     });

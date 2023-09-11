@@ -16,6 +16,7 @@ import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
+  FillingMode,
   InspectingAPI,
   InspectingListener,
   ItemLayout,
@@ -109,8 +110,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
       onEndReachedTimeoutThreshold,
       onBatchLayoutFinished,
       onEndReachedHandlerTimeoutThreshold,
-
-      recycleEnabled,
+      recycleEnabled = true,
     } = props;
 
     this._itemsDimensions = new ItemsDimensions({
@@ -176,6 +176,7 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._listBaseDimension = new ListBaseDimensions({
       id: 'listGroupDimensions',
       data: this._flattenData,
+      recycleEnabled,
       keyExtractor: (item, index) => `${index}`,
     });
   }
@@ -1034,10 +1035,13 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     if (isEmpty(state)) return;
-    // if (this.fillingMode === FillingMode.RECYCLE) {
-    //   this.setState(state)
-    //   return
-    // }
+    if (this.fillingMode === FillingMode.RECYCLE) {
+      this._listBaseDimension.setState({
+        ...state,
+        data: this.getData(),
+      });
+      return;
+    }
 
     const bufferedMetaRanges = this.computeIndexRangeMeta({
       startIndex: state.bufferedStartIndex,
