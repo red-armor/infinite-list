@@ -310,12 +310,11 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
     const listOffset = exclusive ? 0 : this.getContainerOffset();
 
     if (typeof index === 'number') {
-      return (
-        listOffset +
-        (index >= this._intervalTree.getMaxUsefulLength()
-          ? this.intervalTree.getHeap()[1]
-          : this._intervalTree.sumUntil(index))
-      );
+      const indexInfo = this.getFinalIndexInfo(index)
+      const { dimensions, index: _index } = indexInfo
+      if (indexInfo.dimensions) {
+        return listOffset + dimensions.getIndexKeyOffset(_index)
+      }
     }
     return 0;
   }
@@ -338,6 +337,12 @@ class ListGroupDimensions<ItemT extends {} = {}> extends BaseLayout implements L
       }
     }
     return indexToOffsetMap;
+  }
+
+  getFinalIndexItemLength(index: number) {
+    const itemMeta = this.getFinalIndexItemMeta(index)
+    if (itemMeta) return itemMeta.getItemLength()
+    return 0
   }
 
   getReflowItemsLength() {

@@ -107,6 +107,10 @@ class Dimension {
     );
   }
 
+  getIndexKeyOffset() {
+    return 0
+  }
+
   getItemOffset() {
     return this.getContainerOffset();
   }

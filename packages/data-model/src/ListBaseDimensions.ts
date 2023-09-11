@@ -11,6 +11,8 @@ import {
   INVALID_LENGTH,
   isEmpty,
   shallowDiffers,
+  INITIAL_NUM_TO_RENDER,
+  MAX_TO_RENDER_PER_BATCH,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
@@ -58,17 +60,17 @@ import FixedBuffer from './FixedBuffer';
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
-class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
+class ListBaseDimensions<ItemT extends {} = {}> {
   // private _data: Array<ItemT> = [];
 
   // to save data before list is active
-  private _softData: Array<ItemT> = [];
+  // private _softData: Array<ItemT> = [];
 
-  private _keyExtractor: KeyExtractor<ItemT>;
+  // private _keyExtractor: KeyExtractor<ItemT>;
   private _getItemLayout: GetItemLayout<ItemT>;
   private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
 
-  private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
+  // private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
@@ -97,7 +99,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _initializeMode = false;
 
-  private _onBatchLayoutFinished: () => boolean;
+  // private _onBatchLayoutFinished: () => boolean;
 
   public updateStateBatchinator: Batchinator;
 
@@ -113,7 +115,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _stillnessHelper: StillnessHelper;
 
+  private _recycleThreshold: number;
+  readonly _onEndReachedThreshold: number;
+  readonly _fillingMode: FillingMode;
   private _fixedBuffer: FixedBuffer;
+  initialNumToRender: number;
 
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
@@ -131,15 +137,18 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _provider: ListGroupDimensions
 
   constructor(props: ListBaseDimensionsProps<ItemT>) {
-    super({
-      ...props,
-      isIntervalTreeItems: true,
-    });
+    // super({
+    //   ...props,
+    //   isIntervalTreeItems: true,
+    // });
     const {
       store,
       getData,
 
       provider,
+      recycleThreshold,
+      maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
+      initialNumToRender = INITIAL_NUM_TO_RENDER,
 
       recycleEnabled,
       recyclerTypeKeys = ['default_recycler'],
@@ -168,7 +177,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
     this._provider = provider
-    this._keyExtractor = keyExtractor;
+    // this._keyExtractor = keyExtractor;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._recyclerTypeKeys = recyclerTypeKeys;
@@ -191,7 +200,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       dispatchMetricsThreshold
     );
     this.onEndReachedHelper = new OnEndReachedHelper({
-      id: this.id,
+      // id: this.id,
+      id: 'xxxx',
       onEndReached,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
@@ -199,7 +209,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       onEndReachedHandlerTimeoutThreshold,
       maxCountOfHandleOnEndReachedAfterStillness,
     });
-    this._onBatchLayoutFinished = onBatchLayoutFinished;
+    // this._onBatchLayoutFinished = onBatchLayoutFinished;
+
+    this._fillingMode = recycleEnabled
+    ? FillingMode.RECYCLE
+    : FillingMode.SPACE;
+  this._recycleThreshold = recycleEnabled
+    ? recycleThreshold || maxToRenderPerBatch * 2
+    : 0;
 
     this._fixedBuffer = new FixedBuffer({
       /**
@@ -207,7 +224,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
        */
       // thresholdIndexValue: this.initialNumToRender,
       thresholdIndexValue: 0,
-      size: this.recycleThreshold,
+      size: this._recycleThreshold,
     });
 
     this.stillnessHandler = this.stillnessHandler.bind(this);
@@ -218,35 +235,36 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     this._deps = deps;
     this._isActive = this.resolveInitialActiveValue(active);
+    this.initialNumToRender = initialNumToRender
 
-    if (this._listGroupDimension && this.initialNumToRender) {
-      if (process.env.NODE_ENV === 'development')
-        console.warn(
-          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-            ' initialNumToRender value should be controlled' +
-            'by `ListGroup` commander. So value is reset to `0`.'
-        );
-      this.initialNumToRender = 0;
-    }
+    // if (this._listGroupDimension && this.initialNumToRender) {
+    //   if (process.env.NODE_ENV === 'development')
+    //     console.warn(
+    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+    //         ' initialNumToRender value should be controlled' +
+    //         'by `ListGroup` commander. So value is reset to `0`.'
+    //     );
+    //   this.initialNumToRender = 0;
+    // }
 
-    if (this._listGroupDimension && persistanceIndices) {
-      if (process.env.NODE_ENV === 'development')
-        console.warn(
-          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-            ' persistanceIndices value should be controlled' +
-            'by `ListGroup` commander. So value is reset to `[]`.'
-        );
-      this.persistanceIndices = [];
-    }
+    // if (this._listGroupDimension && persistanceIndices) {
+    //   if (process.env.NODE_ENV === 'development')
+    //     console.warn(
+    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+    //         ' persistanceIndices value should be controlled' +
+    //         'by `ListGroup` commander. So value is reset to `[]`.'
+    //     );
+    //   this.persistanceIndices = [];
+    // }
 
-    this.updateInitialNumDueToListGroup(data);
-    this.updatePersistanceIndicesDueToListGroup(data);
-    if (!this._isActive) {
-      this._softData = data;
-    } else {
-      this._setData(data);
-    }
-    this._state = this.resolveInitialState();
+    // this.updateInitialNumDueToListGroup(data);
+    // this.updatePersistanceIndicesDueToListGroup(data);
+    // if (!this._isActive) {
+    //   this._softData = data;
+    // } else {
+    //   this._setData(data);
+    // }
+    // this._state = this.resolveInitialState();
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
     );
@@ -280,6 +298,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.recalculateRecycleResultState.bind(this),
       50
     );
+  }
+
+  get fillingMode() {
+    return this._fillingMode;
   }
 
   get length() {
@@ -401,11 +423,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._provider.getData()
   }
 
-  getTotalLength() {
-    return this.intervalTree.getMaxUsefulLength()
-      ? this.intervalTree.getHeap()[1]
-      : INVALID_LENGTH;
-  }
+  // getTotalLength() {
+  //   return this.intervalTree.getMaxUsefulLength()
+  //     ? this.intervalTree.getHeap()[1]
+  //     : INVALID_LENGTH;
+  // }
 
   getReflowItemsLength() {
     return this._provider.getReflowItemsLength()
@@ -415,45 +437,45 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   //   this._provider.getIndexItemMeta(index)
   // }
 
-  getKeyMeta(key: string) {
-    let meta = this._getKeyMeta(key);
-    if (!meta && this._parentItemsDimensions) {
-      meta = this._parentItemsDimensions.getKeyMeta(key);
-    }
+  // getKeyMeta(key: string) {
+  //   let meta = this._getKeyMeta(key);
+  //   if (!meta && this._parentItemsDimensions) {
+  //     meta = this._parentItemsDimensions.getKeyMeta(key);
+  //   }
 
-    return meta;
-  }
+  //   return meta;
+  // }
 
-  getItemMeta(item: ItemT) {
-    return this._provider.getItemMeta(item)
-  }
+  // getItemMeta(item: ItemT) {
+  //   return this._provider.getItemMeta(item)
+  // }
 
-  /**
-   * Basically, List item meta should be created first or has some error condition
-   * @param key ItemMeta key
-   * @returns ItemMeta
-   */
-  ensureKeyMeta(key: string) {
-    let meta = this.getKeyMeta(key);
+  // /**
+  //  * Basically, List item meta should be created first or has some error condition
+  //  * @param key ItemMeta key
+  //  * @returns ItemMeta
+  //  */
+  // ensureKeyMeta(key: string) {
+  //   let meta = this.getKeyMeta(key);
 
-    if (!meta && this._parentItemsDimensions) {
-      meta = this._parentItemsDimensions.ensureKeyMeta(key);
-    }
+  //   if (!meta && this._parentItemsDimensions) {
+  //     meta = this._parentItemsDimensions.ensureKeyMeta(key);
+  //   }
 
-    if (meta) return meta;
+  //   if (meta) return meta;
 
-    // TODO: separatorLength may be included!!!!
-    meta = new ItemMeta({
-      key,
-      owner: this,
-      isListItem: true,
-      isInitialItem: false,
-      canIUseRIC: this.canIUseRIC,
-    });
-    this.setKeyMeta(key, meta);
+  //   // TODO: separatorLength may be included!!!!
+  //   meta = new ItemMeta({
+  //     key,
+  //     owner: this,
+  //     isListItem: true,
+  //     isInitialItem: false,
+  //     canIUseRIC: this.canIUseRIC,
+  //   });
+  //   this.setKeyMeta(key, meta);
 
-    return meta;
-  }
+  //   return meta;
+  // }
 
   getFinalItemKey(item: any) {
     this._provider.getFinalItemKey(item)
@@ -463,13 +485,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._provider.getFinalItemMeta(item)
   }
 
-  createIntervalTree() {
-    return new PrefixIntervalTree(100);
-  }
-
-  resetIntervalTree() {
-    this.replaceIntervalTree(this.createIntervalTree());
-    return this.intervalTree;
+  getFinalIndexItemLength(index: number) {
+    return this._provider.getFinalIndexItemLength(index)
   }
 
   hasUnLayoutItems() {
@@ -483,52 +500,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   recalculateRecycleResultState() {
     this.setState(this._state, true);
-  }
-
-  // 一旦当前的length 发生了变化，判断一下自己总的高度是否变化，如果
-  // 变了，那么就去更新
-  /**
-   * In RN, layout change will not trigger `updateScrollMetrics`, because it's replaced with
-   * onContentSizeChanged.
-   */
-  setIntervalTreeValue(index: number, length: number) {
-    const oldLength = this.intervalTree.getHeap()[1];
-    this.intervalTree.set(index, length);
-    const nextLength = this.intervalTree.getHeap()[1];
-    const len = this.intervalTree.getMaxUsefulLength();
-
-    if (typeof nextLength === 'number')
-      this._itemApproximateLength = this.normalizeLengthNumber(
-        nextLength / Math.max(len, 1)
-      );
-
-    if (oldLength !== nextLength && this._listGroupDimension) {
-      this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    }
-
-    if (
-      this.getReflowItemsLength() === this._data.length &&
-      this._renderStateListeners.length
-    ) {
-      if (typeof this._onBatchLayoutFinished === 'function') {
-        const falsy = this._onBatchLayoutFinished();
-        if (falsy) this.notifyRenderFinished();
-      }
-    }
-
-    if (this._recycleEnabled()) {
-      this._recalculateRecycleResultStateBatchinator.schedule();
-    }
-  }
-
-  replaceIntervalTree(intervalTree: PrefixIntervalTree) {
-    const oldLength = this.intervalTree.getHeap()[1];
-    this.intervalTree = intervalTree;
-    const nextLength = intervalTree.getHeap()[1];
-
-    if (oldLength !== nextLength && this._listGroupDimension) {
-      this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    }
   }
 
   notifyRenderFinished() {
@@ -598,84 +569,21 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._renderStateListenersCleaner.forEach((cleaner) => cleaner());
   }
 
-  handleDeps() {
-    for (let index = 0; index < this._deps.length; index++) {
-      const listKey = this._deps[index];
-      const dep = this._deps[index];
-      const listHandler = manager.getKeyList(listKey);
-      if (!listHandler) continue;
+  // handleDeps() {
+  //   for (let index = 0; index < this._deps.length; index++) {
+  //     const listKey = this._deps[index];
+  //     const dep = this._deps[index];
+  //     const listHandler = manager.getKeyList(listKey);
+  //     if (!listHandler) continue;
 
-      if (listHandler.getRenderState() === ListRenderState.ON_RENDER_FINISHED) {
-        const index = this._deps.findIndex((d) => d === dep);
-        if (index !== -1) this._deps.splice(index, 1);
-      }
-    }
+  //     if (listHandler.getRenderState() === ListRenderState.ON_RENDER_FINISHED) {
+  //       const index = this._deps.findIndex((d) => d === dep);
+  //       if (index !== -1) this._deps.splice(index, 1);
+  //     }
+  //   }
 
-    if (!this._deps.length) this.performActiveChange(true);
-  }
-
-  performActiveChange(active: boolean) {
-    if (this._isActive) return;
-    if (!this._isActive && active) {
-      this._isActive = true;
-      // 只有当有值的时候才设置一次
-      if (this._softData.length) {
-        this.setData(this._softData);
-      }
-      // 无脑调用一次触底
-      // this.onEndReachedHelper.onEndReachedHandler({
-      //   distanceFromEnd: 0,
-      // });
-      this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
-    }
-  }
-
-  // 临时提供data，不然的话，data.length会一直返回0
-  updateInitialNumDueToListGroup(data: Array<ItemT>) {
-    if (!this._listGroupDimension) return;
-    if (!data.length) return;
-    const startIndex = this._listGroupDimension.getDimensionStartIndex(
-      this.id,
-      true
-    );
-    const initialNumToRender = this._listGroupDimension.initialNumToRender;
-    if (startIndex < initialNumToRender) {
-      const step = initialNumToRender - startIndex;
-      this.initialNumToRender = data.length >= step ? step : data.length;
-    }
-  }
-
-  updatePersistanceIndicesDueToListGroup(data: Array<ItemT> = this._data) {
-    if (!this._listGroupDimension) return;
-    if (!data.length) return;
-    const persistanceIndices = this._listGroupDimension.persistanceIndices;
-    if (!persistanceIndices.length) return;
-
-    const startIndex = this._listGroupDimension.getDimensionStartIndex(
-      this.id,
-      true
-    );
-    const endIndex = startIndex + data.length;
-
-    const first = persistanceIndices[0];
-    const last = persistanceIndices[persistanceIndices.length - 1];
-
-    if (
-      isClamped(first, startIndex, last) ||
-      isClamped(first, endIndex, last)
-    ) {
-      const indices = [];
-      for (let index = 0; index < persistanceIndices.length; index++) {
-        const currentIndex = persistanceIndices[index];
-        if (isClamped(startIndex, currentIndex, endIndex)) {
-          indices.push(currentIndex - startIndex);
-        }
-      }
-      if (indices.length) this.persistanceIndices = indices;
-    } else {
-      this.persistanceIndices = [];
-    }
-  }
+  //   if (!this._deps.length) this.performActiveChange(true);
+  // }
 
   attemptToHandleEndReached() {
     if (!this._listGroupDimension) {
@@ -709,146 +617,41 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
   //   }
   // }
 
-  getIndexInfo(key: string): IndexInfo {
-    const info = {} as IndexInfo;
-    info.index = this._indexKeys.indexOf(key);
-    if (this._listGroupDimension) {
-      info.indexInGroup = this._listGroupDimension.getFinalIndex(key, this.id);
-    }
-    return info;
-  }
+  // getIndexInfo(key: string): IndexInfo {
+  //   const info = {} as IndexInfo;
+  //   info.index = this._indexKeys.indexOf(key);
+  //   if (this._listGroupDimension) {
+  //     info.indexInGroup = this._listGroupDimension.getFinalIndex(key, this.id);
+  //   }
+  //   return info;
+  // }
 
-  viewableItemsOnly() {
-    // this._stateListener maybe set to null on unmount. but list instance still exist
-    if (this._fillingMode === FillingMode.RECYCLE && this._stateListener) {
-      const { recycleState, spaceState } = this
-        ._stateResult as RecycleStateResult<ItemT>;
-      const nextRecycleState = recycleState.filter((info) => {
-        const { itemMeta } = info;
-        if (itemMeta) {
-          if (itemMeta?.getState().viewable) return true;
-          return false;
-        }
-        return true;
-      });
-      this._stateListener(
-        {
-          recycleState: nextRecycleState,
-          spaceState,
-        },
-        this._stateResult
-      );
-    }
-  }
+  // viewableItemsOnly() {
+  //   // this._stateListener maybe set to null on unmount. but list instance still exist
+  //   if (this._fillingMode === FillingMode.RECYCLE && this._stateListener) {
+  //     const { recycleState, spaceState } = this
+  //       ._stateResult as RecycleStateResult<ItemT>;
+  //     const nextRecycleState = recycleState.filter((info) => {
+  //       const { itemMeta } = info;
+  //       if (itemMeta) {
+  //         if (itemMeta?.getState().viewable) return true;
+  //         return false;
+  //       }
+  //       return true;
+  //     });
+  //     this._stateListener(
+  //       {
+  //         recycleState: nextRecycleState,
+  //         spaceState,
+  //       },
+  //       this._stateResult
+  //     );
+  //   }
+  // }
 
   resetViewableItems() {
     if (this._scrollMetrics) this.dispatchMetrics(this._scrollMetrics);
   }
-
-  append(data: Array<ItemT>) {
-    const baseIndex = this._indexKeys.length;
-    this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);
-  }
-
-  shuffle(data: Array<ItemT>) {
-    const itemIntervalTree = this.createIntervalTree();
-    const keyToMetaMap = new Map();
-    this.pump(data, 0, keyToMetaMap, itemIntervalTree);
-    this.replaceIntervalTree(itemIntervalTree);
-    this._keyToMetaMap = keyToMetaMap;
-  }
-
-  /**
-   *
-   * @param key string, itemKey
-   * @param info
-   * @param updateIntervalTree target IntervalTree
-   * @returns boolean value, true for updating intervalTree successfully.
-   */
-  _setKeyItemLayout(
-    key: string,
-    info: ItemLayout | number,
-    updateIntervalTree?: boolean
-  ) {
-    const falsy = this.performKeyOperationGuard(key);
-    const _update =
-      typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
-
-    if (!falsy) {
-      if (this._parentItemsDimensions)
-        return this._parentItemsDimensions.setKeyItemLayout(key, info, _update);
-      return false;
-    }
-    const index = this.getKeyIndex(key);
-    // const item = this._data[index];
-    const meta = this.getKeyMeta(key);
-    // const meta = this.getItemMeta(item, index);
-
-    if (!meta) return false;
-    meta.isApproximateLayout = false;
-
-    if (typeof info === 'number') {
-      let length = this.normalizeLengthNumber(info);
-      if (
-        Math.abs(
-          length - (this._selectValue.selectLength(meta.getLayout() || {}) || 0)
-        ) > LAYOUT_EQUAL_CORRECTION_VALUE
-      ) {
-        this._selectValue.setLength(meta.ensureLayout(), length);
-
-        if (index !== this._data.length - 1) {
-          length = meta.getSeparatorLength() + length;
-        }
-        if (_update) {
-          this.setIntervalTreeValue(index, length);
-          return true;
-        }
-      }
-      return false;
-    }
-    const _info = this.normalizeLengthInfo(info);
-
-    if (
-      !layoutEqual(meta.getLayout(), _info as ItemLayout, {
-        keysToCheck: this.horizontal ? ['width'] : ['height'],
-        correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
-      })
-    ) {
-      const currentLength = this._selectValue.selectLength(
-        meta.getLayout() || {}
-      );
-      let length = this._selectValue.selectLength((_info as ItemLayout) || {});
-      meta.setLayout(_info as ItemLayout);
-      // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
-      if (currentLength !== length && _update) {
-        if (index !== this._data.length - 1) {
-          length = meta.getSeparatorLength() + length;
-        }
-        this.setIntervalTreeValue(index, length);
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  // computeIndexRange(minOffset: number, maxOffset: number) {
-  //   const result = this.intervalTree.computeRange(minOffset, maxOffset);
-  //   return result;
-  // }
-
-  // computeIndexRangeMeta(minOffset: number, maxOffset: number): Array<ItemMeta> {
-  //   const result = this.intervalTree.computeRange(minOffset, maxOffset);
-  //   if (result.startIndex === -1 && result.endIndex === -1) return [];
-
-  //   const { startIndex, endIndex } = result;
-  //   const returnValue = [];
-  //   for (let index = startIndex; index <= endIndex; index++) {
-  //     const meta = this.getFinalIndexItemMeta(index);
-  //     if (meta) returnValue.push(meta);
-  //   }
-  //   return returnValue;
-  // }
 
   addStateListener(listener: StateListener<ItemT>) {
     if (typeof listener === 'function') this._stateListener = listener;
@@ -968,22 +771,16 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
    * @param exclusive
    * @returns
    */
-  getIndexRangeOffsetMap(
+  getFinalIndexRangeOffsetMap(
     startIndex: number,
     endIndex: number,
     exclusive?: boolean
   ) {
-    const indexToOffsetMap = {};
-    let startOffset = this.getIndexKeyOffset(startIndex, exclusive);
-    for (let index = startIndex; index <= endIndex; index++) {
-      indexToOffsetMap[index] = startOffset;
-      const item = this._data[index];
-      const itemMeta = this.getItemMeta(item, index);
-      startOffset +=
-        (itemMeta?.getLayout()?.height || 0) +
-        (itemMeta?.getSeparatorLength() || 0);
-    }
-    return indexToOffsetMap;
+    return this._provider.getFinalIndexRangeOffsetMap(
+      startIndex,
+      endIndex,
+      exclusive,
+    )
   }
 
   recognizeLengthBeforeLayout() {
@@ -1136,7 +933,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     const minValue = this._fixedBuffer.getMinValue();
     const maxValue = this._fixedBuffer.getMaxValue();
-    const indexToOffsetMap = this.getIndexRangeOffsetMap(
+    const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
       minValue,
       maxValue,
       true
@@ -1300,15 +1097,15 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const item = this._data[startIndex];
         spaceState.push({
           item,
-          key: this.getItemKey(item, startIndex),
+          key: this.getFinalItemKey(item),
           isSpace: false,
           isSticky,
-          length: this.getIndexItemLength(startIndex),
+          length: this.getFinalIndexItemLength(startIndex),
           isReserved,
         });
       } else {
-        const startIndexOffset = this.getIndexKeyOffset(startIndex);
-        const endIndexOffset = this.getIndexKeyOffset(endIndex);
+        const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
+        const endIndexOffset = this.getFinalIndexKeyOffset(endIndex);
         spaceState.push({
           isSpace: true,
           item: null,
@@ -1320,14 +1117,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     });
 
-    const indexToOffsetMap = this.getIndexRangeOffsetMap(
+    const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
       bufferedStartIndex,
       bufferedEndIndex
     );
 
     remainingData.forEach((item, _index) => {
       const index = bufferedStartIndex + _index;
-      const itemMeta = this.getItemMeta(item, index);
+      const itemMeta = this.getFinalItemMeta(item);
       if (!itemMeta) return;
       const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
       const isReserved = this.persistanceIndices.indexOf(index) !== -1;
@@ -1368,14 +1165,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseDimensions {
         spaceState.push({
           item,
           isSpace: false,
-          key: this.getItemKey(item, startIndex),
+          key: this.getFinalItemKey(item),
           isSticky,
           isReserved,
-          length: this.getIndexItemLength(startIndex),
+          length: this.getFinalIndexItemLength(startIndex),
         });
       } else {
-        const startIndexOffset = this.getIndexKeyOffset(startIndex);
-        const endIndexOffset = this.getIndexKeyOffset(endIndex);
+        const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
+        const endIndexOffset = this.getFinalIndexKeyOffset(endIndex);
 
         spaceState.push({
           item: null,
