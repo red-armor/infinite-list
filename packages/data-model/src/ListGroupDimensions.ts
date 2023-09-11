@@ -1129,13 +1129,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return this._listBaseDimension.addStateListener(listener);
   }
 
-  // addStateListener(listKey: string, listener: StateListener) {
-  //   const dimension = this.getDimension(listKey) as ListDimensions;
-  //   if (dimension) {
-  //     dimension.addStateListener(listener);
-  //   }
-  // }
-
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
       dimension: this,
@@ -1180,7 +1173,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
         dimension.updateState(
           {
             ...state,
-
             visibleStartIndex: visibleMetaRange
               ? visibleMetaRange.value.startIndex
               : -1,

@@ -994,9 +994,12 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
         const item = this._data[startIndex];
+        const itemMeta = this.getFinalItemMeta(item);
+
         spaceState.push({
           item,
-          key: this.getFinalItemKey(item),
+          itemMeta,
+          key: itemMeta.getKey(),
           isSpace: false,
           isSticky,
           length: this.getFinalIndexItemLength(startIndex),
@@ -1048,6 +1051,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       spaceState.push({
         key: itemKey,
         item,
+        itemMeta,
         isSpace: false,
         isSticky,
         isReserved,
@@ -1061,10 +1065,12 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
         const item = this._data[startIndex];
+        const itemMeta = this.getFinalItemMeta(item);
         spaceState.push({
           item,
           isSpace: false,
-          key: this.getFinalItemKey(item),
+          key: itemMeta.getKey(),
+          itemMeta,
           isSticky,
           isReserved,
           length: this.getFinalIndexItemLength(startIndex),
@@ -1072,7 +1078,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       } else {
         const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
         const endIndexOffset = this.getFinalIndexKeyOffset(endIndex);
-
         spaceState.push({
           item: null,
           isSpace: true,
