@@ -278,8 +278,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   getFinalIndexItemMeta(index: number) {
     const info = this.getFinalIndexInfo(index);
-    const dimension = info.dimensions;
-    if (dimension) {
+    if (info) {
+      const dimension = info.dimensions;
       return dimension.getIndexItemMeta(info.index);
     }
     return null;
@@ -290,7 +290,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemKey = dimension.getItemKey(item, 0);
+      const itemKey = dimension.getFinalItemKey(item);
       if (itemKey) return itemKey;
     }
     return null;
@@ -312,8 +312,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     if (typeof index === 'number') {
       const indexInfo = this.getFinalIndexInfo(index);
-      const { dimensions, index: _index } = indexInfo;
-      if (indexInfo.dimensions) {
+      if (indexInfo) {
+        const { dimensions, index: _index } = indexInfo;
         return listOffset + dimensions.getIndexKeyOffset(_index);
       }
     }
@@ -390,10 +390,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this._renderStateListeners = [];
   }
 
-  getState(listKey: string) {
-    const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions) return dimensions.stateResult;
-    return {};
+  getState() {
+    return this._listBaseDimension.state;
+  }
+
+  getStateResult() {
+    return this._listBaseDimension.stateResult;
   }
 
   getKeyIndex(key: string, listKey: string) {
@@ -1112,12 +1114,16 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return this.findListRange(startIndex, endIndex);
   }
 
-  addStateListener(listKey: string, listener: StateListener) {
-    const dimension = this.getDimension(listKey) as ListDimensions;
-    if (dimension) {
-      dimension.addStateListener(listener);
-    }
+  addStateListener(listener: StateListener) {
+    return this._listBaseDimension.addStateListener(listener);
   }
+
+  // addStateListener(listKey: string, listener: StateListener) {
+  //   const dimension = this.getDimension(listKey) as ListDimensions;
+  //   if (dimension) {
+  //     dimension.addStateListener(listener);
+  //   }
+  // }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({

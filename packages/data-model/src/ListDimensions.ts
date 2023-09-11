@@ -439,6 +439,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._keyExtractor(item, index);
   }
 
+  getFinalItemKey(item: ItemT) {
+    const cachedKey = this._itemToKeyMap.get(item);
+    if (cachedKey) return cachedKey;
+    return null;
+  }
+
   createIntervalTree() {
     return new PrefixIntervalTree(100);
   }
@@ -719,7 +725,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     const keyToIndexMap: Map<string, number> = new Map();
     const keyToIndexArray: Array<string> = [];
     const itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
-    const itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap()
+    const itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap();
     let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {
@@ -729,7 +735,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);
-        itemToDimensionMap.set(item, this)
+        itemToDimensionMap.set(item, this);
         return true;
       }
       duplicateKeyCount += 1;
@@ -766,7 +772,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._keyToIndexMap = keyToIndexMap;
     this._indexKeys = keyToIndexArray;
     this._itemToKeyMap = itemToKeyMap;
-    this._itemToDimensionMap = itemToDimensionMap
+    this._itemToDimensionMap = itemToDimensionMap;
     return dataChangedType;
   }
 

@@ -1,6 +1,5 @@
 import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
-import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
 import omit from '@x-oasis/omit';
 
@@ -273,6 +272,10 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this.memoizedResolveRecycleState = memoizeOne(
       this.resolveRecycleState.bind(this)
     );
+
+    // @ts-ignore
+    this._state = this.resolveInitialState();
+
     this._stateResult =
       this.fillingMode === FillingMode.RECYCLE
         ? this.memoizedResolveRecycleState(this._state)
@@ -483,7 +486,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     return this._provider.getReflowItemsLength();
   }
   getFinalItemKey(item: any) {
-    this._provider.getFinalItemKey(item);
+    return this._provider.getFinalItemKey(item);
   }
 
   getFinalItemMeta(item: any) {
@@ -514,46 +517,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   notifyRenderFinished() {
     this.setRenderStateFinished();
     this._renderStateListeners.forEach((listener) => listener());
-  }
-
-  createItemMeta(key: string, data: Array<ItemT>, index: number) {
-    const isInitialItem = this._initializeMode
-      ? index < this.initialNumToRender
-      : false;
-
-    const meta = new ItemMeta({
-      key,
-      // @ts-ignore
-      owner: this,
-      isListItem: true,
-      isInitialItem,
-      canIUseRIC: this.canIUseRIC,
-    });
-
-    if (this._approximateMode) {
-      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
-      this._selectValue.setLength(
-        meta.getLayout(),
-        this._itemApproximateLength
-      );
-      meta.isApproximateLayout = true;
-
-      return meta;
-    }
-
-    if (typeof this._getItemLayout === 'function') {
-      const { length } = this._getItemLayout(data, index);
-      // only List with getItemLayout has default layout value
-      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
-      this._selectValue.setLength(meta.getLayout(), length);
-    }
-
-    if (typeof this._getItemSeparatorLength === 'function') {
-      const { length } = this._getItemSeparatorLength(data, index);
-      meta.setSeparatorLength(length);
-    }
-
-    return meta;
   }
 
   addRenderStateListener(fn: Function) {

@@ -108,7 +108,7 @@ class Dimension {
   }
 
   getIndexKeyOffset() {
-    return 0
+    return 0;
   }
 
   getItemOffset() {
@@ -148,11 +148,15 @@ class Dimension {
   }
 
   getItemMeta() {
-    return this._meta
+    return this._meta;
   }
 
   getItemKey() {
-    return this.getKey()
+    return this.getKey();
+  }
+
+  getFinalItemKey() {
+    return this.getKey();
   }
 
   getMeta() {
