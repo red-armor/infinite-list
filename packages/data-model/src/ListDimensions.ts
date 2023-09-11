@@ -557,6 +557,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return meta;
   }
 
+  hasKey(key: string) {
+    return this._indexKeys.indexOf(key) !== -1;
+  }
+
   performKeyOperationGuard(key: string) {
     if (this._indexKeys.indexOf(key) !== -1) return true;
     return false;

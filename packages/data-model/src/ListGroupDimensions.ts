@@ -894,7 +894,18 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }
 
   setKeyItemLayout(key: string, listKey: string, layout: ItemLayout | number) {
-    const dimensions = this.getDimension(listKey);
+    let dimensions = this.getDimension(listKey);
+    if (!dimensions) {
+      const len = this.indexKeys.length;
+      for (let index = 0; index < len; index++) {
+        const __key = this.indexKeys[index];
+        const _dimensions = this.getDimension(__key);
+        // @ts-ignore
+        if (_dimensions.hasKey(key)) {
+          dimensions = _dimensions;
+        }
+      }
+    }
     if (dimensions instanceof ListDimensions) {
       dimensions.setKeyItemLayout(key, layout);
     } else if (dimensions instanceof Dimension) {
