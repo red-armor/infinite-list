@@ -190,7 +190,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
 
     this._deps = deps;
-    this._isActive = this.resolveInitialActiveValue(active);
+    // this._isActive = this.resolveInitialActiveValue(active);
+    this._isActive = true
 
     if (this._listGroupDimension && this.initialNumToRender) {
       if (process.env.NODE_ENV === 'development')
@@ -397,6 +398,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   getFinalKeyMeta(key: string) {
     return this.getKeyMeta(key)
+  }
+
+  getFinalItemMeta(item: ItemT) {
+    const key = this.getFinalItemKey(item);
+    if (key) return this.getKeyMeta(key);
+    return null;
   }
 
   getItemMeta(item: ItemT, index: number) {

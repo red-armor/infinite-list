@@ -301,7 +301,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemMeta = dimension.getItemMeta(item, 0);
+      const itemMeta = dimension.getFinalItemMeta(item);
       if (itemMeta) return itemMeta;
     }
     return null;
@@ -522,6 +522,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
   removeListDimensions(listKey: string) {
     const index = this.indexKeys.findIndex((indexKey) => indexKey === listKey);
     if (index !== -1) {
+      const dimension = this.getDimension(listKey);
+
+      dimension.getData().forEach(item => {
+        const index = this._flattenData.findIndex(v => v === item)
+        if (index !== -1) this._flattenData.splice(index, 1)
+      })
+
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
@@ -613,7 +620,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.calculateReflowItemsLength();
     this.updateChildDimensionsOffsetInContainer();
     this.updateScrollMetrics(this._scrollMetrics, { useCache });
-    this._updateChildPersistanceIndicesBatchinator.schedule();
+    // this._updateChildPersistanceIndicesBatchinator.schedule();
   }
 
   updateChildPersistanceIndices() {
@@ -657,6 +664,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
   removeItem(key: string) {
     const index = this.indexKeys.findIndex((indexKey) => indexKey === key);
     if (index !== -1) {
+      const dimension = this.getDimension(key);
+
+      dimension.getData().forEach(item => {
+        const index = this._flattenData.findIndex(v => v === item)
+        if (index !== -1) this._flattenData.splice(index, 1)
+      })
+
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(key);
@@ -775,6 +789,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.onItemsCountChanged();
     this.recalculateDimensionsIntervalTreeBatchinator.schedule();
     this.registeredKeys.push(key);
+    this.updateFlattenData(key, dimensions.getData());
     this._startInspectBatchinator.schedule();
     return {
       dimensions,
@@ -787,6 +802,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
   getData() {
     return this._flattenData;
   }
+
+
 
   /**
    *
@@ -822,11 +839,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
+    this.updateFlattenData(listKey, data);
+
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
     }
 
-    this.updateFlattenData(listKey, data);
   }
 
   setOnEndReached(listKey: string, onEndReached: OnEndReached) {
@@ -1199,87 +1217,87 @@ class ListGroupDimensions<ItemT extends {} = {}>
       return;
     }
 
-    const bufferedMetaRanges = this.computeIndexRangeMeta({
-      startIndex: state.bufferedStartIndex,
-      endIndex: state.bufferedEndIndex,
-    });
-    const visibleMetaRanges = this.computeIndexRangeMeta({
-      startIndex: state.visibleStartIndex,
-      endIndex: state.visibleEndIndex,
-    });
+    // const bufferedMetaRanges = this.computeIndexRangeMeta({
+    //   startIndex: state.bufferedStartIndex,
+    //   endIndex: state.bufferedEndIndex,
+    // });
+    // const visibleMetaRanges = this.computeIndexRangeMeta({
+    //   startIndex: state.visibleStartIndex,
+    //   endIndex: state.visibleEndIndex,
+    // });
 
-    const { removed } = resolveChanged(
-      this._rangeResult?.bufferedMetaRanges || [],
-      bufferedMetaRanges,
-      (a, b) => a.listKey === b.listKey
-    );
-    const groupListItemsMeta = [];
+    // const { removed } = resolveChanged(
+    //   this._rangeResult?.bufferedMetaRanges || [],
+    //   bufferedMetaRanges,
+    //   (a, b) => a.listKey === b.listKey
+    // );
+    // const groupListItemsMeta = [];
 
-    // trigger ListDimensions viewable config
-    bufferedMetaRanges.forEach((range) => {
-      const { listKey, value } = range;
-      const dimension = this.getDimension(listKey);
+    // // trigger ListDimensions viewable config
+    // bufferedMetaRanges.forEach((range) => {
+    //   const { listKey, value } = range;
+    //   const dimension = this.getDimension(listKey);
 
-      const visibleMetaRange = visibleMetaRanges.find(
-        (v) => v.listKey === listKey
-      );
+    //   const visibleMetaRange = visibleMetaRanges.find(
+    //     (v) => v.listKey === listKey
+    //   );
 
-      if (dimension instanceof ListDimensions) {
-        dimension.updateState(
-          {
-            ...state,
-            visibleStartIndex: visibleMetaRange
-              ? visibleMetaRange.value.startIndex
-              : -1,
-            visibleEndIndex: visibleMetaRange
-              ? visibleMetaRange.value.endIndex
-              : -1,
-            // visibleEndIndex: value.endIndex,
-            // visibleStartIndex: value.startIndex,
-            bufferedEndIndex: value.endIndex,
-            bufferedStartIndex: value.startIndex,
-          },
-          scrollMetrics
-        );
-      } else {
-        dimension.render();
-        if (dimension.getMeta().getLayout()) {
-          groupListItemsMeta.push(dimension.getMeta());
-        }
-      }
-    });
+    //   if (dimension instanceof ListDimensions) {
+    //     dimension.updateState(
+    //       {
+    //         ...state,
+    //         visibleStartIndex: visibleMetaRange
+    //           ? visibleMetaRange.value.startIndex
+    //           : -1,
+    //         visibleEndIndex: visibleMetaRange
+    //           ? visibleMetaRange.value.endIndex
+    //           : -1,
+    //         // visibleEndIndex: value.endIndex,
+    //         // visibleStartIndex: value.startIndex,
+    //         bufferedEndIndex: value.endIndex,
+    //         bufferedStartIndex: value.startIndex,
+    //       },
+    //       scrollMetrics
+    //     );
+    //   } else {
+    //     dimension.render();
+    //     if (dimension.getMeta().getLayout()) {
+    //       groupListItemsMeta.push(dimension.getMeta());
+    //     }
+    //   }
+    // });
 
-    // trigger Dimensions viewable config
-    this._onUpdateDimensionItemsMetaChangeBatchinator.schedule(
-      groupListItemsMeta,
-      scrollMetrics
-    );
+    // // trigger Dimensions viewable config
+    // this._onUpdateDimensionItemsMetaChangeBatchinator.schedule(
+    //   groupListItemsMeta,
+    //   scrollMetrics
+    // );
 
-    removed.forEach((range) => {
-      const { listKey } = range;
-      const dimension = this.getDimension(listKey);
-      if (dimension instanceof ListDimensions) {
-        dimension.updateState(
-          {
-            ...state,
-            visibleStartIndex: -1,
-            visibleEndIndex: -1,
-            bufferedEndIndex: dimension.length - 1,
-            // should be Infinity or bigger than bufferedEndIndex to make
-            // item release possible.
-            bufferedStartIndex: Infinity,
-          },
-          scrollMetrics
-        );
-      }
-    });
+    // removed.forEach((range) => {
+    //   const { listKey } = range;
+    //   const dimension = this.getDimension(listKey);
+    //   if (dimension instanceof ListDimensions) {
+    //     dimension.updateState(
+    //       {
+    //         ...state,
+    //         visibleStartIndex: -1,
+    //         visibleEndIndex: -1,
+    //         bufferedEndIndex: dimension.length - 1,
+    //         // should be Infinity or bigger than bufferedEndIndex to make
+    //         // item release possible.
+    //         bufferedStartIndex: Infinity,
+    //       },
+    //       scrollMetrics
+    //     );
+    //   }
+    // });
 
-    this._rangeResult = {
-      bufferedMetaRanges,
-      visibleMetaRanges,
-    };
-    this._dispatchedMetricsResult = state;
-    this._itemsDimensions.dispatchMetrics(scrollMetrics);
+    // this._rangeResult = {
+    //   bufferedMetaRanges,
+    //   visibleMetaRanges,
+    // };
+    // this._dispatchedMetricsResult = state;
+    // this._itemsDimensions.dispatchMetrics(scrollMetrics);
   }
 
   onUpdateDimensionItemsMetaChange(

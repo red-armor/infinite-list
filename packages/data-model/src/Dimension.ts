@@ -23,6 +23,7 @@ class Dimension {
   private _requireRendered: boolean;
   private _onRender: Function;
   private _canIUseRIC: boolean;
+  private _data: Array<any>
 
   constructor(props: DimensionProps) {
     const {
@@ -34,6 +35,11 @@ class Dimension {
       initialStartIndex,
       ignoredToPerBatch,
     } = props;
+
+    this._data = [{
+      key: id,
+    }]
+
     this._selectValue = horizontal
       ? selectHorizontalValue
       : selectVerticalValue;
@@ -53,24 +59,33 @@ class Dimension {
     this._requireRendered =
       this._initialStartIndex <= this._listGroupDimension.initialNumToRender;
     this._onRender = onRender;
+
+  }
+
+  getData() {
+    return this._data
   }
 
   get length() {
     return 1;
   }
 
-  render() {
-    if (this._requireRendered) return;
-    if (typeof this._onRender === 'function') this._onRender();
+  // render() {
+  //   if (this._requireRendered) return;
+  //   if (typeof this._onRender === 'function') this._onRender();
+  // }
+
+  // onRequireRender(onRender: Function) {
+  //   if (typeof onRender === 'function') this._onRender = onRender;
+  // }
+
+  hasKey(key: string) {
+    return this.id === key
   }
 
-  onRequireRender(onRender: Function) {
-    if (typeof onRender === 'function') this._onRender = onRender;
-  }
-
-  getRequireRendered() {
-    return this._requireRendered;
-  }
+  // getRequireRendered() {
+  //   return this._requireRendered;
+  // }
 
   getReflowItemsLength() {
     const meta = this.getMeta();
@@ -147,16 +162,22 @@ class Dimension {
     return this._layout;
   }
 
-  getItemMeta() {
-    return this._meta;
+  getFinalItemMeta(item: any) {
+    return this.getItemMeta(item)
   }
 
-  getItemKey() {
-    return this.getKey();
+  getItemMeta(item: any) {
+    if (item === this.getData()[0]) return this._meta;
+    return null
   }
 
-  getFinalItemKey() {
-    return this.getKey();
+  getItemKey(item: any) {
+    if (item === this.getData()[0]) return this.getKey();
+    return null
+  }
+
+  getFinalItemKey(item: any) {
+    return this.getItemKey(item)
   }
 
   getMeta() {
