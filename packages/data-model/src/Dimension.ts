@@ -116,14 +116,12 @@ class Dimension {
     this._offsetInListGroup = value;
   }
 
-  getContainerOffset() {
-    return (
-      this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
-    );
+  getContainerOffset(exclusive?: boolean) {
+    return exclusive ? 0 : this._offsetInListGroup
   }
 
-  getIndexKeyOffset() {
-    return 0;
+  getIndexKeyOffset(exclusive?: boolean) {
+    return exclusive ? 0 : this._offsetInListGroup
   }
 
   getItemOffset() {
