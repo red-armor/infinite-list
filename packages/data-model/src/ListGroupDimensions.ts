@@ -314,6 +314,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       const indexInfo = this.getFinalIndexInfo(index);
       if (indexInfo) {
         const { dimensions, index: _index } = indexInfo;
+        // _offsetInListGroup should be included. so exclusive should be false on default.
         return listOffset + dimensions.getIndexKeyOffset(_index);
       }
     }

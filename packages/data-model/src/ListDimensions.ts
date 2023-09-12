@@ -354,9 +354,13 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   getContainerOffset(): number {
     if (this._listGroupDimension) {
-      return (
-        this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
-      );
+      return this._offsetInListGroup
+      // return (
+      //   this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
+      // );
+      // return (
+      //   this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
+      // );
     }
     const layout = this.getContainerLayout();
     if (!layout) return 0;
