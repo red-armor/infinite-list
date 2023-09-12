@@ -114,6 +114,10 @@ abstract class BaseDimensions extends BaseLayout {
     return this._keyToMetaMap.get(key);
   }
 
+  getFinalKeyMeta(key: string) {
+    return this.getKeyMeta(key)
+  }
+
   getKeyMeta(key: string) {
     return this._getKeyMeta(key);
   }
@@ -174,6 +178,14 @@ abstract class BaseDimensions extends BaseLayout {
   }
 
   setKeyItemLayout(
+    key: string,
+    layout: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ) {
+    return this._setKeyItemLayout(key, layout, updateIntervalTree);
+  }
+
+  setFinalKeyItemLayout(
     key: string,
     layout: ItemLayout | number,
     updateIntervalTree?: boolean

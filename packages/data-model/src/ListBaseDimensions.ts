@@ -1134,11 +1134,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       dimension: this,
       scrollMetrics,
     });
-
-    // if (this.id === 'component-list-all') {
-    //   console.log('dispatchStoreMetrics ', { ...state });
-    // }
-
     if (isEmpty(state)) return state;
     this.updateState(state, scrollMetrics);
     return state;

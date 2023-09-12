@@ -841,6 +841,31 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return [];
   }
 
+  getItemKeyDimension(itemKey: string) {
+    const len = this.indexKeys.length;
+    for (let index = 0; index < len; index++) {
+      const key = this.indexKeys[index];
+      const dimension = this.getDimension(key);
+      // @ts-ignore
+      if (dimension.hasKey(itemKey)) {
+        return dimension
+      }
+    }
+    return null
+  }
+
+  getFinalKeyItemOffset(itemKey: string, exclusive?: boolean) {
+    const dimension = this.getItemKeyDimension(itemKey)
+    if (dimension) {
+      const containerOffset = exclusive ? 0 : this.getContainerOffset();
+      return (
+        (dimension as ListDimensions).getKeyItemOffset(itemKey) +
+        containerOffset
+      );
+    }
+    return 0
+  }
+
   getKeyItemOffset(key: string, listKey: string, exclusive?: boolean) {
     const containerOffset = exclusive ? 0 : this.getContainerOffset();
     const listDimensions = this.getDimension(listKey);
@@ -853,10 +878,26 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return null;
   }
 
+  getFinalKeyMeta(itemKey: string) {
+    const dimension = this.getItemKeyDimension(itemKey)
+    if (dimension instanceof ListDimensions) return dimension.getKeyMeta(itemKey);
+    else if (dimension instanceof Dimension) return dimension.getMeta();
+    return null;
+  }
+
   getKeyMeta(key: string, listKey: string) {
     const dimensions = this.getDimension(listKey);
     if (dimensions instanceof ListDimensions) return dimensions.getKeyMeta(key);
     else if (dimensions instanceof Dimension) return dimensions.getMeta();
+    return null;
+  }
+
+  setFinalKeyMeta(itemKey: string, itemMeta: ItemMeta) {
+    const dimensions = this.getItemKeyDimension(itemKey);
+    if (dimensions instanceof ListDimensions)
+      return dimensions.setKeyMeta(itemKey, itemMeta);
+    else if (dimensions instanceof Dimension)
+      return dimensions.setMeta(itemMeta);
     return null;
   }
 
@@ -880,8 +921,18 @@ class ListGroupDimensions<ItemT extends {} = {}>
   getKeyItemLayout(key: string, listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      (listDimensions as ListDimensions).getKeyItemLayout(key);
+      return (listDimensions as ListDimensions).getKeyItemLayout(key);
     }
+
+    return null
+  }
+
+  getFinalKeyItemLayout(itemKey: string) {
+    const dimensions = this.getItemKeyDimension(itemKey);
+    if (dimensions) {
+      return (dimensions as ListDimensions).getKeyItemLayout(itemKey);
+    }
+    return null
   }
 
   getIndexItemLayout(index: number, listKey: string) {
@@ -894,23 +945,25 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.setKeyItemLayout(key, listKey, layout);
   }
 
-  setKeyItemLayout(key: string, listKey: string, layout: ItemLayout | number) {
-    let dimensions = this.getDimension(listKey);
-    if (!dimensions) {
-      const len = this.indexKeys.length;
-      for (let index = 0; index < len; index++) {
-        const __key = this.indexKeys[index];
-        const _dimensions = this.getDimension(__key);
-        // @ts-ignore
-        if (_dimensions.hasKey(key)) {
-          dimensions = _dimensions;
+  setFinalKeyItemLayout(itemKey: string, layout: ItemLayout | number) {
+    const dimensions = this.getItemKeyDimension(itemKey);
+    if (dimensions) {
+      if (dimensions instanceof ListDimensions) {
+          dimensions.setKeyItemLayout(itemKey, layout);
+        } else if (dimensions instanceof Dimension) {
+          dimensions.setItemLayout(layout);
         }
-      }
     }
-    if (dimensions instanceof ListDimensions) {
-      dimensions.setKeyItemLayout(key, layout);
-    } else if (dimensions instanceof Dimension) {
-      dimensions.setItemLayout(layout);
+  }
+
+  setKeyItemLayout(key: string, listKey: string, layout: ItemLayout | number) {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions) {
+      if (dimensions instanceof ListDimensions) {
+        dimensions.setKeyItemLayout(key, layout);
+      } else if (dimensions instanceof Dimension) {
+        dimensions.setItemLayout(layout);
+      }
     }
   }
 

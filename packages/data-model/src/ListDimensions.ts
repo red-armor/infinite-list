@@ -391,6 +391,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return meta;
   }
 
+  getFinalKeyMeta(key: string) {
+    return this.getKeyMeta(key)
+  }
+
   getItemMeta(item: ItemT, index: number) {
     const key = this.getItemKey(item, index);
     if (key) return this.getKeyMeta(key);
@@ -1727,11 +1731,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       dimension: this,
       scrollMetrics,
     });
-
-    // if (this.id === 'component-list-all') {
-    //   console.log('dispatchStoreMetrics ', { ...state });
-    // }
-
     if (isEmpty(state)) return state;
     this.updateState(state, scrollMetrics);
     return state;
