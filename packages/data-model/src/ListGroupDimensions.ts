@@ -111,6 +111,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     });
     const {
       id,
+      recyclerTypes,
       onUpdateItemLayout,
       onUpdateIntervalTree,
       viewabilityConfig,
@@ -184,6 +185,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       getData: this.getData.bind(this),
       recycleEnabled,
       provider: this,
+      recyclerTypes,
     });
   }
 
@@ -543,13 +545,16 @@ class ListGroupDimensions<ItemT extends {} = {}>
       };
     // should update indexKeys first !!!
     this.pushIndexKey(listKey);
+    const { recyclerType } = listDimensionsProps
     const dimensions = new ListDimensions({
       ...listDimensionsProps,
       id: listKey,
+      recyclerType,
       parentItemsDimensions: this._itemsDimensions,
       listGroupDimension: this,
       horizontal: this.getHorizontal(),
     });
+    this._listBaseDimension.addBuffer(recyclerType)
     this.setDimension(listKey, dimensions);
     this.onItemsCountChanged();
     // because Dimensions should be create first, so after initialized
@@ -772,17 +777,20 @@ class ListGroupDimensions<ItemT extends {} = {}>
       ? this.getDimensionStartIndex(beforeKey) +
         this.getDimension(beforeKey).length
       : 0;
+    const { recyclerType } = itemDimensionsProps
 
     const dimensions = new Dimension({
       id: key,
+      recyclerType,
       ...itemDimensionsProps,
       listGroupDimension: this,
       horizontal: this.getHorizontal(),
       initialStartIndex: startIndex,
       canIUseRIC: this.canIUseRIC,
     });
-    this.setDimension(key, dimensions);
 
+    this.setDimension(key, dimensions);
+    this._listBaseDimension.addBuffer(recyclerType)
     this.onItemsCountChanged();
     this.recalculateDimensionsIntervalTreeBatchinator.schedule();
     this.registeredKeys.push(key);

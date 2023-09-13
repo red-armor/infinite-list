@@ -36,8 +36,9 @@ class FixedBuffer {
   private _recyclerReservedBufferSize: number;
 
   constructor(props: FixedBufferProps) {
-    const { size, thresholdIndexValue, recyclerReservedBufferSize } = props;
+    const { size, thresholdIndexValue, recyclerReservedBufferSize, recyclerType } = props;
     this._size = size;
+    this._recyclerType = recyclerType
     this._thresholdIndexValue = thresholdIndexValue;
     this._recyclerReservedBufferSize = recyclerReservedBufferSize;
   }

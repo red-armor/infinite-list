@@ -24,8 +24,6 @@ class Recycler {
   private _recyclerBufferSize: number;
   private _recyclerReservedBufferSize: number;
 
-  private _indices: Array<number> = [];
-
   constructor(props: RecyclerProps) {
     const {
       owner,
@@ -54,10 +52,11 @@ class Recycler {
   }
 
   getIndices() {
-    return this._indices.reduce((acc, cur) => acc.concat(cur), []);
+    return this._queue.reduce((acc, cur) => acc.concat(cur.getIndices()), []);
   }
 
   addBuffer(type: string) {
+    if (!type) return false
     const index = this._queue.findIndex(
       (buffer) => buffer.recyclerType === type
     );

@@ -79,6 +79,7 @@ export type ListGroupData = {};
 
 export type ListGroupDimensionsProps = {
   id: string;
+  recyclerTypes?: Array<string>;
   horizontal?: boolean;
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;

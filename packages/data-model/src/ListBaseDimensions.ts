@@ -345,6 +345,10 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     return this._state;
   }
 
+  addBuffer(recyclerType: string) {
+    return this._recycler.addBuffer(recyclerType)
+  }
+
   cleanup() {
     // this._removeList?.();
     this._renderStateListeners = [];
