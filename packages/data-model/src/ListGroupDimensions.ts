@@ -28,6 +28,7 @@ import {
   ScrollMetrics,
   StateListener,
   ListGroupData,
+  ItemsDimensionsProps,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import EnabledSelector from './utils/EnabledSelector';
@@ -508,10 +509,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (index !== -1) {
       const dimension = this.getDimension(listKey);
 
-      dimension.getData().forEach(item => {
-        const index = this._flattenData.findIndex(v => v === item)
-        if (index !== -1) this._flattenData.splice(index, 1)
-      })
+      dimension.getData().forEach((item) => {
+        const index = this._flattenData.findIndex((v) => v === item);
+        if (index !== -1) this._flattenData.splice(index, 1);
+      });
 
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
@@ -650,10 +651,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (index !== -1) {
       const dimension = this.getDimension(key);
 
-      dimension.getData().forEach(item => {
-        const index = this._flattenData.findIndex(v => v === item)
-        if (index !== -1) this._flattenData.splice(index, 1)
-      })
+      dimension.getData().forEach((item) => {
+        const index = this._flattenData.findIndex((v) => v === item);
+        if (index !== -1) this._flattenData.splice(index, 1);
+      });
 
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
@@ -687,14 +688,14 @@ class ListGroupDimensions<ItemT extends {} = {}>
        * holdout: Attention.
        * To fix insert a element
        */
-      let _data = []
+      let _data = [];
       for (let index = 0; index < this.indexKeys.length; index++) {
-        const listKey = this.indexKeys[index]
+        const listKey = this.indexKeys[index];
         const _dimensions = this.getDimension(listKey);
-        _data = _data.concat(_dimensions.getData())
+        _data = _data.concat(_dimensions.getData());
       }
 
-      this._flattenData = _data
+      this._flattenData = _data;
       this.calculateDimensionsIndexRange();
     }
   }
@@ -752,8 +753,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   registerItem(
     key: string,
-    ignoredToPerBatch?: boolean,
-    onRender?: Function
+    itemDimensionsProps: Omit<ItemsDimensionsProps, 'id'> = {}
   ): {
     dimensions: Dimension;
     remover: () => void;
@@ -775,11 +775,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     const dimensions = new Dimension({
       id: key,
-      onRender,
+      ...itemDimensionsProps,
       listGroupDimension: this,
       horizontal: this.getHorizontal(),
       initialStartIndex: startIndex,
-      ignoredToPerBatch,
       canIUseRIC: this.canIUseRIC,
     });
     this.setDimension(key, dimensions);
@@ -840,7 +839,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
     }
-
   }
 
   setOnEndReached(listKey: string, onEndReached: OnEndReached) {
@@ -863,14 +861,14 @@ class ListGroupDimensions<ItemT extends {} = {}>
       const dimension = this.getDimension(key);
       // @ts-ignore
       if (dimension.hasKey(itemKey)) {
-        return dimension
+        return dimension;
       }
     }
-    return null
+    return null;
   }
 
   getFinalKeyItemOffset(itemKey: string, exclusive?: boolean) {
-    const dimension = this.getItemKeyDimension(itemKey)
+    const dimension = this.getItemKeyDimension(itemKey);
     if (dimension) {
       const containerOffset = exclusive ? 0 : this.getContainerOffset();
       return (
@@ -878,7 +876,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
         containerOffset
       );
     }
-    return 0
+    return 0;
   }
 
   getKeyItemOffset(key: string, listKey: string, exclusive?: boolean) {
@@ -894,8 +892,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }
 
   getFinalKeyMeta(itemKey: string) {
-    const dimension = this.getItemKeyDimension(itemKey)
-    if (dimension instanceof ListDimensions) return dimension.getKeyMeta(itemKey);
+    const dimension = this.getItemKeyDimension(itemKey);
+    if (dimension instanceof ListDimensions)
+      return dimension.getKeyMeta(itemKey);
     else if (dimension instanceof Dimension) return dimension.getMeta();
     return null;
   }
@@ -939,7 +938,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       return (listDimensions as ListDimensions).getKeyItemLayout(key);
     }
 
-    return null
+    return null;
   }
 
   getFinalKeyItemLayout(itemKey: string) {
@@ -947,7 +946,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (dimensions) {
       return (dimensions as ListDimensions).getKeyItemLayout(itemKey);
     }
-    return null
+    return null;
   }
 
   getIndexItemLayout(index: number, listKey: string) {
@@ -964,10 +963,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions) {
       if (dimensions instanceof ListDimensions) {
-          dimensions.setKeyItemLayout(itemKey, layout);
-        } else if (dimensions instanceof Dimension) {
-          dimensions.setItemLayout(layout);
-        }
+        dimensions.setKeyItemLayout(itemKey, layout);
+      } else if (dimensions instanceof Dimension) {
+        dimensions.setItemLayout(layout);
+      }
     }
   }
 

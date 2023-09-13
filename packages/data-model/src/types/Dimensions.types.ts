@@ -62,7 +62,10 @@ export type BaseDimensionsProps = {
 
   canIUseRIC?: boolean;
 
+  ignoredToPerBatch?: boolean;
+
   lengthPrecision?: number;
+  recyclerType?: string;
 
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;

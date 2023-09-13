@@ -13,7 +13,6 @@ import {
   MAX_TO_RENDER_PER_BATCH,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
-  RECYCLER_RESERVED_BUFFER_PER_BATCH,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
 } from './common';
@@ -100,9 +99,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
   initialNumToRender: number;
-  private _recycleBufferedCount: number;
 
-  // private _initialNumToRender: number;
   private _persistanceIndices = [];
   private _stickyHeaderIndices = [];
   private _reservedIndices = [];
@@ -137,7 +134,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       recycleThreshold,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
-      recycleBufferedCount = RECYCLER_RESERVED_BUFFER_PER_BATCH,
       itemOffsetBeforeLayoutReady = ITEM_OFFSET_BEFORE_LAYOUT_READY,
 
       recyclerBufferSize,
@@ -172,7 +168,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._getData = getData;
-    this._recycleBufferedCount = Math.max(recycleBufferedCount, 1);
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._itemOffsetBeforeLayoutReady = itemOffsetBeforeLayoutReady;
     this._canIUseRIC = canIUseRIC;
@@ -275,10 +270,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       this.recalculateRecycleResultState.bind(this),
       50
     );
-  }
-
-  get recycleBufferedCount() {
-    return this._recycleBufferedCount;
   }
 
   get itemOffsetBeforeLayoutReady() {
@@ -450,6 +441,10 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   }
   getFinalItemKey(item: any) {
     return this._provider.getFinalItemKey(item);
+  }
+
+  getFinalIndexItemMeta(index: number) {
+    return this._provider.getFinalIndexItemMeta(index);
   }
 
   getFinalItemMeta(item: any) {
@@ -670,9 +665,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       visibleStartIndex: _visibleStartIndex,
       isEndReached,
     } = state;
-    // const targetIndices = this._fixedBuffer
-    //   .getIndices()
-    //   .map((i) => parseInt(i));
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
 
@@ -685,6 +677,8 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       visibleStartIndex,
       visibleEndIndex,
     });
+
+    const recycleBufferedCount = this._recycler.recyclerReservedBufferPerBatch;
 
     if (Math.abs(velocity) <= 1) {
       this._recycler.updateIndices({
@@ -700,7 +694,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
         safeRange,
         startIndex: visibleStartIndex,
         maxCount:
-          visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
+          visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
         /** TODO */
         maxIndex: this.getData().length,
@@ -710,7 +704,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
         safeRange,
         startIndex: visibleStartIndex - 2,
         maxCount:
-          visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
+          visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
         /** TODO */
         maxIndex: this.getData().length,

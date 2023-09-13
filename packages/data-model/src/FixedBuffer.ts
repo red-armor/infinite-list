@@ -11,6 +11,8 @@ type FixedBufferProps = {
    */
   size: number;
 
+  recyclerReservedBufferSize: number;
+
   recyclerType: string;
 
   startIndex: number;
@@ -31,11 +33,17 @@ class FixedBuffer {
   private _endIndex: number;
   private _recyclerType: string;
   private _indices: Array<number> = [];
+  private _recyclerReservedBufferSize: number;
 
   constructor(props: FixedBufferProps) {
-    const { size, thresholdIndexValue } = props;
-    this._size = props.size;
-    this._thresholdIndexValue = props.thresholdIndexValue;
+    const { size, thresholdIndexValue, recyclerReservedBufferSize } = props;
+    this._size = size;
+    this._thresholdIndexValue = thresholdIndexValue;
+    this._recyclerReservedBufferSize = recyclerReservedBufferSize;
+  }
+
+  get size() {
+    return this._size;
   }
 
   get thresholdIndexValue() {
@@ -52,7 +60,7 @@ class FixedBuffer {
     if (rowIndex < this._thresholdIndexValue) return null;
     let position = this._bufferSet.getValuePosition(rowIndex);
 
-    if (position === null && this._bufferSet.getSize() >= this._size) {
+    if (position === null && this._bufferSet.getSize() >= this.size) {
       position = this._bufferSet.replaceFurthestValuePosition(
         startIndex,
         endIndex,
@@ -93,7 +101,12 @@ class FixedBuffer {
   }
 
   getIndices() {
-    return this._bufferSet.indices;
+    const arr = [];
+    for (let idx = 0; idx < this._recyclerReservedBufferSize; idx++) {
+      arr[idx] = this._bufferSet.indices[idx] || null;
+    }
+
+    return arr;
   }
 }
 

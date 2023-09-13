@@ -1,7 +1,7 @@
 import BaseDimensions from './BaseDimensions';
 import Dimension from './Dimension';
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
-import { DEFAULT_LAYOUT } from './common';
+import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import {
   ItemLayout,
   ItemMetaOwner,
@@ -11,7 +11,6 @@ import {
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
-import { DEFAULT_RECYCLER_TYPE } from './common';
 
 let count = 0;
 class ItemMeta extends ViewabilityItemMeta {
@@ -40,7 +39,7 @@ class ItemMeta extends ViewabilityItemMeta {
     state?: ItemMetaState;
     isInitialItem?: boolean;
     canIUseRIC?: boolean;
-    recyclerType?: string
+    recyclerType?: string;
   }) {
     super(props);
     const {
@@ -66,13 +65,17 @@ class ItemMeta extends ViewabilityItemMeta {
 
     this._canIUseRIC = canIUseRIC;
     this._isApproximateLayout = false;
-    this._recyclerType = recyclerType
+    this._recyclerType = recyclerType;
 
     this.addStateEventListener = this.addStateEventListener.bind(this);
   }
 
   get id() {
     return this._id;
+  }
+
+  get recyclerType() {
+    return this._recyclerType;
   }
 
   get isApproximateLayout() {

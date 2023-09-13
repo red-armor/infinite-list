@@ -21,22 +21,26 @@ class Dimension {
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup: number;
   private _canIUseRIC: boolean;
-  private _data: Array<any>
+  private _data: Array<any>;
+  private _recyclerType: string;
 
   constructor(props: DimensionProps) {
     const {
       horizontal,
       id,
-      onRender,
+      recyclerType,
       canIUseRIC,
       listGroupDimension,
       initialStartIndex,
       ignoredToPerBatch,
     } = props;
 
-    this._data = [{
-      key: id,
-    }]
+    this._data = [
+      {
+        key: id,
+      },
+    ];
+    this._recyclerType = recyclerType;
 
     this._selectValue = horizontal
       ? selectHorizontalValue
@@ -50,40 +54,24 @@ class Dimension {
       key: this.id,
       isListItem: false,
       owner: this,
+      recyclerType: this._recyclerType,
       canIUseRIC: this._canIUseRIC,
     });
     this.resolveConfigTuplesDefaultState =
       this.resolveConfigTuplesDefaultState.bind(this);
-    this._requireRendered =
-      this._initialStartIndex <= this._listGroupDimension.initialNumToRender;
-    this._onRender = onRender;
-
   }
 
   getData() {
-    return this._data
+    return this._data;
   }
 
   get length() {
     return 1;
   }
 
-  // render() {
-  //   if (this._requireRendered) return;
-  //   if (typeof this._onRender === 'function') this._onRender();
-  // }
-
-  // onRequireRender(onRender: Function) {
-  //   if (typeof onRender === 'function') this._onRender = onRender;
-  // }
-
   hasKey(key: string) {
-    return this.id === key
+    return this.id === key;
   }
-
-  // getRequireRendered() {
-  //   return this._requireRendered;
-  // }
 
   getReflowItemsLength() {
     const meta = this.getMeta();
@@ -115,11 +103,11 @@ class Dimension {
   }
 
   getContainerOffset(exclusive?: boolean | number) {
-    return exclusive ? 0 : this._offsetInListGroup
+    return exclusive ? 0 : this._offsetInListGroup;
   }
 
   getIndexKeyOffset(exclusive?: boolean | number) {
-    return exclusive ? 0 : this._offsetInListGroup
+    return exclusive ? 0 : this._offsetInListGroup;
   }
 
   getItemOffset() {
@@ -159,21 +147,21 @@ class Dimension {
   }
 
   getFinalItemMeta(item: any) {
-    return this.getItemMeta(item)
+    return this.getItemMeta(item);
   }
 
   getItemMeta(item: any) {
     if (item === this.getData()[0]) return this._meta;
-    return null
+    return null;
   }
 
   getItemKey(item: any) {
     if (item === this.getData()[0]) return this.getKey();
-    return null
+    return null;
   }
 
   getFinalItemKey(item: any) {
-    return this.getItemKey(item)
+    return this.getItemKey(item);
   }
 
   getMeta() {
@@ -229,6 +217,7 @@ class Dimension {
     this._meta = new ItemMeta({
       key: this.id,
       owner: this,
+      recyclerType: this._recyclerType,
       canIUseRIC: this._canIUseRIC,
     });
     return this._meta;

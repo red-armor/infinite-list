@@ -119,6 +119,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
+  private _recyclerType: string;
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -127,6 +128,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
     const {
       store,
+      recyclerType,
       recycleEnabled,
       data = [],
       deps = [],
@@ -153,6 +155,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     } = props;
 
     this._keyExtractor = keyExtractor;
+    this._recyclerType = recyclerType;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
 
@@ -190,7 +193,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
     this._deps = deps;
     // this._isActive = this.resolveInitialActiveValue(active);
-    this._isActive = true
+    this._isActive = true;
 
     if (this._listGroupDimension && this.initialNumToRender) {
       if (process.env.NODE_ENV === 'development')
@@ -354,7 +357,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   getContainerOffset(): number {
     if (this._listGroupDimension) {
-      return this._offsetInListGroup
+      return this._offsetInListGroup;
       // return (
       //   this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
       // );
@@ -396,7 +399,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getFinalKeyMeta(key: string) {
-    return this.getKeyMeta(key)
+    return this.getKeyMeta(key);
   }
 
   getFinalItemMeta(item: ItemT) {
@@ -431,6 +434,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       owner: this,
       isListItem: true,
       isInitialItem: false,
+      recyclerType: this._recyclerType,
       canIUseRIC: this.canIUseRIC,
     });
     this.setKeyMeta(key, meta);
@@ -541,6 +545,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       owner: this,
       isListItem: true,
       isInitialItem,
+      recyclerType: this._recyclerType,
       canIUseRIC: this.canIUseRIC,
     });
 

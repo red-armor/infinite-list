@@ -1,4 +1,5 @@
 import FixedBuffer from './FixedBuffer';
+import ListBaseDimensions from './ListBaseDimensions';
 import {
   RECYCLER_BUFFER_SIZE,
   RECYCLER_THRESHOLD_INDEX_VALUE,
@@ -8,16 +9,18 @@ import {
 import { RecyclerProps } from './types';
 
 class Recycler {
+  private _owner: ListBaseDimensions;
+
   private _queue: Array<FixedBuffer> = [];
-  /**
-   * buffer size, the oversize node will run into recycle strategy
-   */
-  private _size = 10;
+
   /**
    * start index
    */
   private _thresholdIndexValue = 0;
   private _recyclerReservedBufferPerBatch: number;
+  /**
+   * buffer size, the oversize node will run into recycle strategy
+   */
   private _recyclerBufferSize: number;
   private _recyclerReservedBufferSize: number;
 
@@ -25,12 +28,14 @@ class Recycler {
 
   constructor(props: RecyclerProps) {
     const {
+      owner,
       recyclerTypes = [],
       thresholdIndexValue = RECYCLER_THRESHOLD_INDEX_VALUE,
       recyclerBufferSize = RECYCLER_BUFFER_SIZE,
       recyclerReservedBufferPerBatch = RECYCLER_RESERVED_BUFFER_PER_BATCH,
     } = props;
 
+    this._owner = owner;
     this._recyclerBufferSize = recyclerBufferSize;
     this._thresholdIndexValue = thresholdIndexValue;
     this._recyclerReservedBufferSize = Math.floor(
@@ -42,6 +47,10 @@ class Recycler {
 
   get thresholdIndexValue() {
     return this._thresholdIndexValue;
+  }
+
+  get recyclerReservedBufferPerBatch() {
+    return this._recyclerReservedBufferPerBatch;
   }
 
   getIndices() {
@@ -56,10 +65,11 @@ class Recycler {
     const startIndex =
       (this._queue.length - 1) * this._recyclerReservedBufferSize;
     const buffer = new FixedBuffer({
-      size: this._size,
-      thresholdIndexValue: this._thresholdIndexValue,
-      recyclerType: type,
       startIndex,
+      recyclerType: type,
+      size: this._recyclerBufferSize,
+      thresholdIndexValue: this._thresholdIndexValue,
+      recyclerReservedBufferSize: this._recyclerReservedBufferSize,
       endIndex: startIndex + this._recyclerReservedBufferSize,
     });
     this._queue.push(buffer);
@@ -99,7 +109,7 @@ class Recycler {
     ) {
       // itemLayout should not be a condition, may cause too many unLayout item
       if (count < maxCount) {
-        const itemMeta = this.owner.getFinalIndexItemMeta(index);
+        const itemMeta = this._owner.getFinalIndexItemMeta(index);
         const recyclerType = itemMeta.recyclerType;
         const buffer = this._queue.find(
           (_buffer) => _buffer.recyclerType === recyclerType
