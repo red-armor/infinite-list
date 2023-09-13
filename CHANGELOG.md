@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.5](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.5) (2023-09-13)
+## [0.2.45-recycle-group.6](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.6) (2023-09-13)
+
+
+
+## 0.2.45-recycle-group.6 (2023-09-13)
+
+
+### Bug Fixes
+
+* close [#42](https://github.com/red-armor/infinite-list/issues/42) recycle with indices reuse ([6c574e9](https://github.com/red-armor/infinite-list/commit/6c574e96c2e8deff0479e5f5a124d24325ea9108))
 
 
 
