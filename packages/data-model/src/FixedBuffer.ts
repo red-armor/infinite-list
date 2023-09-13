@@ -104,7 +104,7 @@ class FixedBuffer {
   getIndices() {
     const arr = [];
     for (let idx = 0; idx < this._recyclerReservedBufferSize; idx++) {
-      arr[idx] = this._bufferSet.indices[idx] || null;
+      arr[idx] = parseInt(this._bufferSet.indices[idx]) || null;
     }
 
     return arr;

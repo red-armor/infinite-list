@@ -109,11 +109,13 @@ class Recycler {
       // itemLayout should not be a condition, may cause too many unLayout item
       if (count < maxCount) {
         const itemMeta = this._owner.getFinalIndexItemMeta(index);
-        const recyclerType = itemMeta.recyclerType;
-        const buffer = this._queue.find(
-          (_buffer) => _buffer.recyclerType === recyclerType
-        );
-        if (buffer) buffer.place(index, safeRange);
+        if (itemMeta) {
+          const recyclerType = itemMeta.recyclerType;
+          const buffer = this._queue.find(
+            (_buffer) => _buffer.recyclerType === recyclerType
+          );
+          if (buffer) buffer.place(index, safeRange);
+        }
       } else {
         break;
       }
@@ -122,13 +124,15 @@ class Recycler {
         count++;
       }
     }
-    // return finalIndex;
   }
 
   getMinValue() {
     let minValue = Number.MAX_SAFE_INTEGER;
     this._queue.forEach(
-      (buffer) => (minValue = Math.min(buffer.getMinValue(), minValue))
+      (buffer) => {
+        const v = buffer.getMinValue()
+        if (typeof v === 'number') minValue = Math.min(v, minValue)
+      }
     );
     return minValue;
   }
@@ -136,7 +140,10 @@ class Recycler {
   getMaxValue() {
     let maxValue = 0;
     this._queue.forEach(
-      (buffer) => (maxValue = Math.max(buffer.getMinValue(), maxValue))
+      (buffer) => {
+        const v = buffer.getMaxValue()
+        if (typeof v === 'number') maxValue = Math.max(v, maxValue)
+      }
     );
     return maxValue;
   }
