@@ -66,7 +66,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   private _onBatchLayoutFinished: () => boolean;
   private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
   private _updateScrollMetricsWithCacheBatchinator: Batchinator;
-  private _updateChildPersistanceIndicesBatchinator: Batchinator;
+  // private _updateChildPersistanceIndicesBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   private _heartBeatingIndexKeys: Array<string> = [];
   private _heartBeatResolveChangedBatchinator: Batchinator;
@@ -164,10 +164,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
       50
     );
 
-    this._updateChildPersistanceIndicesBatchinator = new Batchinator(
-      this.updateChildPersistanceIndices.bind(this),
-      50
-    );
+    // this._updateChildPersistanceIndicesBatchinator = new Batchinator(
+    //   this.updateChildPersistanceIndices.bind(this),
+    //   50
+    // );
 
     this.recalculateDimensionsIntervalTreeBatchinator = new Batchinator(
       this.recalculateDimensionsIntervalTree.bind(this),
@@ -623,14 +623,14 @@ class ListGroupDimensions<ItemT extends {} = {}>
     // this._updateChildPersistanceIndicesBatchinator.schedule();
   }
 
-  updateChildPersistanceIndices() {
-    this.indexKeys.forEach((key) => {
-      const dimension = this.getDimension(key);
-      if (dimension instanceof ListDimensions) {
-        dimension?.updatePersistanceIndicesDueToListGroup();
-      }
-    });
-  }
+  // updateChildPersistanceIndices() {
+  //   this.indexKeys.forEach((key) => {
+  //     const dimension = this.getDimension(key);
+  //     if (dimension instanceof ListDimensions) {
+  //       dimension?.updatePersistanceIndicesDueToListGroup();
+  //     }
+  //   });
+  // }
 
   /**
    * 当item layout发生变化以后，这个时候要将子 dimension的相对高度重新计算一下
@@ -698,6 +698,20 @@ class ListGroupDimensions<ItemT extends {} = {}>
       }
 
       this._inspectingTime += 1;
+
+      /**
+       * holdout: Attention.
+       * To fix insert a element
+       */
+      let _data = []
+      for (let index = 0; index < this.indexKeys.length; index++) {
+        const listKey = this.indexKeys[index]
+        const _dimensions = this.getDimension(listKey);
+        _data = _data.concat(_dimensions.getData())
+      }
+
+      this._flattenData = _data
+      this.calculateDimensionsIndexRange();
     }
   }
 

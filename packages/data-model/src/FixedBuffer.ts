@@ -27,6 +27,10 @@ class FixedBuffer {
     this._thresholdIndexValue = props.thresholdIndexValue;
   }
 
+  get thresholdIndexValue() {
+    return this._thresholdIndexValue
+  }
+
   getPosition(rowIndex: number, startIndex: number, endIndex: number) {
     if (rowIndex < 0) return null;
     // 初始化的item不参与absolute替换

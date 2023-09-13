@@ -714,7 +714,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       _visibleStartIndex,
       /** TODO: temp set to 0 */
       // this.initialNumToRender
-      0
+      this._fixedBuffer.thresholdIndexValue
     );
 
     const safeRange = this.resolveSafeRange({
