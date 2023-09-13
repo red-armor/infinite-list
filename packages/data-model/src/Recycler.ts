@@ -56,15 +56,15 @@ class Recycler {
   }
 
   addBuffer(type: string) {
-    if (!type) return false
+    if (!type) return false;
     const index = this._queue.findIndex(
       (buffer) => buffer.recyclerType === type
     );
     if (index !== -1) return false;
-    const startIndex =
-      (this._queue.length - 1) * this._recyclerReservedBufferSize;
+    const startIndex = this._queue.length * this._recyclerReservedBufferSize;
     const buffer = new FixedBuffer({
       startIndex,
+      owner: this._owner,
       recyclerType: type,
       size: this._recyclerBufferSize,
       thresholdIndexValue: this._thresholdIndexValue,
@@ -90,6 +90,7 @@ class Recycler {
     /** the max index value, always be the length of data */
     maxIndex: number;
   }) {
+    this._queue.forEach((buffer) => buffer.start());
     const {
       startIndex: _startIndex,
       safeRange,
@@ -114,7 +115,7 @@ class Recycler {
           const buffer = this._queue.find(
             (_buffer) => _buffer.recyclerType === recyclerType
           );
-          if (buffer) buffer.place(index, safeRange);
+          if (buffer) buffer.place(index, itemMeta, safeRange);
         }
       } else {
         break;
@@ -128,23 +129,19 @@ class Recycler {
 
   getMinValue() {
     let minValue = Number.MAX_SAFE_INTEGER;
-    this._queue.forEach(
-      (buffer) => {
-        const v = buffer.getMinValue()
-        if (typeof v === 'number') minValue = Math.min(v, minValue)
-      }
-    );
+    this._queue.forEach((buffer) => {
+      const v = buffer.getMinValue();
+      if (typeof v === 'number') minValue = Math.min(v, minValue);
+    });
     return minValue;
   }
 
   getMaxValue() {
     let maxValue = 0;
-    this._queue.forEach(
-      (buffer) => {
-        const v = buffer.getMaxValue()
-        if (typeof v === 'number') maxValue = Math.max(v, maxValue)
-      }
-    );
+    this._queue.forEach((buffer) => {
+      const v = buffer.getMaxValue();
+      if (typeof v === 'number') maxValue = Math.max(v, maxValue);
+    });
     return maxValue;
   }
 }

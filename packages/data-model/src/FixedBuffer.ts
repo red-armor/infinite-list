@@ -1,5 +1,7 @@
 import IntegerBufferSet from '@x-oasis/integer-buffer-set';
 import { SafeRange } from './types';
+import ListBaseDimensions from './ListBaseDimensions';
+import ItemMeta from './ItemMeta';
 
 type FixedBufferProps = {
   /**
@@ -17,6 +19,7 @@ type FixedBufferProps = {
 
   startIndex: number;
   endIndex: number;
+  owner: ListBaseDimensions;
 };
 
 class FixedBuffer {
@@ -29,16 +32,33 @@ class FixedBuffer {
    * start index
    */
   private _thresholdIndexValue = 0;
+
+  private _owner: ListBaseDimensions;
+
   private _startIndex: number;
   private _endIndex: number;
   private _recyclerType: string;
   private _indices: Array<number> = [];
   private _recyclerReservedBufferSize: number;
 
+  private _indicesCopy = [];
+  private _newIndices = [];
+  private _itemMetaIndices = [];
+  private _newItemMetaIndices = [];
+
   constructor(props: FixedBufferProps) {
-    const { size, thresholdIndexValue, recyclerReservedBufferSize, recyclerType } = props;
+    const {
+      size,
+      thresholdIndexValue,
+      recyclerReservedBufferSize,
+      recyclerType,
+      owner,
+      startIndex,
+    } = props;
     this._size = size;
-    this._recyclerType = recyclerType
+    this._owner = owner;
+    this._startIndex = startIndex;
+    this._recyclerType = recyclerType;
     this._thresholdIndexValue = thresholdIndexValue;
     this._recyclerReservedBufferSize = recyclerReservedBufferSize;
   }
@@ -82,15 +102,28 @@ class FixedBuffer {
     return position;
   }
 
-  place(index: number, safeRange: SafeRange) {
-    const position = this.getPosition(
-      index,
-      safeRange.startIndex,
-      safeRange.endIndex
-    );
-    if (position !== null) return (this._indices[position] = index);
+  start() {
+    this._indicesCopy = this._bufferSet.indices.map((i) => parseInt(i));
+    this._newItemMetaIndices = new Array(this._recyclerReservedBufferSize);
+    this._indices = new Array(this._recyclerReservedBufferSize);
+  }
 
-    return false;
+  place(index: number, itemMeta: ItemMeta, safeRange: SafeRange) {
+    const idx = this._itemMetaIndices.findIndex((meta) => meta === itemMeta);
+    if (idx !== -1) {
+      const position = idx;
+      this._newItemMetaIndices[position] = itemMeta;
+      this._indices[position] = index;
+    } else {
+      const position = this.getPosition(
+        index,
+        safeRange.startIndex,
+        safeRange.endIndex
+      );
+      if (position === position) {
+        this._newItemMetaIndices[position] = itemMeta;
+      }
+    }
   }
 
   getMaxValue() {
@@ -103,8 +136,58 @@ class FixedBuffer {
 
   getIndices() {
     const arr = [];
+    const nextItemMetaIndices = new Array(this._recyclerReservedBufferSize);
     for (let idx = 0; idx < this._recyclerReservedBufferSize; idx++) {
-      arr[idx] = parseInt(this._bufferSet.indices[idx]) || null;
+      if (typeof this._newItemMetaIndices[idx] === 'number') {
+        // const targetIndex = this._bufferSet.indices[idx]
+        const targetIndex = this._indices[idx];
+        const itemMeta = this._newItemMetaIndices[idx];
+        arr.push({
+          itemMeta,
+          targetIndex,
+          recycleKey: `recycle_${this._startIndex + idx}`,
+        });
+        nextItemMetaIndices[idx] = itemMeta;
+        continue;
+      } else if ((this._owner.getData() || [])[this._indicesCopy[idx]]) {
+        const targetIndex = this._indicesCopy[idx];
+        const data = this._owner.getData() || [];
+        const item = data[targetIndex];
+        if (item) {
+          const itemMeta = this._owner.getFinalItemMeta(item);
+          if (itemMeta && itemMeta.recyclerType === this.recyclerType) {
+            arr.push({
+              itemMeta,
+              targetIndex,
+              recycleKey: `recycle_${this._startIndex + idx}`,
+            });
+            nextItemMetaIndices[idx] = itemMeta;
+            continue;
+          }
+        }
+      }
+
+      this._itemMetaIndices = nextItemMetaIndices;
+      arr.push(null);
+
+      // const targetIndex = parseInt(this._bufferSet.indices[idx])
+      // if (targetIndex === targetIndex) {
+      //   const data = this._owner.getData() || []
+      //   const item = data[targetIndex]
+      //   if (item) {
+      //     const itemMeta = this._owner.getFinalItemMeta(item);
+      //     if (itemMeta && (itemMeta.recyclerType === this.recyclerType)) {
+      //       arr.push({
+      //         itemMeta,
+      //         targetIndex,
+      //       })
+
+      //       continue
+      //     }
+      //   }
+      //   // remove target index from position idx
+      //   // this._bufferSet.remove(idx)
+      // }
     }
 
     return arr;

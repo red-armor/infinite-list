@@ -346,7 +346,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   }
 
   addBuffer(recyclerType: string) {
-    return this._recycler.addBuffer(recyclerType)
+    return this._recycler.addBuffer(recyclerType);
   }
 
   cleanup() {
@@ -724,53 +724,101 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     );
     const targetIndices = this._recycler.getIndices();
 
-    targetIndices.forEach((targetIndex, index) => {
-      const item = this._data[targetIndex];
-      if (!item) return;
+    targetIndices
+      .filter((v) => v)
+      .forEach((info, index) => {
+        const { itemMeta, targetIndex, recycleKey } = info;
+        const item = this.getData()[targetIndex];
+        const itemLayout = itemMeta?.getLayout();
+        const itemLength =
+          (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
-      const itemKey = this.getFinalItemKey(item);
-      const itemMeta = this.getFinalItemMeta(item);
-      const itemLayout = itemMeta?.getLayout();
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+        const itemMetaState =
+          !this._scrollMetrics || !itemMeta?.getLayout()
+            ? itemMeta
+              ? itemMeta.getState()
+              : {}
+            : this._configTuple.resolveItemMetaState(
+                itemMeta,
+                this._scrollMetrics,
+                // should add container offset, because indexToOffsetMap containerOffset is
+                // exclusive.
+                () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
+              );
 
-      const itemMetaState =
-        !this._scrollMetrics || !itemMeta?.getLayout()
-          ? itemMeta
-            ? itemMeta.getState()
-            : {}
-          : this._configTuple.resolveItemMetaState(
-              itemMeta,
-              this._scrollMetrics,
-              // should add container offset, because indexToOffsetMap containerOffset is
-              // exclusive.
-              () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
-            );
+        itemMeta?.setItemMetaState(itemMetaState);
 
-      itemMeta?.setItemMetaState(itemMetaState);
+        recycleStateResult.push({
+          key: `recycle_${index}`,
+          targetKey: itemMeta.getKey(),
+          targetIndex,
+          length: itemLength,
+          isSpace: false,
+          isSticky: false,
+          item,
+          itemMeta,
 
-      recycleStateResult.push({
-        key: `recycle_${index}`,
-        targetKey: itemKey,
-        targetIndex,
-        length: itemLength,
-        isSpace: false,
-        isSticky: false,
-        item,
-        itemMeta,
-
-        /**
-         * itemMeta should get from parent
-         */
-        viewable: itemMeta.getState().viewable,
-        // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-        offset:
-          itemLength && !itemMeta.isApproximateLayout
-            ? indexToOffsetMap[targetIndex]
-            : this.itemOffsetBeforeLayoutReady,
-        position: 'buffered',
+          /**
+           * itemMeta should get from parent
+           */
+          viewable: itemMeta.getState().viewable,
+          // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+          offset:
+            itemLength && !itemMeta.isApproximateLayout
+              ? indexToOffsetMap[targetIndex]
+              : this.itemOffsetBeforeLayoutReady,
+          position: 'buffered',
+        });
       });
-    });
+    // const targetIndices = this._recycler.getIndices();
+
+    // targetIndices.forEach((targetIndex, index) => {
+    //   const item = this._data[targetIndex];
+    //   if (!item) return;
+
+    //   // const itemKey = this.getFinalItemKey(item);
+    //   const itemMeta = this.getFinalItemMeta(item);
+    //   const itemLayout = itemMeta?.getLayout();
+    //   const itemLength =
+    //     (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+    //   const itemMetaState =
+    //     !this._scrollMetrics || !itemMeta?.getLayout()
+    //       ? itemMeta
+    //         ? itemMeta.getState()
+    //         : {}
+    //       : this._configTuple.resolveItemMetaState(
+    //           itemMeta,
+    //           this._scrollMetrics,
+    //           // should add container offset, because indexToOffsetMap containerOffset is
+    //           // exclusive.
+    //           () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
+    //         );
+
+    //   itemMeta?.setItemMetaState(itemMetaState);
+
+    //   recycleStateResult.push({
+    //     key: `recycle_${index}`,
+    //     targetKey: itemKey,
+    //     targetIndex,
+    //     length: itemLength,
+    //     isSpace: false,
+    //     isSticky: false,
+    //     item,
+    //     itemMeta,
+
+    //     /**
+    //      * itemMeta should get from parent
+    //      */
+    //     viewable: itemMeta.getState().viewable,
+    //     // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+    //     offset:
+    //       itemLength && !itemMeta.isApproximateLayout
+    //         ? indexToOffsetMap[targetIndex]
+    //         : this.itemOffsetBeforeLayoutReady,
+    //     position: 'buffered',
+    //   });
+    // });
     return recycleStateResult;
   }
 
