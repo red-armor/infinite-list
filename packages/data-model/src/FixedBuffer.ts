@@ -1,4 +1,5 @@
 import IntegerBufferSet from '@x-oasis/integer-buffer-set';
+import { SafeRange } from './types';
 
 type FixedBufferProps = {
   /**
@@ -11,6 +12,9 @@ type FixedBufferProps = {
   size: number;
 
   recyclerType: string;
+
+  startIndex: number;
+  endIndex: number;
 };
 
 class FixedBuffer {
@@ -26,18 +30,20 @@ class FixedBuffer {
   private _startIndex: number;
   private _endIndex: number;
   private _recyclerType: string;
+  private _indices: Array<number> = [];
 
   constructor(props: FixedBufferProps) {
+    const { size, thresholdIndexValue } = props;
     this._size = props.size;
     this._thresholdIndexValue = props.thresholdIndexValue;
   }
 
   get thresholdIndexValue() {
-    return this._thresholdIndexValue
+    return this._thresholdIndexValue;
   }
 
   get recyclerType() {
-    return this._recyclerType
+    return this._recyclerType;
   }
 
   getPosition(rowIndex: number, startIndex: number, endIndex: number) {
@@ -67,59 +73,15 @@ class FixedBuffer {
     return position;
   }
 
-  updateIndices(
-    targetIndices: Array<number>,
-    props: {
-      /**
-       * index in range should not be recycled
-       */
-      safeRange: {
-        startIndex: number;
-        endIndex: number;
-      };
-      startIndex: number;
-      maxCount: number;
-      step: number;
+  place(index: number, safeRange: SafeRange) {
+    const position = this.getPosition(
+      index,
+      safeRange.startIndex,
+      safeRange.endIndex
+    );
+    if (position !== null) return (this._indices[position] = index);
 
-      /** the max index value, always be the length of data */
-      maxIndex: number;
-    }
-  ) {
-    const {
-      startIndex: _startIndex,
-      safeRange,
-      step,
-      maxCount,
-      maxIndex,
-    } = props;
-    const startIndex = Math.max(_startIndex, 0);
-    let finalIndex = startIndex;
-    let count = 0;
-    if (maxCount < 0) return finalIndex;
-    for (
-      let index = startIndex;
-      step > 0 ? index <= maxIndex : index >= 0;
-      index += step
-    ) {
-      // itemLayout should not be a condition, may cause too many unLayout item
-      if (count < maxCount) {
-        const position = this.getPosition(
-          index,
-          safeRange.startIndex,
-          safeRange.endIndex
-        );
-
-        finalIndex = index;
-        if (position !== null) targetIndices[position] = index;
-      } else {
-        break;
-      }
-
-      if (index >= this._thresholdIndexValue) {
-        count++;
-      }
-    }
-    return finalIndex;
+    return false;
   }
 
   getMaxValue() {

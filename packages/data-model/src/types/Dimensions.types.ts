@@ -48,9 +48,12 @@ export type ListBaseDimensionsProps<ItemT> = ListDimensionsProps<ItemT> & {
   initialNumToRender?: number;
   recyclerTypes?: Array<string>;
 
-  getData?: () => any
+  getData?: () => any;
 
-  provider: any
+  provider: any;
+
+  recyclerBufferSize?: number;
+  recyclerReservedBufferPerBatch?: number;
 };
 
 export type BaseDimensionsProps = {
@@ -133,8 +136,7 @@ export type ListDimensionsProps<ItemT> = {
 
   itemApproximateLength?: number;
   useItemApproximateLength?: boolean;
-  recyclerType?: string
-
+  recyclerType?: string;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps &
   BaseLayoutProps;

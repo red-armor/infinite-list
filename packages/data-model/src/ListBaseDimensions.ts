@@ -13,7 +13,7 @@ import {
   MAX_TO_RENDER_PER_BATCH,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
-  RECYCLE_BUFFERED_COUNT,
+  RECYCLER_RESERVED_BUFFER_PER_BATCH,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
 } from './common';
@@ -47,8 +47,9 @@ import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import StillnessHelper from './utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import FixedBuffer from './FixedBuffer';
+// import FixedBuffer from './FixedBuffer';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
+import Recycler from './Recycler';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -86,9 +87,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
   private _recalculateRecycleResultStateBatchinator: Batchinator;
 
-  private _recyclerTypes: Array<string>;
-  private _recyclerQueue: Array<FixedBuffer> = []
-
   private _selector = new EnabledSelector({
     onEnabled: this.onEnableDispatchScrollMetrics.bind(this),
   });
@@ -96,11 +94,11 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   private _offsetTriggerCachedState = 0;
 
   private _stillnessHelper: StillnessHelper;
+  private _recycler: Recycler;
 
   private _recycleThreshold: number;
   readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
-  private _fixedBuffer: FixedBuffer;
   initialNumToRender: number;
   private _recycleBufferedCount: number;
 
@@ -139,8 +137,12 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       recycleThreshold,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
-      recycleBufferedCount = RECYCLE_BUFFERED_COUNT,
+      recycleBufferedCount = RECYCLER_RESERVED_BUFFER_PER_BATCH,
       itemOffsetBeforeLayoutReady = ITEM_OFFSET_BEFORE_LAYOUT_READY,
+
+      recyclerBufferSize,
+      recyclerReservedBufferPerBatch,
+
       viewabilityConfig,
       onViewableItemsChanged,
       viewabilityConfigCallbackPairs,
@@ -169,7 +171,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._provider = provider;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
-    this._recyclerTypes = recyclerTypes;
     this._getData = getData;
     this._recycleBufferedCount = Math.max(recycleBufferedCount, 1);
     this._maxToRenderPerBatch = maxToRenderPerBatch;
@@ -232,14 +233,13 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._isActive = this.resolveInitialActiveValue(active);
     this.initialNumToRender = initialNumToRender;
 
-    // this._fixedBuffer = new FixedBuffer({
-    //   /**
-    //    * TODO temp set 0,
-    //    */
-    //   thresholdIndexValue: this.initialNumToRender,
-    //   // thresholdIndexValue: 0,
-    //   size: this._recycleThreshold,
-    // });
+    this._recycler = new Recycler({
+      owner: this,
+      recyclerTypes,
+      recyclerBufferSize,
+      thresholdIndexValue: initialNumToRender,
+      recyclerReservedBufferPerBatch,
+    });
 
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
@@ -366,15 +366,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
         const listKey = this._deps[index];
         const listHandler = manager.getKeyList(listKey);
         if (!listHandler) continue;
-
-        // if (
-        //   listHandler.getRenderState() !== ListRenderState.ON_RENDER_FINISHED
-        // ) {
-        //   this._renderStateListenersCleaner.push(
-        //     listHandler.addRenderStateListener(this.handleDeps.bind(this))
-        //   );
-        //   isActive = false;
-        // }
       }
       return isActive;
     }
@@ -679,17 +670,15 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       visibleStartIndex: _visibleStartIndex,
       isEndReached,
     } = state;
-    const targetIndices = this._fixedBuffer
-      .getIndices()
-      .map((i) => parseInt(i));
+    // const targetIndices = this._fixedBuffer
+    //   .getIndices()
+    //   .map((i) => parseInt(i));
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
-      /** TODO: temp set to 0 */
-      // this.initialNumToRender
-      this._fixedBuffer.thresholdIndexValue
+      this._recycler.thresholdIndexValue
     );
 
     const safeRange = this.resolveSafeRange({
@@ -697,118 +686,45 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       visibleEndIndex,
     });
 
-    if (this.recognizeLengthBeforeLayout()) {
-      if (Math.abs(velocity) <= 1) {
-        this._fixedBuffer.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex - 1,
-          maxCount: visibleEndIndex - visibleStartIndex + 1 + 2,
-          step: 1,
-          /** TODO !!!!!! */
-          maxIndex: this.getData().length,
-        });
-      } else if (velocity > 0) {
-        this._fixedBuffer.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex,
-          maxCount:
-            visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
-          step: 1,
-          /** TODO */
-          maxIndex: this.getData().length,
-        });
-      } else {
-        this._fixedBuffer.updateIndices(targetIndices, {
-          safeRange,
-          startIndex: visibleStartIndex - 2,
-          maxCount:
-            visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
-          step: 1,
-          /** TODO */
-          maxIndex: this.getData().length,
-        });
-      }
-    } else {
-      this._fixedBuffer.updateIndices(targetIndices, {
+    if (Math.abs(velocity) <= 1) {
+      this._recycler.updateIndices({
+        safeRange,
+        startIndex: visibleStartIndex - 1,
+        maxCount: visibleEndIndex - visibleStartIndex + 1 + 2,
+        step: 1,
+        /** TODO !!!!!! */
+        maxIndex: this.getData().length,
+      });
+    } else if (velocity > 0) {
+      this._recycler.updateIndices({
         safeRange,
         startIndex: visibleStartIndex,
-        maxCount: visibleEndIndex - visibleStartIndex + 1,
+        maxCount:
+          visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
         step: 1,
         /** TODO */
         maxIndex: this.getData().length,
       });
-      // ********************** commented on 0626 begin ************************//
-      if (velocity >= 0) {
-        const maxValue = this._fixedBuffer.getMaxValue();
-        if (
-          isEndReached &&
-          maxValue - (visibleEndIndex + 1) < this.maxToRenderPerBatch
-        ) {
-          // const remainingSpace = this.recycleThreshold - (visibleEndIndex - visibleStartIndex + 2)
-          this._fixedBuffer.updateIndices(targetIndices, {
-            safeRange,
-            startIndex: maxValue + 1,
-            maxCount: Math.max(
-              Math.min(
-                this.recycleThreshold - (maxValue - visibleStartIndex + 2),
-                this.recycleBufferedCount
-              ),
-              0
-            ),
-            step: 1,
-            /** TODO */
-            maxIndex: this.getData().length,
-          });
-        } else if (!velocity) {
-          const part = Math.floor(this.recycleBufferedCount / 2);
-          this._fixedBuffer.updateIndices(targetIndices, {
-            safeRange,
-            startIndex: visibleStartIndex - 1,
-            maxCount: part,
-            step: -1,
-            /** TODO */
-            maxIndex: this.getData().length,
-          });
-          this._fixedBuffer.updateIndices(targetIndices, {
-            safeRange,
-            startIndex: visibleEndIndex + 1,
-            maxCount: this.recycleBufferedCount - part,
-            step: 1,
-            /** TODO */
-            maxIndex: this.getData().length,
-          });
-        } else if (Math.abs(velocity) < 0.5) {
-          this._fixedBuffer.updateIndices(targetIndices, {
-            safeRange,
-            startIndex: visibleEndIndex + 1,
-            maxCount: this.recycleBufferedCount,
-            step: 1,
-            /** TODO */
-            maxIndex: this.getData().length,
-          });
-        }
-      } else {
-        if (Math.abs(velocity) < 0.5) {
-          this._fixedBuffer.updateIndices(targetIndices, {
-            safeRange,
-            startIndex: visibleStartIndex - 1,
-            maxCount: this.recycleBufferedCount,
-            step: -1,
-            /** TODO */
-            maxIndex: this.getData().length,
-          });
-        }
-      }
-      // ********************** commented on 0626 end ************************//
+    } else {
+      this._recycler.updateIndices({
+        safeRange,
+        startIndex: visibleStartIndex - 2,
+        maxCount:
+          visibleEndIndex - visibleStartIndex + 1 + this.recycleBufferedCount,
+        step: 1,
+        /** TODO */
+        maxIndex: this.getData().length,
+      });
     }
 
-    const minValue = this._fixedBuffer.getMinValue();
-    const maxValue = this._fixedBuffer.getMaxValue();
+    const minValue = this._recycler.getMinValue();
+    const maxValue = this._recycler.getMaxValue();
     const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
       minValue,
       maxValue,
       true
     );
+    const targetIndices = this._recycler.getIndices();
 
     targetIndices.forEach((targetIndex, index) => {
       const item = this._data[targetIndex];

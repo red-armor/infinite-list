@@ -11,6 +11,7 @@ import {
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
+import { DEFAULT_RECYCLER_TYPE } from './common';
 
 let count = 0;
 class ItemMeta extends ViewabilityItemMeta {
@@ -18,6 +19,7 @@ class ItemMeta extends ViewabilityItemMeta {
   private _id: string;
   private _layout?: ItemLayout;
   private _separatorLength?: number;
+  private _recyclerType: string;
   private _owner?: ItemMetaOwner;
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
@@ -38,6 +40,7 @@ class ItemMeta extends ViewabilityItemMeta {
     state?: ItemMetaState;
     isInitialItem?: boolean;
     canIUseRIC?: boolean;
+    recyclerType?: string
   }) {
     super(props);
     const {
@@ -47,6 +50,7 @@ class ItemMeta extends ViewabilityItemMeta {
       state,
       isListItem,
       canIUseRIC,
+      recyclerType = DEFAULT_RECYCLER_TYPE,
       isInitialItem = false,
     } = props;
     this._owner = owner;
@@ -62,9 +66,8 @@ class ItemMeta extends ViewabilityItemMeta {
 
     this._canIUseRIC = canIUseRIC;
     this._isApproximateLayout = false;
+    this._recyclerType = recyclerType
 
-    // this.addStateListener = this.addStateListener.bind(this);
-    // this.removeStateListener = this.removeStateListener.bind(this);
     this.addStateEventListener = this.addStateEventListener.bind(this);
   }
 
