@@ -522,6 +522,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   }
 
   applyStateResult(stateResult: ListStateResult<ItemT>) {
+    return true
     let shouldStateUpdate = false;
 
     if (!this._stateResult && stateResult) {

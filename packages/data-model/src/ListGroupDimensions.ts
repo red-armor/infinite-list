@@ -544,7 +544,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
         },
       };
     // should update indexKeys first !!!
-    this.pushIndexKey(listKey);
+    // this.pushIndexKey(listKey);
+    this.startInspection()
     const { recyclerType } = listDimensionsProps
     const dimensions = new ListDimensions({
       ...listDimensionsProps,
@@ -561,10 +562,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
     // update dimensionsIntervalTree (to fix Dimensions with default layout
     // such getItemLayout)
     this.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    this.registeredKeys.push(listKey);
+    // this.registeredKeys.push(listKey);
     this.updateFlattenData(listKey, listDimensionsProps.data);
 
-    this._startInspectBatchinator.schedule();
+    // this._startInspectBatchinator.schedule();
 
     return {
       dimensions,
@@ -612,15 +613,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.updateScrollMetrics(this._scrollMetrics, { useCache });
     // this._updateChildPersistanceIndicesBatchinator.schedule();
   }
-
-  // updateChildPersistanceIndices() {
-  //   this.indexKeys.forEach((key) => {
-  //     const dimension = this.getDimension(key);
-  //     if (dimension instanceof ListDimensions) {
-  //       dimension?.updatePersistanceIndicesDueToListGroup();
-  //     }
-  //   });
-  // }
 
   /**
    * 当item layout发生变化以后，这个时候要将子 dimension的相对高度重新计算一下
@@ -673,19 +665,21 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     // 比如说，中间发生了顺序调整；自动检测确保
     if (
-      !this.registeredKeys.length &&
-      resolveChanged(this._heartBeatingIndexKeys, this.indexKeys).isEqual
+      !resolveChanged(this._heartBeatingIndexKeys, this.indexKeys).isEqual
     ) {
-      if (
-        !shallowArrayEqual(
-          this._heartBeatingIndexKeys,
-          this._heartBeatingIndexKeysSentCommit
-        )
-      ) {
-        this.indexKeys = nextIndexKeys;
-        this.onItemsCountChanged();
-        this._heartBeatingIndexKeysSentCommit = this.indexKeys;
-      }
+      // if (
+      //   !shallowArrayEqual(
+      //     this._heartBeatingIndexKeys,
+      //     this._heartBeatingIndexKeysSentCommit
+      //   )
+      // ) {
+      //   this.indexKeys = nextIndexKeys;
+      //   this.onItemsCountChanged();
+      //   this._heartBeatingIndexKeysSentCommit = this.indexKeys;
+      // }
+
+      this.indexKeys = nextIndexKeys;
+      this.onItemsCountChanged();
 
       this._inspectingTime += 1;
 
@@ -721,7 +715,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.registeredKeys.splice(indexInRegisteredKeys, 1);
     }
 
-    this._heartBeatResolveChangedBatchinator.schedule();
+    this.heartBeatResolveChanged()
+    // this._heartBeatResolveChangedBatchinator.schedule();
   }
 
   getInspectAPI(): InspectingAPI {
