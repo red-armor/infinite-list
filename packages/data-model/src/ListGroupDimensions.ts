@@ -655,6 +655,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     this.updateChildDimensionsOffsetInContainer();
     this.calculateReflowItemsLength();
+    this.updateScrollMetrics()
   }
 
   removeItem(key: string) {
@@ -1343,6 +1344,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       flush?: boolean;
     }
   ) {
+
     const scrollMetrics = _scrollMetrics || this._scrollMetrics;
     const useCache = defaultBooleanValue(_options?.useCache, true);
     const flush = defaultBooleanValue(_options?.flush, false);
@@ -1352,39 +1354,49 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this._scrollMetrics = scrollMetrics;
       return;
     }
-    if (
-      !useCache ||
-      // 刚开始时，this._scrollMetrics是不存在的
-      !this._scrollMetrics ||
-      scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
-      scrollMetrics.offset !== this._scrollMetrics.offset ||
-      scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
-    ) {
-      this._scrollMetrics = scrollMetrics;
-      if (flush) {
-        this._dispatchMetricsBatchinator.flush(scrollMetrics);
-      } else {
-        this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-      }
-    } else if (this._rangeResult && this._dispatchedMetricsResult) {
-      this._scrollMetrics = scrollMetrics;
-      // 缓存的优先级，永远不如不使用缓存的；比如前面的list data发生了变化，
-      // 但是后续的list并没有发生变化，这个时候要自行自定义的
-      if (!this._dispatchMetricsBatchinator.inSchedule()) {
-        if (flush) {
-          this._updateScrollMetricsWithCacheBatchinator.flush(scrollMetrics);
-        } else {
-          this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
-        }
-      } else {
-        // 刷新scrollMetrics的值
-        if (flush) {
-          this._dispatchMetricsBatchinator.flush(scrollMetrics);
-        } else {
-          this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-        }
-      }
+
+    this._scrollMetrics = scrollMetrics;
+    if (flush) {
+      this._dispatchMetricsBatchinator.flush(scrollMetrics);
+    } else {
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
     }
+
+    return
+
+    // if (
+    //   !useCache ||
+    //   // 刚开始时，this._scrollMetrics是不存在的
+    //   !this._scrollMetrics ||
+    //   scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
+    //   scrollMetrics.offset !== this._scrollMetrics.offset ||
+    //   scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
+    // ) {
+    //   this._scrollMetrics = scrollMetrics;
+    //   if (flush) {
+    //     this._dispatchMetricsBatchinator.flush(scrollMetrics);
+    //   } else {
+    //     this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+    //   }
+    // } else if (this._rangeResult && this._dispatchedMetricsResult) {
+    //   this._scrollMetrics = scrollMetrics;
+    //   // 缓存的优先级，永远不如不使用缓存的；比如前面的list data发生了变化，
+    //   // 但是后续的list并没有发生变化，这个时候要自行自定义的
+    //   if (!this._dispatchMetricsBatchinator.inSchedule()) {
+    //     if (flush) {
+    //       this._updateScrollMetricsWithCacheBatchinator.flush(scrollMetrics);
+    //     } else {
+    //       this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
+    //     }
+    //   } else {
+    //     // 刷新scrollMetrics的值
+    //     if (flush) {
+    //       this._dispatchMetricsBatchinator.flush(scrollMetrics);
+    //     } else {
+    //       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+    //     }
+    //   }
+    // }
   }
 
   addRenderStateListener(fn: Function) {

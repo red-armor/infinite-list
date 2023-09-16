@@ -42,8 +42,6 @@ import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
 import memoizeOne from 'memoize-one';
-import shallowEqual from '@x-oasis/shallow-equal';
-import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import StillnessHelper from './utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 // import FixedBuffer from './FixedBuffer';

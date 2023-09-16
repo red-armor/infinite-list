@@ -491,7 +491,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
    * onContentSizeChanged.
    */
   setIntervalTreeValue(index: number, length: number) {
-    const oldLength = this.intervalTree.getHeap()[1];
+    // const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
     const nextLength = this.intervalTree.getHeap()[1];
     const len = this.intervalTree.getMaxUsefulLength();
@@ -501,10 +501,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         nextLength / Math.max(len, 1)
       );
 
-    if (oldLength !== nextLength && this._listGroupDimension) {
-      this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    }
-
     if (
       this.getReflowItemsLength() === this._data.length &&
       this._renderStateListeners.length
@@ -513,6 +509,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         const falsy = this._onBatchLayoutFinished();
         if (falsy) this.notifyRenderFinished();
       }
+    }
+
+    // 比如换了一个item的话，不会触发更新
+    if (this._listGroupDimension) {
+      this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
     }
 
     if (this._recycleEnabled()) {
@@ -932,7 +933,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // const meta = this.getItemMeta(item, index);
 
     if (!meta) return false;
-    meta.isApproximateLayout = false;
 
     if (typeof info === 'number') {
       let length = this.normalizeLengthNumber(info);
@@ -950,7 +950,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           this.setIntervalTreeValue(index, length);
           return true;
         }
+      } else if (meta.isApproximateLayout) {
+        // 比如换了一个item的话，不会触发更新
+        if (this._listGroupDimension) {
+          this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
+        } else if (this._recycleEnabled()) {
+          this._recalculateRecycleResultStateBatchinator.schedule();
+        }
       }
+
+      meta.isApproximateLayout = false;
       return false;
     }
     const _info = this.normalizeLengthInfo(info);
@@ -961,15 +970,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
       })
     ) {
-      // if (meta.getLayout()) {
-      //   console.warn(
-      //     '[infinite-list/data-model] override existing key item ',
-      //     `${key} from value ${JSON.stringify(
-      //       meta.getLayout()
-      //     )}to ${JSON.stringify(_info)}`
-      //   );
-      // }
-
+      meta.isApproximateLayout = false
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );
@@ -983,7 +984,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         this.setIntervalTreeValue(index, length);
         return true;
       }
+    } else if (meta.isApproximateLayout) {
+      // 比如换了一个item的话，不会触发更新
+      if (this._listGroupDimension) {
+        this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
+      } else if (this._recycleEnabled()) {
+        this._recalculateRecycleResultStateBatchinator.schedule();
+      }
     }
+
+    meta.isApproximateLayout = false
 
     return false;
   }
