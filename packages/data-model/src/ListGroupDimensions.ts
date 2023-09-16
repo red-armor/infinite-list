@@ -20,6 +20,7 @@ import {
   InspectingAPI,
   InspectingListener,
   ItemLayout,
+  KeysChangedType,
   ListDimensionsProps,
   ListGroupDimensionsProps,
   ListRangeResult,
@@ -519,7 +520,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
-      this.onItemsCountChanged();
+      // this.onItemsCountChanged();
+      this.calculateDimensionsIndexRange();
+      this.calculateReflowItemsLength();
+      this.updateChildDimensionsOffsetInContainer();
+      this.reflowFlattenData()
+      this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
     }
   }
 
@@ -546,7 +552,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     // should update indexKeys first !!!
     // this.pushIndexKey(listKey);
     this.startInspection()
-    const { recyclerType } = listDimensionsProps
+    const { recyclerType, data = [] } = listDimensionsProps
     const dimensions = new ListDimensions({
       ...listDimensionsProps,
       id: listKey,
@@ -557,13 +563,21 @@ class ListGroupDimensions<ItemT extends {} = {}>
     });
     this._listBaseDimension.addBuffer(recyclerType)
     this.setDimension(listKey, dimensions);
-    this.onItemsCountChanged();
-    // because Dimensions should be create first, so after initialized
-    // update dimensionsIntervalTree (to fix Dimensions with default layout
-    // such getItemLayout)
-    this.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    // this.registeredKeys.push(listKey);
-    this.updateFlattenData(listKey, listDimensionsProps.data);
+    this.setListData(listKey, data)
+
+    // this.calculateDimensionsIndexRange();
+    // this.calculateReflowItemsLength();
+    // this.updateChildDimensionsOffsetInContainer();
+    // this.updateFlattenData(listKey, data);
+    // this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
+
+    // this.onItemsCountChanged();
+    // // because Dimensions should be create first, so after initialized
+    // // update dimensionsIntervalTree (to fix Dimensions with default layout
+    // // such getItemLayout)
+    // this.recalculateDimensionsIntervalTreeBatchinator.schedule();
+    // // this.registeredKeys.push(listKey);
+    // this.updateFlattenData(listKey, listDimensionsProps.data);
 
     // this._startInspectBatchinator.schedule();
 
@@ -656,7 +670,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(key);
-      this.onItemsCountChanged();
+      // this.onItemsCountChanged();
+
+      this.calculateDimensionsIndexRange();
+      this.calculateReflowItemsLength();
+      this.updateChildDimensionsOffsetInContainer();
+      this.reflowFlattenData()
+      this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
     }
   }
 
@@ -729,9 +749,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }
 
   startInspection() {
-    this._heartBeatResolveChangedBatchinator.dispose({
-      abort: true,
-    });
+    // this._heartBeatResolveChangedBatchinator.dispose({
+    //   abort: true,
+    // });
 
     const time = +Date.now();
 
@@ -767,12 +787,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
       };
     const len = this.indexKeys.length;
     const beforeKey = len ? this.indexKeys[len - 1] : '';
-    this.pushIndexKey(key);
+    // this.pushIndexKey(key);
     const startIndex = beforeKey
       ? this.getDimensionStartIndex(beforeKey) +
         this.getDimension(beforeKey).length
       : 0;
     const { recyclerType } = itemDimensionsProps
+    this.startInspection()
 
     const dimensions = new Dimension({
       id: key,
@@ -786,11 +807,18 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     this.setDimension(key, dimensions);
     this._listBaseDimension.addBuffer(recyclerType)
-    this.onItemsCountChanged();
-    this.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    this.registeredKeys.push(key);
+
+    this.calculateDimensionsIndexRange();
+    this.updateChildDimensionsOffsetInContainer();
     this.updateFlattenData(key, dimensions.getData());
-    this._startInspectBatchinator.schedule();
+
+    this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
+
+    // this.onItemsCountChanged();
+    // this.recalculateDimensionsIntervalTreeBatchinator.schedule();
+    // this.registeredKeys.push(key);
+    // this.updateFlattenData(key, dimensions.getData());
+    // this._startInspectBatchinator.schedule();
     return {
       dimensions,
       remover: () => {
@@ -801,6 +829,17 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   getData() {
     return this._flattenData;
+  }
+
+  reflowFlattenData() {
+    this._flattenData = this.indexKeys.reduce((acc, key) => {
+      const dimension = this.getDimension(key)
+      if (dimension) {
+        acc = [].concat(acc, dimension.getData())
+      }
+      return acc
+    }, [])
+    return this._flattenData
   }
 
   /**
@@ -837,10 +876,29 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
-    this.updateFlattenData(listKey, data);
 
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
+      if (
+        [KeysChangedType.Add, KeysChangedType.Remove].indexOf(changedType) !==
+        -1
+      ) {
+        this.calculateDimensionsIndexRange();
+        this.calculateReflowItemsLength();
+        this.updateChildDimensionsOffsetInContainer();
+        this.updateFlattenData(listKey, data);
+        this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
+        // this.onItemsCountChanged(false);
+      } else if (changedType === KeysChangedType.Reorder) {
+        this.updateFlattenData(listKey, data);
+        // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实
+        // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
+        // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
+        this.updateScrollMetrics(this._scrollMetrics, {
+          flush: true,
+          useCache: false,
+        });
+      }
     }
   }
 

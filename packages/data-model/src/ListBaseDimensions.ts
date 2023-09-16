@@ -337,10 +337,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._scrollMetrics = scrollMetrics;
   }
 
-  // set offsetInListGroup(offset: number) {
-  //   this._offsetInListGroup = offset;
-  // }
-
   get state() {
     return this._state;
   }
@@ -522,55 +518,54 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   }
 
   applyStateResult(stateResult: ListStateResult<ItemT>) {
-    return true
-    let shouldStateUpdate = false;
+    const shouldStateUpdate = true;
 
-    if (!this._stateResult && stateResult) {
-      shouldStateUpdate = true;
-    } else if (this.fillingMode === FillingMode.SPACE) {
-      shouldStateUpdate = !shallowEqual(stateResult, this._stateResult);
-    } else if (this.fillingMode === FillingMode.RECYCLE) {
-      const _stateResult = stateResult as RecycleStateResult<ItemT>;
-      const _oldStateResult = this._stateResult as RecycleStateResult<ItemT>;
+    // if (!this._stateResult && stateResult) {
+    //   shouldStateUpdate = true;
+    // } else if (this.fillingMode === FillingMode.SPACE) {
+    //   shouldStateUpdate = !shallowEqual(stateResult, this._stateResult);
+    // } else if (this.fillingMode === FillingMode.RECYCLE) {
+    //   const _stateResult = stateResult as RecycleStateResult<ItemT>;
+    //   const _oldStateResult = this._stateResult as RecycleStateResult<ItemT>;
 
-      const newRecycleState = [];
-      const oldRecycleState = [];
+    //   const newRecycleState = [];
+    //   const oldRecycleState = [];
 
-      let maxIndex = 0;
+    //   let maxIndex = 0;
 
-      for (let index = 0; index < _stateResult.recycleState.length; index++) {
-        // @ts-ignore
-        const { itemMeta, targetIndex } = _stateResult.recycleState[index];
-        if (!itemMeta || (itemMeta && itemMeta.getState().viewable)) {
-          newRecycleState.push(_stateResult.recycleState[index]);
-          oldRecycleState.push(_oldStateResult.recycleState[index]);
-          maxIndex = Math.max(targetIndex, index);
-        } else {
-          newRecycleState.push(null);
-          oldRecycleState.push(null);
-        }
-      }
+    //   for (let index = 0; index < _stateResult.recycleState.length; index++) {
+    //     // @ts-ignore
+    //     const { itemMeta, targetIndex } = _stateResult.recycleState[index];
+    //     if (!itemMeta || (itemMeta && itemMeta.getState().viewable)) {
+    //       newRecycleState.push(_stateResult.recycleState[index]);
+    //       oldRecycleState.push(_oldStateResult.recycleState[index]);
+    //       maxIndex = Math.max(targetIndex, index);
+    //     } else {
+    //       newRecycleState.push(null);
+    //       oldRecycleState.push(null);
+    //     }
+    //   }
 
-      let exists = true;
+    //   let exists = true;
 
-      // To fix onEndReached condition, data is updated. it will not trigger update issue.
-      if (isClamped(0, maxIndex + 1, this._data.length - 1)) {
-        exists =
-          _oldStateResult.recycleState.findIndex(
-            (s) => s?.targetIndex === maxIndex + 1
-          ) !== -1;
-      }
+    //   // To fix onEndReached condition, data is updated. it will not trigger update issue.
+    //   if (isClamped(0, maxIndex + 1, this._data.length - 1)) {
+    //     exists =
+    //       _oldStateResult.recycleState.findIndex(
+    //         (s) => s?.targetIndex === maxIndex + 1
+    //       ) !== -1;
+    //   }
 
-      shouldStateUpdate =
-        !(
-          shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
-          shallowArrayEqual(
-            _stateResult.spaceState,
-            _oldStateResult.spaceState,
-            shallowEqual
-          )
-        ) || !exists;
-    }
+    //   shouldStateUpdate =
+    //     !(
+    //       shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
+    //       shallowArrayEqual(
+    //         _stateResult.spaceState,
+    //         _oldStateResult.spaceState,
+    //         shallowEqual
+    //       )
+    //     ) || !exists;
+    // }
 
     if (shouldStateUpdate && typeof this._stateListener === 'function') {
       if (this.fillingMode === FillingMode.RECYCLE) {
@@ -771,55 +766,6 @@ class ListBaseDimensions<ItemT extends {} = {}> {
           position: 'buffered',
         });
       });
-    // const targetIndices = this._recycler.getIndices();
-
-    // targetIndices.forEach((targetIndex, index) => {
-    //   const item = this._data[targetIndex];
-    //   if (!item) return;
-
-    //   // const itemKey = this.getFinalItemKey(item);
-    //   const itemMeta = this.getFinalItemMeta(item);
-    //   const itemLayout = itemMeta?.getLayout();
-    //   const itemLength =
-    //     (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-
-    //   const itemMetaState =
-    //     !this._scrollMetrics || !itemMeta?.getLayout()
-    //       ? itemMeta
-    //         ? itemMeta.getState()
-    //         : {}
-    //       : this._configTuple.resolveItemMetaState(
-    //           itemMeta,
-    //           this._scrollMetrics,
-    //           // should add container offset, because indexToOffsetMap containerOffset is
-    //           // exclusive.
-    //           () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
-    //         );
-
-    //   itemMeta?.setItemMetaState(itemMetaState);
-
-    //   recycleStateResult.push({
-    //     key: `recycle_${index}`,
-    //     targetKey: itemKey,
-    //     targetIndex,
-    //     length: itemLength,
-    //     isSpace: false,
-    //     isSticky: false,
-    //     item,
-    //     itemMeta,
-
-    //     /**
-    //      * itemMeta should get from parent
-    //      */
-    //     viewable: itemMeta.getState().viewable,
-    //     // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-    //     offset:
-    //       itemLength && !itemMeta.isApproximateLayout
-    //         ? indexToOffsetMap[targetIndex]
-    //         : this.itemOffsetBeforeLayoutReady,
-    //     position: 'buffered',
-    //   });
-    // });
     return recycleStateResult;
   }
 
