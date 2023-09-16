@@ -1,7 +1,6 @@
 import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
 import noop from '@x-oasis/noop';
-import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import resolveChanged from '@x-oasis/resolve-changed';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';

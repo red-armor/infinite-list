@@ -114,16 +114,18 @@ class FixedBuffer {
       const position = idx;
       this._newItemMetaIndices[position] = itemMeta;
       this._indices[position] = index;
-    } else {
-      const position = this.getPosition(
-        index,
-        safeRange.startIndex,
-        safeRange.endIndex
-      );
-      if (position === position) {
-        this._newItemMetaIndices[position] = itemMeta;
-      }
+      return position
     }
+    const position = this.getPosition(
+      index,
+      safeRange.startIndex,
+      safeRange.endIndex
+    );
+    if (position === position) {
+      this._indices[position] = index;
+      this._newItemMetaIndices[position] = itemMeta;
+    }
+    return position
   }
 
   getMaxValue() {
@@ -138,8 +140,7 @@ class FixedBuffer {
     const arr = [];
     const nextItemMetaIndices = new Array(this._recyclerReservedBufferSize);
     for (let idx = 0; idx < this._recyclerReservedBufferSize; idx++) {
-      if (typeof this._newItemMetaIndices[idx] === 'number') {
-        // const targetIndex = this._bufferSet.indices[idx]
+      if (this._newItemMetaIndices[idx]) {
         const targetIndex = this._indices[idx];
         const itemMeta = this._newItemMetaIndices[idx];
         arr.push({

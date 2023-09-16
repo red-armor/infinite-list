@@ -580,6 +580,8 @@ class ListBaseDimensions<ItemT extends {} = {}> {
           {
             recycleState,
             spaceState,
+            // @ts-ignore
+            rangeState: stateResult.rangeState,
           },
           this._stateResult
         );
@@ -588,7 +590,11 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       }
     }
 
-    this._stateResult = stateResult;
+    this._stateResult = {
+      ...stateResult,
+      // @ts-ignore
+      rangeState: stateResult.rangeState,
+    };
   }
 
   setState(state: ListState<ItemT>, force = false) {
@@ -778,6 +784,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     const stateResult = {
       recycleState: recycleStateResult.filter((v) => v),
       spaceState: spaceStateResult.filter((v) => v),
+      rangeState: state,
     };
 
     return stateResult;
