@@ -1,6 +1,16 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.6](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.6) (2023-09-13)
+## [0.2.45-recycle-group.7](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.7) (2023-09-16)
+
+
+
+## 0.2.45-recycle-group.7 (2023-09-16)
+
+
+### Features
+
+* remove ignore code ([af2526e](https://github.com/red-armor/infinite-list/commit/af2526ea73cabb56e0d651ef9fcb01ded9612470))
+* update ([4203a53](https://github.com/red-armor/infinite-list/commit/4203a53f7e3a24355b87fd509cd24247df317b10))
 
 
 
