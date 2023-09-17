@@ -195,25 +195,25 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // this._isActive = this.resolveInitialActiveValue(active);
     this._isActive = true;
 
-    if (this._listGroupDimension && this.initialNumToRender) {
-      if (process.env.NODE_ENV === 'development')
-        console.warn(
-          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-            ' initialNumToRender value should be controlled' +
-            'by `ListGroup` commander. So value is reset to `0`.'
-        );
-      this.initialNumToRender = 0;
-    }
+    // if (this._listGroupDimension && this.initialNumToRender) {
+    //   if (process.env.NODE_ENV === 'development')
+    //     console.warn(
+    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+    //         ' initialNumToRender value should be controlled' +
+    //         'by `ListGroup` commander. So value is reset to `0`.'
+    //     );
+    //   this.initialNumToRender = 0;
+    // }
 
-    if (this._listGroupDimension && persistanceIndices) {
-      if (process.env.NODE_ENV === 'development')
-        console.warn(
-          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-            ' persistanceIndices value should be controlled' +
-            'by `ListGroup` commander. So value is reset to `[]`.'
-        );
-      this.persistanceIndices = [];
-    }
+    // if (this._listGroupDimension && persistanceIndices) {
+    //   if (process.env.NODE_ENV === 'development')
+    //     console.warn(
+    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+    //         ' persistanceIndices value should be controlled' +
+    //         'by `ListGroup` commander. So value is reset to `[]`.'
+    //     );
+    //   this.persistanceIndices = [];
+    // }
 
     this.updateInitialNumDueToListGroup(data);
     this.updatePersistanceIndicesDueToListGroup(data);

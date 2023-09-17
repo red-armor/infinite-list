@@ -63,10 +63,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
   private _scrollMetrics: ScrollMetrics;
   private _renderState: ListRenderState;
   private _renderStateListeners: Array<Function> = [];
-  private _renderStateListenersCleaner: Array<Function> = [];
   private _onBatchLayoutFinished: () => boolean;
   private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
-  private _updateScrollMetricsWithCacheBatchinator: Batchinator;
+  // private _updateScrollMetricsWithCacheBatchinator: Batchinator;
   // private _updateChildPersistanceIndicesBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   private _heartBeatingIndexKeys: Array<string> = [];
@@ -155,10 +154,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.onUpdateDimensionItemsMetaChange.bind(this),
       100
     );
-    this._updateScrollMetricsWithCacheBatchinator = new Batchinator(
-      this.updateScrollMetricsWithCache.bind(this),
-      50
-    );
+    // this._updateScrollMetricsWithCacheBatchinator = new Batchinator(
+    //   this.updateScrollMetricsWithCache.bind(this),
+    //   50
+    // );
 
     this._heartBeatResolveChangedBatchinator = new Batchinator(
       this.heartBeatResolveChanged.bind(this),
@@ -793,8 +792,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
         this.getDimension(beforeKey).length
       : 0;
     const { recyclerType } = itemDimensionsProps
-    this.startInspection()
-
     const dimensions = new Dimension({
       id: key,
       recyclerType,
@@ -804,6 +801,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       initialStartIndex: startIndex,
       canIUseRIC: this.canIUseRIC,
     });
+    this.startInspection()
 
     this.setDimension(key, dimensions);
     this._listBaseDimension.addBuffer(recyclerType)
@@ -1270,6 +1268,16 @@ class ListGroupDimensions<ItemT extends {} = {}>
         ...state,
         data: this.getData(),
       });
+
+    const {
+      isEndReached,
+      distanceFromEnd
+    } = state
+
+    this.onEndReachedHelper.performEndReached({
+      isEndReached,
+      distanceFromEnd,
+    });
       return;
     }
   }
@@ -1283,51 +1291,51 @@ class ListGroupDimensions<ItemT extends {} = {}>
     });
   }
 
-  updateScrollMetricsWithCache(
-    scrollMetrics: ScrollMetrics = this._scrollMetrics
-  ) {
-    // 之所以这么处理，是因为有可能数据的item值发生了变化，这个时候要重新刷一下
-    // 嵌套的子item。
-    const { bufferedMetaRanges, visibleMetaRanges } = this._rangeResult;
-    bufferedMetaRanges.forEach((range) => {
-      const { listKey, value } = range;
-      const dimension = this.getDimension(listKey);
+  // updateScrollMetricsWithCache(
+  //   scrollMetrics: ScrollMetrics = this._scrollMetrics
+  // ) {
+  //   // 之所以这么处理，是因为有可能数据的item值发生了变化，这个时候要重新刷一下
+  //   // 嵌套的子item。
+  //   const { bufferedMetaRanges, visibleMetaRanges } = this._rangeResult;
+  //   bufferedMetaRanges.forEach((range) => {
+  //     const { listKey, value } = range;
+  //     const dimension = this.getDimension(listKey);
 
-      const visibleMetaRange = visibleMetaRanges.find(
-        (v) => v.listKey === listKey
-      );
+  //     const visibleMetaRange = visibleMetaRanges.find(
+  //       (v) => v.listKey === listKey
+  //     );
 
-      if (dimension instanceof ListDimensions) {
-        if (visibleMetaRange) {
-          dimension.updateState(
-            {
-              ...this._dispatchedMetricsResult,
-              visibleStartIndex: visibleMetaRange
-                ? visibleMetaRange.value.startIndex
-                : -1,
-              visibleEndIndex: visibleMetaRange
-                ? visibleMetaRange.value.endIndex
-                : -1,
-              bufferedEndIndex: value.endIndex,
-              bufferedStartIndex: value.startIndex,
-            },
-            scrollMetrics
-          );
-        } else {
-          dimension.updateStateBatchinator.schedule(
-            {
-              ...this._dispatchedMetricsResult,
-              visibleStartIndex: -1,
-              visibleEndIndex: -1,
-              bufferedEndIndex: value.endIndex,
-              bufferedStartIndex: value.startIndex,
-            },
-            scrollMetrics
-          );
-        }
-      }
-    });
-  }
+  //     if (dimension instanceof ListDimensions) {
+  //       if (visibleMetaRange) {
+  //         dimension.updateState(
+  //           {
+  //             ...this._dispatchedMetricsResult,
+  //             visibleStartIndex: visibleMetaRange
+  //               ? visibleMetaRange.value.startIndex
+  //               : -1,
+  //             visibleEndIndex: visibleMetaRange
+  //               ? visibleMetaRange.value.endIndex
+  //               : -1,
+  //             bufferedEndIndex: value.endIndex,
+  //             bufferedStartIndex: value.startIndex,
+  //           },
+  //           scrollMetrics
+  //         );
+  //       } else {
+  //         dimension.updateStateBatchinator.schedule(
+  //           {
+  //             ...this._dispatchedMetricsResult,
+  //             visibleStartIndex: -1,
+  //             visibleEndIndex: -1,
+  //             bufferedEndIndex: value.endIndex,
+  //             bufferedStartIndex: value.startIndex,
+  //           },
+  //           scrollMetrics
+  //         );
+  //       }
+  //     }
+  //   });
+  // }
 
   dispatchScrollMetricsEnabled() {
     return (
@@ -1345,7 +1353,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   ) {
 
     const scrollMetrics = _scrollMetrics || this._scrollMetrics;
-    const useCache = defaultBooleanValue(_options?.useCache, true);
+    // const useCache = defaultBooleanValue(_options?.useCache, true);
     const flush = defaultBooleanValue(_options?.flush, false);
 
     if (!scrollMetrics) return;
@@ -1362,57 +1370,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     }
 
     return
-
-    // if (
-    //   !useCache ||
-    //   // 刚开始时，this._scrollMetrics是不存在的
-    //   !this._scrollMetrics ||
-    //   scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
-    //   scrollMetrics.offset !== this._scrollMetrics.offset ||
-    //   scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
-    // ) {
-    //   this._scrollMetrics = scrollMetrics;
-    //   if (flush) {
-    //     this._dispatchMetricsBatchinator.flush(scrollMetrics);
-    //   } else {
-    //     this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-    //   }
-    // } else if (this._rangeResult && this._dispatchedMetricsResult) {
-    //   this._scrollMetrics = scrollMetrics;
-    //   // 缓存的优先级，永远不如不使用缓存的；比如前面的list data发生了变化，
-    //   // 但是后续的list并没有发生变化，这个时候要自行自定义的
-    //   if (!this._dispatchMetricsBatchinator.inSchedule()) {
-    //     if (flush) {
-    //       this._updateScrollMetricsWithCacheBatchinator.flush(scrollMetrics);
-    //     } else {
-    //       this._updateScrollMetricsWithCacheBatchinator.schedule(scrollMetrics);
-    //     }
-    //   } else {
-    //     // 刷新scrollMetrics的值
-    //     if (flush) {
-    //       this._dispatchMetricsBatchinator.flush(scrollMetrics);
-    //     } else {
-    //       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-    //     }
-    //   }
-    // }
-  }
-
-  addRenderStateListener(fn: Function) {
-    if (typeof fn === 'function') {
-      this._renderStateListeners.push(fn);
-
-      return () => {
-        const index = this._renderStateListeners.findIndex((s) => s === fn);
-        if (index !== -1) this._renderStateListeners.splice(index, 1);
-      };
-    }
-
-    return noop;
-  }
-
-  cleanRenderStateListeners() {
-    this._renderStateListenersCleaner.forEach((cleaner) => cleaner());
   }
 }
 
