@@ -284,28 +284,28 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._renderStateListeners = [];
   }
 
-  resolveInitialActiveValue(active: boolean) {
-    if (this._deps.length) {
-      let isActive = true;
-      for (let index = 0; index < this._deps.length; index++) {
-        const listKey = this._deps[index];
-        const listHandler = manager.getKeyList(listKey);
-        if (!listHandler) continue;
+  // resolveInitialActiveValue(active: boolean) {
+  //   if (this._deps.length) {
+  //     let isActive = true;
+  //     for (let index = 0; index < this._deps.length; index++) {
+  //       const listKey = this._deps[index];
+  //       const listHandler = manager.getKeyList(listKey);
+  //       if (!listHandler) continue;
 
-        if (
-          listHandler.getRenderState() !== ListRenderState.ON_RENDER_FINISHED
-        ) {
-          this._renderStateListenersCleaner.push(
-            listHandler.addRenderStateListener(this.handleDeps.bind(this))
-          );
-          isActive = false;
-        }
-      }
-      return isActive;
-    }
+  //       if (
+  //         listHandler.getRenderState() !== ListRenderState.ON_RENDER_FINISHED
+  //       ) {
+  //         this._renderStateListenersCleaner.push(
+  //           listHandler.addRenderStateListener(this.handleDeps.bind(this))
+  //         );
+  //         isActive = false;
+  //       }
+  //     }
+  //     return isActive;
+  //   }
 
-    return active;
-  }
+  //   return active;
+  // }
 
   getRenderState() {
     return this._renderState;

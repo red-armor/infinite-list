@@ -178,6 +178,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.startInspection = this.startInspection.bind(this);
 
     this._listBaseDimension = new ListBaseDimensions({
+      ...props,
       keyExtractor: () => null,
       id: 'listGroupDimensions',
       data: this._flattenData,
@@ -1352,24 +1353,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
     }
   ) {
 
-    const scrollMetrics = _scrollMetrics || this._scrollMetrics;
-    // const useCache = defaultBooleanValue(_options?.useCache, true);
-    const flush = defaultBooleanValue(_options?.flush, false);
-
-    if (!scrollMetrics) return;
-    if (!this.dispatchScrollMetricsEnabled()) {
-      this._scrollMetrics = scrollMetrics;
-      return;
-    }
-
-    this._scrollMetrics = scrollMetrics;
-    if (flush) {
-      this._dispatchMetricsBatchinator.flush(scrollMetrics);
-    } else {
-      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-    }
-
-    return
+    this._listBaseDimension.updateScrollMetrics(
+      _scrollMetrics,
+      _options
+    )
   }
 }
 

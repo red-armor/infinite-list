@@ -15,6 +15,7 @@ import {
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
+  DEFAULT_RECYCLER_TYPE,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
@@ -47,14 +48,15 @@ import defaultBooleanValue from '@x-oasis/default-boolean-value';
 // import FixedBuffer from './FixedBuffer';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import Recycler from './Recycler';
+import BaseLayout from './BaseLayout';
 
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
-class ListBaseDimensions<ItemT extends {} = {}> {
-  public _selectValue: SelectValue;
+class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
+  // public _selectValue: SelectValue;
   private _getItemLayout: GetItemLayout<ItemT>;
   private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
   private _stateListener: StateListener<ItemT>;
@@ -93,17 +95,17 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   private _stillnessHelper: StillnessHelper;
   private _recycler: Recycler;
 
-  private _recycleThreshold: number;
-  readonly _onEndReachedThreshold: number;
-  readonly _fillingMode: FillingMode;
-  initialNumToRender: number;
+  // private _recycleThreshold: number;
+  // readonly _onEndReachedThreshold: number;
+  // readonly _fillingMode: FillingMode;
+  // initialNumToRender: number;
 
-  private _persistanceIndices = [];
-  private _stickyHeaderIndices = [];
-  private _reservedIndices = [];
-  private _maxToRenderPerBatch: number;
-  private _canIUseRIC: boolean;
-  private _itemOffsetBeforeLayoutReady: number;
+  // private _persistanceIndices = [];
+  // private _stickyHeaderIndices = [];
+  // private _reservedIndices = [];
+  // // private _maxToRenderPerBatch: number;
+  // private _canIUseRIC: boolean;
+  // private _itemOffsetBeforeLayoutReady: number;
   _configTuple: ViewabilityConfigTuples;
 
   private memoizedResolveSpaceState: (
@@ -122,6 +124,7 @@ class ListBaseDimensions<ItemT extends {} = {}> {
   private _provider: ListGroupDimensions;
 
   constructor(props: ListBaseDimensionsProps<ItemT>) {
+    super(props)
     const {
       store,
       getData,
@@ -166,9 +169,9 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._getData = getData;
-    this._maxToRenderPerBatch = maxToRenderPerBatch;
-    this._itemOffsetBeforeLayoutReady = itemOffsetBeforeLayoutReady;
-    this._canIUseRIC = canIUseRIC;
+    // this._maxToRenderPerBatch = maxToRenderPerBatch;
+    // this._itemOffsetBeforeLayoutReady = itemOffsetBeforeLayoutReady;
+    // this._canIUseRIC = canIUseRIC;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -202,12 +205,12 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       ? selectHorizontalValue
       : selectVerticalValue;
 
-    this._fillingMode = recycleEnabled
-      ? FillingMode.RECYCLE
-      : FillingMode.SPACE;
-    this._recycleThreshold = recycleEnabled
-      ? recycleThreshold || maxToRenderPerBatch * 2
-      : 0;
+    // this._fillingMode = recycleEnabled
+    //   ? FillingMode.RECYCLE
+    //   : FillingMode.SPACE;
+    // this._recycleThreshold = recycleEnabled
+    //   ? recycleThreshold || maxToRenderPerBatch * 2
+    //   : 0;
 
     this._configTuple = new ViewabilityConfigTuples({
       viewabilityConfig,
@@ -268,56 +271,62 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       this.recalculateRecycleResultState.bind(this),
       50
     );
+
+    this.initializeDefaultRecycleBuffer()
   }
 
-  get itemOffsetBeforeLayoutReady() {
-    return this._itemOffsetBeforeLayoutReady;
+  initializeDefaultRecycleBuffer() {
+    this._recycler.addBuffer(DEFAULT_RECYCLER_TYPE)
   }
 
-  get fillingMode() {
-    return this._fillingMode;
-  }
+  // get itemOffsetBeforeLayoutReady() {
+  //   return this._itemOffsetBeforeLayoutReady;
+  // }
 
-  get reservedIndices() {
-    return this._reservedIndices;
-  }
+  // get fillingMode() {
+  //   return this._fillingMode;
+  // }
 
-  get maxToRenderPerBatch() {
-    return this._maxToRenderPerBatch;
-  }
+  // get reservedIndices() {
+  //   return this._reservedIndices;
+  // }
 
-  get canIUseRIC() {
-    return this._canIUseRIC;
-  }
+  // get maxToRenderPerBatch() {
+  //   return this._maxToRenderPerBatch;
+  // }
 
-  updateReservedIndices() {
-    const indices = new Set(
-      [].concat(this.persistanceIndices, this.stickyHeaderIndices)
-    );
-    this._reservedIndices = Array.from(indices).sort((a, b) => a - b);
-  }
+  // get canIUseRIC() {
+  //   return this._canIUseRIC;
+  // }
 
-  get persistanceIndices() {
-    return this._persistanceIndices;
-  }
+  // updateReservedIndices() {
+  //   const indices = new Set(
+  //     [].concat(this.persistanceIndices, this.stickyHeaderIndices)
+  //   );
+  //   this._reservedIndices = Array.from(indices).sort((a, b) => a - b);
+  // }
 
-  set persistanceIndices(indices: Array<number>) {
-    this._persistanceIndices = indices.sort((a, b) => a - b);
-    this.updateReservedIndices();
-  }
+  // get persistanceIndices() {
+  //   return this._persistanceIndices;
+  // }
 
-  get stickyHeaderIndices() {
-    return this._stickyHeaderIndices;
-  }
+  // set persistanceIndices(indices: Array<number>) {
+  //   this._persistanceIndices = indices.sort((a, b) => a - b);
+  //   this.updateReservedIndices();
+  // }
 
-  set stickyHeaderIndices(indices: Array<number>) {
-    this._stickyHeaderIndices = indices.sort((a, b) => a - b);
-    this.updateReservedIndices();
-  }
+  // get stickyHeaderIndices() {
+  //   return this._stickyHeaderIndices;
+  // }
 
-  get recycleThreshold() {
-    return this._recycleThreshold;
-  }
+  // set stickyHeaderIndices(indices: Array<number>) {
+  //   this._stickyHeaderIndices = indices.sort((a, b) => a - b);
+  //   this.updateReservedIndices();
+  // }
+
+  // get recycleThreshold() {
+  //   return this._recycleThreshold;
+  // }
 
   get length() {
     return this._data.length;
@@ -434,6 +443,14 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     return this._provider.getData();
   }
 
+  getDataLength() {
+    return this._provider.getDataLength()
+  }
+
+  getTotalLength() {
+    return this._provider.getTotalLength()
+  }
+
   getReflowItemsLength() {
     return this._provider.getReflowItemsLength();
   }
@@ -459,6 +476,10 @@ class ListBaseDimensions<ItemT extends {} = {}> {
 
   hasUnLayoutItems() {
     return this.getReflowItemsLength() < this._data.length;
+  }
+
+  computeIndexRange(minOffset: number, maxOffset: number) {
+    return this._provider.computeIndexRange(minOffset, maxOffset)
   }
 
   _recycleEnabled() {
@@ -1024,7 +1045,13 @@ class ListBaseDimensions<ItemT extends {} = {}> {
       scrollMetrics,
     });
     if (isEmpty(state)) return state;
-    this.updateState(state, scrollMetrics);
+    this.setState({
+      ...state,
+      // @ts-ignore
+      data: this.getData(),
+    })
+
+    // this.updateState(state, scrollMetrics);
     return state;
   }
 
@@ -1060,52 +1087,32 @@ class ListBaseDimensions<ItemT extends {} = {}> {
     this._stillnessHelper.isStill;
   }
 
-  /**
-   * When to trigger updateScrollMetrics..
-   * - on scroll
-   * - layout change.
-   *   - In rn, use contentSizeChanged. `setIntervalTreeValue` has remove update scroll logic.
-   *   - In web, maybe `setIntervalTreeValue` to trigger state updating..
-   */
   updateScrollMetrics(
-    scrollMetrics: ScrollMetrics = this._scrollMetrics,
-    useCache = true
+    _scrollMetrics?: ScrollMetrics,
+    _options?: {
+      useCache?: boolean;
+      flush?: boolean;
+    }
   ) {
+
+    const scrollMetrics = _scrollMetrics || this._scrollMetrics;
+    // const useCache = defaultBooleanValue(_options?.useCache, true);
+    const flush = defaultBooleanValue(_options?.flush, false);
+
     if (!scrollMetrics) return;
     if (!this.dispatchScrollMetricsEnabled()) {
       this._scrollMetrics = scrollMetrics;
       return;
     }
 
-    if (!useCache) {
-      this._scrollMetrics = scrollMetrics;
-      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-      return;
-    }
-
-    if (this._scrollMetrics?.offset !== scrollMetrics?.offset) {
-      // this._stillnessHelper.startClockBatchinateLast.schedule();
-    }
-
-    if (
-      !this._scrollMetrics ||
-      scrollMetrics.contentLength !== this._scrollMetrics.contentLength ||
-      scrollMetrics.offset !== this._scrollMetrics.offset ||
-      scrollMetrics.visibleLength !== this._scrollMetrics.visibleLength
-    ) {
-      this._scrollMetrics = scrollMetrics;
-      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-    } else if (scrollMetrics.offset !== this._offsetTriggerCachedState) {
-      this._scrollMetrics = scrollMetrics;
-      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
-    } else {
-      this._dispatchMetricsBatchinator.dispose({
-        abort: true,
-      });
-      this.updateState(this._state, scrollMetrics);
-    }
-
     this._scrollMetrics = scrollMetrics;
+    if (flush) {
+      this._dispatchMetricsBatchinator.flush(scrollMetrics);
+    } else {
+      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+    }
+
+    return
   }
 }
 
