@@ -95,17 +95,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _stillnessHelper: StillnessHelper;
   private _recycler: Recycler;
 
-  // private _recycleThreshold: number;
-  // readonly _onEndReachedThreshold: number;
-  // readonly _fillingMode: FillingMode;
-  // initialNumToRender: number;
-
-  // private _persistanceIndices = [];
-  // private _stickyHeaderIndices = [];
-  // private _reservedIndices = [];
-  // // private _maxToRenderPerBatch: number;
-  // private _canIUseRIC: boolean;
-  // private _itemOffsetBeforeLayoutReady: number;
   _configTuple: ViewabilityConfigTuples;
 
   private memoizedResolveSpaceState: (
@@ -199,18 +188,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       onEndReachedHandlerTimeoutThreshold,
       maxCountOfHandleOnEndReachedAfterStillness,
     });
-    // this._onBatchLayoutFinished = onBatchLayoutFinished;
 
     this._selectValue = horizontal
       ? selectHorizontalValue
       : selectVerticalValue;
-
-    // this._fillingMode = recycleEnabled
-    //   ? FillingMode.RECYCLE
-    //   : FillingMode.SPACE;
-    // this._recycleThreshold = recycleEnabled
-    //   ? recycleThreshold || maxToRenderPerBatch * 2
-    //   : 0;
 
     this._configTuple = new ViewabilityConfigTuples({
       viewabilityConfig,
@@ -387,6 +368,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._isActive = true;
   }
 
+  addOnEndReached(onEndReached: OnEndReached) {
+    return this.onEndReachedHelper.addHandler(onEndReached);
+  }
+
   resolveInitialState() {
     if (!this.initialNumToRender || !this._data.length || !this._isActive)
       return {
@@ -424,7 +409,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
    * @returns TODO: temp
    */
   getContainerOffset(): number {
-    return 0;
+    return this._provider.getContainerOffset()
+    // return 0;
     // if (this._listGroupDimension) {
     //   return (
     //     this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
@@ -1013,21 +999,18 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     );
 
     const oldData = this._state.data;
-
-    const newData = this._data.slice(0, nextDataLength);
-
-    const { isEqual } = resolveChanged(oldData, newData);
+    const newData = this._data
 
     const shouldSetState =
       shallowDiffers(
         omit(this._state || {}, omitKeys),
         omit(newState, omitKeys)
-      ) || !isEqual;
+      ) || !(resolveChanged(oldData, newData).isEqual);
 
     if (shouldSetState) {
       const state = {
         ...newState,
-        data: this._data.slice(0, nextDataLength),
+        data: newData
       };
 
       // @ts-ignore
@@ -1045,13 +1028,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics,
     });
     if (isEmpty(state)) return state;
-    this.setState({
-      ...state,
-      // @ts-ignore
-      data: this.getData(),
-    })
+    // this.setState({
+    //   ...state,
+    //   // @ts-ignore
+    //   data: this.getData(),
+    // })
 
-    // this.updateState(state, scrollMetrics);
+    this.updateState(state, scrollMetrics);
+
     return state;
   }
 

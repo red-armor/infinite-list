@@ -564,6 +564,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.setDimension(listKey, dimensions);
     this.setListData(listKey, data)
 
+    let onEndReachedCleaner = null
+
+    if (listDimensionsProps.onEndReached) {
+      onEndReachedCleaner = this._listBaseDimension.addOnEndReached(listDimensionsProps.onEndReached)
+    }
+
     // this.calculateDimensionsIndexRange();
     // this.calculateReflowItemsLength();
     // this.updateChildDimensionsOffsetInContainer();
@@ -584,6 +590,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       dimensions,
       remover: () => {
         this.removeListDimensions(listKey);
+        if (onEndReachedCleaner) onEndReachedCleaner()
       },
     };
   }
@@ -879,7 +886,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
       if (
-        [KeysChangedType.Add, KeysChangedType.Remove].indexOf(changedType) !==
+        [KeysChangedType.Add, KeysChangedType.Remove, KeysChangedType.Append].indexOf(changedType) !==
         -1
       ) {
         this.calculateDimensionsIndexRange();
