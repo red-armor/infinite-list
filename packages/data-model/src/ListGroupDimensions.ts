@@ -1,8 +1,6 @@
 import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
-import noop from '@x-oasis/noop';
 import resolveChanged from '@x-oasis/resolve-changed';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import BaseLayout from './BaseLayout';
 import Dimension from './Dimension';
@@ -523,7 +521,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.calculateDimensionsIndexRange();
       this.calculateReflowItemsLength();
       this.updateChildDimensionsOffsetInContainer();
-      this.reflowFlattenData()
+      this.reflowFlattenData();
       this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
     }
   }
@@ -550,8 +548,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
       };
     // should update indexKeys first !!!
     // this.pushIndexKey(listKey);
-    this.startInspection()
-    const { recyclerType, data = [] } = listDimensionsProps
+    this.startInspection();
+    const { recyclerType, data = [] } = listDimensionsProps;
     const dimensions = new ListDimensions({
       ...listDimensionsProps,
       id: listKey,
@@ -560,14 +558,16 @@ class ListGroupDimensions<ItemT extends {} = {}>
       listGroupDimension: this,
       horizontal: this.getHorizontal(),
     });
-    this._listBaseDimension.addBuffer(recyclerType)
+    this._listBaseDimension.addBuffer(recyclerType);
     this.setDimension(listKey, dimensions);
-    this.setListData(listKey, data)
+    this.setListData(listKey, data);
 
-    let onEndReachedCleaner = null
+    let onEndReachedCleaner = null;
 
     if (listDimensionsProps.onEndReached) {
-      onEndReachedCleaner = this._listBaseDimension.addOnEndReached(listDimensionsProps.onEndReached)
+      onEndReachedCleaner = this._listBaseDimension.addOnEndReached(
+        listDimensionsProps.onEndReached
+      );
     }
 
     // this.calculateDimensionsIndexRange();
@@ -590,7 +590,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       dimensions,
       remover: () => {
         this.removeListDimensions(listKey);
-        if (onEndReachedCleaner) onEndReachedCleaner()
+        if (onEndReachedCleaner) onEndReachedCleaner();
       },
     };
   }
@@ -661,7 +661,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     this.updateChildDimensionsOffsetInContainer();
     this.calculateReflowItemsLength();
-    this.updateScrollMetrics()
+    this.updateScrollMetrics();
   }
 
   removeItem(key: string) {
@@ -682,7 +682,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.calculateDimensionsIndexRange();
       this.calculateReflowItemsLength();
       this.updateChildDimensionsOffsetInContainer();
-      this.reflowFlattenData()
+      this.reflowFlattenData();
       this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
     }
   }
@@ -691,9 +691,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const nextIndexKeys = this._heartBeatingIndexKeys.slice();
 
     // 比如说，中间发生了顺序调整；自动检测确保
-    if (
-      !resolveChanged(this._heartBeatingIndexKeys, this.indexKeys).isEqual
-    ) {
+    if (!resolveChanged(this._heartBeatingIndexKeys, this.indexKeys).isEqual) {
       // if (
       //   !shallowArrayEqual(
       //     this._heartBeatingIndexKeys,
@@ -742,7 +740,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.registeredKeys.splice(indexInRegisteredKeys, 1);
     }
 
-    this.heartBeatResolveChanged()
+    this.heartBeatResolveChanged();
     // this._heartBeatResolveChangedBatchinator.schedule();
   }
 
@@ -799,7 +797,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       ? this.getDimensionStartIndex(beforeKey) +
         this.getDimension(beforeKey).length
       : 0;
-    const { recyclerType } = itemDimensionsProps
+    const { recyclerType } = itemDimensionsProps;
     const dimensions = new Dimension({
       id: key,
       recyclerType,
@@ -809,10 +807,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
       initialStartIndex: startIndex,
       canIUseRIC: this.canIUseRIC,
     });
-    this.startInspection()
+    this.startInspection();
 
     this.setDimension(key, dimensions);
-    this._listBaseDimension.addBuffer(recyclerType)
+    this._listBaseDimension.addBuffer(recyclerType);
 
     this.calculateDimensionsIndexRange();
     this.updateChildDimensionsOffsetInContainer();
@@ -839,13 +837,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   reflowFlattenData() {
     this._flattenData = this.indexKeys.reduce((acc, key) => {
-      const dimension = this.getDimension(key)
+      const dimension = this.getDimension(key);
       if (dimension) {
-        acc = [].concat(acc, dimension.getData())
+        acc = [].concat(acc, dimension.getData());
       }
-      return acc
-    }, [])
-    return this._flattenData
+      return acc;
+    }, []);
+    return this._flattenData;
   }
 
   /**
@@ -886,8 +884,11 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
       if (
-        [KeysChangedType.Add, KeysChangedType.Remove, KeysChangedType.Append].indexOf(changedType) !==
-        -1
+        [
+          KeysChangedType.Add,
+          KeysChangedType.Remove,
+          KeysChangedType.Append,
+        ].indexOf(changedType) !== -1
       ) {
         this.calculateDimensionsIndexRange();
         this.calculateReflowItemsLength();
@@ -1277,15 +1278,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
         data: this.getData(),
       });
 
-    const {
-      isEndReached,
-      distanceFromEnd
-    } = state
+      const { isEndReached, distanceFromEnd } = state;
 
-    this.onEndReachedHelper.performEndReached({
-      isEndReached,
-      distanceFromEnd,
-    });
+      this.onEndReachedHelper.performEndReached({
+        isEndReached,
+        distanceFromEnd,
+      });
       return;
     }
   }
@@ -1359,11 +1357,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       flush?: boolean;
     }
   ) {
-
-    this._listBaseDimension.updateScrollMetrics(
-      _scrollMetrics,
-      _options
-    )
+    this._listBaseDimension.updateScrollMetrics(_scrollMetrics, _options);
   }
 }
 
