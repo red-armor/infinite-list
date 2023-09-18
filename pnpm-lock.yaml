@@ -49,7 +49,7 @@ importers:
       '@x-oasis/layout-equal': ^0.1.16
       '@x-oasis/noop': ^0.1.14
       '@x-oasis/omit': ^0.1.14
-      '@x-oasis/prefix-interval-tree': ^0.1.14
+      '@x-oasis/prefix-interval-tree': ^0.1.18
       '@x-oasis/resolve-changed': ^0.1.14
       '@x-oasis/select-value': ^0.1.14
       '@x-oasis/shallow-array-equal': ^0.1.14
@@ -68,7 +68,7 @@ importers:
       '@x-oasis/layout-equal': 0.1.16
       '@x-oasis/noop': 0.1.14
       '@x-oasis/omit': 0.1.14
-      '@x-oasis/prefix-interval-tree': 0.1.14
+      '@x-oasis/prefix-interval-tree': 0.1.18
       '@x-oasis/resolve-changed': 0.1.14
       '@x-oasis/select-value': 0.1.14
       '@x-oasis/shallow-array-equal': 0.1.14
@@ -2613,8 +2613,8 @@ packages:
     resolution: {integrity: sha512-1PMPI8ppdm+Byv+HLYVxqn4LE00LlpVh4SS0nlfBozalom7nABlcNavZ+H5h6HSv8vSMVAdnIVJDOHzY8Q3SaQ==}
     dev: false
 
-  /@x-oasis/prefix-interval-tree/0.1.14:
-    resolution: {integrity: sha512-AM1j8UMl3hxFwgtlAL3Uvr98778/kSrFSg1jHPqvbZagQoUvBO93Q6IJ5/hlqlDYZYiqVVgunXoQAze58PpEYQ==}
+  /@x-oasis/prefix-interval-tree/0.1.18:
+    resolution: {integrity: sha512-JlhzKZunsduFLYMvQlJygSTothD18Y0qcKqFcMaHwH6gkzOQenoVfcq6M7C9IzJv+gzuW451dyfgowfB52wpww==}
     dev: false
 
   /@x-oasis/resolve-changed/0.1.14:
