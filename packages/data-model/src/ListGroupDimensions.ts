@@ -13,8 +13,6 @@ import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
   FillingMode,
-  InspectingAPI,
-  InspectingListener,
   ItemLayout,
   KeysChangedType,
   ListDimensionsProps,
@@ -66,9 +64,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
   // private _updateScrollMetricsWithCacheBatchinator: Batchinator;
   // private _updateChildPersistanceIndicesBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
-  // private _heartBeatingIndexKeys: Array<string> = [];
-  // private _heartBeatResolveChangedBatchinator: Batchinator;
-  // private _inspectingListener: InspectingListener;
   /**
    * _flattenData could be considered as the final data model after transform
    * 1. dimension
@@ -178,6 +173,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   get selector() {
     return this._selector;
+  }
+
+  get inspector() {
+    return this._inspector;
   }
 
   ensureDimension() {}
@@ -696,13 +695,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
     }
   }
 
-  getInspectAPI(): InspectingAPI {
-    return this._inspector.getAPI();
-  }
+  // getInspectAPI(): InspectingAPI {
+  //   return this._inspector.getAPI();
+  // }
 
-  addStartInspectingHandler(cb: InspectingListener) {
-    return this._inspector.addStartInspectingHandler(cb);
-  }
+  // addStartInspectingHandler(cb: InspectingListener) {
+  //   return this._inspector.addStartInspectingHandler(cb);
+  // }
 
   registerItem(
     key: string,
