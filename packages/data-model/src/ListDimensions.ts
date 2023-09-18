@@ -964,7 +964,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
       })
     ) {
-      meta.isApproximateLayout = false
+      meta.isApproximateLayout = false;
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );
@@ -979,6 +979,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         return true;
       }
     } else if (meta.isApproximateLayout) {
+      meta.isApproximateLayout = false;
       // 比如换了一个item的话，不会触发更新
       if (this._listGroupDimension) {
         this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
@@ -986,8 +987,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         this._recalculateRecycleResultStateBatchinator.schedule();
       }
     }
-
-    meta.isApproximateLayout = false
 
     return false;
   }

@@ -2,7 +2,7 @@ import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
 import ListGroupDimensions from './ListGroupDimensions';
 import omit from '@x-oasis/omit';
-import SelectValue, {
+import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
@@ -10,11 +10,9 @@ import {
   isEmpty,
   shallowDiffers,
   INITIAL_NUM_TO_RENDER,
-  MAX_TO_RENDER_PER_BATCH,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
-  ITEM_OFFSET_BEFORE_LAYOUT_READY,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
@@ -113,18 +111,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _provider: ListGroupDimensions;
 
   constructor(props: ListBaseDimensionsProps<ItemT>) {
-    super(props)
+    super(props);
     const {
       store,
       getData,
       horizontal,
 
       provider,
-      canIUseRIC,
-      recycleThreshold,
-      maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
-      itemOffsetBeforeLayoutReady = ITEM_OFFSET_BEFORE_LAYOUT_READY,
 
       recyclerBufferSize,
       recyclerReservedBufferPerBatch,
@@ -134,7 +128,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       viewabilityConfigCallbackPairs,
 
       recycleEnabled,
-      recyclerTypes = ['default_recycler'],
+      recyclerTypes,
       deps = [],
       getItemLayout,
       onEndReached,
@@ -253,11 +247,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       50
     );
 
-    this.initializeDefaultRecycleBuffer()
+    this.initializeDefaultRecycleBuffer();
   }
 
   initializeDefaultRecycleBuffer() {
-    this._recycler.addBuffer(DEFAULT_RECYCLER_TYPE)
+    this._recycler.addBuffer(DEFAULT_RECYCLER_TYPE);
   }
 
   // get itemOffsetBeforeLayoutReady() {
@@ -409,7 +403,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
    * @returns TODO: temp
    */
   getContainerOffset(): number {
-    return this._provider.getContainerOffset()
+    return this._provider.getContainerOffset();
     // return 0;
     // if (this._listGroupDimension) {
     //   return (
@@ -430,11 +424,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   getDataLength() {
-    return this._provider.getDataLength()
+    return this._provider.getDataLength();
   }
 
   getTotalLength() {
-    return this._provider.getTotalLength()
+    return this._provider.getTotalLength();
   }
 
   getReflowItemsLength() {
@@ -465,7 +459,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   computeIndexRange(minOffset: number, maxOffset: number) {
-    return this._provider.computeIndexRange(minOffset, maxOffset)
+    return this._provider.computeIndexRange(minOffset, maxOffset);
   }
 
   _recycleEnabled() {
@@ -733,7 +727,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
     targetIndices
       .filter((v) => v)
-      .forEach((info, index) => {
+      .forEach((info) => {
         const { itemMeta, targetIndex, recycleKey } = info;
         const item = this.getData()[targetIndex];
         const itemLayout = itemMeta?.getLayout();
@@ -756,7 +750,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         itemMeta?.setItemMetaState(itemMetaState);
 
         recycleStateResult.push({
-          key: `recycle_${index}`,
+          key: recycleKey,
           targetKey: itemMeta.getKey(),
           targetIndex,
           length: itemLength,
@@ -999,18 +993,18 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     );
 
     const oldData = this._state.data;
-    const newData = this._data
+    const newData = this._data;
 
     const shouldSetState =
       shallowDiffers(
         omit(this._state || {}, omitKeys),
         omit(newState, omitKeys)
-      ) || !(resolveChanged(oldData, newData).isEqual);
+      ) || !resolveChanged(oldData, newData).isEqual;
 
     if (shouldSetState) {
       const state = {
         ...newState,
-        data: newData
+        data: newData,
       };
 
       // @ts-ignore
@@ -1028,13 +1022,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics,
     });
     if (isEmpty(state)) return state;
-    // this.setState({
-    //   ...state,
-    //   // @ts-ignore
-    //   data: this.getData(),
-    // })
+    this.setState({
+      ...state,
+      // @ts-ignore
+      data: this.getData(),
+    });
 
-    this.updateState(state, scrollMetrics);
+    // maybe itemMeta approximateLayout change, but will not trigger update...
+    // this.updateState(state, scrollMetrics);
 
     return state;
   }
@@ -1078,9 +1073,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       flush?: boolean;
     }
   ) {
-
     const scrollMetrics = _scrollMetrics || this._scrollMetrics;
-    // const useCache = defaultBooleanValue(_options?.useCache, true);
     const flush = defaultBooleanValue(_options?.flush, false);
 
     if (!scrollMetrics) return;
@@ -1096,7 +1089,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
     }
 
-    return
+    return;
   }
 }
 
