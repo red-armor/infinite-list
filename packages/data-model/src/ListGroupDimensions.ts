@@ -44,7 +44,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
   extends BaseLayout
   implements ListProvider
 {
-  public indexKeys: Array<string> = [];
   private _selector = new EnabledSelector();
   itemToDimensionMap: WeakMap<any, any> = new WeakMap();
   private keyToListDimensionsMap: Map<string, ListDimensions | Dimension> =
@@ -80,11 +79,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     100
   );
 
-  // private registeredKeys: Array<string> = [];
-  // private _inspectingTimes = 0;
-  // private _inspectingTime: number = +Date.now();
-  // private _heartBeatingIndexKeysSentCommit: Array<string> = [];
-  // private _startInspectBatchinator: Batchinator;
   private _listBaseDimension: ListBaseDimensions<any>;
 
   private _reflowItemsLength = 0;
@@ -150,7 +144,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
       100
     );
 
-    this._inspector = new Inspector();
+    this._inspector = new Inspector({
+      owner: this,
+      onChange: this.onIndexKeysChanged.bind(this),
+    });
 
     this.recalculateDimensionsIntervalTreeBatchinator = new Batchinator(
       this.recalculateDimensionsIntervalTree.bind(this),
@@ -179,6 +176,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return this._inspector;
   }
 
+  get indexKeys() {
+    return this._inspector.indexKeys;
+  }
+
   ensureDimension() {}
 
   cleanup() {
@@ -188,10 +189,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   getOnEndReachedHelper() {
     return this.onEndReachedHelper;
-  }
-
-  getIndexKeys() {
-    return this.indexKeys;
   }
 
   getDimension(key: string) {
@@ -484,33 +481,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return -1;
   }
 
-  pushIndexKey(listKey: string) {
-    this.indexKeys.push(listKey);
-  }
-
-  getListIndex(listKey: string) {
-    return this.indexKeys.findIndex((indexKey) => indexKey === listKey);
-  }
-
   removeListDimensions(listKey: string) {
     const index = this.indexKeys.findIndex((indexKey) => indexKey === listKey);
     if (index !== -1) {
-      const dimension = this.getDimension(listKey);
-
-      dimension.getData().forEach((item) => {
-        const index = this._flattenData.findIndex((v) => v === item);
-        if (index !== -1) this._flattenData.splice(index, 1);
-      });
-
-      this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
-      // this.onItemsCountChanged();
-      this.calculateDimensionsIndexRange();
-      this.calculateReflowItemsLength();
-      this.updateChildDimensionsOffsetInContainer();
-      this.reflowFlattenData();
-      this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
+      this.inspector.remove(listKey);
     }
   }
 
@@ -535,10 +511,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
         },
       };
     // should update indexKeys first !!!
-    // this.pushIndexKey(listKey);
-    // this.startInspection();
-    this._inspector.push(listKey);
-    const { recyclerType, data = [] } = listDimensionsProps;
+    const { recyclerType } = listDimensionsProps;
     const dimensions = new ListDimensions({
       ...listDimensionsProps,
       id: listKey,
@@ -549,7 +522,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
     });
     this._listBaseDimension.addBuffer(recyclerType);
     this.setDimension(listKey, dimensions);
-    this.setListData(listKey, data);
+    this._inspector.push(listKey);
+
+    // this.setListData(listKey, data);
 
     let onEndReachedCleaner = null;
 
@@ -558,22 +533,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
         listDimensionsProps.onEndReached
       );
     }
-
-    // this.calculateDimensionsIndexRange();
-    // this.calculateReflowItemsLength();
-    // this.updateChildDimensionsOffsetInContainer();
-    // this.updateFlattenData(listKey, data);
-    // this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
-
-    // this.onItemsCountChanged();
-    // // because Dimensions should be create first, so after initialized
-    // // update dimensionsIntervalTree (to fix Dimensions with default layout
-    // // such getItemLayout)
-    // this.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    // // this.registeredKeys.push(listKey);
-    // this.updateFlattenData(listKey, listDimensionsProps.data);
-
-    // this._startInspectBatchinator.schedule();
 
     return {
       dimensions,
@@ -586,21 +545,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   onIndexKeysChanged() {
     this.onItemsCountChanged();
-    const indexKeys = this._inspector.indexKeys;
-
-    /**
-     * holdout: Attention.
-     * To fix insert a element
-     */
-    let _data = [];
-    for (let index = 0; index < indexKeys.length; index++) {
-      const listKey = indexKeys[index];
-      const _dimensions = this.getDimension(listKey);
-      _data = _data.concat(_dimensions.getData());
-    }
-
-    this._flattenData = _data;
-    this.calculateDimensionsIndexRange();
   }
 
   /**
@@ -635,11 +579,11 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }
 
   onItemsCountChanged(useCache = false) {
+    this.reflowFlattenData();
     this.calculateDimensionsIndexRange();
     this.calculateReflowItemsLength();
     this.updateChildDimensionsOffsetInContainer();
     this.updateScrollMetrics(this._scrollMetrics, { useCache });
-    // this._updateChildPersistanceIndicesBatchinator.schedule();
   }
 
   /**
@@ -673,35 +617,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }
 
   removeItem(key: string) {
-    const index = this.indexKeys.findIndex((indexKey) => indexKey === key);
+    const index = this._inspector.findIndex(key);
     if (index !== -1) {
-      const dimension = this.getDimension(key);
-
-      dimension.getData().forEach((item) => {
-        const index = this._flattenData.findIndex((v) => v === item);
-        if (index !== -1) this._flattenData.splice(index, 1);
-      });
-
-      this.indexKeys.splice(index, 1);
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(key);
-      // this.onItemsCountChanged();
-
-      this.calculateDimensionsIndexRange();
-      this.calculateReflowItemsLength();
-      this.updateChildDimensionsOffsetInContainer();
-      this.reflowFlattenData();
-      this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
+      this._inspector.remove(key);
     }
   }
-
-  // getInspectAPI(): InspectingAPI {
-  //   return this._inspector.getAPI();
-  // }
-
-  // addStartInspectingHandler(cb: InspectingListener) {
-  //   return this._inspector.addStartInspectingHandler(cb);
-  // }
 
   registerItem(
     key: string,
@@ -719,7 +641,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
       };
     const len = this.indexKeys.length;
     const beforeKey = len ? this.indexKeys[len - 1] : '';
-    // this.pushIndexKey(key);
     const startIndex = beforeKey
       ? this.getDimensionStartIndex(beforeKey) +
         this.getDimension(beforeKey).length
@@ -734,22 +655,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
       initialStartIndex: startIndex,
       canIUseRIC: this.canIUseRIC,
     });
-    this._inspector.startInspection();
-
     this.setDimension(key, dimensions);
     this._listBaseDimension.addBuffer(recyclerType);
-
-    this.calculateDimensionsIndexRange();
-    this.updateChildDimensionsOffsetInContainer();
-    this.updateFlattenData(key, dimensions.getData());
-
-    this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
-
-    // this.onItemsCountChanged();
-    // this.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    // this.registeredKeys.push(key);
-    // this.updateFlattenData(key, dimensions.getData());
-    // this._startInspectBatchinator.schedule();
+    this._inspector.push(key);
     return {
       dimensions,
       remover: () => {
@@ -817,14 +725,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
           KeysChangedType.Append,
         ].indexOf(changedType) !== -1
       ) {
-        this.calculateDimensionsIndexRange();
-        this.calculateReflowItemsLength();
-        this.updateChildDimensionsOffsetInContainer();
-        this.updateFlattenData(listKey, data);
-        this.updateScrollMetrics(this._scrollMetrics, { useCache: false });
-        // this.onItemsCountChanged(false);
+        this.onItemsCountChanged();
       } else if (changedType === KeysChangedType.Reorder) {
-        this.updateFlattenData(listKey, data);
+        this.reflowFlattenData();
         // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实
         // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
         // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
@@ -1284,6 +1187,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       flush?: boolean;
     }
   ) {
+    this._scrollMetrics = _scrollMetrics;
     this._listBaseDimension.updateScrollMetrics(_scrollMetrics, _options);
   }
 }

@@ -1,4 +1,4 @@
-import resolveChanged from '@x-oasis/resolve-changed';
+import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import Batchinator from '@x-oasis/batchinator';
 import {
   InspectorProps,
@@ -44,6 +44,9 @@ class Inspector {
   push(key: string) {
     this._indexKeys.push(key);
     this._startInspectBatchinator.schedule();
+    return () => {
+      this.remove(key);
+    };
   }
 
   handleChange() {
@@ -54,12 +57,15 @@ class Inspector {
   }
 
   remove(key: string) {
-    this._startInspectBatchinator.dispose({ abort: true });
     const index = this._indexKeys.findIndex((v) => v === key);
     if (index !== -1) {
       this._indexKeys.splice(index, 1);
       this.handleChange();
     }
+  }
+
+  findIndex(key: string) {
+    return this._indexKeys.findIndex((indexKey) => indexKey === key);
   }
 
   addStartInspectingHandler(cb: InspectingListener) {
@@ -100,7 +106,7 @@ class Inspector {
     const nextIndexKeys = this._heartBeatingIndexKeys.slice();
 
     // 比如说，中间发生了顺序调整；自动检测确保
-    if (!resolveChanged(this._heartBeatingIndexKeys, this._indexKeys).isEqual) {
+    if (!shallowArrayEqual(this._heartBeatingIndexKeys, this._indexKeys)) {
       this._indexKeys = nextIndexKeys;
       this.handleChange();
       this._inspectingTime += 1;
