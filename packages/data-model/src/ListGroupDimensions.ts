@@ -681,29 +681,29 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return this._flattenData;
   }
 
-  /**
-   *
-   * @param listKey dimension key.
-   * @param data list data or a dimension...
-   */
-  updateFlattenData(listKey: string, data: any) {
-    const _dimensions = this.getDimension(listKey);
-    const info = this._dimensionsIndexRange.find(
-      ({ dimensions }) => dimensions === _dimensions
-    );
-    if (info) {
-      const { startIndex, endIndex } = info;
-      const before = this._flattenData.slice(0, startIndex);
-      const after = this._flattenData.slice(endIndex);
-      this._flattenData = [].concat(before, data, after);
-      if (data.length !== endIndex - startIndex) {
-        // the flattenData
-        this.calculateDimensionsIndexRange();
-      }
+  // /**
+  //  *
+  //  * @param listKey dimension key.
+  //  * @param data list data or a dimension...
+  //  */
+  // updateFlattenData(listKey: string, data: any) {
+  //   const _dimensions = this.getDimension(listKey);
+  //   const info = this._dimensionsIndexRange.find(
+  //     ({ dimensions }) => dimensions === _dimensions
+  //   );
+  //   if (info) {
+  //     const { startIndex, endIndex } = info;
+  //     const before = this._flattenData.slice(0, startIndex);
+  //     const after = this._flattenData.slice(endIndex);
+  //     this._flattenData = [].concat(before, data, after);
+  //     if (data.length !== endIndex - startIndex) {
+  //       // the flattenData
+  //       this.calculateDimensionsIndexRange();
+  //     }
 
-      // this._listBaseDimension.setData(this.getData());
-    }
-  }
+  //     // this._listBaseDimension.setData(this.getData());
+  //   }
+  // }
 
   getItemKey() {}
 
