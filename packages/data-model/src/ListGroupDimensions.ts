@@ -1,6 +1,5 @@
 import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
-import resolveChanged from '@x-oasis/resolve-changed';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import BaseLayout from './BaseLayout';
 import Dimension from './Dimension';
@@ -33,6 +32,7 @@ import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import ListBaseDimensions from './ListBaseDimensions';
 import ListProvider from './ListProvider';
+import Inspector from './Inspector';
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -66,9 +66,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
   // private _updateScrollMetricsWithCacheBatchinator: Batchinator;
   // private _updateChildPersistanceIndicesBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
-  private _heartBeatingIndexKeys: Array<string> = [];
-  private _heartBeatResolveChangedBatchinator: Batchinator;
-  private _inspectingListener: InspectingListener;
+  // private _heartBeatingIndexKeys: Array<string> = [];
+  // private _heartBeatResolveChangedBatchinator: Batchinator;
+  // private _inspectingListener: InspectingListener;
   /**
    * _flattenData could be considered as the final data model after transform
    * 1. dimension
@@ -85,11 +85,11 @@ class ListGroupDimensions<ItemT extends {} = {}>
     100
   );
 
-  private registeredKeys: Array<string> = [];
-  private _inspectingTimes = 0;
-  private _inspectingTime: number = +Date.now();
-  private _heartBeatingIndexKeysSentCommit: Array<string> = [];
-  private _startInspectBatchinator: Batchinator;
+  // private registeredKeys: Array<string> = [];
+  // private _inspectingTimes = 0;
+  // private _inspectingTime: number = +Date.now();
+  // private _heartBeatingIndexKeysSentCommit: Array<string> = [];
+  // private _startInspectBatchinator: Batchinator;
   private _listBaseDimension: ListBaseDimensions<any>;
 
   private _reflowItemsLength = 0;
@@ -100,6 +100,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }> = [];
 
   private _removeList: Function;
+
+  private _inspector: Inspector;
 
   constructor(props: ListGroupDimensionsProps) {
     super({
@@ -152,28 +154,15 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.onUpdateDimensionItemsMetaChange.bind(this),
       100
     );
-    // this._updateScrollMetricsWithCacheBatchinator = new Batchinator(
-    //   this.updateScrollMetricsWithCache.bind(this),
-    //   50
-    // );
 
-    this._heartBeatResolveChangedBatchinator = new Batchinator(
-      this.heartBeatResolveChanged.bind(this),
-      50
-    );
+    this._inspector = new Inspector();
+
     this.recalculateDimensionsIntervalTreeBatchinator = new Batchinator(
       this.recalculateDimensionsIntervalTree.bind(this),
       50
     );
-    // 主要用来巡检
-    this._startInspectBatchinator = new Batchinator(
-      this.startInspection.bind(this),
-      50
-    );
 
     this._removeList = manager.addList(this);
-    this.heartBeat = this.heartBeat.bind(this);
-    this.startInspection = this.startInspection.bind(this);
 
     this._listBaseDimension = new ListBaseDimensions({
       ...props,
@@ -548,7 +537,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
       };
     // should update indexKeys first !!!
     // this.pushIndexKey(listKey);
-    this.startInspection();
+    // this.startInspection();
+    this._inspector.push(listKey);
     const { recyclerType, data = [] } = listDimensionsProps;
     const dimensions = new ListDimensions({
       ...listDimensionsProps,
@@ -593,6 +583,25 @@ class ListGroupDimensions<ItemT extends {} = {}>
         if (onEndReachedCleaner) onEndReachedCleaner();
       },
     };
+  }
+
+  onIndexKeysChanged() {
+    this.onItemsCountChanged();
+    const indexKeys = this._inspector.indexKeys;
+
+    /**
+     * holdout: Attention.
+     * To fix insert a element
+     */
+    let _data = [];
+    for (let index = 0; index < indexKeys.length; index++) {
+      const listKey = indexKeys[index];
+      const _dimensions = this.getDimension(listKey);
+      _data = _data.concat(_dimensions.getData());
+    }
+
+    this._flattenData = _data;
+    this.calculateDimensionsIndexRange();
   }
 
   /**
@@ -687,93 +696,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
     }
   }
 
-  heartBeatResolveChanged() {
-    const nextIndexKeys = this._heartBeatingIndexKeys.slice();
-
-    // 比如说，中间发生了顺序调整；自动检测确保
-    if (!resolveChanged(this._heartBeatingIndexKeys, this.indexKeys).isEqual) {
-      // if (
-      //   !shallowArrayEqual(
-      //     this._heartBeatingIndexKeys,
-      //     this._heartBeatingIndexKeysSentCommit
-      //   )
-      // ) {
-      //   this.indexKeys = nextIndexKeys;
-      //   this.onItemsCountChanged();
-      //   this._heartBeatingIndexKeysSentCommit = this.indexKeys;
-      // }
-
-      this.indexKeys = nextIndexKeys;
-      this.onItemsCountChanged();
-
-      this._inspectingTime += 1;
-
-      /**
-       * holdout: Attention.
-       * To fix insert a element
-       */
-      let _data = [];
-      for (let index = 0; index < this.indexKeys.length; index++) {
-        const listKey = this.indexKeys[index];
-        const _dimensions = this.getDimension(listKey);
-        _data = _data.concat(_dimensions.getData());
-      }
-
-      this._flattenData = _data;
-      this.calculateDimensionsIndexRange();
-    }
-  }
-
-  // register first，then inspecting
-  heartBeat(props: { listKey: string; inspectingTime: number }) {
-    const { listKey, inspectingTime } = props;
-
-    if (inspectingTime < this._inspectingTime) return;
-
-    this._heartBeatingIndexKeys.push(listKey);
-
-    const indexInRegisteredKeys = this.registeredKeys.findIndex(
-      (key) => key === listKey
-    );
-
-    if (indexInRegisteredKeys !== -1) {
-      this.registeredKeys.splice(indexInRegisteredKeys, 1);
-    }
-
-    this.heartBeatResolveChanged();
-    // this._heartBeatResolveChangedBatchinator.schedule();
-  }
-
   getInspectAPI(): InspectingAPI {
-    return {
-      inspectingTimes: this._inspectingTimes,
-      inspectingTime: this._inspectingTime,
-      heartBeat: this.heartBeat,
-      startInspection: this.startInspection,
-    };
-  }
-
-  startInspection() {
-    // this._heartBeatResolveChangedBatchinator.dispose({
-    //   abort: true,
-    // });
-
-    const time = +Date.now();
-
-    if (typeof this._inspectingListener === 'function') {
-      this._inspectingTimes += 1;
-      this._heartBeatingIndexKeys = [];
-      this._inspectingListener.call(this, {
-        inspectingTimes: this._inspectingTimes,
-        inspectingTime: time,
-        heartBeat: this.heartBeat,
-        startInspection: this.startInspection,
-      });
-    }
+    return this._inspector.getAPI();
   }
 
   addStartInspectingHandler(cb: InspectingListener) {
-    if (typeof cb === 'function') this._inspectingListener = cb;
+    return this._inspector.addStartInspectingHandler(cb);
   }
 
   registerItem(
@@ -807,7 +735,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       initialStartIndex: startIndex,
       canIUseRIC: this.canIUseRIC,
     });
-    this.startInspection();
+    this._inspector.startInspection();
 
     this.setDimension(key, dimensions);
     this._listBaseDimension.addBuffer(recyclerType);
