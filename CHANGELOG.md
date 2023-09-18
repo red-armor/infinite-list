@@ -1,6 +1,20 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.11](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.11) (2023-09-18)
+## [0.2.45-recycle-group.12](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.12) (2023-09-18)
+
+
+
+## 0.2.45-recycle-group.12 (2023-09-18)
+
+
+### Features
+
+* bump prefixIntervalTree ([beb496e](https://github.com/red-armor/infinite-list/commit/beb496e045a8df1392ed26f44881485e2cdf6274))
+* update ([c7f8cd2](https://github.com/red-armor/infinite-list/commit/c7f8cd26cf8c3c33d9c3c380f05760bb9f422dc3))
+* update ([8a47ed5](https://github.com/red-armor/infinite-list/commit/8a47ed5e2897410c13c0d70972cc2259e7a30f14))
+* update ([407240c](https://github.com/red-armor/infinite-list/commit/407240ce5572a8cc848a1e9b4378d432c8d1ae29))
+* update ([80483eb](https://github.com/red-armor/infinite-list/commit/80483eb85fdaab3d3b38ed21352669f1866a9634))
+* update ([19793a6](https://github.com/red-armor/infinite-list/commit/19793a6f973a75f993d05a86baa38c511b8ca632))
 
 
 
