@@ -43,7 +43,6 @@ import isClamped from '@x-oasis/is-clamped';
 import memoizeOne from 'memoize-one';
 import StillnessHelper from './utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-// import FixedBuffer from './FixedBuffer';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import Recycler from './Recycler';
 import BaseLayout from './BaseLayout';
@@ -152,9 +151,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._getData = getData;
-    // this._maxToRenderPerBatch = maxToRenderPerBatch;
-    // this._itemOffsetBeforeLayoutReady = itemOffsetBeforeLayoutReady;
-    // this._canIUseRIC = canIUseRIC;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -173,8 +169,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       dispatchMetricsThreshold
     );
     this.onEndReachedHelper = new OnEndReachedHelper({
-      // id: this.id,
-      id: 'xxxx',
+      id: this.id,
       onEndReached,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
@@ -253,55 +248,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   initializeDefaultRecycleBuffer() {
     this._recycler.addBuffer(DEFAULT_RECYCLER_TYPE);
   }
-
-  // get itemOffsetBeforeLayoutReady() {
-  //   return this._itemOffsetBeforeLayoutReady;
-  // }
-
-  // get fillingMode() {
-  //   return this._fillingMode;
-  // }
-
-  // get reservedIndices() {
-  //   return this._reservedIndices;
-  // }
-
-  // get maxToRenderPerBatch() {
-  //   return this._maxToRenderPerBatch;
-  // }
-
-  // get canIUseRIC() {
-  //   return this._canIUseRIC;
-  // }
-
-  // updateReservedIndices() {
-  //   const indices = new Set(
-  //     [].concat(this.persistanceIndices, this.stickyHeaderIndices)
-  //   );
-  //   this._reservedIndices = Array.from(indices).sort((a, b) => a - b);
-  // }
-
-  // get persistanceIndices() {
-  //   return this._persistanceIndices;
-  // }
-
-  // set persistanceIndices(indices: Array<number>) {
-  //   this._persistanceIndices = indices.sort((a, b) => a - b);
-  //   this.updateReservedIndices();
-  // }
-
-  // get stickyHeaderIndices() {
-  //   return this._stickyHeaderIndices;
-  // }
-
-  // set stickyHeaderIndices(indices: Array<number>) {
-  //   this._stickyHeaderIndices = indices.sort((a, b) => a - b);
-  //   this.updateReservedIndices();
-  // }
-
-  // get recycleThreshold() {
-  //   return this._recycleThreshold;
-  // }
 
   get length() {
     return this._data.length;

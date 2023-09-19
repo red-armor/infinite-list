@@ -63,7 +63,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
-  private _itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap();
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
@@ -140,7 +139,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       parentItemsDimensions,
       getItemSeparatorLength,
       onBatchLayoutFinished,
-      persistanceIndices,
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
       useItemApproximateLength,
@@ -283,29 +281,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._removeList?.();
     this._renderStateListeners = [];
   }
-
-  // resolveInitialActiveValue(active: boolean) {
-  //   if (this._deps.length) {
-  //     let isActive = true;
-  //     for (let index = 0; index < this._deps.length; index++) {
-  //       const listKey = this._deps[index];
-  //       const listHandler = manager.getKeyList(listKey);
-  //       if (!listHandler) continue;
-
-  //       if (
-  //         listHandler.getRenderState() !== ListRenderState.ON_RENDER_FINISHED
-  //       ) {
-  //         this._renderStateListenersCleaner.push(
-  //           listHandler.addRenderStateListener(this.handleDeps.bind(this))
-  //         );
-  //         isActive = false;
-  //       }
-  //     }
-  //     return isActive;
-  //   }
-
-  //   return active;
-  // }
 
   getRenderState() {
     return this._renderState;
