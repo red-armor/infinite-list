@@ -56,6 +56,7 @@ class Dimension {
       owner: this,
       recyclerType: this._recyclerType,
       canIUseRIC: this._canIUseRIC,
+      ignoredToPerBatch: this._ignoredToPerBatch
     });
     this.resolveConfigTuplesDefaultState =
       this.resolveConfigTuplesDefaultState.bind(this);

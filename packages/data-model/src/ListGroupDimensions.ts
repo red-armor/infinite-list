@@ -1103,52 +1103,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     });
   }
 
-  // updateScrollMetricsWithCache(
-  //   scrollMetrics: ScrollMetrics = this._scrollMetrics
-  // ) {
-  //   // 之所以这么处理，是因为有可能数据的item值发生了变化，这个时候要重新刷一下
-  //   // 嵌套的子item。
-  //   const { bufferedMetaRanges, visibleMetaRanges } = this._rangeResult;
-  //   bufferedMetaRanges.forEach((range) => {
-  //     const { listKey, value } = range;
-  //     const dimension = this.getDimension(listKey);
-
-  //     const visibleMetaRange = visibleMetaRanges.find(
-  //       (v) => v.listKey === listKey
-  //     );
-
-  //     if (dimension instanceof ListDimensions) {
-  //       if (visibleMetaRange) {
-  //         dimension.updateState(
-  //           {
-  //             ...this._dispatchedMetricsResult,
-  //             visibleStartIndex: visibleMetaRange
-  //               ? visibleMetaRange.value.startIndex
-  //               : -1,
-  //             visibleEndIndex: visibleMetaRange
-  //               ? visibleMetaRange.value.endIndex
-  //               : -1,
-  //             bufferedEndIndex: value.endIndex,
-  //             bufferedStartIndex: value.startIndex,
-  //           },
-  //           scrollMetrics
-  //         );
-  //       } else {
-  //         dimension.updateStateBatchinator.schedule(
-  //           {
-  //             ...this._dispatchedMetricsResult,
-  //             visibleStartIndex: -1,
-  //             visibleEndIndex: -1,
-  //             bufferedEndIndex: value.endIndex,
-  //             bufferedStartIndex: value.startIndex,
-  //           },
-  //           scrollMetrics
-  //         );
-  //       }
-  //     }
-  //   });
-  // }
-
   dispatchScrollMetricsEnabled() {
     return (
       this.selector.getDispatchScrollMetricsEnabledStatus() &&

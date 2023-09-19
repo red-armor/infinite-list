@@ -26,6 +26,7 @@ class ItemMeta extends ViewabilityItemMeta {
   readonly _ownerId: string;
   readonly _canIUseRIC?: boolean;
   private _isApproximateLayout: boolean;
+  private _ignoredToPerBatch: boolean;
 
   constructor(props: {
     onViewable?: StateEventListener;
@@ -40,6 +41,7 @@ class ItemMeta extends ViewabilityItemMeta {
     isInitialItem?: boolean;
     canIUseRIC?: boolean;
     recyclerType?: string;
+    ignoredToPerBatch?: boolean;
   }) {
     super(props);
     const {
@@ -51,6 +53,7 @@ class ItemMeta extends ViewabilityItemMeta {
       canIUseRIC,
       recyclerType = DEFAULT_RECYCLER_TYPE,
       isInitialItem = false,
+      ignoredToPerBatch,
     } = props;
     this._owner = owner;
     this._id = `item_meta_${count++}`;
@@ -58,6 +61,7 @@ class ItemMeta extends ViewabilityItemMeta {
     this._separatorLength = separatorLength || 0;
     this._isListItem = isListItem || false;
     this._stateEventSubscriptions = new Map();
+    this._ignoredToPerBatch = !!ignoredToPerBatch
     this._state =
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
@@ -72,6 +76,10 @@ class ItemMeta extends ViewabilityItemMeta {
 
   get id() {
     return this._id;
+  }
+
+  get ignoredToPerBatch() {
+    return this._ignoredToPerBatch
   }
 
   get recyclerType() {
