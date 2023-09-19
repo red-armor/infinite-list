@@ -770,7 +770,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._keyToIndexMap = keyToIndexMap;
     this._indexKeys = keyToIndexArray;
     this._itemToKeyMap = itemToKeyMap;
-    this._itemToDimensionMap = itemToDimensionMap;
     return dataChangedType;
   }
 
