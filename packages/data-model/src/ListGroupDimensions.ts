@@ -694,6 +694,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
+
+      
       if (
         [
           KeysChangedType.Add,
