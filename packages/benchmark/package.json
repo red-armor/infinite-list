@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/benchmark",
-  "version": "0.2.45-recycle-group.15",
+  "version": "0.2.45-recycle-group.16",
   "scripts": {
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "clean": "rimraf ./dist"
