@@ -44,7 +44,7 @@ importers:
       '@x-oasis/batchinator': ^0.1.14
       '@x-oasis/capitalize': ^0.1.14
       '@x-oasis/default-boolean-value': ^0.1.14
-      '@x-oasis/integer-buffer-set': ^0.1.14
+      '@x-oasis/integer-buffer-set': ^0.1.19
       '@x-oasis/is-clamped': ^0.1.14
       '@x-oasis/layout-equal': ^0.1.16
       '@x-oasis/noop': ^0.1.14
@@ -63,7 +63,7 @@ importers:
       '@x-oasis/batchinator': 0.1.14
       '@x-oasis/capitalize': 0.1.14
       '@x-oasis/default-boolean-value': 0.1.14
-      '@x-oasis/integer-buffer-set': 0.1.14
+      '@x-oasis/integer-buffer-set': 0.1.19
       '@x-oasis/is-clamped': 0.1.14
       '@x-oasis/layout-equal': 0.1.16
       '@x-oasis/noop': 0.1.14
@@ -2587,14 +2587,14 @@ packages:
     resolution: {integrity: sha512-X3cfmPlv/3K3Tklj3LShnYcZdP4pmpAv7SJp/XLP+jEee37QKaXxkochZPkI81H5wMCl/6/UHP8iNMhcxdNlfA==}
     dev: false
 
-  /@x-oasis/heap/0.1.14:
-    resolution: {integrity: sha512-mjiY1Lwxj7InAzDvrF+cbkoHNxlaFFL92klrCPe/3i0mLQwa6+YNM9G4/sYOb6vYWqDMZ39A7Jns7syq5efYBw==}
+  /@x-oasis/heap/0.1.19:
+    resolution: {integrity: sha512-wgfdKworcwRfapkjgUrdpf29Th+larEmzZmE8/5vMjnPYYUGOGhKGBEStjbR4pY5YNpM4V5PAkX9N6/13LYeMQ==}
     dev: false
 
-  /@x-oasis/integer-buffer-set/0.1.14:
-    resolution: {integrity: sha512-AzR8zLwS2QkFy1V6EsM9Q2mqYu6xyPG+F+SpjRIm4otdDyvvTFPnuBzJl80CGbwYQ3tW7al89M3KwFIjdfPA/A==}
+  /@x-oasis/integer-buffer-set/0.1.19:
+    resolution: {integrity: sha512-SINJRKHUffxv9wt+kNKZrETwFhO8K4xpmtQfr+DcWT5JzF28TM2jLXW5fqoX7X7p173wZ/qUw/hbq2UNvhvAWg==}
     dependencies:
-      '@x-oasis/heap': 0.1.14
+      '@x-oasis/heap': 0.1.19
     dev: false
 
   /@x-oasis/is-clamped/0.1.14:

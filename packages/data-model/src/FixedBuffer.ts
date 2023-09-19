@@ -75,11 +75,23 @@ class FixedBuffer {
     return this._recyclerType;
   }
 
-  getPosition(rowIndex: number, startIndex: number, endIndex: number) {
+  getPosition(
+    rowIndex: number,
+    startIndex: number,
+    endIndex: number,
+    itemMeta: ItemMeta
+  ) {
     if (rowIndex < 0) return null;
     // 初始化的item不参与absolute替换
     if (rowIndex < this._thresholdIndexValue) return null;
     let position = this._bufferSet.getValuePosition(rowIndex);
+
+    // 当通过rowIndex找到了对应的position以后不能够直接用。这个时候还要做一次
+    // itemMeta验证；因为item才是第一等级。确保的是item不变的情况下，能够复用。
+    if (position === position) {
+      const originalItemMeta = this._itemMetaIndices[position];
+      if (originalItemMeta && originalItemMeta !== itemMeta) position = null;
+    }
 
     if (position === null && this._bufferSet.getSize() >= this.size) {
       position = this._bufferSet.replaceFurthestValuePosition(
@@ -114,18 +126,25 @@ class FixedBuffer {
       const position = idx;
       this._newItemMetaIndices[position] = itemMeta;
       this._indices[position] = index;
-      return position
+
+      const _index = this._indicesCopy.findIndex((d) => d === index);
+      if (_index !== -1 && _index !== idx) {
+        this._bufferSet.setPositionValue(idx, index);
+        this._indicesCopy.splice(_index, 1, undefined);
+      }
+      return position;
     }
     const position = this.getPosition(
       index,
       safeRange.startIndex,
-      safeRange.endIndex
+      safeRange.endIndex,
+      itemMeta
     );
     if (position === position) {
       this._indices[position] = index;
       this._newItemMetaIndices[position] = itemMeta;
     }
-    return position
+    return position;
   }
 
   getMaxValue() {
