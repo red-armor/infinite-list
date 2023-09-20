@@ -695,7 +695,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
 
-      
       if (
         [
           KeysChangedType.Add,
@@ -710,7 +709,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
         // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
         // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
         this.updateScrollMetrics(this._scrollMetrics, {
-          flush: true,
           useCache: false,
         });
       }
