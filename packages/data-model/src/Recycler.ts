@@ -123,7 +123,9 @@ class Recycler {
         break;
       }
 
-      if (itemMeta && !itemMeta.ignoredToPerBatch) count++;
+      if (index >= this._thresholdIndexValue) count++;
+
+      // if (itemMeta && !itemMeta.ignoredToPerBatch) count++;
     }
   }
 
