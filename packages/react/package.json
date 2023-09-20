@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react",
-  "version": "0.2.45-recycle-group.17",
+  "version": "0.2.45-recycle-group.18",
   "main": "src/index.ts",
   "publishConfig": {
     "access": "public",
