@@ -632,11 +632,15 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     const recycleBufferedCount = this._recycler.recyclerReservedBufferPerBatch;
 
     if (Math.abs(velocity) <= 1) {
-      const startIndex = Math.max(visibleStartIndex - Math.ceil(recycleBufferedCount / 2), this._recycler.thresholdIndexValue)
+      const startIndex = Math.max(
+        visibleStartIndex - Math.ceil(recycleBufferedCount / 2),
+        this._recycler.thresholdIndexValue
+      );
       this._recycler.updateIndices({
         safeRange,
         startIndex,
-        maxCount: visibleEndIndex - startIndex + 1 + recycleBufferedCount,
+        maxCount:
+          visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
         /** TODO !!!!!! */
         maxIndex: this.getData().length,
@@ -652,11 +656,15 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         maxIndex: this.getData().length,
       });
     } else {
-      const startIndex = Math.max(visibleStartIndex - recycleBufferedCount, this._recycler.thresholdIndexValue)
+      const startIndex = Math.max(
+        visibleStartIndex - recycleBufferedCount,
+        this._recycler.thresholdIndexValue
+      );
       this._recycler.updateIndices({
         safeRange,
         startIndex,
-        maxCount: visibleEndIndex - startIndex + 1 + recycleBufferedCount,
+        maxCount:
+          visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
         /** TODO */
         maxIndex: this.getData().length,

@@ -107,7 +107,7 @@ class Recycler {
       step > 0 ? index <= maxIndex : index >= 0;
       index += step
     ) {
-      if (index < this._thresholdIndexValue) continue
+      if (index < this._thresholdIndexValue) continue;
       const itemMeta = this._owner.getFinalIndexItemMeta(index);
 
       // itemLayout should not be a condition, may cause too many unLayout item
@@ -123,8 +123,7 @@ class Recycler {
         break;
       }
 
-      if (!itemMeta.ignoredToPerBatch)
-        count++;
+      if (itemMeta && !itemMeta.ignoredToPerBatch) count++;
     }
   }
 
