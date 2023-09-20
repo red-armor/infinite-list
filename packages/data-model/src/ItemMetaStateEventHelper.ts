@@ -1,5 +1,20 @@
 import Batchinator from '@x-oasis/batchinator';
 import { StateEventListener } from './types';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+
+let canIUseRIC = false
+let finished = false
+
+setTimeout(() => {
+  if (finished) return
+  canIUseRIC = false
+  finished = true
+})
+// @ts-ignore
+requestIdleCallback(() => {
+  canIUseRIC = true 
+  finished = true
+})
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;
@@ -28,7 +43,7 @@ class ItemMetaStateEventHelper {
       eventName,
       batchUpdateEnabled,
       defaultValue = false,
-      canIUseRIC = true,
+      canIUseRIC: _canIUseRIC,
       once,
     } = props;
 
@@ -55,7 +70,7 @@ class ItemMetaStateEventHelper {
     }
 
     // ric in RN can not be triggered. https://github.com/facebook/react-native/issues/28602
-    this._canIUseRIC = canIUseRIC;
+    this._canIUseRIC = defaultBooleanValue(_canIUseRIC, canIUseRIC);
   }
 
   remover(listener: StateEventListener, key?: string) {
