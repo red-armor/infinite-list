@@ -58,8 +58,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
   private _store: Store<ReducerResult>;
   private _scrollMetrics: ScrollMetrics;
   private _renderState: ListRenderState;
-  private _renderStateListeners: Array<Function> = [];
-  private _onBatchLayoutFinished: () => boolean;
+  // private _renderStateListeners: Array<Function> = [];
+  // private _onBatchLayoutFinished: () => boolean;
   private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
   // private _updateScrollMetricsWithCacheBatchinator: Batchinator;
   // private _updateChildPersistanceIndicesBatchinator: Batchinator;
@@ -71,10 +71,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
    */
   private _flattenData: Array<ListGroupData> = [];
 
-  private _rangeResult: {
-    bufferedMetaRanges: ListRangeResult;
-    visibleMetaRanges: ListRangeResult;
-  };
+  // private _rangeResult: {
+  //   bufferedMetaRanges: ListRangeResult;
+  //   visibleMetaRanges: ListRangeResult;
+  // };
   private _dispatchedMetricsResult: ReducerResult;
   private _dimensionsIntervalTree: PrefixIntervalTree = new PrefixIntervalTree(
     100
@@ -112,7 +112,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
       viewabilityConfigCallbackPairs,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
-      onBatchLayoutFinished,
       onEndReachedHandlerTimeoutThreshold,
       recycleEnabled = true,
     } = props;
@@ -142,7 +141,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     });
 
     this._store = createStore<ReducerResult>();
-    this._onBatchLayoutFinished = onBatchLayoutFinished;
     this._onUpdateDimensionItemsMetaChangeBatchinator = new Batchinator(
       this.onUpdateDimensionItemsMetaChange.bind(this),
       100
@@ -188,7 +186,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   cleanup() {
     this._removeList?.();
-    this._renderStateListeners = [];
   }
 
   getOnEndReachedHelper() {
@@ -346,10 +343,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
       }
       return acc;
     }, 0);
-    const dataLength = this.getDataLength();
-    if (this._reflowItemsLength === dataLength) {
-      this.notifyRenderFinished();
-    }
   }
 
   getConfigTuple() {
@@ -358,11 +351,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   resolveConfigTuplesDefaultState(defaultValue?: boolean) {
     return this._configTuples.getDefaultState(defaultValue);
-  }
-
-  notifyRenderFinished() {
-    this._renderStateListeners.forEach((listener) => listener());
-    this._renderStateListeners = [];
   }
 
   getState() {
@@ -661,12 +649,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
           this.removeItem(key);
         },
       };
-    const len = this.indexKeys.length;
-    const beforeKey = len ? this.indexKeys[len - 1] : '';
-    const startIndex = beforeKey
-      ? this.getDimensionStartIndex(beforeKey) +
-        this.getDimension(beforeKey).length
-      : 0;
     const { recyclerType } = itemDimensionsProps;
     const dimensions = new Dimension({
       id: key,
@@ -674,7 +656,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
       ...itemDimensionsProps,
       listGroupDimension: this,
       horizontal: this.getHorizontal(),
-      initialStartIndex: startIndex,
       canIUseRIC: this.canIUseRIC,
     });
     this.setDimension(key, dimensions);
