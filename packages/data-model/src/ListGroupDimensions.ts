@@ -468,7 +468,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       const info = this._dimensionsIndexRange.find(
         ({ dimensions }) => dimensions === _dimensions
       );
-      return info.startIndex;
+      if (info) return info.startIndex;
     }
 
     return 0;

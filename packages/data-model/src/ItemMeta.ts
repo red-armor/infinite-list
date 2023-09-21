@@ -260,7 +260,7 @@ class ItemMeta extends ViewabilityItemMeta {
    * In reuse condition, once add listener, then it will not be changed anymore.
    *
    */
-  addStrictStateReusableEventListener(
+  addStStateReusableEventListener(
     event: string,
     key: string,
     callback: StateEventListener,
@@ -278,6 +278,39 @@ class ItemMeta extends ViewabilityItemMeta {
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
     return stateEventHelper.addReusableListener(
+      callback,
+      key,
+      defaultBooleanValue(triggerOnceIfTrue, true)
+    );
+  }
+
+  /**
+   *
+   * @param event
+   * @param callback
+   * @param triggerOnceIfTrue
+   *
+   * In reuse condition, once add listener, then it will not be changed anymore.
+   *
+   */
+  addStrictStateReusableEventListener(
+    event: string,
+    key: string,
+    callback: StateEventListener,
+    triggerOnceIfTrue?: boolean
+  ): {
+    remover: Function;
+  } {
+    if (typeof callback !== 'function')
+      return {
+        remover: noop,
+      };
+    const stateEventHelper = this.ensureStateHelper(
+      event,
+      // get initial value
+      event === 'impression' ? this._state['viewable'] : this._state[event]
+    );
+    return stateEventHelper.addStrictReusableListener(
       callback,
       key,
       defaultBooleanValue(triggerOnceIfTrue, true)
