@@ -56,7 +56,7 @@ class Dimension {
       owner: this,
       recyclerType: this._recyclerType,
       canIUseRIC: this._canIUseRIC,
-      ignoredToPerBatch: this._ignoredToPerBatch
+      ignoredToPerBatch: this._ignoredToPerBatch,
     });
     this.resolveConfigTuplesDefaultState =
       this.resolveConfigTuplesDefaultState.bind(this);
@@ -68,6 +68,10 @@ class Dimension {
 
   get length() {
     return 1;
+  }
+
+  get recyclerType() {
+    return this._recyclerType;
   }
 
   hasKey(key: string) {

@@ -190,31 +190,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
 
     this._deps = deps;
-    // this._isActive = this.resolveInitialActiveValue(active);
     this._isActive = true;
 
-    // if (this._listGroupDimension && this.initialNumToRender) {
-    //   if (process.env.NODE_ENV === 'development')
-    //     console.warn(
-    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-    //         ' initialNumToRender value should be controlled' +
-    //         'by `ListGroup` commander. So value is reset to `0`.'
-    //     );
-    //   this.initialNumToRender = 0;
-    // }
-
-    // if (this._listGroupDimension && persistanceIndices) {
-    //   if (process.env.NODE_ENV === 'development')
-    //     console.warn(
-    //       '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
-    //         ' persistanceIndices value should be controlled' +
-    //         'by `ListGroup` commander. So value is reset to `[]`.'
-    //     );
-    //   this.persistanceIndices = [];
-    // }
-
-    this.updateInitialNumDueToListGroup(data);
-    this.updatePersistanceIndicesDueToListGroup(data);
     if (!this._isActive) {
       this._softData = data;
     } else {
@@ -251,6 +228,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.recalculateRecycleResultState.bind(this),
       50
     );
+  }
+
+  get recyclerType() {
+    return this._recyclerType;
   }
 
   get length() {
@@ -605,51 +586,51 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   // 临时提供data，不然的话，data.length会一直返回0
-  updateInitialNumDueToListGroup(data: Array<ItemT>) {
-    if (!this._listGroupDimension) return;
-    if (!data.length) return;
-    const startIndex = this._listGroupDimension.getDimensionStartIndex(
-      this.id,
-      true
-    );
-    const initialNumToRender = this._listGroupDimension.initialNumToRender;
-    if (startIndex < initialNumToRender) {
-      const step = initialNumToRender - startIndex;
-      this.initialNumToRender = data.length >= step ? step : data.length;
-    }
-  }
+  // updateInitialNumDueToListGroup(data: Array<ItemT>) {
+  //   if (!this._listGroupDimension) return;
+  //   if (!data.length) return;
+  //   const startIndex = this._listGroupDimension.getDimensionStartIndex(
+  //     this.id,
+  //     true
+  //   );
+  //   const initialNumToRender = this._listGroupDimension.initialNumToRender;
+  //   if (startIndex < initialNumToRender) {
+  //     const step = initialNumToRender - startIndex;
+  //     this.initialNumToRender = data.length >= step ? step : data.length;
+  //   }
+  // }
 
-  updatePersistanceIndicesDueToListGroup(data: Array<ItemT> = this._data) {
-    if (!this._listGroupDimension) return;
-    if (!data.length) return;
-    const persistanceIndices = this._listGroupDimension.persistanceIndices;
-    if (!persistanceIndices.length) return;
+  // updatePersistanceIndicesDueToListGroup(data: Array<ItemT> = this._data) {
+  //   if (!this._listGroupDimension) return;
+  //   if (!data.length) return;
+  //   const persistanceIndices = this._listGroupDimension.persistanceIndices;
+  //   if (!persistanceIndices.length) return;
 
-    const startIndex = this._listGroupDimension.getDimensionStartIndex(
-      this.id,
-      true
-    );
-    const endIndex = startIndex + data.length;
+  //   const startIndex = this._listGroupDimension.getDimensionStartIndex(
+  //     this.id,
+  //     true
+  //   );
+  //   const endIndex = startIndex + data.length;
 
-    const first = persistanceIndices[0];
-    const last = persistanceIndices[persistanceIndices.length - 1];
+  //   const first = persistanceIndices[0];
+  //   const last = persistanceIndices[persistanceIndices.length - 1];
 
-    if (
-      isClamped(first, startIndex, last) ||
-      isClamped(first, endIndex, last)
-    ) {
-      const indices = [];
-      for (let index = 0; index < persistanceIndices.length; index++) {
-        const currentIndex = persistanceIndices[index];
-        if (isClamped(startIndex, currentIndex, endIndex)) {
-          indices.push(currentIndex - startIndex);
-        }
-      }
-      if (indices.length) this.persistanceIndices = indices;
-    } else {
-      this.persistanceIndices = [];
-    }
-  }
+  //   if (
+  //     isClamped(first, startIndex, last) ||
+  //     isClamped(first, endIndex, last)
+  //   ) {
+  //     const indices = [];
+  //     for (let index = 0; index < persistanceIndices.length; index++) {
+  //       const currentIndex = persistanceIndices[index];
+  //       if (isClamped(startIndex, currentIndex, endIndex)) {
+  //         indices.push(currentIndex - startIndex);
+  //       }
+  //     }
+  //     if (indices.length) this.persistanceIndices = indices;
+  //   } else {
+  //     this.persistanceIndices = [];
+  //   }
+  // }
 
   attemptToHandleEndReached() {
     if (!this._listGroupDimension) {

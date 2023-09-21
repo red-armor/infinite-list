@@ -86,6 +86,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
     dimensions: Dimension | ListDimensions;
     startIndex: number;
     endIndex: number;
+
+    startIndexInRecycler: number;
+    endIndexInRecycler: number;
   }> = [];
 
   private _removeList: Function;
@@ -445,40 +448,35 @@ class ListGroupDimensions<ItemT extends {} = {}>
   /**
    *
    * @param listKey dimension key; It could be list key or singleton item key
-   * @param ignoreDimension ignore singleton item key
    * @returns
    */
-  getDimensionStartIndex(listKey: string, ignoreDimension = false) {
-    const listKeyIndex = this.indexKeys.findIndex((key) => key === listKey);
-    if (!listKeyIndex) return 0;
-
-    if (listKeyIndex !== -1) {
-      const prevIndex = listKeyIndex - 1;
-      const nextListKey = this.indexKeys[prevIndex];
-      const _dimensions = this.getDimension(nextListKey);
+  getDimensionStartIndex(listKey: string) {
+    const _dimensions = this.getDimension(listKey);
+    if (_dimensions) {
       const info = this._dimensionsIndexRange.find(
         ({ dimensions }) => dimensions === _dimensions
       );
-      if (info) {
-        let startIndex = info.endIndex;
-
-        if (ignoreDimension) {
-          for (let i = 0; i < info.endIndex + 1; i++) {
-            const listKey = this.indexKeys[i];
-            const dimension = this.getDimension(listKey);
-            if (
-              dimension instanceof Dimension &&
-              dimension.getIgnoredToPerBatch()
-            )
-              startIndex -= 1;
-          }
-        }
-
-        return startIndex;
-      }
+      return info.startIndex;
     }
 
-    return -1;
+    return 0;
+  }
+
+  /**
+   *
+   * @param listKey dimension key; It could be list key or singleton item key
+   * @returns
+   */
+  getDimensionStartIndexInRecycler(listKey: string) {
+    const _dimensions = this.getDimension(listKey);
+    if (_dimensions) {
+      const info = this._dimensionsIndexRange.find(
+        ({ dimensions }) => dimensions === _dimensions
+      );
+      return info.startIndex;
+    }
+
+    return 0;
   }
 
   removeListDimensions(listKey: string) {
@@ -555,25 +553,25 @@ class ListGroupDimensions<ItemT extends {} = {}>
    */
   calculateDimensionsIndexRange() {
     let startIndex = 0;
+    const rangeMap: {
+      [key: string]: number;
+    } = {};
     this._dimensionsIndexRange = this.indexKeys.reduce((acc, key) => {
       const dimensions = this.getDimension(key);
-      if (dimensions instanceof Dimension) {
-        const endIndex = startIndex + dimensions.length;
-        acc.push({
-          startIndex,
-          endIndex,
-          dimensions,
-        });
-        startIndex = endIndex;
-      } else if (dimensions instanceof ListDimensions) {
-        const endIndex = startIndex + dimensions.length;
-        acc.push({
-          startIndex,
-          endIndex,
-          dimensions,
-        });
-        startIndex = endIndex;
-      }
+      const recyclerType = dimensions.recyclerType;
+      if (rangeMap[recyclerType] === undefined) rangeMap[recyclerType] = 0;
+
+      const endIndex = startIndex + dimensions.length;
+      const startIndexInRecycler = rangeMap[recyclerType];
+      rangeMap[recyclerType] = startIndexInRecycler + dimensions.length;
+      acc.push({
+        startIndex,
+        endIndex,
+        dimensions,
+        startIndexInRecycler,
+        enIndexInRecycler: rangeMap[recyclerType],
+      });
+      startIndex = endIndex;
       return acc;
     }, []);
   }
