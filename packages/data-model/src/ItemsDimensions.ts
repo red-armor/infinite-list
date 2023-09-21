@@ -57,7 +57,7 @@ class ItemsDimensions extends BaseDimensions {
     if (!meta) {
       this.setKeyMeta(
         key,
-        new ItemMeta({
+        ItemMeta.spawn({
           key,
           owner: this,
           canIUseRIC: this.canIUseRIC,

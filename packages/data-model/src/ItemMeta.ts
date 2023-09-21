@@ -6,7 +6,9 @@ import {
   ItemLayout,
   ItemMetaOwner,
   ItemMetaState,
+  ItemMetaProps,
   StateEventListener,
+  ItemMetaStateEventHelperProps,
 } from './types';
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
@@ -15,22 +17,6 @@ import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 const context: {
   [key: string]: ItemMeta;
 } = {};
-
-type ItemMetaProps = {
-  onViewable?: StateEventListener;
-  onImpression?: StateEventListener;
-  key: string;
-  separatorLength?: number;
-  layout?: ItemLayout;
-  owner?: ItemMetaOwner;
-  isListItem?: boolean;
-  setState?: Function;
-  state?: ItemMetaState;
-  isInitialItem?: boolean;
-  canIUseRIC?: boolean;
-  recyclerType?: string;
-  ignoredToPerBatch?: boolean;
-};
 
 let count = 0;
 class ItemMeta extends ViewabilityItemMeta {
@@ -47,6 +33,9 @@ class ItemMeta extends ViewabilityItemMeta {
   readonly _canIUseRIC?: boolean;
   private _isApproximateLayout: boolean;
   private _ignoredToPerBatch: boolean;
+  private _spawnProps: {
+    [key: string]: ItemMetaStateEventHelperProps;
+  };
 
   constructor(props: ItemMetaProps) {
     super(props);
@@ -60,6 +49,7 @@ class ItemMeta extends ViewabilityItemMeta {
       recyclerType = DEFAULT_RECYCLER_TYPE,
       isInitialItem = false,
       ignoredToPerBatch,
+      spawnProps = {},
     } = props;
     this._owner = owner;
     this._id = `item_meta_${count++}`;
@@ -76,16 +66,27 @@ class ItemMeta extends ViewabilityItemMeta {
     this._canIUseRIC = canIUseRIC;
     this._isApproximateLayout = false;
     this._recyclerType = recyclerType;
+    this._spawnProps = spawnProps;
 
     this.addStateEventListener = this.addStateEventListener.bind(this);
     context[this.key] = this;
   }
 
   static spawn(props: ItemMetaProps) {
-    const { key } = props;
-    const ancestor = context[key];
+    const ancestor = context[props.key];
     if (ancestor) {
-      return null;
+      const layout = ancestor.getLayout();
+      const spawnProps = {};
+      for (const [key, value] of ancestor._stateEventSubscriptions) {
+        const _props = ItemMetaStateEventHelper.spawn(value);
+        if (_props) spawnProps[key] = _props;
+      }
+
+      return new ItemMeta({
+        layout,
+        spawnProps,
+        ...props,
+      });
     }
 
     return new ItemMeta(props);
@@ -201,6 +202,7 @@ class ItemMeta extends ViewabilityItemMeta {
   ensureStateHelper(eventName: string, value: boolean) {
     if (!this._stateEventSubscriptions.get(eventName)) {
       const helper = new ItemMetaStateEventHelper({
+        ...(this._spawnProps[eventName] || {}),
         eventName,
         key: this._key,
         defaultValue: value,
@@ -226,6 +228,39 @@ class ItemMeta extends ViewabilityItemMeta {
    *
    */
   addStateReusableEventListener(
+    event: string,
+    key: string,
+    callback: StateEventListener,
+    triggerOnceIfTrue?: boolean
+  ): {
+    remover: Function;
+  } {
+    if (typeof callback !== 'function')
+      return {
+        remover: noop,
+      };
+    const stateEventHelper = this.ensureStateHelper(
+      event,
+      // get initial value
+      event === 'impression' ? this._state['viewable'] : this._state[event]
+    );
+    return stateEventHelper.addReusableListener(
+      callback,
+      key,
+      defaultBooleanValue(triggerOnceIfTrue, true)
+    );
+  }
+
+  /**
+   *
+   * @param event
+   * @param callback
+   * @param triggerOnceIfTrue
+   *
+   * In reuse condition, once add listener, then it will not be changed anymore.
+   *
+   */
+  addStrictStateReusableEventListener(
     event: string,
     key: string,
     callback: StateEventListener,

@@ -234,9 +234,6 @@ export interface StateSubscriptions {
   [key: string]: ((viewable: boolean) => void)[];
 }
 
-export type StateEventListener = (eventValue?: boolean) => void;
-// export type BuiltInEvent = 'viewable' | 'impression';
-
 export type ItemMetaState = {
   [key: string]: boolean;
 };

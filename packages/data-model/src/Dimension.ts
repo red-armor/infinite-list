@@ -50,7 +50,7 @@ class Dimension {
     this._initialStartIndex = initialStartIndex;
     this._ignoredToPerBatch = !!ignoredToPerBatch;
     this._canIUseRIC = canIUseRIC;
-    this._meta = new ItemMeta({
+    this._meta = ItemMeta.spawn({
       key: this.id,
       isListItem: false,
       owner: this,
@@ -209,7 +209,6 @@ class Dimension {
 
     if (!layoutEqual(meta.getLayout(), layout as ItemLayout)) {
       meta.setLayout(layout as ItemLayout);
-      const length = this._selectValue.selectLength(layout as ItemLayout);
       if (_update) {
         if (this._listGroupDimension) {
           this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
@@ -223,7 +222,7 @@ class Dimension {
 
   ensureKeyMeta() {
     if (this._meta) return this._meta;
-    this._meta = new ItemMeta({
+    this._meta = ItemMeta.spawn({
       key: this.id,
       owner: this,
       recyclerType: this._recyclerType,

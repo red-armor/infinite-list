@@ -379,7 +379,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (meta) return meta;
 
     // TODO: separatorLength may be included!!!!
-    meta = new ItemMeta({
+    meta = ItemMeta.spawn({
       key,
       owner: this,
       isListItem: true,
@@ -491,7 +491,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       ? index < this.initialNumToRender
       : false;
 
-    const meta = new ItemMeta({
+    const meta = ItemMeta.spawn({
       key,
       owner: this,
       isListItem: true,
