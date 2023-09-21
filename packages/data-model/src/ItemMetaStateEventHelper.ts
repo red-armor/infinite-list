@@ -63,15 +63,14 @@ class ItemMetaStateEventHelper {
 
     this._triggerBatchinator = new Batchinator(this._trigger.bind(this), 50);
     this.remover = this.remover.bind(this);
+    this._handleCountMap = handleCountMap;
+    this._strictListeners = strictListeners;
+    // ric in RN can not be triggered. https://github.com/facebook/react-native/issues/28602
+    this._canIUseRIC = defaultBooleanValue(_canIUseRIC, canIUseRIC);
 
     if (defaultValue) {
       this.trigger(defaultValue);
     }
-    this._handleCountMap = handleCountMap;
-    this._strictListeners = strictListeners;
-
-    // ric in RN can not be triggered. https://github.com/facebook/react-native/issues/28602
-    this._canIUseRIC = defaultBooleanValue(_canIUseRIC, canIUseRIC);
   }
 
   static spawn(ins: ItemMetaStateEventHelper) {
