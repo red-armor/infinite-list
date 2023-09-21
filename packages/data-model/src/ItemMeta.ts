@@ -12,6 +12,26 @@ import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
+const context: {
+  [key: string]: ItemMeta;
+} = {};
+
+type ItemMetaProps = {
+  onViewable?: StateEventListener;
+  onImpression?: StateEventListener;
+  key: string;
+  separatorLength?: number;
+  layout?: ItemLayout;
+  owner?: ItemMetaOwner;
+  isListItem?: boolean;
+  setState?: Function;
+  state?: ItemMetaState;
+  isInitialItem?: boolean;
+  canIUseRIC?: boolean;
+  recyclerType?: string;
+  ignoredToPerBatch?: boolean;
+};
+
 let count = 0;
 class ItemMeta extends ViewabilityItemMeta {
   private _isListItem: boolean;
@@ -28,21 +48,7 @@ class ItemMeta extends ViewabilityItemMeta {
   private _isApproximateLayout: boolean;
   private _ignoredToPerBatch: boolean;
 
-  constructor(props: {
-    onViewable?: StateEventListener;
-    onImpression?: StateEventListener;
-    key: string;
-    separatorLength?: number;
-    layout?: ItemLayout;
-    owner?: ItemMetaOwner;
-    isListItem?: boolean;
-    setState?: Function;
-    state?: ItemMetaState;
-    isInitialItem?: boolean;
-    canIUseRIC?: boolean;
-    recyclerType?: string;
-    ignoredToPerBatch?: boolean;
-  }) {
+  constructor(props: ItemMetaProps) {
     super(props);
     const {
       owner,
@@ -61,7 +67,7 @@ class ItemMeta extends ViewabilityItemMeta {
     this._separatorLength = separatorLength || 0;
     this._isListItem = isListItem || false;
     this._stateEventSubscriptions = new Map();
-    this._ignoredToPerBatch = !!ignoredToPerBatch
+    this._ignoredToPerBatch = !!ignoredToPerBatch;
     this._state =
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
@@ -72,6 +78,17 @@ class ItemMeta extends ViewabilityItemMeta {
     this._recyclerType = recyclerType;
 
     this.addStateEventListener = this.addStateEventListener.bind(this);
+    context[this.key] = this;
+  }
+
+  static spawn(props: ItemMetaProps) {
+    const { key } = props;
+    const ancestor = context[key];
+    if (ancestor) {
+      return null;
+    }
+
+    return new ItemMeta(props);
   }
 
   get id() {
@@ -79,7 +96,7 @@ class ItemMeta extends ViewabilityItemMeta {
   }
 
   get ignoredToPerBatch() {
-    return this._ignoredToPerBatch
+    return this._ignoredToPerBatch;
   }
 
   get recyclerType() {

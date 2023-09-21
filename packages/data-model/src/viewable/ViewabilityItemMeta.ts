@@ -10,6 +10,10 @@ abstract class ViewabilityItemMeta {
     return this._key;
   }
 
+  get key() {
+    return this._key;
+  }
+
   // getMetaOnViewableItemsChanged() {
   //   return {}
   // }
