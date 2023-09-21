@@ -10,7 +10,7 @@ import {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from './viewable';
-import ListBaseDimensions from '../ListBaseDimensions';
+import ListDimensions from '../ListDimensions';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,
@@ -261,7 +261,7 @@ export enum SetDataPhase {
 
 export type ItemMetaOwner = BaseDimensions | Dimension;
 export type IndexInfo = {
-  dimensions: ListBaseDimensions | BaseDimensions | Dimension;
+  dimensions: ListDimensions | Dimension;
   index: number;
   indexInGroup?: number;
   indexInRecycler?: number;
