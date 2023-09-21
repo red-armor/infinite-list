@@ -500,6 +500,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
     }
   }
 
+  getFinalAnchorKey(dimensionsKey: string) {
+    const dimensions = this.getDimension(dimensionsKey);
+    if (dimensions) return dimensions.anchorKey;
+    return null;
+  }
+
   /**
    *
    * @param listKey add a list listener
@@ -525,7 +531,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const dimensions = new ListDimensions({
       ...listDimensionsProps,
       id: listKey,
-      recyclerType,
       parentItemsDimensions: this._itemsDimensions,
       listGroupDimension: this,
       horizontal: this.getHorizontal(),
@@ -652,7 +657,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const { recyclerType } = itemDimensionsProps;
     const dimensions = new Dimension({
       id: key,
-      recyclerType,
       ...itemDimensionsProps,
       listGroupDimension: this,
       horizontal: this.getHorizontal(),

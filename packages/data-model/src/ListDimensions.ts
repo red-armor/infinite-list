@@ -109,6 +109,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _stillnessHelper: StillnessHelper;
 
+  private _anchorKey: string;
+
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
   ) => SpaceStateResult<ItemT>;
@@ -131,6 +133,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       recycleEnabled,
       data = [],
       deps = [],
+      anchorKey,
       keyExtractor,
       getItemLayout,
       onEndReached,
@@ -152,6 +155,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
 
+    this._anchorKey = anchorKey || this.id;
     this._keyExtractor = keyExtractor;
     this._recyclerType = recyclerType;
     this._itemApproximateLength = itemApproximateLength || 0;
@@ -256,6 +260,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   get state() {
     return this._state;
+  }
+
+  get anchorKey() {
+    return this._anchorKey;
   }
 
   cleanup() {

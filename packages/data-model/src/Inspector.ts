@@ -5,11 +5,13 @@ import {
   InspectingAPI,
   InspectingListener,
   OnIndexKeysChanged,
+  AnchorRange,
 } from './types';
 import ListGroupDimensions from './ListGroupDimensions';
 
 class Inspector {
   private _indexKeys: Array<string> = [];
+  private _anchorRange: AnchorRange = {};
   private _owner: ListGroupDimensions;
   private _inspectingTime: number = Date.now();
   private _inspectingTimes = 0;
@@ -42,7 +44,17 @@ class Inspector {
   }
 
   push(key: string) {
-    this._indexKeys.push(key);
+    const location = this._anchorRange[key];
+    // in the middle
+    if (location && location.endIndex < this._indexKeys.length) {
+      this._indexKeys = this._indexKeys
+        .slice()
+        .splice(location.endIndex, 1, key);
+      this.updateAnchorRange();
+      this.handleChange();
+    } else {
+      this._indexKeys.push(key);
+    }
     this._startInspectBatchinator.schedule();
     return () => {
       this.remove(key);
@@ -102,6 +114,29 @@ class Inspector {
     this.heartBeatResolveChanged();
   }
 
+  updateAnchorRange() {
+    this._anchorRange = this._indexKeys.reduce<AnchorRange>(
+      (acc, cur, index) => {
+        const anchorKey = this.owner.getFinalAnchorKey(cur);
+        if (!anchorKey) return acc;
+        if (acc[anchorKey]) {
+          const endIndex = acc[anchorKey].endIndex;
+          acc[anchorKey] = {
+            ...acc[anchorKey],
+            endIndex: endIndex + 1,
+          };
+        } else {
+          acc[anchorKey] = {
+            startIndex: index,
+            endIndex: index + 1,
+          };
+        }
+        return acc;
+      },
+      {}
+    );
+  }
+
   heartBeatResolveChanged() {
     const nextIndexKeys = this._heartBeatingIndexKeys.slice();
 
@@ -109,6 +144,7 @@ class Inspector {
     if (!shallowArrayEqual(this._heartBeatingIndexKeys, this._indexKeys)) {
       this._indexKeys = nextIndexKeys;
       this.handleChange();
+      this.updateAnchorRange();
       this._inspectingTime += 1;
     }
   }

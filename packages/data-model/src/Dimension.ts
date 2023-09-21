@@ -23,6 +23,7 @@ class Dimension {
   private _canIUseRIC: boolean;
   private _data: Array<any>;
   private _recyclerType: string;
+  private _anchorKey: string;
 
   constructor(props: DimensionProps) {
     const {
@@ -33,6 +34,7 @@ class Dimension {
       listGroupDimension,
       initialStartIndex,
       ignoredToPerBatch,
+      anchorKey,
     } = props;
 
     this._data = [
@@ -41,7 +43,7 @@ class Dimension {
       },
     ];
     this._recyclerType = recyclerType;
-
+    this._anchorKey = anchorKey;
     this._selectValue = horizontal
       ? selectHorizontalValue
       : selectVerticalValue;
@@ -72,6 +74,10 @@ class Dimension {
 
   get recyclerType() {
     return this._recyclerType;
+  }
+
+  get anchorKey() {
+    return this._anchorKey;
   }
 
   hasKey(key: string) {

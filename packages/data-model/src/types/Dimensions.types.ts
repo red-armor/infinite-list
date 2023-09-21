@@ -142,6 +142,7 @@ export type ListDimensionsProps<ItemT> = {
   itemApproximateLength?: number;
   useItemApproximateLength?: boolean;
   recyclerType?: string;
+  anchorKey?: string;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps &
   BaseLayoutProps;
@@ -189,6 +190,7 @@ export type DimensionProps = {
   initialStartIndex?: number;
   ignoredToPerBatch?: boolean;
   listGroupDimension: ListGroupDimensions;
+  anchorKey?: string;
 };
 
 export type ContainerLayoutGetter = () => {

@@ -7,3 +7,12 @@ export type InspectorProps = {
   owner: ListGroupDimensions;
   onChange: OnIndexKeysChanged;
 };
+
+export type AnchorLocation = {
+  startIndex: number;
+  endIndex: number;
+};
+
+export type AnchorRange = {
+  [key: string]: AnchorLocation;
+};
