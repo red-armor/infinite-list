@@ -1,5 +1,5 @@
-import BaseDimensions from '../BaseDimensions';
 import Dimension from '../Dimension';
+import PseudoListDimensions from '../PseudoListDimensions';
 import ItemsDimensions from '../ItemsDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
 import { ActionType } from '../state/types';
@@ -259,7 +259,11 @@ export enum SetDataPhase {
   UPDATE = 'update',
 }
 
-export type ItemMetaOwner = BaseDimensions | Dimension;
+export type ItemMetaOwner =
+  | ListDimensions
+  | ItemsDimensions
+  | Dimension
+  | PseudoListDimensions;
 export type IndexInfo = {
   dimensions: ListDimensions | Dimension;
   index: number;

@@ -6,7 +6,6 @@ import {
   BaseDimensionsProps,
   BoundInfo,
   BoundInfoType,
-  IndexInfo,
   ItemLayout,
   KeysChangedType,
   ScrollMetrics,
@@ -115,7 +114,7 @@ abstract class BaseDimensions extends BaseLayout {
   }
 
   getFinalKeyMeta(key: string) {
-    return this.getKeyMeta(key)
+    return this.getKeyMeta(key);
   }
 
   getKeyMeta(key: string) {
@@ -261,8 +260,6 @@ abstract class BaseDimensions extends BaseLayout {
   resolveConfigTuplesDefaultState(defaultValue?: boolean) {
     return this._configTuple.getDefaultState(defaultValue);
   }
-
-  abstract getIndexInfo(key: string): IndexInfo;
 
   onUpdateItemsMetaChange(
     itemsMeta: Array<ItemMeta>,
