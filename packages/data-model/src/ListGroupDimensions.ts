@@ -12,6 +12,7 @@ import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
+  IndexInfo,
   FillingMode,
   ItemLayout,
   KeysChangedType,
@@ -250,7 +251,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }
 
   getFinalIndexItemMeta(index: number) {
-    const info = this.getFinalIndexInfo(index);
+    const info = this.getFinalIndexIndexInfo(index);
     if (info) {
       const dimension = info.dimensions;
       return dimension.getIndexItemMeta(info.index);
@@ -284,7 +285,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const listOffset = exclusive ? 0 : this.getContainerOffset();
 
     if (typeof index === 'number') {
-      const indexInfo = this.getFinalIndexInfo(index);
+      const indexInfo = this.getFinalIndexIndexInfo(index);
       if (indexInfo) {
         const { dimensions, index: _index } = indexInfo;
         // _offsetInListGroup should be included. so exclusive should be false on default.
@@ -404,17 +405,40 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return null;
   }
 
-  getFinalIndexInfo(idx: number) {
+  getFinalIndexIndexInfo(idx: number): IndexInfo {
     const len = this._dimensionsIndexRange.length;
     for (let index = 0; index < len; index++) {
       const info = this._dimensionsIndexRange[index];
-      const { startIndex, endIndex, dimensions } = info;
+      const { startIndex, endIndex, dimensions, startIndexInRecycler } = info;
 
       if (startIndex <= idx && idx < endIndex)
         return {
           dimensions,
           index: idx - startIndex,
+          indexInGroup: idx,
+          indexInRecycler: startIndexInRecycler + idx - startIndex,
         };
+    }
+
+    return null;
+  }
+
+  getFinalKeyIndexInfo(itemKey: string, listKey: string): IndexInfo {
+    const dimensions = this.getDimension(listKey);
+    if (dimensions) {
+      const info = this.dimensionsIndexRange.find(
+        (d) => d.dimensions === dimensions
+      );
+      if (info) {
+        const { startIndex, dimensions, startIndexInRecycler } = info;
+        const indexInDimensions = dimensions.getKeyIndex(itemKey);
+        return {
+          dimensions,
+          index: indexInDimensions,
+          indexInRecycler: startIndexInRecycler + indexInDimensions,
+          indexInGroup: startIndex + indexInDimensions,
+        };
+      }
     }
 
     return null;

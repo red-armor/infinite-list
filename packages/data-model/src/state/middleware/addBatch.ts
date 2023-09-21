@@ -25,7 +25,7 @@ export default <State extends ReducerResult = ReducerResult>(
       startIndex <= maxIndex;
       startIndex++
     ) {
-      const dimensionsInfo = dimension.getFinalIndexInfo(startIndex);
+      const dimensionsInfo = dimension.getIndexFinalIndexInfo(startIndex);
       if (!dimensionsInfo) continue;
       const { dimensions: currentDimensions, index: currentIndex } =
         dimensionsInfo;

@@ -776,12 +776,14 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getIndexInfo(key: string): IndexInfo {
-    const info = {} as IndexInfo;
-    info.index = this._indexKeys.indexOf(key);
     if (this._listGroupDimension) {
-      info.indexInGroup = this._listGroupDimension.getFinalIndex(key, this.id);
+      return this._listGroupDimension.getFinalKeyIndexInfo(key, this.id);
     }
-    return info;
+
+    return {
+      dimensions: this,
+      index: this._indexKeys.indexOf(key),
+    };
   }
 
   pump(

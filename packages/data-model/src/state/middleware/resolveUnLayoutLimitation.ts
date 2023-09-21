@@ -22,7 +22,7 @@ export default <State extends ReducerResult = ReducerResult>(
       startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
       startIndex++
     ) {
-      const dimensionInfo = dimension.getFinalIndexInfo(startIndex);
+      const dimensionInfo = dimension.getFinalIndexIndexInfo(startIndex);
       const currentDimension = dimensionInfo?.dimensions;
 
       if (currentDimension instanceof Dimension) {

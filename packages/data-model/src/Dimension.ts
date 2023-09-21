@@ -123,6 +123,10 @@ class Dimension {
     return this.id;
   }
 
+  getKeyIndex() {
+    return 0;
+  }
+
   getIndexInfo() {
     const info = {
       index: 0,

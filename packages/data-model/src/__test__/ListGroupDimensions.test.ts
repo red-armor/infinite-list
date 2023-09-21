@@ -752,7 +752,7 @@ describe('test dimensionsIndexRange', () => {
     ]);
   });
 
-  test('getFinalIndexInfo', () => {
+  test('getFinalIndexIndexInfo', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -794,16 +794,16 @@ describe('test dimensionsIndexRange', () => {
 
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
 
-    expect(listGroupDimensions.getFinalIndexInfo(0)).toEqual({
+    expect(listGroupDimensions.getFinalIndexIndexInfo(0)).toEqual({
       dimensions: bannerDimensions,
       index: 0,
     });
 
-    expect(listGroupDimensions.getFinalIndexInfo(20)).toEqual({
+    expect(listGroupDimensions.getFinalIndexIndexInfo(20)).toEqual({
       dimensions: list3Dimensions,
       index: 4,
     });
-    expect(listGroupDimensions.getFinalIndexInfo(29)).toEqual({
+    expect(listGroupDimensions.getFinalIndexIndexInfo(29)).toEqual({
       dimensions: banner2Dimensions,
       index: 0,
     });
