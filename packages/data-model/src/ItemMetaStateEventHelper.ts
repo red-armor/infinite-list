@@ -23,16 +23,20 @@ class ItemMetaStateEventHelper {
   readonly _eventName: string;
 
   private _strictListeners: Array<StateEventListener>;
+
   private _listeners: Array<StateEventListener> = [];
   private _handleCountMap: Map<StateEventListener, number>;
 
   private _triggerBatchinator: Batchinator;
   private _once: boolean;
   readonly _key: string;
-  private _reusableEventListenerMap = new Map();
+  private _reusableEventListenerMap: Map<string, StateEventListener>;
   private _callbackId: number;
   private _callbackStartMinMs: number;
   readonly _canIUseRIC: boolean;
+  private _strictListenerKeyToHandleCountMap: {
+    [key: string]: number;
+  };
 
   constructor(props: ItemMetaStateEventHelperProps) {
     const {
@@ -42,12 +46,12 @@ class ItemMetaStateEventHelper {
       defaultValue = false,
       canIUseRIC: _canIUseRIC,
       once,
-      strictListeners = [],
-      handleCountMap = new Map(),
+      strictListenerKeyToHandleCountMap = {},
     } = props;
 
     this._key = key;
     this._eventName = eventName;
+    this._reusableEventListenerMap = new Map();
     this._batchUpdateEnabled =
       typeof batchUpdateEnabled === 'boolean'
         ? batchUpdateEnabled
@@ -61,10 +65,11 @@ class ItemMetaStateEventHelper {
         ? true
         : false;
 
+    this._strictListenerKeyToHandleCountMap = strictListenerKeyToHandleCountMap;
     this._triggerBatchinator = new Batchinator(this._trigger.bind(this), 50);
     this.remover = this.remover.bind(this);
-    this._handleCountMap = handleCountMap;
-    this._strictListeners = strictListeners;
+    this._handleCountMap = new Map();
+    this._strictListeners = [];
     // ric in RN can not be triggered. https://github.com/facebook/react-native/issues/28602
     this._canIUseRIC = defaultBooleanValue(_canIUseRIC, canIUseRIC);
 
@@ -74,15 +79,19 @@ class ItemMetaStateEventHelper {
   }
 
   static spawn(ins: ItemMetaStateEventHelper) {
+    const strictListenerKeyToHandleCountMap = Object.create(null);
     const l = ins._strictListeners;
     if (!l.length) return null;
-    const m = new Map();
     l.forEach((_l) => {
-      m.set(_l, ins._handleCountMap.get(_l));
+      const count = ins._handleCountMap.get(_l);
+      for (const [key, value] of ins._reusableEventListenerMap) {
+        if (value === _l) {
+          strictListenerKeyToHandleCountMap[key] = count;
+        }
+      }
     });
     return {
-      strictListeners: l,
-      handleCountMap: m,
+      strictListenerKeyToHandleCountMap,
     };
   }
 
@@ -120,14 +129,10 @@ class ItemMetaStateEventHelper {
     key: string,
     triggerOnceIfTrue: boolean
   ) {
-    const old = this._reusableEventListenerMap.get(key);
-    if (old) {
-      const count = this._handleCountMap.get(old);
-      this._reusableEventListenerMap.set(key, listener);
-      this.addStrictListener(listener, triggerOnceIfTrue);
+    const count = this._strictListenerKeyToHandleCountMap[key];
+    if (typeof count === 'number') {
       this._handleCountMap.set(listener, count);
-      this._handleCountMap.delete(old);
-      return { remover: noop };
+      this._strictListeners.push(listener);
     }
 
     this._reusableEventListenerMap.set(key, listener);

@@ -13,8 +13,9 @@ export type ItemMetaStateEventHelperProps = {
   /**
    * for spawn
    */
-  strictListeners?: Array<StateEventListener>;
-  handleCountMap?: Map<StateEventListener, number>;
+  strictListenerKeyToHandleCountMap?: {
+    [key: string]: number;
+  };
 };
 
 export type ItemMetaProps = {
