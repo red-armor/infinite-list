@@ -673,6 +673,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
     const minValue = this._recycler.getMinValue();
     const maxValue = this._recycler.getMaxValue();
+
+    // maybe should split by recyclerType
     const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
       minValue,
       maxValue,

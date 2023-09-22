@@ -242,6 +242,10 @@ class ItemMetaStateEventHelper {
     this._triggerBatchinator.schedule(value);
   }
 
+  get listeners() {
+    return this._listeners.concat(this._strictListeners);
+  }
+
   _trigger(value: boolean, immediately: boolean) {
     const now = Date.now();
 
@@ -251,7 +255,7 @@ class ItemMetaStateEventHelper {
         this.cancelIdleCallbackPolyfill(this._callbackId);
       }
       if (this._value !== value) {
-        this._listeners.forEach((cb) => {
+        this.listeners.forEach((cb) => {
           if (this.listenerGuard(cb)) {
             this.incrementHandleCount(cb);
             cb(value);
@@ -268,7 +272,7 @@ class ItemMetaStateEventHelper {
       const handler = (() => {
         if (now < this._callbackStartMinMs) return;
         if (this._value !== value) {
-          this._listeners.forEach((cb) => {
+          this.listeners.forEach((cb) => {
             if (this.listenerGuard(cb)) {
               this.incrementHandleCount(cb);
               cb(value);
