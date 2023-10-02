@@ -33,6 +33,7 @@
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/omit": "^0.1.14",
     "@x-oasis/prefix-interval-tree": "^0.1.18",
+    "@x-oasis/recycler": "^0.1.20",
     "@x-oasis/resolve-changed": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14",
     "@x-oasis/shallow-array-equal": "^0.1.14",

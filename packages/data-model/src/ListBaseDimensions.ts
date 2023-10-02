@@ -44,7 +44,7 @@ import memoizeOne from 'memoize-one';
 import StillnessHelper from './utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
-import Recycler from './Recycler';
+import Recycler from '@x-oasis/recycler';
 import BaseLayout from './BaseLayout';
 
 /**
@@ -200,11 +200,15 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.initialNumToRender = initialNumToRender;
 
     this._recycler = new Recycler({
-      owner: this,
       recyclerTypes,
       recyclerBufferSize,
       thresholdIndexValue: initialNumToRender,
       recyclerReservedBufferPerBatch,
+      metaExtractor: (index) => this.getFinalIndexItemMeta(index),
+      indexExtractor: (meta) => {
+        const indexInfo = meta.getIndexInfo();
+        return indexInfo?.indexInRecycler;
+      },
     });
 
     this.memoizedResolveSpaceState = memoizeOne(

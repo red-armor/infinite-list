@@ -50,6 +50,7 @@ importers:
       '@x-oasis/noop': ^0.1.14
       '@x-oasis/omit': ^0.1.14
       '@x-oasis/prefix-interval-tree': ^0.1.18
+      '@x-oasis/recycler': ^0.1.20
       '@x-oasis/resolve-changed': ^0.1.14
       '@x-oasis/select-value': ^0.1.14
       '@x-oasis/shallow-array-equal': ^0.1.14
@@ -69,6 +70,7 @@ importers:
       '@x-oasis/noop': 0.1.14
       '@x-oasis/omit': 0.1.14
       '@x-oasis/prefix-interval-tree': 0.1.18
+      '@x-oasis/recycler': 0.1.20
       '@x-oasis/resolve-changed': 0.1.14
       '@x-oasis/select-value': 0.1.14
       '@x-oasis/shallow-array-equal': 0.1.14
@@ -2591,14 +2593,35 @@ packages:
     resolution: {integrity: sha512-wgfdKworcwRfapkjgUrdpf29Th+larEmzZmE8/5vMjnPYYUGOGhKGBEStjbR4pY5YNpM4V5PAkX9N6/13LYeMQ==}
     dev: false
 
+  /@x-oasis/heap/0.1.20:
+    resolution: {integrity: sha512-Mkb9vT8xrJTPLel9Kp/dRzxgeVJVYmLOODgkdBSmPSd4I7Uay4oU5lhJtI6Nqyq4HirJbueGSlFR0tFiUSugGA==}
+    dev: false
+
   /@x-oasis/integer-buffer-set/0.1.19:
     resolution: {integrity: sha512-SINJRKHUffxv9wt+kNKZrETwFhO8K4xpmtQfr+DcWT5JzF28TM2jLXW5fqoX7X7p173wZ/qUw/hbq2UNvhvAWg==}
     dependencies:
       '@x-oasis/heap': 0.1.19
     dev: false
 
+  /@x-oasis/integer-buffer-set/0.1.20:
+    resolution: {integrity: sha512-hGP/l3k+JuEo5eEgaXN1LOGWpWfjAVZ+o0EJK3YP9uf+xLR30DDSCFz+A3rdlRKRf2uCACpqoIYrLZKJHB9jxw==}
+    dependencies:
+      '@x-oasis/heap': 0.1.20
+      '@x-oasis/invariant': 0.1.20
+      '@x-oasis/is-clamped': 0.1.20
+      '@x-oasis/return-hook': 0.1.20
+    dev: false
+
+  /@x-oasis/invariant/0.1.20:
+    resolution: {integrity: sha512-tBxjpRBSbYBSE27ddNWFSSuOw+t+5FjleZlL+LIlyXVswyzRJK5WcwmaBp/61RocObXSq6BKl2J9qJb6g10X0w==}
+    dev: false
+
   /@x-oasis/is-clamped/0.1.14:
     resolution: {integrity: sha512-BoVtp1VB6jZcpjABE4YLMoxJw1tWGYeCvVuxE1irxHfo9GWBt7qIHGtTkmpsZNB+oSrLKP4OlhGljzNXxTIn1A==}
+    dev: false
+
+  /@x-oasis/is-clamped/0.1.20:
+    resolution: {integrity: sha512-DuySxdr0/gbcTwZNuHg356bAQ+wkweNlMiW9MN/poiDiIQgsxY5weXUyDPlPnzd1HdnIXzG5wUEOAf/H01LttA==}
     dev: false
 
   /@x-oasis/layout-equal/0.1.16:
@@ -2617,8 +2640,18 @@ packages:
     resolution: {integrity: sha512-JlhzKZunsduFLYMvQlJygSTothD18Y0qcKqFcMaHwH6gkzOQenoVfcq6M7C9IzJv+gzuW451dyfgowfB52wpww==}
     dev: false
 
+  /@x-oasis/recycler/0.1.20:
+    resolution: {integrity: sha512-NhcK/Qyxefr5DeTvzNYv46K8GGjVXQtYcvbFyK8VRV+eG4DcM1u9kEv+nKfCg6Eg14YZoqAMzi7yh7zTMXRQqQ==}
+    dependencies:
+      '@x-oasis/integer-buffer-set': 0.1.20
+    dev: false
+
   /@x-oasis/resolve-changed/0.1.14:
     resolution: {integrity: sha512-pnprNOmeMPBkv3rNkHSkdxI/DGfc3r+YMruBJ9a7n9UVqI7EyJmnBECEQUfIumstpCRpkLwAn28ivl2wOam9Yw==}
+    dev: false
+
+  /@x-oasis/return-hook/0.1.20:
+    resolution: {integrity: sha512-HRMvjsSfQgNzrhnPyePaxNE+cwOCcj8KuSew+HWtbLlHXb0e3baEvLHpofalprpHDGnDJOMtbJfcoq6BVhq9uQ==}
     dev: false
 
   /@x-oasis/select-value/0.1.14:
@@ -3693,8 +3726,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      is-text-path: 1.0.1
       JSONStream: 1.3.5
+      is-text-path: 1.0.1
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2
