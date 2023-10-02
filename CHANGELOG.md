@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.26](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.26) (2023-09-22)
+## [0.2.45-recycle-group.27](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.27) (2023-10-02)
+
+
+
+## 0.2.45-recycle-group.27 (2023-10-02)
+
+
+### Features
+
+* use @x-oasis/recycler ([ec9d81c](https://github.com/red-armor/infinite-list/commit/ec9d81c42bbfcbfacbab474deedeb99f2d1d2410))
 
 
 
