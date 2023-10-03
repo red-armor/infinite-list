@@ -12,6 +12,8 @@ import {
 } from './viewable';
 import ListDimensions from '../ListDimensions';
 
+export type OnRecyclerProcess = (type?: string, index?: number) => boolean;
+
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,
   index: number
@@ -55,6 +57,7 @@ export type ListBaseDimensionsProps<ItemT> = ListDimensionsProps<ItemT> & {
 
   recyclerBufferSize?: number;
   recyclerReservedBufferPerBatch?: number;
+  onRecyclerProcess?: OnRecyclerProcess;
 };
 
 export type BaseDimensionsProps = {
@@ -100,6 +103,7 @@ export type ListGroupDimensionsProps = {
    */
 
   recycleEnabled?: boolean;
+  onRecyclerProcess?: OnRecyclerProcess;
 } & OnEndReachedHelperProps;
 
 export type ListDimensionsProps<ItemT> = {

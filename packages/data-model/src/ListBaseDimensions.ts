@@ -30,6 +30,7 @@ import {
   ListBaseDimensionsProps,
   ListRenderState,
   ListState,
+  OnRecyclerProcess,
   OnEndReached,
   PreStateResult,
   ScrollMetrics,
@@ -90,6 +91,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   private _offsetTriggerCachedState = 0;
 
+  private _onRecyclerProcess: OnRecyclerProcess;
+
   private _stillnessHelper: StillnessHelper;
   private _recycler: Recycler;
 
@@ -141,6 +144,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       useItemApproximateLength,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
 
+      onRecyclerProcess,
+
       stillnessThreshold,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
@@ -152,6 +157,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._getData = getData;
+    this._onRecyclerProcess = onRecyclerProcess;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -641,21 +647,27 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this._recycler.updateIndices({
         safeRange,
         startIndex,
-        maxCount:
-          visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
+        maxCount: 10,
+        // maxCount:
+        //   visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
+        onProcess: this._onRecyclerProcess,
         /** TODO !!!!!! */
-        maxIndex: this.getData().length,
+        // maxIndex: this.getData().length,
       });
     } else if (velocity > 0) {
       this._recycler.updateIndices({
         safeRange,
         startIndex: visibleStartIndex,
-        maxCount:
-          visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
+        maxCount: 10,
+
+        // maxCount:
+        //   visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
+        onProcess: this._onRecyclerProcess,
+
         /** TODO */
-        maxIndex: this.getData().length,
+        // maxIndex: this.getData().length,
       });
     } else {
       const startIndex = Math.max(
@@ -665,11 +677,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this._recycler.updateIndices({
         safeRange,
         startIndex,
-        maxCount:
-          visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
+        maxCount: 10,
+
+        // maxCount:
+        //   visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
+        onProcess: this._onRecyclerProcess,
         /** TODO */
-        maxIndex: this.getData().length,
+        // maxIndex: this.getData().length,
       });
     }
 
@@ -687,7 +702,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     targetIndices
       .filter((v) => v)
       .forEach((info) => {
-        const { itemMeta, targetIndex, recycleKey } = info;
+        const { meta: itemMeta, targetIndex, recycleKey } = info;
         const item = this.getData()[targetIndex];
         const itemLayout = itemMeta?.getLayout();
         const itemLength =
