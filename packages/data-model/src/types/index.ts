@@ -4,3 +4,4 @@ export * from './viewable';
 export * from './onEndReachedHelper';
 export * from './inspector';
 export * from './ItemMeta.types';
+export * from './ListProvider';

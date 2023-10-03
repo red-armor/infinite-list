@@ -1,11 +1,16 @@
 import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
-import ListGroupDimensions from './ListGroupDimensions';
 import omit from '@x-oasis/omit';
 import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
+import resolveChanged from '@x-oasis/resolve-changed';
+import isClamped from '@x-oasis/is-clamped';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import Recycler from '@x-oasis/recycler';
+import memoizeOne from 'memoize-one';
+
 import {
   isEmpty,
   shallowDiffers,
@@ -15,7 +20,6 @@ import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
-import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
 import createStore from './state/createStore';
 import { ActionType, ReducerResult, Store } from './state/types';
@@ -39,13 +43,10 @@ import {
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
-import isClamped from '@x-oasis/is-clamped';
-import memoizeOne from 'memoize-one';
 import StillnessHelper from './utils/StillnessHelper';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
-import Recycler from '@x-oasis/recycler';
 import BaseLayout from './BaseLayout';
+import ListGroupDimensions from './ListGroupDimensions';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -209,6 +210,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         const indexInfo = meta.getIndexInfo();
         return indexInfo?.indexInRecycler;
       },
+      getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
     });
 
     this.memoizedResolveSpaceState = memoizeOne(
@@ -615,11 +617,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   resolveRecycleRecycleState(state: ListState<ItemT>) {
-    const {
-      visibleEndIndex,
-      visibleStartIndex: _visibleStartIndex,
-      isEndReached,
-    } = state;
+    const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
 

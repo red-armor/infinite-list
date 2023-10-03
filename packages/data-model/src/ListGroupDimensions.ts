@@ -24,13 +24,13 @@ import {
   ScrollMetrics,
   StateListener,
   ListGroupData,
+  ListProvider,
   ItemsDimensionsProps,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import ListBaseDimensions from './ListBaseDimensions';
-import ListProvider from './ListProvider';
 import Inspector from './Inspector';
 
 // TODO: indexRange should be another intervalTree

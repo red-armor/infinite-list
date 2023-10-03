@@ -1,4 +1,4 @@
-interface ListProvider {
+export interface ListProvider {
   /**
    * TODO: temp not setting
    */
@@ -20,5 +20,3 @@ interface ListProvider {
   // getFinalIndexItemMeta(index: number): any;
   // getFinalReflowItemsLength(): number;
 }
-
-export default ListProvider;
