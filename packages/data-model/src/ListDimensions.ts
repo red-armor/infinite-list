@@ -478,7 +478,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
     }
 
-    if (this._recycleEnabled()) {
+    if (!this._listGroupDimension && this._recycleEnabled()) {
       this._recalculateRecycleResultStateBatchinator.schedule();
     }
   }
