@@ -58,11 +58,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   private _store: Store<ReducerResult>;
   private _scrollMetrics: ScrollMetrics;
   private _renderState: ListRenderState;
-  // private _renderStateListeners: Array<Function> = [];
-  // private _onBatchLayoutFinished: () => boolean;
   private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
-  // private _updateScrollMetricsWithCacheBatchinator: Batchinator;
-  // private _updateChildPersistanceIndicesBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   /**
    * _flattenData could be considered as the final data model after transform

@@ -214,7 +214,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       metaExtractor: (index) => this.getFinalIndexItemMeta(index),
       indexExtractor: (meta) => {
         const indexInfo = meta.getIndexInfo();
-        return indexInfo?.indexInRecycler;
+        return indexInfo?.indexInGroup;
       },
       getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
     });
@@ -615,10 +615,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
     return {
       startIndex: visibleStartIndex,
-      endIndex: Math.min(
-        visibleEndIndex,
-        visibleStartIndex + this.recycleThreshold - 1
-      ),
+      // endIndex: Math.min(
+      //   visibleEndIndex,
+      //   visibleStartIndex + this.recycleThreshold - 1
+      // ),
+      endIndex: visibleEndIndex,
     };
   }
 
@@ -702,7 +703,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     targetIndices
       .filter((v) => v)
       .forEach((info) => {
-        const { meta: itemMeta, targetIndex, recycleKey } = info;
+        const { meta: itemMeta, targetIndex, recyclerKey } = info;
         const item = this.getData()[targetIndex];
         const itemLayout = itemMeta?.getLayout();
         const itemLength =
@@ -724,7 +725,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         itemMeta?.setItemMetaState(itemMetaState);
 
         recycleStateResult.push({
-          key: recycleKey,
+          key: recyclerKey,
           targetKey: itemMeta.getKey(),
           targetIndex,
           length: itemLength,

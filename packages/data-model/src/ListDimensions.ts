@@ -45,7 +45,7 @@ import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
-import IntegerBufferSet from '@x-oasis/integer-buffer-set';
+import IntegerBufferSet from './vendor/IntegerBufferSet';
 import memoizeOne from 'memoize-one';
 import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
@@ -201,17 +201,21 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     } else {
       this._setData(data);
     }
-    this._state = this.resolveInitialState();
+    // @ts-ignore
+    this._state = listGroupDimension ? {} : this.resolveInitialState();
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
     );
     this.memoizedResolveRecycleState = memoizeOne(
       this.resolveRecycleState.bind(this)
     );
-    this._stateResult =
-      this.fillingMode === FillingMode.RECYCLE
-        ? this.memoizedResolveRecycleState(this._state)
-        : this.memoizedResolveSpaceState(this._state);
+    // @ts-ignore
+    // group list no need to resolve state
+    this._stateResult = listGroupDimension
+      ? {}
+      : this.fillingMode === FillingMode.RECYCLE
+      ? this.memoizedResolveRecycleState(this._state)
+      : this.memoizedResolveSpaceState(this._state);
 
     this._store = createStore<ReducerResult>() || store;
 
