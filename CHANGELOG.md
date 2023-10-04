@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.29](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.29) (2023-10-04)
+## [0.2.45-recycle-group.30](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.30) (2023-10-04)
+
+
+
+## 0.2.45-recycle-group.30 (2023-10-04)
 
 
 
