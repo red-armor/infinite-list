@@ -18,6 +18,7 @@ class Inspector {
   private _heartBeatingIndexKeys: Array<string> = [];
   private _inspectingListener: InspectingListener;
   private _startInspectBatchinator: Batchinator;
+  private _handleChangeBatchinator: Batchinator;
   private _isCollecting = false;
   private _onChange: OnIndexKeysChanged;
 
@@ -26,6 +27,10 @@ class Inspector {
     // 主要用来巡检
     this._startInspectBatchinator = new Batchinator(
       this.startInspection.bind(this),
+      50
+    );
+    this._handleChangeBatchinator = new Batchinator(
+      this.handleChange.bind(this),
       50
     );
     this._onChange = onChange;
@@ -72,7 +77,8 @@ class Inspector {
     const index = this._indexKeys.findIndex((v) => v === key);
     if (index !== -1) {
       this._indexKeys.splice(index, 1);
-      this.handleChange();
+      // this.handleChange();
+      this._handleChangeBatchinator.schedule();
     }
   }
 
