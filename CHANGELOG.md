@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.31](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.31) (2023-10-04)
+## [0.2.45-recycle-group.32](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.32) (2023-10-06)
+
+
+
+## 0.2.45-recycle-group.32 (2023-10-06)
+
+
+### Features
+
+* bump 28 and batch inspector ([142e3a1](https://github.com/red-armor/infinite-list/commit/142e3a1dacdbcb8920cd732be4b88790ffca95c0))
 
 
 
