@@ -284,6 +284,25 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return 0;
   }
 
+  getFinalIndexKeyBottomOffset(index: number, exclusive?: boolean) {
+    const listOffset = exclusive ? 0 : this.getContainerOffset();
+
+    if (typeof index === 'number') {
+      const indexInfo = this.getFinalIndexIndexInfo(index);
+      if (indexInfo) {
+        const { dimensions, index: _index } = indexInfo;
+        const height = dimensions.getTotalLength();
+        // _offsetInListGroup should be included. so exclusive should be false on default.
+        return (
+          listOffset +
+          dimensions.getContainerOffset() +
+          (typeof height === 'number' ? height : 0)
+        );
+      }
+    }
+    return 0;
+  }
+
   getFinalIndexRangeOffsetMap(
     startIndex: number,
     endIndex: number,

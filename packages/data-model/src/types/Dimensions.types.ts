@@ -58,6 +58,7 @@ export type ListBaseDimensionsProps<ItemT> = ListDimensionsProps<ItemT> & {
   recyclerBufferSize?: number;
   recyclerReservedBufferPerBatch?: number;
   onRecyclerProcess?: OnRecyclerProcess;
+  releaseSpaceStateItem?: boolean;
 };
 
 export type BaseDimensionsProps = {

@@ -113,6 +113,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
    */
   private _provider: ListGroupDimensions;
 
+  private _releaseSpaceStateItem: boolean;
+
   constructor(props: ListBaseDimensionsProps<ItemT>) {
     super(props);
     const {
@@ -151,6 +153,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       distanceFromEndThresholdValue,
       onEndReachedHandlerTimeoutThreshold,
 
+      releaseSpaceStateItem = false,
+
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
     this._provider = provider;
@@ -158,6 +162,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._getItemLayout = getItemLayout;
     this._getData = getData;
     this._onRecyclerProcess = onRecyclerProcess;
+    this._releaseSpaceStateItem = releaseSpaceStateItem;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -410,6 +415,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   getFinalIndexKeyOffset(index: number) {
     return this._provider.getFinalIndexKeyOffset(index);
+  }
+
+  getFinalIndexKeyBottomOffset(index: number) {
+    return this._provider.getFinalIndexKeyBottomOffset(index);
   }
 
   hasUnLayoutItems() {
@@ -802,6 +811,61 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   resolveRecycleSpaceState(state: ListState<ItemT>) {
+    if (!this._releaseSpaceStateItem) {
+      const nextData = this._data.slice(0, this.initialNumToRender);
+      const spaceState = [];
+      for (let index = 0; index < nextData.length; index++) {
+        const item = this._data[index];
+        const itemMeta = this.getFinalItemMeta(item);
+        if (itemMeta)
+          spaceState.push({
+            item,
+            isSpace: false,
+            itemMeta,
+            key: itemMeta.getKey(),
+            isSticky: false,
+            isReserved: true,
+            length: this.getFinalIndexItemLength(index),
+          });
+      }
+      const afterTokens = this.resolveToken(
+        this.initialNumToRender,
+        this._data.length - 1
+      );
+
+      afterTokens.forEach((token) => {
+        const { isSticky, isReserved, startIndex, endIndex } = token;
+        if (isSticky || isReserved) {
+          const item = this._data[startIndex];
+          const itemMeta = this.getFinalItemMeta(item);
+          spaceState.push({
+            item,
+            isSpace: false,
+            key: itemMeta.getKey(),
+            itemMeta,
+            isSticky,
+            isReserved,
+            length: this.getFinalIndexItemLength(startIndex),
+          });
+        } else {
+          const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
+          // should plus 1, use list total length
+          const endIndexOffset = this.getFinalIndexKeyBottomOffset(endIndex);
+          spaceState.push({
+            item: null,
+            isSpace: true,
+            isSticky: false,
+            isReserved: false,
+            length: endIndexOffset - startIndexOffset,
+            // endIndex is not included
+            itemMeta: null,
+            key: buildStateTokenIndexKey(startIndex, endIndex - 1),
+          });
+        }
+      });
+      return spaceState;
+    }
+
     return this.resolveSpaceState(state, {
       bufferedStartIndex: (state) =>
         state.bufferedStartIndex >= this.initialNumToRender
@@ -928,7 +992,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         });
       } else {
         const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
-        const endIndexOffset = this.getFinalIndexKeyOffset(endIndex);
+        const endIndexOffset = this.getFinalIndexKeyBottomOffset(endIndex);
         spaceState.push({
           item: null,
           isSpace: true,
@@ -945,16 +1009,16 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   updateState(newState: PreStateResult, scrollMetrics: ScrollMetrics) {
-    const {
-      bufferedStartIndex: nextBufferedStartIndex,
-      bufferedEndIndex: nextBufferedEndIndex,
-    } = newState;
+    // const {
+    //   bufferedStartIndex: nextBufferedStartIndex,
+    //   bufferedEndIndex: nextBufferedEndIndex,
+    // } = newState;
 
     const omitKeys = ['data', 'distanceFromEnd', 'isEndReached'];
-    const nextDataLength = Math.max(
-      nextBufferedEndIndex + 1,
-      this.getReflowItemsLength()
-    );
+    // const nextDataLength = Math.max(
+    //   nextBufferedEndIndex + 1,
+    //   this.getReflowItemsLength()
+    // );
 
     const oldData = this._state.data;
     const newData = this._data;
