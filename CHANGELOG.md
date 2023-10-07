@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.35](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.35) (2023-10-07)
+## [0.2.45-recycle-group.36](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.36) (2023-10-07)
+
+
+
+## 0.2.45-recycle-group.36 (2023-10-07)
+
+
+### Features
+
+* add `releaseSpaceStateItem` ([a713f98](https://github.com/red-armor/infinite-list/commit/a713f9818fd0fb0c61016e5b47f600989c6ba6d8))
 
 
 
