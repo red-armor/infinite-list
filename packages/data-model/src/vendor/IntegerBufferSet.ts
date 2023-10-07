@@ -1,4 +1,4 @@
-// import invariant from 'invariant';
+// @ts-ignore
 import Heap from '@x-oasis/heap';
 
 type HeapItem = {
