@@ -199,6 +199,8 @@ class Dimension {
       typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
     // const finalIndex = this._listGroupDimension.getDimensionStartIndex(this.id);
 
+    meta.isApproximateLayout = false;
+
     if (typeof layout === 'number') {
       const length = layout;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {

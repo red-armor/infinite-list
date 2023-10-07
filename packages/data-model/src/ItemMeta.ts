@@ -51,7 +51,7 @@ class ItemMeta extends ViewabilityItemMeta {
       recyclerType = DEFAULT_RECYCLER_TYPE,
       isInitialItem = false,
       ignoredToPerBatch,
-      isApproximateLayout = false,
+      isApproximateLayout = true,
       spawnProps = {},
     } = props;
     this._owner = owner;
