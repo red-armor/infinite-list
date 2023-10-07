@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.34](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.34) (2023-10-07)
+## [0.2.45-recycle-group.35](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.35) (2023-10-07)
+
+
+
+## 0.2.45-recycle-group.35 (2023-10-07)
+
+
+### Features
+
+* `isApproximateLayout` should be spawned due to pending layout justification ([54360fe](https://github.com/red-armor/infinite-list/commit/54360fe798217ce423128b9503f025818cdf8329))
 
 
 
