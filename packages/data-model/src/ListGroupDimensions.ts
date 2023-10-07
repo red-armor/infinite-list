@@ -568,7 +568,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this._dimensionsIndexRange = this.indexKeys.reduce((acc, key) => {
       const dimensions = this.getDimension(key);
       const recyclerType = dimensions.recyclerType;
-      if (rangeMap[recyclerType] === undefined) rangeMap[recyclerType] = 0;
+      if (rangeMap[recyclerType] != null) rangeMap[recyclerType] = 0;
 
       const endIndex = startIndex + dimensions.length;
       const startIndexInRecycler = rangeMap[recyclerType];

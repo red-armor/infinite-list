@@ -36,4 +36,6 @@ export type ItemMetaProps = {
   spawnProps?: {
     [key: string]: ItemMetaStateEventHelperProps;
   };
+
+  isApproximateLayout?: boolean;
 };

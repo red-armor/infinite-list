@@ -14,6 +14,8 @@ import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
+// make itemMeta could be shared, such as data source ref change, but it's value
+// not changed.
 const context: {
   [key: string]: ItemMeta;
 } = {};
@@ -49,6 +51,7 @@ class ItemMeta extends ViewabilityItemMeta {
       recyclerType = DEFAULT_RECYCLER_TYPE,
       isInitialItem = false,
       ignoredToPerBatch,
+      isApproximateLayout = false,
       spawnProps = {},
     } = props;
     this._owner = owner;
@@ -64,7 +67,7 @@ class ItemMeta extends ViewabilityItemMeta {
         : {};
 
     this._canIUseRIC = canIUseRIC;
-    this._isApproximateLayout = false;
+    this._isApproximateLayout = isApproximateLayout;
     this._recyclerType = recyclerType;
     this._spawnProps = spawnProps;
 
@@ -84,6 +87,8 @@ class ItemMeta extends ViewabilityItemMeta {
 
       return new ItemMeta({
         layout,
+        // isApproximateLayout may cause change...
+        isApproximateLayout: ancestor.isApproximateLayout,
         spawnProps,
         ...props,
       });
