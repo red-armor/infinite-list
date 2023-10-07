@@ -544,6 +544,15 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
           const { viewable, ...rest } = state;
           return rest;
         });
+
+        if (
+          (this._stateResult as RecycleStateResult<ItemT>).recycleState
+            .length &&
+          !recycleState.length
+        ) {
+          this._recycler.reset();
+        }
+
         this._stateListener(
           {
             recycleState,
@@ -717,7 +726,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
                 this._scrollMetrics,
                 // should add container offset, because indexToOffsetMap containerOffset is
                 // exclusive.
-                () => indexToOffsetMap[targetIndex] + this.getContainerOffset()
+                () =>
+                  indexToOffsetMap[targetIndex] == null
+                    ? this.itemOffsetBeforeLayoutReady
+                    : indexToOffsetMap[targetIndex] + this.getContainerOffset()
               );
 
         itemMeta?.setItemMetaState(itemMetaState);
@@ -739,7 +751,9 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
           // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
           offset:
             itemLength && !itemMeta.isApproximateLayout
-              ? indexToOffsetMap[targetIndex]
+              ? indexToOffsetMap[targetIndex] == null
+                ? this.itemOffsetBeforeLayoutReady
+                : indexToOffsetMap[targetIndex]
               : this.itemOffsetBeforeLayoutReady,
           position: 'buffered',
         });
