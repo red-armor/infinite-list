@@ -1,6 +1,20 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.32](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.32) (2023-10-06)
+## [0.2.45-recycle-group.33](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.33) (2023-10-07)
+
+
+
+## 0.2.45-recycle-group.33 (2023-10-07)
+
+
+### Bug Fixes
+
+* getMaxValue issue ([0517b9d](https://github.com/red-armor/infinite-list/commit/0517b9dd9b246ca353e1cf103f9f5d7c926f74b3))
+
+
+### Features
+
+* clean ([f80f668](https://github.com/red-armor/infinite-list/commit/f80f6683392c56b1b071a5da245444156f554ca4))
 
 
 

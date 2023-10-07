@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react-native",
-  "version": "0.2.45-recycle-group.32",
+  "version": "0.2.45-recycle-group.33",
   "main": "src/index.ts",
   "publishConfig": {
     "access": "public",
