@@ -649,21 +649,17 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         safeRange,
         startIndex,
         maxCount: 10,
-        // maxCount:
-        //   visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
         onProcess: this._onRecyclerProcess,
         /** TODO !!!!!! */
         // maxIndex: this.getData().length,
       });
     } else if (velocity > 0) {
+      // iOS scroll up velocity > 0
       this._recycler.updateIndices({
         safeRange,
         startIndex: visibleStartIndex,
         maxCount: 10,
-
-        // maxCount:
-        //   visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
         step: 1,
         onProcess: this._onRecyclerProcess,
 
@@ -671,18 +667,11 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         // maxIndex: this.getData().length,
       });
     } else {
-      const startIndex = Math.max(
-        visibleStartIndex - recycleBufferedCount,
-        this._recycler.thresholdIndexValue
-      );
       this._recycler.updateIndices({
         safeRange,
-        startIndex,
+        startIndex: visibleEndIndex,
         maxCount: 10,
-
-        // maxCount:
-        //   visibleEndIndex - visibleStartIndex + 1 + recycleBufferedCount,
-        step: 1,
+        step: -1,
         onProcess: this._onRecyclerProcess,
         /** TODO */
         // maxIndex: this.getData().length,
