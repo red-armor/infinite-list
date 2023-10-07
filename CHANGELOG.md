@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.37](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.37) (2023-10-07)
+## [0.2.45-recycle-group.38](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.38) (2023-10-07)
+
+
+
+## 0.2.45-recycle-group.38 (2023-10-07)
+
+
+### Bug Fixes
+
+* isApproximateLayout after spwan reset issue ([1b085a7](https://github.com/red-armor/infinite-list/commit/1b085a75ccd746be900050f9b008f379cc801f71))
 
 
 
