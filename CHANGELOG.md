@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.36](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.36) (2023-10-07)
+## [0.2.45-recycle-group.37](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.37) (2023-10-07)
+
+
+
+## 0.2.45-recycle-group.37 (2023-10-07)
+
+
+### Features
+
+* add `reset` and fix indexMap value is undefined ([7e84375](https://github.com/red-armor/infinite-list/commit/7e8437549ffd0cff1dda4678c678de5eaeb243e0))
 
 
 
