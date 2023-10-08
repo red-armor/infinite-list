@@ -59,6 +59,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   private _scrollMetrics: ScrollMetrics;
   private _renderState: ListRenderState;
   private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
+  private _onItemsCountChangedBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   /**
    * _flattenData could be considered as the final data model after transform
@@ -131,6 +132,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
       onEndReachedTimeoutThreshold,
       onEndReachedHandlerTimeoutThreshold,
     });
+    this._onItemsCountChangedBatchinator = new Batchinator(
+      this.onItemsCountChanged.bind(this),
+      50
+    );
 
     this._store = createStore<ReducerResult>();
     this._onUpdateDimensionItemsMetaChangeBatchinator = new Batchinator(
@@ -508,6 +513,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
       this.inspector.remove(listKey);
+      this._onItemsCountChangedBatchinator.schedule();
     }
   }
 
@@ -648,6 +654,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(key);
       this._inspector.remove(key);
+      this._onItemsCountChangedBatchinator.schedule();
     }
   }
 
@@ -709,7 +716,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
-    console.log('setListData ', listKey, listDimensions);
 
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);
@@ -721,7 +727,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
           KeysChangedType.Append,
         ].indexOf(changedType) !== -1
       ) {
-        this.onItemsCountChanged();
+        // 这个得跟removeItem对应都得做个延迟，不然的话会存在一个可能性，比如替换整个list的数据，
+        // remove callback一般会慢，如果不做延迟的话，你会发现data可能存在已经unmount的数据
+        // this.onItemsCountChanged();
+        this._onItemsCountChangedBatchinator.schedule();
       } else if (changedType === KeysChangedType.Reorder) {
         this.reflowFlattenData();
         // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实

@@ -893,7 +893,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       for (let index = 0; index < nextData.length; index++) {
         const item = this._data[index];
         const itemMeta = this.getFinalItemMeta(item);
-        console.log('index ', index, itemMeta);
         if (itemMeta)
           spaceState.push({
             item,
