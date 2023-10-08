@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.38](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.38) (2023-10-07)
+## [0.2.45-recycle-group.39](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.39) (2023-10-08)
+
+
+
+## 0.2.45-recycle-group.39 (2023-10-08)
+
+
+### Features
+
+* use prev / next item committed layout if current item layout is pending ([0c5bf81](https://github.com/red-armor/infinite-list/commit/0c5bf818b75d51e1f04e73af44feebfe46f75b82))
 
 
 
