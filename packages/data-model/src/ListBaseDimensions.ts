@@ -641,6 +641,60 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     };
   }
 
+  resolveRecycleItemLayout(info, indexToOffsetMap) {
+    const { meta: itemMeta, targetIndex } = info;
+    const itemLayout = itemMeta?.getLayout();
+    const itemLength =
+      (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+    if (
+      !itemMeta.isApproximateLayout &&
+      indexToOffsetMap[targetIndex] != null
+    ) {
+      return {
+        offset: indexToOffsetMap[targetIndex],
+        length: itemLength,
+      };
+    }
+
+    const prevIndex = targetIndex - 1;
+    const prevMeta = this.getFinalIndexItemMeta(prevIndex);
+    if (!prevMeta?.isApproximateLayout) {
+      const prevOffset =
+        indexToOffsetMap[prevIndex] != null
+          ? indexToOffsetMap[prevIndex]
+          : this.getFinalIndexKeyOffset(prevIndex) || 0;
+      const prevLayout = prevMeta?.getLayout();
+      const prevLength =
+        (prevLayout?.height || 0) + (prevMeta?.getSeparatorLength() || 0);
+
+      return {
+        offset: prevOffset + prevLength,
+        length: itemLength,
+      };
+    }
+
+    const nextIndex = targetIndex + 1;
+    const nextMeta = this.getFinalIndexItemMeta(nextIndex);
+
+    if (!nextMeta?.isApproximateLayout) {
+      const nextOffset =
+        indexToOffsetMap[nextIndex] != null
+          ? indexToOffsetMap[nextIndex]
+          : this.getFinalIndexKeyOffset(nextIndex) || 0;
+
+      return {
+        offset: nextOffset - itemLength,
+        length: itemLength,
+      };
+    }
+
+    return {
+      length: itemLength,
+      offset: this.itemOffsetBeforeLayoutReady,
+    };
+  }
+
   resolveRecycleRecycleState(state: ListState<ItemT>) {
     const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
     const recycleStateResult = [];
@@ -712,9 +766,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       .forEach((info) => {
         const { meta: itemMeta, targetIndex, recyclerKey } = info;
         const item = this.getData()[targetIndex];
-        const itemLayout = itemMeta?.getLayout();
-        const itemLength =
-          (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
         const itemMetaState =
           !this._scrollMetrics || !itemMeta?.getLayout()
@@ -738,7 +789,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
           key: recyclerKey,
           targetKey: itemMeta.getKey(),
           targetIndex,
-          length: itemLength,
           isSpace: false,
           isSticky: false,
           item,
@@ -749,13 +799,8 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
            */
           viewable: itemMeta.getState().viewable,
           // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-          offset:
-            itemLength && !itemMeta.isApproximateLayout
-              ? indexToOffsetMap[targetIndex] == null
-                ? this.itemOffsetBeforeLayoutReady
-                : indexToOffsetMap[targetIndex]
-              : this.itemOffsetBeforeLayoutReady,
           position: 'buffered',
+          ...this.resolveRecycleItemLayout(info, indexToOffsetMap),
         });
       });
     return recycleStateResult;

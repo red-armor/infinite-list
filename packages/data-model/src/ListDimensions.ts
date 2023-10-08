@@ -512,7 +512,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       canIUseRIC: this.canIUseRIC,
     });
 
-    if (this._approximateMode && !meta.isApproximateLayout) {
+    if (this._approximateMode && meta.isApproximateLayout) {
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(
         meta.getLayout(),
