@@ -60,7 +60,7 @@ class Inspector {
     // @ts-ignore
     const index = this._anchorKeys.findLastIndex((v) => v === anchorKey);
     if (index !== -1) {
-      this._indexKeys = this._indexKeys.splice(index + 1, 0, key).slice();
+      this._indexKeys.splice(index + 1, 0, key);
       this._handleChangeBatchinator.schedule();
     } else {
       this._indexKeys.push(key);
