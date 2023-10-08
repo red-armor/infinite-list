@@ -641,6 +641,40 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     };
   }
 
+  resolveSiblingOffset(props: {
+    startIndex: number;
+    step: number;
+    max: number;
+    itemLength: number;
+    offsetMap: {
+      [key: number]: number;
+    };
+  }) {
+    const { startIndex, step = -1, max = 1, offsetMap, itemLength } = props;
+    let siblingLength = 0;
+    for (let idx = 0; idx < max; idx++) {
+      const index = startIndex + step * idx;
+      const meta = this.getFinalIndexItemMeta(index);
+      const layout = meta?.getLayout();
+      const length = (layout?.height || 0) + (meta?.getSeparatorLength() || 0);
+      if (meta && !meta?.isApproximateLayout) {
+        const offset =
+          offsetMap[index] != null
+            ? offsetMap[index]
+            : this.getFinalIndexKeyOffset(index) || 0;
+        return (
+          offset +
+          siblingLength * (step > 0 ? -1 : 1) +
+          length * (step > 0 ? 0 : 1) -
+          itemLength * (step > 0 ? 1 : 0)
+        );
+      }
+
+      siblingLength += length;
+    }
+    return this.itemOffsetBeforeLayoutReady;
+  }
+
   resolveRecycleItemLayout(info, indexToOffsetMap) {
     const { meta: itemMeta, targetIndex } = info;
     const itemLayout = itemMeta?.getLayout();
@@ -657,42 +691,25 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       };
     }
 
-    const prevIndex = targetIndex - 1;
-    const prevMeta = this.getFinalIndexItemMeta(prevIndex);
-    if (!prevMeta?.isApproximateLayout) {
-      const prevOffset =
-        indexToOffsetMap[prevIndex] != null
-          ? indexToOffsetMap[prevIndex]
-          : this.getFinalIndexKeyOffset(prevIndex) || 0;
-      const prevLayout = prevMeta?.getLayout();
-      const prevLength =
-        (prevLayout?.height || 0) + (prevMeta?.getSeparatorLength() || 0);
+    let offset = this.resolveSiblingOffset({
+      itemLength,
+      offsetMap: indexToOffsetMap,
+      startIndex: targetIndex - 1,
+      step: -1,
+      max: 3,
+    });
 
-      return {
-        offset: prevOffset + prevLength,
-        length: itemLength,
-      };
+    if (offset === this.itemOffsetBeforeLayoutReady) {
+      offset = this.resolveSiblingOffset({
+        itemLength,
+        offsetMap: indexToOffsetMap,
+        startIndex: targetIndex + 1,
+        step: 1,
+        max: 3,
+      });
     }
 
-    const nextIndex = targetIndex + 1;
-    const nextMeta = this.getFinalIndexItemMeta(nextIndex);
-
-    if (!nextMeta?.isApproximateLayout) {
-      const nextOffset =
-        indexToOffsetMap[nextIndex] != null
-          ? indexToOffsetMap[nextIndex]
-          : this.getFinalIndexKeyOffset(nextIndex) || 0;
-
-      return {
-        offset: nextOffset - itemLength,
-        length: itemLength,
-      };
-    }
-
-    return {
-      length: itemLength,
-      offset: this.itemOffsetBeforeLayoutReady,
-    };
+    return { offset, length: itemLength };
   }
 
   resolveRecycleRecycleState(state: ListState<ItemT>) {
