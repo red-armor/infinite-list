@@ -709,6 +709,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
+    console.log('setListData ', listKey, listDimensions);
 
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensions).setData(data);

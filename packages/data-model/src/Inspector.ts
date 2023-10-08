@@ -19,8 +19,10 @@ class Inspector {
   private _inspectingListener: InspectingListener;
   private _startInspectBatchinator: Batchinator;
   private _handleChangeBatchinator: Batchinator;
+  private _updateAnchorKeysBatchinator: Batchinator;
   private _isCollecting = false;
   private _onChange: OnIndexKeysChanged;
+  private _anchorKeys: Array<string> = [];
 
   constructor(props?: InspectorProps) {
     const { onChange, owner } = props;
@@ -33,6 +35,11 @@ class Inspector {
       this.handleChange.bind(this),
       50
     );
+    this._updateAnchorKeysBatchinator = new Batchinator(
+      this.updateAnchorKeys.bind(this),
+      50
+    );
+
     this._onChange = onChange;
     this._owner = owner;
     this.heartBeat = this.heartBeat.bind(this);
@@ -49,21 +56,37 @@ class Inspector {
   }
 
   push(key: string) {
-    const location = this._anchorRange[key];
-    // in the middle
-    if (location && location.endIndex < this._indexKeys.length) {
-      this._indexKeys = this._indexKeys
-        .slice()
-        .splice(location.endIndex, 1, key);
-      this.updateAnchorRange();
-      this.handleChange();
+    const anchorKey = this.owner.getFinalAnchorKey(key);
+    // @ts-ignore
+    const index = this._anchorKeys.findLastIndex((v) => v === anchorKey);
+    if (index !== -1) {
+      this._indexKeys = this._indexKeys.splice(index + 1, 0, key).slice();
+      this._handleChangeBatchinator.schedule();
     } else {
       this._indexKeys.push(key);
     }
+    this._updateAnchorKeysBatchinator.schedule();
+
     this._startInspectBatchinator.schedule();
     return () => {
       this.remove(key);
     };
+
+    // const location = this._anchorRange[anchorKey];
+    // // in the middle
+    // if (location && location.endIndex < this._indexKeys.length) {
+    //   this._indexKeys = this._indexKeys
+    //     .slice()
+    //     .splice(location.endIndex, 1, key);
+    //   this.updateAnchorRange();
+    //   this.handleChange();
+    // } else {
+    //   this._indexKeys.push(key);
+    // }
+    // this._startInspectBatchinator.schedule();
+    // return () => {
+    //   this.remove(key);
+    // };
   }
 
   handleChange() {
@@ -77,7 +100,7 @@ class Inspector {
     const index = this._indexKeys.findIndex((v) => v === key);
     if (index !== -1) {
       this._indexKeys.splice(index, 1);
-      // this.handleChange();
+      this.updateAnchorKeys();
       this._handleChangeBatchinator.schedule();
     }
   }
@@ -120,27 +143,31 @@ class Inspector {
     this.heartBeatResolveChanged();
   }
 
-  updateAnchorRange() {
-    this._anchorRange = this._indexKeys.reduce<AnchorRange>(
-      (acc, cur, index) => {
-        const anchorKey = this.owner.getFinalAnchorKey(cur);
-        if (!anchorKey) return acc;
-        if (acc[anchorKey]) {
-          const endIndex = acc[anchorKey].endIndex;
-          acc[anchorKey] = {
-            ...acc[anchorKey],
-            endIndex: endIndex + 1,
-          };
-        } else {
-          acc[anchorKey] = {
-            startIndex: index,
-            endIndex: index + 1,
-          };
-        }
-        return acc;
-      },
-      {}
+  updateAnchorKeys() {
+    this._anchorKeys = this._indexKeys.map((key) =>
+      this.owner.getFinalAnchorKey(key)
     );
+
+    // this._anchorRange = this._indexKeys.reduce<AnchorRange>(
+    //   (acc, cur, index) => {
+    //     const anchorKey = this.owner.getFinalAnchorKey(cur);
+    //     if (!anchorKey) return acc;
+    //     if (acc[anchorKey]) {
+    //       const endIndex = acc[anchorKey].endIndex;
+    //       acc[anchorKey] = {
+    //         ...acc[anchorKey],
+    //         endIndex: endIndex + 1,
+    //       };
+    //     } else {
+    //       acc[anchorKey] = {
+    //         startIndex: index,
+    //         endIndex: index + 1,
+    //       };
+    //     }
+    //     return acc;
+    //   },
+    //   {}
+    // );
   }
 
   heartBeatResolveChanged() {
@@ -150,7 +177,7 @@ class Inspector {
     if (!shallowArrayEqual(this._heartBeatingIndexKeys, this._indexKeys)) {
       this._indexKeys = nextIndexKeys;
       this.handleChange();
-      this.updateAnchorRange();
+      this._updateAnchorKeysBatchinator.schedule();
       this._inspectingTime += 1;
     }
   }

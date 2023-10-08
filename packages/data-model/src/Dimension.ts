@@ -43,7 +43,7 @@ class Dimension {
       },
     ];
     this._recyclerType = recyclerType;
-    this._anchorKey = anchorKey;
+    this._anchorKey = anchorKey || id;
     this._selectValue = horizontal
       ? selectHorizontalValue
       : selectVerticalValue;
