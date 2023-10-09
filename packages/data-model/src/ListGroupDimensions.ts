@@ -58,7 +58,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   private _store: Store<ReducerResult>;
   private _scrollMetrics: ScrollMetrics;
   private _renderState: ListRenderState;
-  private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
+  // private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
   private _onItemsCountChangedBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   /**
@@ -138,10 +138,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
     );
 
     this._store = createStore<ReducerResult>();
-    this._onUpdateDimensionItemsMetaChangeBatchinator = new Batchinator(
-      this.onUpdateDimensionItemsMetaChange.bind(this),
-      100
-    );
 
     this._inspector = new Inspector({
       owner: this,
@@ -513,7 +509,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
       this.inspector.remove(listKey);
-      this._onItemsCountChangedBatchinator.schedule();
+      this.onItemsCountChanged();
     }
   }
 
@@ -556,14 +552,19 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.setDimension(listKey, dimensions);
     this._inspector.push(listKey);
 
-    // this.setListData(listKey, data);
-
     let onEndReachedCleaner = null;
 
     if (listDimensionsProps.onEndReached) {
       onEndReachedCleaner = this._listBaseDimension.addOnEndReached(
         listDimensionsProps.onEndReached
       );
+    }
+
+    // for performance boost. only reflow data when less than initial number;
+    if (this.getData().length < this.initialNumToRender) {
+      this.onItemsCountChanged();
+    } else {
+      this._onItemsCountChangedBatchinator.schedule();
     }
 
     return {
@@ -610,12 +611,16 @@ class ListGroupDimensions<ItemT extends {} = {}>
     }, []);
   }
 
-  onItemsCountChanged(useCache = false) {
+  /**
+   * Important!!! : data change should be reflect immediately. but resolve state could be deferred.
+   * So this.updateScrollMetrics actually is a batch operation ..
+   */
+  onItemsCountChanged() {
     this.reflowFlattenData();
     this.calculateDimensionsIndexRange();
     this.calculateReflowItemsLength();
     this.updateChildDimensionsOffsetInContainer();
-    this.updateScrollMetrics(this._scrollMetrics, { useCache });
+    this.updateScrollMetrics();
   }
 
   /**
@@ -654,7 +659,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(key);
       this._inspector.remove(key);
-      this._onItemsCountChangedBatchinator.schedule();
+      this.onItemsCountChanged();
+      // this._onItemsCountChangedBatchinator.schedule();
     }
   }
 
@@ -683,6 +689,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
     this.setDimension(key, dimensions);
     this._listBaseDimension.addBuffer(recyclerType);
     this._inspector.push(key);
+    // for performance boost. only reflow data when less than initial number;
+    if (this.getData().length < this.initialNumToRender) {
+      this.onItemsCountChanged();
+    } else {
+      this._onItemsCountChangedBatchinator.schedule();
+    }
     return {
       dimensions,
       remover: () => {
@@ -729,8 +741,8 @@ class ListGroupDimensions<ItemT extends {} = {}>
       ) {
         // 这个得跟removeItem对应都得做个延迟，不然的话会存在一个可能性，比如替换整个list的数据，
         // remove callback一般会慢，如果不做延迟的话，你会发现data可能存在已经unmount的数据
-        // this.onItemsCountChanged();
-        this._onItemsCountChangedBatchinator.schedule();
+        this.onItemsCountChanged();
+        // this._onItemsCountChangedBatchinator.schedule();
       } else if (changedType === KeysChangedType.Reorder) {
         this.reflowFlattenData();
         // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实

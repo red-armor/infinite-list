@@ -2,6 +2,9 @@ import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { describe, expect, it, test, vi, afterEach } from 'vitest';
+
+vi.useFakeTimers();
+
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index,
@@ -18,13 +21,13 @@ vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
   this._callback.apply(this, args);
 });
 
-const startInspection = ListGroupDimensions.prototype.startInspection;
-// https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
-vi.spyOn(ListGroupDimensions.prototype, 'startInspection').mockImplementation(
-  function (...args) {
-    startInspection.call(this);
-  }
-);
+// const startInspection = ListGroupDimensions.prototype.startInspection;
+// // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
+// vi.spyOn(ListGroupDimensions.prototype, 'startInspection').mockImplementation(
+//   function (...args) {
+//     startInspection.call(this);
+//   }
+// );
 
 describe('basic', () => {
   // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
@@ -1081,8 +1084,8 @@ describe('heartBeat', () => {
       'banner2',
       'list_4',
     ]);
-    listGroupDimensions.startInspection();
-    const { heartBeat } = listGroupDimensions.getInspectAPI();
+    listGroupDimensions.inspector.startInspection();
+    const { heartBeat } = listGroupDimensions.inspector.getAPI();
     const inspectingTime = Date.now() + 1;
     heartBeat({ listKey: 'list_1', inspectingTime });
     heartBeat({ listKey: 'banner2', inspectingTime });

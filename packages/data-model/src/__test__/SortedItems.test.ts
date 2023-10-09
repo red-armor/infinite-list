@@ -4,6 +4,8 @@ import ItemMeta from '../ItemMeta';
 import Batchinator from '@x-oasis/batchinator';
 import { vi, describe, expect, it } from 'vitest';
 
+vi.useFakeTimers();
+
 vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
   ...args
 ) {
