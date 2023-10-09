@@ -45,7 +45,7 @@ class PseudoListDimensions extends BaseDimensions {
   }
 
   createItemMeta(key: string) {
-    const meta = new ItemMeta({
+    const meta = ItemMeta.spawn({
       key,
       owner: this,
       separatorLength: 0,

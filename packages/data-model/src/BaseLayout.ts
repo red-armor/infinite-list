@@ -4,7 +4,7 @@ import {
   MAX_TO_RENDER_PER_BATCH,
   ON_END_REACHED_THRESHOLD,
   WINDOW_SIZE,
-  RECYCLE_BUFFERED_COUNT,
+  RECYCLER_RESERVED_BUFFER_PER_BATCH,
   LENGTH_PRECISION,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
 } from './common';
@@ -52,7 +52,7 @@ class BaseLayout {
       stickyHeaderIndices = [],
       windowSize = WINDOW_SIZE,
       lengthPrecision = LENGTH_PRECISION,
-      recycleBufferedCount = RECYCLE_BUFFERED_COUNT,
+      recycleBufferedCount = RECYCLER_RESERVED_BUFFER_PER_BATCH,
       maxToRenderPerBatch = MAX_TO_RENDER_PER_BATCH,
       initialNumToRender = INITIAL_NUM_TO_RENDER,
       onEndReachedThreshold = ON_END_REACHED_THRESHOLD,

@@ -1,39 +1,57 @@
 import Batchinator from '@x-oasis/batchinator';
-import { StateEventListener } from './types';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import noop from '@x-oasis/noop';
+import { StateEventListener, ItemMetaStateEventHelperProps } from './types';
+
+let canIUseRIC = false;
+let finished = false;
+
+setTimeout(() => {
+  if (finished) return;
+  canIUseRIC = false;
+  finished = true;
+});
+// @ts-ignore
+requestIdleCallback(() => {
+  canIUseRIC = true;
+  finished = true;
+});
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;
   private _value = false;
   readonly _eventName: string;
+
+  private _strictListeners: Array<StateEventListener>;
+
   private _listeners: Array<StateEventListener> = [];
+  private _handleCountMap: Map<StateEventListener, number>;
+
   private _triggerBatchinator: Batchinator;
-  private _handleCountMap = new Map();
   private _once: boolean;
   readonly _key: string;
-  private _reusableEventListenerMap = new Map();
+  private _reusableEventListenerMap: Map<string, StateEventListener>;
   private _callbackId: number;
   private _callbackStartMinMs: number;
   readonly _canIUseRIC: boolean;
+  private _strictListenerKeyToHandleCountMap: {
+    [key: string]: number;
+  };
 
-  constructor(props: {
-    key: string;
-    eventName: string;
-    batchUpdateEnabled?: boolean;
-    defaultValue: boolean;
-    once?: boolean;
-    canIUseRIC?: boolean;
-  }) {
+  constructor(props: ItemMetaStateEventHelperProps) {
     const {
       key,
       eventName,
       batchUpdateEnabled,
       defaultValue = false,
-      canIUseRIC = true,
+      canIUseRIC: _canIUseRIC,
       once,
+      strictListenerKeyToHandleCountMap = {},
     } = props;
 
     this._key = key;
     this._eventName = eventName;
+    this._reusableEventListenerMap = new Map();
     this._batchUpdateEnabled =
       typeof batchUpdateEnabled === 'boolean'
         ? batchUpdateEnabled
@@ -47,15 +65,34 @@ class ItemMetaStateEventHelper {
         ? true
         : false;
 
+    this._strictListenerKeyToHandleCountMap = strictListenerKeyToHandleCountMap;
     this._triggerBatchinator = new Batchinator(this._trigger.bind(this), 50);
     this.remover = this.remover.bind(this);
+    this._handleCountMap = new Map();
+    this._strictListeners = [];
+    // ric in RN can not be triggered. https://github.com/facebook/react-native/issues/28602
+    this._canIUseRIC = defaultBooleanValue(_canIUseRIC, canIUseRIC);
 
     if (defaultValue) {
       this.trigger(defaultValue);
     }
+  }
 
-    // ric in RN can not be triggered. https://github.com/facebook/react-native/issues/28602
-    this._canIUseRIC = canIUseRIC;
+  static spawn(ins: ItemMetaStateEventHelper) {
+    const strictListenerKeyToHandleCountMap = Object.create(null);
+    const l = ins._strictListeners;
+    if (!l.length) return null;
+    l.forEach((_l) => {
+      const count = ins._handleCountMap.get(_l);
+      for (const [key, value] of ins._reusableEventListenerMap) {
+        if (value === _l) {
+          strictListenerKeyToHandleCountMap[key] = count;
+        }
+      }
+    });
+    return {
+      strictListenerKeyToHandleCountMap,
+    };
   }
 
   remover(listener: StateEventListener, key?: string) {
@@ -86,6 +123,31 @@ class ItemMetaStateEventHelper {
     };
   }
 
+  // listener can't be deleted
+  addStrictReusableListener(
+    listener: StateEventListener,
+    key: string,
+    triggerOnceIfTrue: boolean
+  ) {
+    const count = this._strictListenerKeyToHandleCountMap[key];
+    if (typeof count === 'number') {
+      this._handleCountMap.set(listener, count);
+      this._strictListeners.push(listener);
+    }
+
+    this._reusableEventListenerMap.set(key, listener);
+    this.addStrictListener(listener, triggerOnceIfTrue);
+    return {
+      remover: noop,
+    };
+  }
+
+  /**
+   *
+   * @param listener
+   * @param triggerOnceIfTrue on initial, if value is true, then trigger..
+   * @returns
+   */
   addListener(listener: StateEventListener, triggerOnceIfTrue: boolean) {
     const index = this._listeners.findIndex((cb) => cb === listener);
     if (index === -1) {
@@ -93,12 +155,33 @@ class ItemMetaStateEventHelper {
       this._listeners.push(listener);
     }
 
-    if (triggerOnceIfTrue && this._value) {
+    if (triggerOnceIfTrue && this._value && this.listenerGuard(listener)) {
       this.incrementHandleCount(listener);
       listener(this._value);
     }
 
     return this.remover(listener);
+  }
+
+  /**
+   *
+   * @param listener
+   * @param triggerOnceIfTrue on initial, if value is true, then trigger..
+   * @returns
+   */
+  addStrictListener(listener: StateEventListener, triggerOnceIfTrue: boolean) {
+    const index = this._strictListeners.findIndex((cb) => cb === listener);
+    if (index === -1) {
+      this._handleCountMap.set(listener, 0);
+      this._strictListeners.push(listener);
+    }
+
+    if (triggerOnceIfTrue && this._value && this.listenerGuard(listener)) {
+      this.incrementHandleCount(listener);
+      listener(this._value);
+    }
+
+    return noop;
   }
 
   getHandleCount(handler: StateEventListener) {
@@ -120,12 +203,18 @@ class ItemMetaStateEventHelper {
 
   guard() {
     if (!this._once) return true;
+    // has a listener still not triggered.
     for (const value of this._handleCountMap.values()) {
       if (!value) return true;
     }
     return false;
   }
 
+  /**
+   *
+   * @param cb
+   * @returns to control whether a listener should be triggered or not..
+   */
   listenerGuard(cb: StateEventListener) {
     if (!this._once) return true;
     if (this._handleCountMap.get(cb)) return false;
@@ -158,6 +247,10 @@ class ItemMetaStateEventHelper {
     this._triggerBatchinator.schedule(value);
   }
 
+  get listeners() {
+    return this._listeners.concat(this._strictListeners);
+  }
+
   _trigger(value: boolean, immediately: boolean) {
     const now = Date.now();
 
@@ -167,7 +260,7 @@ class ItemMetaStateEventHelper {
         this.cancelIdleCallbackPolyfill(this._callbackId);
       }
       if (this._value !== value) {
-        this._listeners.forEach((cb) => {
+        this.listeners.forEach((cb) => {
           if (this.listenerGuard(cb)) {
             this.incrementHandleCount(cb);
             cb(value);
@@ -184,7 +277,7 @@ class ItemMetaStateEventHelper {
       const handler = (() => {
         if (now < this._callbackStartMinMs) return;
         if (this._value !== value) {
-          this._listeners.forEach((cb) => {
+          this.listeners.forEach((cb) => {
             if (this.listenerGuard(cb)) {
               this.incrementHandleCount(cb);
               cb(value);

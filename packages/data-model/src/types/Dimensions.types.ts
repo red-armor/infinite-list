@@ -1,5 +1,5 @@
-import BaseDimensions from '../BaseDimensions';
 import Dimension from '../Dimension';
+import PseudoListDimensions from '../PseudoListDimensions';
 import ItemsDimensions from '../ItemsDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
 import { ActionType } from '../state/types';
@@ -10,6 +10,9 @@ import {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from './viewable';
+import ListDimensions from '../ListDimensions';
+
+export type OnRecyclerProcess = (type?: string, index?: number) => boolean;
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,
@@ -43,13 +46,31 @@ export type BaseLayoutProps = {
   itemOffsetBeforeLayoutReady?: number;
 };
 
+export type ListBaseDimensionsProps<ItemT> = ListDimensionsProps<ItemT> & {
+  fillingMode?: FillingMode;
+  initialNumToRender?: number;
+  recyclerTypes?: Array<string>;
+
+  getData?: () => any;
+
+  provider: any;
+
+  recyclerBufferSize?: number;
+  recyclerReservedBufferPerBatch?: number;
+  onRecyclerProcess?: OnRecyclerProcess;
+  releaseSpaceStateItem?: boolean;
+};
+
 export type BaseDimensionsProps = {
   id: string;
   horizontal?: boolean;
 
   canIUseRIC?: boolean;
 
+  ignoredToPerBatch?: boolean;
+
   lengthPrecision?: number;
+  recyclerType?: string;
 
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;
@@ -59,8 +80,11 @@ export type BaseDimensionsProps = {
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
 };
 
+export type ListGroupData = {};
+
 export type ListGroupDimensionsProps = {
   id: string;
+  recyclerTypes?: Array<string>;
   horizontal?: boolean;
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;
@@ -74,6 +98,13 @@ export type ListGroupDimensionsProps = {
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
   onBatchLayoutFinished?: () => boolean;
   persistanceIndices?: Array<number>;
+
+  /**
+   * support list group recycle
+   */
+
+  recycleEnabled?: boolean;
+  onRecyclerProcess?: OnRecyclerProcess;
 } & OnEndReachedHelperProps;
 
 export type ListDimensionsProps<ItemT> = {
@@ -115,6 +146,8 @@ export type ListDimensionsProps<ItemT> = {
 
   itemApproximateLength?: number;
   useItemApproximateLength?: boolean;
+  recyclerType?: string;
+  anchorKey?: string;
 } & BaseDimensionsProps &
   OnEndReachedHelperProps &
   BaseLayoutProps;
@@ -155,12 +188,14 @@ export type PseudoListDimensionsProps = {
 
 export type DimensionProps = {
   id: string;
+  recyclerType?: string;
   canIUseRIC?: boolean;
   onRender?: Function;
   horizontal?: boolean;
   initialStartIndex?: number;
   ignoredToPerBatch?: boolean;
   listGroupDimension: ListGroupDimensions;
+  anchorKey?: string;
 };
 
 export type ContainerLayoutGetter = () => {
@@ -206,9 +241,6 @@ export interface StateSubscriptions {
   [key: string]: ((viewable: boolean) => void)[];
 }
 
-export type StateEventListener = (eventValue?: boolean) => void;
-// export type BuiltInEvent = 'viewable' | 'impression';
-
 export type ItemMetaState = {
   [key: string]: boolean;
 };
@@ -231,10 +263,16 @@ export enum SetDataPhase {
   UPDATE = 'update',
 }
 
-export type ItemMetaOwner = BaseDimensions | Dimension;
+export type ItemMetaOwner =
+  | ListDimensions
+  | ItemsDimensions
+  | Dimension
+  | PseudoListDimensions;
 export type IndexInfo = {
+  dimensions: ListDimensions | Dimension;
   index: number;
   indexInGroup?: number;
+  indexInRecycler?: number;
 };
 
 export enum ListRenderState {

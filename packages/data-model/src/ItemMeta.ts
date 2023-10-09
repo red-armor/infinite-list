@@ -1,16 +1,24 @@
 import BaseDimensions from './BaseDimensions';
 import Dimension from './Dimension';
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
-import { DEFAULT_LAYOUT } from './common';
+import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import {
   ItemLayout,
   ItemMetaOwner,
   ItemMetaState,
+  ItemMetaProps,
   StateEventListener,
+  ItemMetaStateEventHelperProps,
 } from './types';
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
+
+// make itemMeta could be shared, such as data source ref change, but it's value
+// not changed.
+const context: {
+  [key: string]: ItemMeta;
+} = {};
 
 let count = 0;
 class ItemMeta extends ViewabilityItemMeta {
@@ -18,6 +26,7 @@ class ItemMeta extends ViewabilityItemMeta {
   private _id: string;
   private _layout?: ItemLayout;
   private _separatorLength?: number;
+  private _recyclerType: string;
   private _owner?: ItemMetaOwner;
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
@@ -25,20 +34,12 @@ class ItemMeta extends ViewabilityItemMeta {
   readonly _ownerId: string;
   readonly _canIUseRIC?: boolean;
   private _isApproximateLayout: boolean;
+  private _ignoredToPerBatch: boolean;
+  private _spawnProps: {
+    [key: string]: ItemMetaStateEventHelperProps;
+  };
 
-  constructor(props: {
-    onViewable?: StateEventListener;
-    onImpression?: StateEventListener;
-    key: string;
-    separatorLength?: number;
-    layout?: ItemLayout;
-    owner?: ItemMetaOwner;
-    isListItem?: boolean;
-    setState?: Function;
-    state?: ItemMetaState;
-    isInitialItem?: boolean;
-    canIUseRIC?: boolean;
-  }) {
+  constructor(props: ItemMetaProps) {
     super(props);
     const {
       owner,
@@ -47,7 +48,11 @@ class ItemMeta extends ViewabilityItemMeta {
       state,
       isListItem,
       canIUseRIC,
+      recyclerType = DEFAULT_RECYCLER_TYPE,
       isInitialItem = false,
+      ignoredToPerBatch,
+      isApproximateLayout = true,
+      spawnProps = {},
     } = props;
     this._owner = owner;
     this._id = `item_meta_${count++}`;
@@ -55,21 +60,53 @@ class ItemMeta extends ViewabilityItemMeta {
     this._separatorLength = separatorLength || 0;
     this._isListItem = isListItem || false;
     this._stateEventSubscriptions = new Map();
+    this._ignoredToPerBatch = !!ignoredToPerBatch;
     this._state =
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
         : {};
 
     this._canIUseRIC = canIUseRIC;
-    this._isApproximateLayout = false;
+    this._isApproximateLayout = isApproximateLayout;
+    this._recyclerType = recyclerType;
+    this._spawnProps = spawnProps;
 
-    // this.addStateListener = this.addStateListener.bind(this);
-    // this.removeStateListener = this.removeStateListener.bind(this);
     this.addStateEventListener = this.addStateEventListener.bind(this);
+    context[this.key] = this;
+  }
+
+  static spawn(props: ItemMetaProps) {
+    const ancestor = context[props.key];
+    if (ancestor) {
+      const layout = ancestor.getLayout();
+      const spawnProps = {};
+      for (const [key, value] of ancestor._stateEventSubscriptions) {
+        const _props = ItemMetaStateEventHelper.spawn(value);
+        if (_props) spawnProps[key] = _props;
+      }
+
+      return new ItemMeta({
+        layout,
+        // isApproximateLayout may cause change...
+        isApproximateLayout: ancestor.isApproximateLayout,
+        spawnProps,
+        ...props,
+      });
+    }
+
+    return new ItemMeta(props);
   }
 
   get id() {
     return this._id;
+  }
+
+  get ignoredToPerBatch() {
+    return this._ignoredToPerBatch;
+  }
+
+  get recyclerType() {
+    return this._recyclerType;
   }
 
   get isApproximateLayout() {
@@ -170,6 +207,7 @@ class ItemMeta extends ViewabilityItemMeta {
   ensureStateHelper(eventName: string, value: boolean) {
     if (!this._stateEventSubscriptions.get(eventName)) {
       const helper = new ItemMetaStateEventHelper({
+        ...(this._spawnProps[eventName] || {}),
         eventName,
         key: this._key,
         defaultValue: value,
@@ -212,6 +250,72 @@ class ItemMeta extends ViewabilityItemMeta {
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
     return stateEventHelper.addReusableListener(
+      callback,
+      key,
+      defaultBooleanValue(triggerOnceIfTrue, true)
+    );
+  }
+
+  /**
+   *
+   * @param event
+   * @param callback
+   * @param triggerOnceIfTrue
+   *
+   * In reuse condition, once add listener, then it will not be changed anymore.
+   *
+   */
+  addStStateReusableEventListener(
+    event: string,
+    key: string,
+    callback: StateEventListener,
+    triggerOnceIfTrue?: boolean
+  ): {
+    remover: Function;
+  } {
+    if (typeof callback !== 'function')
+      return {
+        remover: noop,
+      };
+    const stateEventHelper = this.ensureStateHelper(
+      event,
+      // get initial value
+      event === 'impression' ? this._state['viewable'] : this._state[event]
+    );
+    return stateEventHelper.addReusableListener(
+      callback,
+      key,
+      defaultBooleanValue(triggerOnceIfTrue, true)
+    );
+  }
+
+  /**
+   *
+   * @param event
+   * @param callback
+   * @param triggerOnceIfTrue
+   *
+   * In reuse condition, once add listener, then it will not be changed anymore.
+   *
+   */
+  addStrictStateReusableEventListener(
+    event: string,
+    key: string,
+    callback: StateEventListener,
+    triggerOnceIfTrue?: boolean
+  ): {
+    remover: Function;
+  } {
+    if (typeof callback !== 'function')
+      return {
+        remover: noop,
+      };
+    const stateEventHelper = this.ensureStateHelper(
+      event,
+      // get initial value
+      event === 'impression' ? this._state['viewable'] : this._state[event]
+    );
+    return stateEventHelper.addStrictReusableListener(
       callback,
       key,
       defaultBooleanValue(triggerOnceIfTrue, true)

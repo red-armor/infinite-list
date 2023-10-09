@@ -8,6 +8,9 @@ import SelectValue, {
 } from '@x-oasis/select-value';
 import { DimensionProps, IndexInfo, ItemLayout } from './types';
 
+/**
+ * Abstraction of singleton item, It is used in ListGroup Condition.
+ */
 class Dimension {
   public id: string;
   private _layout: ItemLayout;
@@ -17,20 +20,30 @@ class Dimension {
   readonly _initialStartIndex: number;
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup: number;
-  private _requireRendered: boolean;
-  private _onRender: Function;
   private _canIUseRIC: boolean;
+  private _data: Array<any>;
+  private _recyclerType: string;
+  private _anchorKey: string;
 
   constructor(props: DimensionProps) {
     const {
       horizontal,
       id,
-      onRender,
+      recyclerType,
       canIUseRIC,
       listGroupDimension,
       initialStartIndex,
       ignoredToPerBatch,
+      anchorKey,
     } = props;
+
+    this._data = [
+      {
+        key: id,
+      },
+    ];
+    this._recyclerType = recyclerType;
+    this._anchorKey = anchorKey || id;
     this._selectValue = horizontal
       ? selectHorizontalValue
       : selectVerticalValue;
@@ -39,34 +52,36 @@ class Dimension {
     this._initialStartIndex = initialStartIndex;
     this._ignoredToPerBatch = !!ignoredToPerBatch;
     this._canIUseRIC = canIUseRIC;
-    this._meta = new ItemMeta({
+    this._meta = ItemMeta.spawn({
       key: this.id,
       isListItem: false,
       owner: this,
+      recyclerType: this._recyclerType,
       canIUseRIC: this._canIUseRIC,
+      ignoredToPerBatch: this._ignoredToPerBatch,
     });
     this.resolveConfigTuplesDefaultState =
       this.resolveConfigTuplesDefaultState.bind(this);
-    this._requireRendered =
-      this._initialStartIndex <= this._listGroupDimension.initialNumToRender;
-    this._onRender = onRender;
+  }
+
+  getData() {
+    return this._data;
   }
 
   get length() {
     return 1;
   }
 
-  render() {
-    if (this._requireRendered) return;
-    if (typeof this._onRender === 'function') this._onRender();
+  get recyclerType() {
+    return this._recyclerType;
   }
 
-  onRequireRender(onRender: Function) {
-    if (typeof onRender === 'function') this._onRender = onRender;
+  get anchorKey() {
+    return this._anchorKey;
   }
 
-  getRequireRendered() {
-    return this._requireRendered;
+  hasKey(key: string) {
+    return this.id === key;
   }
 
   getReflowItemsLength() {
@@ -98,10 +113,12 @@ class Dimension {
     this._offsetInListGroup = value;
   }
 
-  getContainerOffset() {
-    return (
-      this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
-    );
+  getContainerOffset(exclusive?: boolean | number) {
+    return exclusive ? 0 : this._offsetInListGroup;
+  }
+
+  getIndexKeyOffset(exclusive?: boolean | number) {
+    return exclusive ? 0 : this._offsetInListGroup;
   }
 
   getItemOffset() {
@@ -110,6 +127,10 @@ class Dimension {
 
   getKey() {
     return this.id;
+  }
+
+  getKeyIndex() {
+    return 0;
   }
 
   getIndexInfo() {
@@ -140,6 +161,24 @@ class Dimension {
     return this._layout;
   }
 
+  getFinalItemMeta(item: any) {
+    return this.getItemMeta(item);
+  }
+
+  getItemMeta(item: any) {
+    if (item === this.getData()[0]) return this._meta;
+    return null;
+  }
+
+  getItemKey(item: any) {
+    if (item === this.getData()[0]) return this.getKey();
+    return null;
+  }
+
+  getFinalItemKey(item: any) {
+    return this.getItemKey(item);
+  }
+
   getMeta() {
     return this._meta;
   }
@@ -160,6 +199,8 @@ class Dimension {
       typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
     // const finalIndex = this._listGroupDimension.getDimensionStartIndex(this.id);
 
+    meta.isApproximateLayout = false;
+
     if (typeof layout === 'number') {
       const length = layout;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
@@ -176,7 +217,6 @@ class Dimension {
 
     if (!layoutEqual(meta.getLayout(), layout as ItemLayout)) {
       meta.setLayout(layout as ItemLayout);
-      const length = this._selectValue.selectLength(layout as ItemLayout);
       if (_update) {
         if (this._listGroupDimension) {
           this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
@@ -190,9 +230,10 @@ class Dimension {
 
   ensureKeyMeta() {
     if (this._meta) return this._meta;
-    this._meta = new ItemMeta({
+    this._meta = ItemMeta.spawn({
       key: this.id,
       owner: this,
+      recyclerType: this._recyclerType,
       canIUseRIC: this._canIUseRIC,
     });
     return this._meta;
