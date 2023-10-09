@@ -1,6 +1,15 @@
 # CHANGELOG
 
-## [0.2.45-recycle-group.41](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.41) (2023-10-08)
+## [0.2.45-recycle-group.42](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.2.45-recycle-group.42) (2023-10-09)
+
+
+
+## 0.2.45-recycle-group.42 (2023-10-09)
+
+
+### Bug Fixes
+
+* performance boost and data update should be immediately ([2215c45](https://github.com/red-armor/infinite-list/commit/2215c455a7af902f343c453b56cba15a74b0c74f))
 
 
 
