@@ -109,8 +109,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _stillnessHelper: StillnessHelper;
 
-  private _anchorKey: string;
-
   private memoizedResolveSpaceState: (
     state: ListState<ItemT>
   ) => SpaceStateResult<ItemT>;
@@ -120,7 +118,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
-  private _recyclerType: string;
 
   constructor(props: ListDimensionsProps<ItemT>) {
     super({
@@ -129,19 +126,19 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
     const {
       store,
-      recyclerType,
       recycleEnabled,
       data = [],
       deps = [],
-      anchorKey,
       keyExtractor,
       getItemLayout,
       onEndReached,
+      active = true,
       listGroupDimension,
       onEndReachedThreshold,
       parentItemsDimensions,
       getItemSeparatorLength,
       onBatchLayoutFinished,
+      persistanceIndices,
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
       useItemApproximateLength,
@@ -155,9 +152,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
 
-    this._anchorKey = anchorKey || this.id;
     this._keyExtractor = keyExtractor;
-    this._recyclerType = recyclerType;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
 
@@ -165,7 +160,8 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     this._approximateMode = recycleEnabled
       ? defaultBooleanValue(
           useItemApproximateLength,
-          typeof this._getItemLayout !== 'function'
+          typeof this._getItemLayout !== 'function' ||
+            !this._itemApproximateLength
         )
       : false;
     this._getItemSeparatorLength = getItemSeparatorLength;
@@ -194,28 +190,46 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     });
 
     this._deps = deps;
-    this._isActive = true;
+    this._isActive = this.resolveInitialActiveValue(active);
 
+    if (this._listGroupDimension && this.initialNumToRender) {
+      if (process.env.NODE_ENV === 'development')
+        console.warn(
+          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+            ' initialNumToRender value should be controlled' +
+            'by `ListGroup` commander. So value is reset to `0`.'
+        );
+      this.initialNumToRender = 0;
+    }
+
+    if (this._listGroupDimension && persistanceIndices) {
+      if (process.env.NODE_ENV === 'development')
+        console.warn(
+          '[Spectrum warning] : As a `ListGroup` child list,  List Props ' +
+            ' persistanceIndices value should be controlled' +
+            'by `ListGroup` commander. So value is reset to `[]`.'
+        );
+      this.persistanceIndices = [];
+    }
+
+    this.updateInitialNumDueToListGroup(data);
+    this.updatePersistanceIndicesDueToListGroup(data);
     if (!this._isActive) {
       this._softData = data;
     } else {
       this._setData(data);
     }
-    // @ts-ignore
-    this._state = listGroupDimension ? {} : this.resolveInitialState();
+    this._state = this.resolveInitialState();
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
     );
     this.memoizedResolveRecycleState = memoizeOne(
       this.resolveRecycleState.bind(this)
     );
-    // @ts-ignore
-    // group list no need to resolve state
-    this._stateResult = listGroupDimension
-      ? {}
-      : this.fillingMode === FillingMode.RECYCLE
-      ? this.memoizedResolveRecycleState(this._state)
-      : this.memoizedResolveSpaceState(this._state);
+    this._stateResult =
+      this.fillingMode === FillingMode.RECYCLE
+        ? this.memoizedResolveRecycleState(this._state)
+        : this.memoizedResolveSpaceState(this._state);
 
     this._store = createStore<ReducerResult>() || store;
 
@@ -236,10 +250,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.recalculateRecycleResultState.bind(this),
       50
     );
-  }
-
-  get recyclerType() {
-    return this._recyclerType;
   }
 
   get length() {
@@ -266,13 +276,32 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return this._state;
   }
 
-  get anchorKey() {
-    return this._anchorKey;
-  }
-
   cleanup() {
     this._removeList?.();
     this._renderStateListeners = [];
+  }
+
+  resolveInitialActiveValue(active: boolean) {
+    if (this._deps.length) {
+      let isActive = true;
+      for (let index = 0; index < this._deps.length; index++) {
+        const listKey = this._deps[index];
+        const listHandler = manager.getKeyList(listKey);
+        if (!listHandler) continue;
+
+        if (
+          listHandler.getRenderState() !== ListRenderState.ON_RENDER_FINISHED
+        ) {
+          this._renderStateListenersCleaner.push(
+            listHandler.addRenderStateListener(this.handleDeps.bind(this))
+          );
+          isActive = false;
+        }
+      }
+      return isActive;
+    }
+
+    return active;
   }
 
   getRenderState() {
@@ -325,7 +354,9 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   getContainerOffset(): number {
     if (this._listGroupDimension) {
-      return this._offsetInListGroup;
+      return (
+        this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
+      );
     }
     const layout = this.getContainerLayout();
     if (!layout) return 0;
@@ -360,16 +391,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     return meta;
   }
 
-  getFinalKeyMeta(key: string) {
-    return this.getKeyMeta(key);
-  }
-
-  getFinalItemMeta(item: ItemT) {
-    const key = this.getFinalItemKey(item);
-    if (key) return this.getKeyMeta(key);
-    return null;
-  }
-
   getItemMeta(item: ItemT, index: number) {
     const key = this.getItemKey(item, index);
     if (key) return this.getKeyMeta(key);
@@ -391,12 +412,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (meta) return meta;
 
     // TODO: separatorLength may be included!!!!
-    meta = ItemMeta.spawn({
+    meta = new ItemMeta({
       key,
       owner: this,
       isListItem: true,
       isInitialItem: false,
-      recyclerType: this._recyclerType,
       canIUseRIC: this.canIUseRIC,
     });
     this.setKeyMeta(key, meta);
@@ -416,12 +436,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (cachedKey) return cachedKey;
     if (!item) return null;
     return this._keyExtractor(item, index);
-  }
-
-  getFinalItemKey(item: ItemT) {
-    const cachedKey = this._itemToKeyMap.get(item);
-    if (cachedKey) return cachedKey;
-    return null;
   }
 
   createIntervalTree() {
@@ -453,7 +467,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
    * onContentSizeChanged.
    */
   setIntervalTreeValue(index: number, length: number) {
-    // const oldLength = this.intervalTree.getHeap()[1];
+    const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
     const nextLength = this.intervalTree.getHeap()[1];
     const len = this.intervalTree.getMaxUsefulLength();
@@ -462,6 +476,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this._itemApproximateLength = this.normalizeLengthNumber(
         nextLength / Math.max(len, 1)
       );
+
+    if (oldLength !== nextLength && this._listGroupDimension) {
+      this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
+    }
 
     if (
       this.getReflowItemsLength() === this._data.length &&
@@ -473,12 +491,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       }
     }
 
-    // 比如换了一个item的话，不会触发更新
-    if (this._listGroupDimension) {
-      this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    }
-
-    if (!this._listGroupDimension && this._recycleEnabled()) {
+    if (this._recycleEnabled()) {
       this._recalculateRecycleResultStateBatchinator.schedule();
     }
   }
@@ -503,21 +516,21 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       ? index < this.initialNumToRender
       : false;
 
-    const meta = ItemMeta.spawn({
+    const meta = new ItemMeta({
       key,
       owner: this,
       isListItem: true,
       isInitialItem,
-      recyclerType: this._recyclerType,
       canIUseRIC: this.canIUseRIC,
     });
 
-    if (this._approximateMode && meta.isApproximateLayout) {
+    if (this._approximateMode) {
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(
         meta.getLayout(),
         this._itemApproximateLength
       );
+      meta.isApproximateLayout = true;
 
       return meta;
     }
@@ -535,10 +548,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     return meta;
-  }
-
-  hasKey(key: string) {
-    return this._indexKeys.indexOf(key) !== -1;
   }
 
   performKeyOperationGuard(key: string) {
@@ -597,51 +606,51 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   // 临时提供data，不然的话，data.length会一直返回0
-  // updateInitialNumDueToListGroup(data: Array<ItemT>) {
-  //   if (!this._listGroupDimension) return;
-  //   if (!data.length) return;
-  //   const startIndex = this._listGroupDimension.getDimensionStartIndex(
-  //     this.id,
-  //     true
-  //   );
-  //   const initialNumToRender = this._listGroupDimension.initialNumToRender;
-  //   if (startIndex < initialNumToRender) {
-  //     const step = initialNumToRender - startIndex;
-  //     this.initialNumToRender = data.length >= step ? step : data.length;
-  //   }
-  // }
+  updateInitialNumDueToListGroup(data: Array<ItemT>) {
+    if (!this._listGroupDimension) return;
+    if (!data.length) return;
+    const startIndex = this._listGroupDimension.getDimensionStartIndex(
+      this.id,
+      true
+    );
+    const initialNumToRender = this._listGroupDimension.initialNumToRender;
+    if (startIndex < initialNumToRender) {
+      const step = initialNumToRender - startIndex;
+      this.initialNumToRender = data.length >= step ? step : data.length;
+    }
+  }
 
-  // updatePersistanceIndicesDueToListGroup(data: Array<ItemT> = this._data) {
-  //   if (!this._listGroupDimension) return;
-  //   if (!data.length) return;
-  //   const persistanceIndices = this._listGroupDimension.persistanceIndices;
-  //   if (!persistanceIndices.length) return;
+  updatePersistanceIndicesDueToListGroup(data: Array<ItemT> = this._data) {
+    if (!this._listGroupDimension) return;
+    if (!data.length) return;
+    const persistanceIndices = this._listGroupDimension.persistanceIndices;
+    if (!persistanceIndices.length) return;
 
-  //   const startIndex = this._listGroupDimension.getDimensionStartIndex(
-  //     this.id,
-  //     true
-  //   );
-  //   const endIndex = startIndex + data.length;
+    const startIndex = this._listGroupDimension.getDimensionStartIndex(
+      this.id,
+      true
+    );
+    const endIndex = startIndex + data.length;
 
-  //   const first = persistanceIndices[0];
-  //   const last = persistanceIndices[persistanceIndices.length - 1];
+    const first = persistanceIndices[0];
+    const last = persistanceIndices[persistanceIndices.length - 1];
 
-  //   if (
-  //     isClamped(first, startIndex, last) ||
-  //     isClamped(first, endIndex, last)
-  //   ) {
-  //     const indices = [];
-  //     for (let index = 0; index < persistanceIndices.length; index++) {
-  //       const currentIndex = persistanceIndices[index];
-  //       if (isClamped(startIndex, currentIndex, endIndex)) {
-  //         indices.push(currentIndex - startIndex);
-  //       }
-  //     }
-  //     if (indices.length) this.persistanceIndices = indices;
-  //   } else {
-  //     this.persistanceIndices = [];
-  //   }
-  // }
+    if (
+      isClamped(first, startIndex, last) ||
+      isClamped(first, endIndex, last)
+    ) {
+      const indices = [];
+      for (let index = 0; index < persistanceIndices.length; index++) {
+        const currentIndex = persistanceIndices[index];
+        if (isClamped(startIndex, currentIndex, endIndex)) {
+          indices.push(currentIndex - startIndex);
+        }
+      }
+      if (indices.length) this.persistanceIndices = indices;
+    } else {
+      this.persistanceIndices = [];
+    }
+  }
 
   attemptToHandleEndReached() {
     if (!this._listGroupDimension) {
@@ -675,33 +684,27 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
 
-    if (!this._listGroupDimension) {
+    if (this._listGroupDimension) {
+      if (
+        [KeysChangedType.Add, KeysChangedType.Remove].indexOf(changedType) !==
+        -1
+      ) {
+        this._listGroupDimension.onItemsCountChanged(false);
+      } else if (changedType === KeysChangedType.Reorder) {
+        // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实
+        // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
+        // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
+        this._listGroupDimension.updateScrollMetrics(this._scrollMetrics, {
+          flush: true,
+          useCache: false,
+        });
+      }
+    } else {
+      // disable onEndReached; which may cause loop
       setTimeout(() => {
         if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
       });
     }
-
-    // if (this._listGroupDimension) {
-    //   if (
-    //     [KeysChangedType.Add, KeysChangedType.Remove].indexOf(changedType) !==
-    //     -1
-    //   ) {
-    //     this._listGroupDimension.onItemsCountChanged(false);
-    //   } else if (changedType === KeysChangedType.Reorder) {
-    //     // 之所以，不能够用缓存；因为现在的判断Reorder只是看key；这个key对应的item其实
-    //     // 并没有看；所以它不是纯粹的shuffle；这个时候item可能发生了变化，所以是不能够用
-    //     // 缓存的。艸，描述错了。。它其实是因为打乱顺序以后，可能indexRange会发生变化；
-    //     this._listGroupDimension.updateScrollMetrics(this._scrollMetrics, {
-    //       flush: true,
-    //       useCache: false,
-    //     });
-    //   }
-    // } else {
-    //   // disable onEndReached; which may cause loop
-    //   setTimeout(() => {
-    //     if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
-    //   });
-    // }
 
     return changedType;
   }
@@ -714,8 +717,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     if (_data === this._data) return KeysChangedType.Equal;
     const keyToIndexMap: Map<string, number> = new Map();
     const keyToIndexArray: Array<string> = [];
-    const itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
-    const itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap();
+    const itemToKeyMap: Map<ItemT, string> = new Map();
     let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {
@@ -725,7 +727,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);
-        itemToDimensionMap.set(item, this);
         return true;
       }
       duplicateKeyCount += 1;
@@ -787,14 +788,12 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getIndexInfo(key: string): IndexInfo {
+    const info = {} as IndexInfo;
+    info.index = this._indexKeys.indexOf(key);
     if (this._listGroupDimension) {
-      return this._listGroupDimension.getFinalKeyIndexInfo(key, this.id);
+      info.indexInGroup = this._listGroupDimension.getFinalIndex(key, this.id);
     }
-
-    return {
-      dimensions: this,
-      index: this._indexKeys.indexOf(key),
-    };
+    return info;
   }
 
   pump(
@@ -895,6 +894,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
     // const meta = this.getItemMeta(item, index);
 
     if (!meta) return false;
+    meta.isApproximateLayout = false;
 
     if (typeof info === 'number') {
       let length = this.normalizeLengthNumber(info);
@@ -912,16 +912,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
           this.setIntervalTreeValue(index, length);
           return true;
         }
-      } else if (meta.isApproximateLayout) {
-        // 比如换了一个item的话，不会触发更新
-        if (this._listGroupDimension) {
-          this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-        } else if (this._recycleEnabled()) {
-          this._recalculateRecycleResultStateBatchinator.schedule();
-        }
       }
-
-      meta.isApproximateLayout = false;
       return false;
     }
     const _info = this.normalizeLengthInfo(info);
@@ -932,7 +923,15 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
       })
     ) {
-      meta.isApproximateLayout = false;
+      // if (meta.getLayout()) {
+      //   console.warn(
+      //     '[infinite-list/data-model] override existing key item ',
+      //     `${key} from value ${JSON.stringify(
+      //       meta.getLayout()
+      //     )}to ${JSON.stringify(_info)}`
+      //   );
+      // }
+
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );
@@ -945,14 +944,6 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
         }
         this.setIntervalTreeValue(index, length);
         return true;
-      }
-    } else if (meta.isApproximateLayout) {
-      meta.isApproximateLayout = false;
-      // 比如换了一个item的话，不会触发更新
-      if (this._listGroupDimension) {
-        this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-      } else if (this._recycleEnabled()) {
-        this._recalculateRecycleResultStateBatchinator.schedule();
       }
     }
 
@@ -1022,6 +1013,16 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             (s) => s?.targetIndex === maxIndex + 1
           ) !== -1;
       }
+
+      // if (this.id === 'component-list-all') {
+      //   console.log(
+      //     'applyStateResult ',
+      //     minIndex,
+      //     maxIndex,
+      //     this._data.length,
+      //     exists
+      //   );
+      // }
 
       shouldStateUpdate =
         !(
@@ -1213,8 +1214,10 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       isEndReached,
     } = state;
     const targetIndices = this._bufferSet.indices.map((i) => parseInt(i));
+    // const targetIndicesCopy = targetIndices.slice();
     const recycleStateResult = [];
     const velocity = this._scrollMetrics?.velocity || 0;
+    // const targetIndicesCopy = targetIndices.slice();
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
@@ -1721,6 +1724,11 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
       dimension: this,
       scrollMetrics,
     });
+
+    // if (this.id === 'component-list-all') {
+    //   console.log('dispatchStoreMetrics ', { ...state });
+    // }
+
     if (isEmpty(state)) return state;
     this.updateState(state, scrollMetrics);
     return state;

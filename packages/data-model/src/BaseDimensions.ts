@@ -227,10 +227,10 @@ abstract class BaseDimensions extends BaseLayout {
     updateIntervalTree?: boolean
   ): boolean;
 
-  abstract computeIndexRangeMeta(
-    minOffset: number,
-    maxOffset: number
-  ): Array<ItemMeta>;
+  // abstract computeIndexRangeMeta(
+  //   minOffset: number,
+  //   maxOffset: number
+  // ): Array<ItemMeta>;
 
   greatestLowerBoundInfo(offset: number, exclusive?: boolean) {
     const info: BoundInfo = {

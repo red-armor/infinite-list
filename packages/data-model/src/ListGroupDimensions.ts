@@ -68,7 +68,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
    */
   private _flattenData: Array<ListGroupData> = [];
 
-  private _dispatchedMetricsResult: ReducerResult;
   private _dimensionsIntervalTree: PrefixIntervalTree = new PrefixIntervalTree(
     100
   );

@@ -108,6 +108,7 @@ export type ListGroupDimensionsProps = {
 } & OnEndReachedHelperProps;
 
 export type ListDimensionsProps<ItemT> = {
+  owner?: any;
   data: Array<ItemT>;
   keyExtractor: KeyExtractor<ItemT>;
   getItemLayout?: GetItemLayout<ItemT>;

@@ -1,5 +1,6 @@
 export { default as ItemsDimensions } from './ItemsDimensions';
-export { default as ListDimensions } from './ListDimensions';
+export { default as ListDimensions } from './ListDimensionsDeprecated'
+export { default as ListDimensionsExperimental } from './ListDimensions';
 export { default as ListGroupDimensions } from './ListGroupDimensions';
 export { default as PseudoListDimensions } from './PseudoListDimensions';
 export { default as ItemMeta } from './ItemMeta';
