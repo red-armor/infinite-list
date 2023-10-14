@@ -26,6 +26,6 @@ export default <State extends ReducerResult = ReducerResult>(
     Math.min(maxOffset, contentLength)
   );
 
-  ctx.visibleIndexRange = visibleIndexRange;
-  ctx.bufferedIndexRange = bufferedIndexRange;
+  if (visibleIndexRange) ctx.visibleIndexRange = visibleIndexRange;
+  if (bufferedIndexRange) ctx.bufferedIndexRange = bufferedIndexRange;
 };

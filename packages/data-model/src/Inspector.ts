@@ -5,13 +5,12 @@ import {
   InspectingAPI,
   InspectingListener,
   OnIndexKeysChanged,
-  AnchorRange,
-} from './deprecate/types';
+} from './types';
 import ListGroupDimensions from './ListGroupDimensions';
 
 class Inspector {
   private _indexKeys: Array<string> = [];
-  private _anchorRange: AnchorRange = {};
+  // private _anchorRange: AnchorRange = {};
   private _owner: ListGroupDimensions;
   private _inspectingTime: number = Date.now();
   private _inspectingTimes = 0;

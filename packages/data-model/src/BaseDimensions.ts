@@ -9,7 +9,7 @@ import {
   ItemLayout,
   KeysChangedType,
   ScrollMetrics,
-} from './deprecate/types';
+} from './types';
 
 abstract class BaseDimensions extends BaseLayout {
   _keyToIndexMap: Map<string, number> = new Map();

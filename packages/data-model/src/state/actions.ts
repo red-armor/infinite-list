@@ -1,6 +1,6 @@
 import ListDimensions from '../ListDimensions';
 import { INVALID_LENGTH } from '../common';
-import { ScrollMetrics } from '../deprecate/types';
+import { ScrollMetrics } from '../types';
 import { Action, ActionType, ReducerResult } from './types';
 
 // const resolvePseudoVelocity = (velocity: number) => {
@@ -32,7 +32,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
     const total = dimension.getTotalLength();
     if (
       (visibleStartIndex !== -1 || visibleEndIndex !== -1) &&
-      total !== INVALID_LENGTH &&
+      (total as any as string) !== INVALID_LENGTH &&
       dimension.hasUnLayoutItems()
     ) {
       nextIsEndReached = dimension.getOnEndReachedHelper().perform({

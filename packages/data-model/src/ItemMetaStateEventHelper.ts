@@ -1,10 +1,7 @@
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import noop from '@x-oasis/noop';
-import {
-  StateEventListener,
-  ItemMetaStateEventHelperProps,
-} from './deprecate/types';
+import { StateEventListener, ItemMetaStateEventHelperProps } from './types';
 
 let canIUseRIC = false;
 let finished = false;

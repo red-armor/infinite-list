@@ -4,7 +4,7 @@ import {
   KeysChangedType,
   SpaceStateResult,
   RecycleStateResult,
-} from '../deprecate/types';
+} from '../types';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { buildStateTokenIndexKey } from '../common';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';

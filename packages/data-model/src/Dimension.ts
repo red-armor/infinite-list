@@ -2,40 +2,24 @@ import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
 import { INVALID_LENGTH } from './common';
 import layoutEqual from '@x-oasis/layout-equal';
-import SelectValue, {
-  selectHorizontalValue,
-  selectVerticalValue,
-} from '@x-oasis/select-value';
-import { DimensionProps, IndexInfo, ItemLayout } from './deprecate/types';
+import { DimensionProps, IndexInfo, ItemLayout } from './types';
+import BaseContainer from './BaseContainer';
 
 /**
  * Abstraction of singleton item, It is used in ListGroup Condition.
  */
-class Dimension {
-  public id: string;
-  private _layout: ItemLayout;
+class Dimension extends BaseContainer {
   private _meta: ItemMeta;
-  readonly _selectValue: SelectValue;
-  readonly _listGroupDimension: ListGroupDimensions;
-  readonly _initialStartIndex: number;
+  readonly _container: ListGroupDimensions;
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup: number;
-  private _canIUseRIC: boolean;
   private _data: Array<any>;
   private _recyclerType: string;
   private _anchorKey: string;
 
   constructor(props: DimensionProps) {
-    const {
-      horizontal,
-      id,
-      recyclerType,
-      canIUseRIC,
-      listGroupDimension,
-      initialStartIndex,
-      ignoredToPerBatch,
-      anchorKey,
-    } = props;
+    super(props);
+    const { id, recyclerType, container, ignoredToPerBatch, anchorKey } = props;
 
     this._data = [
       {
@@ -44,20 +28,14 @@ class Dimension {
     ];
     this._recyclerType = recyclerType;
     this._anchorKey = anchorKey || id;
-    this._selectValue = horizontal
-      ? selectHorizontalValue
-      : selectVerticalValue;
-    this.id = id;
-    this._listGroupDimension = listGroupDimension;
-    this._initialStartIndex = initialStartIndex;
+    this._container = container;
     this._ignoredToPerBatch = !!ignoredToPerBatch;
-    this._canIUseRIC = canIUseRIC;
     this._meta = ItemMeta.spawn({
       key: this.id,
       isListItem: false,
       owner: this,
       recyclerType: this._recyclerType,
-      canIUseRIC: this._canIUseRIC,
+      canIUseRIC: this.canIUseRIC,
       ignoredToPerBatch: this._ignoredToPerBatch,
     });
     this.resolveConfigTuplesDefaultState =
@@ -106,7 +84,7 @@ class Dimension {
   }
 
   resolveConfigTuplesDefaultState() {
-    return this._listGroupDimension.resolveConfigTuplesDefaultState();
+    return this._container.resolveConfigTuplesDefaultState();
   }
 
   set offsetInListGroup(value: number) {
@@ -137,29 +115,29 @@ class Dimension {
     const info = {
       index: 0,
     } as IndexInfo;
-    if (this._listGroupDimension) {
-      const index = this._listGroupDimension.getDimensionStartIndex(this.id);
+    if (this._container) {
+      const index = this._container.getDimensionStartIndex(this.id);
       if (index !== -1) info.indexInGroup = index;
     }
 
     return info;
   }
 
-  /**
-   *
-   * @param layout container layout
-   */
-  setLayout(layout: ItemLayout) {
-    this._layout = layout;
-  }
+  // /**
+  //  *
+  //  * @param layout container layout
+  //  */
+  // setLayout(layout: ItemLayout) {
+  //   this._layout = layout;
+  // }
 
-  /**
-   *
-   * @returns get list dimensions' container layout
-   */
-  getLayout() {
-    return this._layout;
-  }
+  // /**
+  //  *
+  //  * @returns get list dimensions' container layout
+  //  */
+  // getLayout() {
+  //   return this._layout;
+  // }
 
   getFinalItemMeta(item: any) {
     return this.getItemMeta(item);
@@ -197,7 +175,7 @@ class Dimension {
     const meta = this.getMeta();
     const _update =
       typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
-    // const finalIndex = this._listGroupDimension.getDimensionStartIndex(this.id);
+    // const finalIndex = this._owner.getDimensionStartIndex(this.id);
 
     meta.isApproximateLayout = false;
 
@@ -207,9 +185,7 @@ class Dimension {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (_update) {
-          if (this._listGroupDimension) {
-            this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-          }
+          if (this._container) this._container.onItemLayoutChanged();
           return true;
         }
       }
@@ -218,9 +194,7 @@ class Dimension {
     if (!layoutEqual(meta.getLayout(), layout as ItemLayout)) {
       meta.setLayout(layout as ItemLayout);
       if (_update) {
-        if (this._listGroupDimension) {
-          this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-        }
+        if (this._container) this._container.onItemLayoutChanged();
         return true;
       }
     }
@@ -234,7 +208,7 @@ class Dimension {
       key: this.id,
       owner: this,
       recyclerType: this._recyclerType,
-      canIUseRIC: this._canIUseRIC,
+      canIUseRIC: this.canIUseRIC,
     });
     return this._meta;
   }

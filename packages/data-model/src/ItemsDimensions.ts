@@ -4,11 +4,7 @@ import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import SortedItems from './SortedItems';
 
-import {
-  ItemLayout,
-  ItemsDimensionsProps,
-  ScrollMetrics,
-} from './deprecate/types';
+import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 
 class ItemsDimensions extends BaseDimensions {

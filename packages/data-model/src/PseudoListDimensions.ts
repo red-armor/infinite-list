@@ -8,7 +8,7 @@ import {
   ItemLayout,
   KeysChangedType,
   PseudoListDimensionsProps,
-} from './deprecate/types';
+} from './types';
 
 class PseudoListDimensions extends BaseDimensions {
   constructor(props: PseudoListDimensionsProps) {

@@ -1,34 +1,26 @@
 import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import BaseLayout from './BaseLayout';
 import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
-import ListDimensions from './ListDimensions';
+import ListDimensionsModel from './ListDimensionsModel';
 import { isEmpty } from './common';
-import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
-import createStore from './state/createStore';
-import { ReducerResult, Store } from './state/types';
 import {
   IndexInfo,
   FillingMode,
   ItemLayout,
   KeysChangedType,
-  ListDimensionsProps,
   ListGroupDimensionsProps,
   ListRangeResult,
-  ListRenderState,
   OnEndReached,
   ScrollMetrics,
-  StateListener,
-  ListGroupData,
   ListProvider,
-  ItemsDimensionsProps,
-} from './deprecate/types';
-import ListSpyUtils from './utils/ListSpyUtils';
-import EnabledSelector from './utils/EnabledSelector';
-import OnEndReachedHelper from './viewable/OnEndReachedHelper';
+  KeyToOnEndReachedMap,
+  KeyToListDimensionsMap,
+  RegisteredListProps,
+  RegisteredDimensionProps,
+} from './types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
 
@@ -41,23 +33,14 @@ import Inspector from './Inspector';
  * ListGroup is just like a router.
  */
 class ListGroupDimensions<ItemT extends {} = {}>
-  extends BaseLayout
+  extends ListBaseDimensions<ItemT>
   implements ListProvider
 {
-  private _selector = new EnabledSelector();
-  itemToDimensionMap: WeakMap<any, any> = new WeakMap();
-  private keyToListDimensionsMap: Map<string, ListDimensions | Dimension> =
-    new Map();
+  private keyToListDimensionsMap: KeyToListDimensionsMap = new Map();
+  private _keyToOnEndReachedMap: KeyToOnEndReachedMap = new Map();
   private _itemsDimensions: ItemsDimensions;
-  _onUpdateItemLayout?: Function;
-  _onUpdateIntervalTree?: Function;
-  _configTuples: ViewabilityConfigTuples;
-  readonly onEndReachedHelper: OnEndReachedHelper;
-  // private _dispatchMetricsBatchinator: Batchinator;
-  private _store: Store<ReducerResult>;
-  private _scrollMetrics: ScrollMetrics;
-  private _renderState: ListRenderState;
-  // private _onUpdateDimensionItemsMetaChangeBatchinator: Batchinator;
+  private _onUpdateItemLayout?: Function;
+  private _onUpdateIntervalTree?: Function;
   private _onItemsCountChangedBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   /**
@@ -65,7 +48,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
    * 1. dimension
    * 2. normal list
    */
-  private _flattenData: Array<ListGroupData> = [];
+  private _flattenData: Array<ItemT> = [];
 
   private _dimensionsIntervalTree: PrefixIntervalTree = new PrefixIntervalTree(
     100
@@ -75,15 +58,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   private _reflowItemsLength = 0;
   private _dimensionsIndexRange: Array<{
-    dimensions: Dimension | ListDimensions;
+    dimensions: Dimension | ListDimensionsModel;
     startIndex: number;
     endIndex: number;
 
     startIndexInRecycler: number;
     endIndexInRecycler: number;
   }> = [];
-
-  private _removeList: Function;
 
   private _inspector: Inspector;
 
@@ -92,50 +73,17 @@ class ListGroupDimensions<ItemT extends {} = {}>
       recycleEnabled: true,
       ...props,
     });
-    const {
-      id,
-      recyclerTypes,
-      onUpdateItemLayout,
-      onUpdateIntervalTree,
-      viewabilityConfig,
-      onViewableItemsChanged,
-      onEndReached,
-      viewabilityConfigCallbackPairs,
-      onEndReachedThreshold,
-      onEndReachedTimeoutThreshold,
-      onEndReachedHandlerTimeoutThreshold,
-      recycleEnabled = true,
-    } = props;
+    const { id, onUpdateItemLayout, onUpdateIntervalTree } = props;
 
     this._itemsDimensions = new ItemsDimensions({
       id,
     });
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
-    this._configTuples = new ViewabilityConfigTuples({
-      viewabilityConfig,
-      onViewableItemsChanged,
-      isListItem: true,
-      viewabilityConfigCallbackPairs,
-    });
-    // this._dispatchMetricsBatchinator = new Batchinator(
-    //   this.dispatchMetrics.bind(this),
-    //   50
-    // );
-
-    this.onEndReachedHelper = new OnEndReachedHelper({
-      id,
-      onEndReached,
-      onEndReachedThreshold,
-      onEndReachedTimeoutThreshold,
-      onEndReachedHandlerTimeoutThreshold,
-    });
     this._onItemsCountChangedBatchinator = new Batchinator(
       this.onItemsCountChanged.bind(this),
       50
     );
-
-    this._store = createStore<ReducerResult>();
 
     this._inspector = new Inspector({
       owner: this,
@@ -146,21 +94,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.recalculateDimensionsIntervalTree.bind(this),
       50
     );
-
-    this._listBaseDimension = new ListBaseDimensions({
-      ...props,
-      keyExtractor: () => null,
-      id: 'listGroupDimensions',
-      data: this._flattenData,
-      getData: this.getData.bind(this),
-      recycleEnabled,
-      provider: this,
-      recyclerTypes,
-    });
   }
 
   get selector() {
-    return this._selector;
+    return this._listBaseDimension.selector;
   }
 
   get inspector() {
@@ -173,19 +110,11 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   ensureDimension() {}
 
-  getOnEndReachedHelper() {
-    return this.onEndReachedHelper;
-  }
-
   getDimension(key: string) {
     return this.keyToListDimensionsMap.get(key);
   }
 
-  getRenderState() {
-    return this._renderState;
-  }
-
-  setDimension(key: string, dimension: ListDimensions | Dimension) {
+  setDimension(key: string, dimension: ListDimensionsModel | Dimension) {
     return this.keyToListDimensionsMap.set(key, dimension);
   }
 
@@ -349,13 +278,13 @@ class ListGroupDimensions<ItemT extends {} = {}>
     }, 0);
   }
 
-  getConfigTuple() {
-    return this._configTuples;
-  }
+  // getConfigTuple() {
+  //   return this._configTuples;
+  // }
 
-  resolveConfigTuplesDefaultState(defaultValue?: boolean) {
-    return this._configTuples.getDefaultState(defaultValue);
-  }
+  // resolveConfigTuplesDefaultState(defaultValue?: boolean) {
+  //   return this._configTuples.getDefaultState(defaultValue);
+  // }
 
   getState() {
     return this._listBaseDimension.state;
@@ -373,7 +302,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (listIndex !== -1) {
       const listDimensions = this.getDimension(listKey);
       if (listDimensions) {
-        return listDimensions instanceof ListDimensions
+        return listDimensions instanceof ListDimensionsModel
           ? listDimensions.getKeyIndex(key)
           : 0;
       }
@@ -389,7 +318,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     if (listIndex !== -1) {
       const dimensions = this.getDimension(listKey);
-      if (dimensions instanceof ListDimensions)
+      if (dimensions instanceof ListDimensionsModel)
         return dimensions.getIndexKey(index);
       else if (dimensions instanceof Dimension) return dimensions.getKey();
     }
@@ -448,7 +377,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     let indexInList = 0;
     const dimensions = this.getDimension(listKey);
     if (!dimensions) return -1;
-    if (dimensions instanceof ListDimensions) {
+    if (dimensions instanceof ListDimensionsModel) {
       indexInList = dimensions.getKeyIndex(key);
       if (indexInList === -1) return -1;
     } else if (dimensions instanceof Dimension) {
@@ -519,25 +448,24 @@ class ListGroupDimensions<ItemT extends {} = {}>
    */
   registerList(
     listKey: string,
-    listDimensionsProps: Omit<ListDimensionsProps<ItemT>, 'id'>
+    listDimensionsProps: RegisteredListProps
   ): {
-    dimensions: ListDimensions;
+    dimensions: ListDimensionsModel;
     remover: () => void;
   } {
     if (this.getDimension(listKey))
       return {
-        dimensions: this.getDimension(listKey) as ListDimensions,
+        dimensions: this.getDimension(listKey) as ListDimensionsModel,
         remover: () => {
           this.removeListDimensions(listKey);
         },
       };
     // should update indexKeys first !!!
     const { recyclerType } = listDimensionsProps;
-    const dimensions = new ListDimensions({
+    const dimensions = new ListDimensionsModel({
       ...listDimensionsProps,
       id: listKey,
-      parentItemsDimensions: this._itemsDimensions,
-      listGroupDimension: this,
+      container: this,
       horizontal: this.getHorizontal(),
     });
     this._listBaseDimension.addBuffer(recyclerType);
@@ -550,6 +478,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
       onEndReachedCleaner = this._listBaseDimension.addOnEndReached(
         listDimensionsProps.onEndReached
       );
+      this._keyToOnEndReachedMap.set(listKey, listDimensionsProps.onEndReached);
     }
 
     // for performance boost. only reflow data when less than initial number;
@@ -666,7 +595,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   registerItem(
     key: string,
-    itemDimensionsProps: Omit<ItemsDimensionsProps, 'id'> = {}
+    dimensionProps: RegisteredDimensionProps
   ): {
     dimensions: Dimension;
     remover: () => void;
@@ -678,12 +607,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
           this.removeItem(key);
         },
       };
-    const { recyclerType } = itemDimensionsProps;
+    const { recyclerType } = dimensionProps;
     const dimensions = new Dimension({
       id: key,
-      ...itemDimensionsProps,
-      listGroupDimension: this,
-      horizontal: this.getHorizontal(),
+      ...dimensionProps,
+      owner: this,
+      horizontal: this.horizontal,
       canIUseRIC: this.canIUseRIC,
     });
     this.setDimension(key, dimensions);
@@ -730,7 +659,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const listDimensions = this.getDimension(listKey);
 
     if (listDimensions) {
-      const changedType = (listDimensions as ListDimensions).setData(data);
+      const changedType = (listDimensions as ListDimensionsModel).setData(data);
 
       if (
         [
@@ -758,13 +687,16 @@ class ListGroupDimensions<ItemT extends {} = {}>
   setOnEndReached(listKey: string, onEndReached: OnEndReached) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      (listDimensions as ListDimensions).setOnEndReached(onEndReached);
+      const _handler = this._keyToOnEndReachedMap.get(listKey);
+      if (_handler) this._listBaseDimension.removeOnEndReached(_handler);
+      this._listBaseDimension.addOnEndReached(onEndReached);
     }
   }
 
   getListData(listKey: string) {
     const listDimensions = this.getDimension(listKey);
-    if (listDimensions) return (listDimensions as ListDimensions).getData();
+    if (listDimensions)
+      return (listDimensions as ListDimensionsModel).getData();
     return [];
   }
 
@@ -786,7 +718,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     if (dimension) {
       const containerOffset = exclusive ? 0 : this.getContainerOffset();
       return (
-        (dimension as ListDimensions).getKeyItemOffset(itemKey) +
+        (dimension as ListDimensionsModel).getKeyItemOffset(itemKey) +
         containerOffset
       );
     }
@@ -798,7 +730,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
       return (
-        (listDimensions as ListDimensions).getKeyItemOffset(key) +
+        (listDimensions as ListDimensionsModel).getKeyItemOffset(key) +
         containerOffset
       );
     }
@@ -807,7 +739,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   getFinalKeyMeta(itemKey: string) {
     const dimension = this.getItemKeyDimension(itemKey);
-    if (dimension instanceof ListDimensions)
+    if (dimension instanceof ListDimensionsModel)
       return dimension.getKeyMeta(itemKey);
     else if (dimension instanceof Dimension) return dimension.getMeta();
     return null;
@@ -815,14 +747,15 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   getKeyMeta(key: string, listKey: string) {
     const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions) return dimensions.getKeyMeta(key);
+    if (dimensions instanceof ListDimensionsModel)
+      return dimensions.getKeyMeta(key);
     else if (dimensions instanceof Dimension) return dimensions.getMeta();
     return null;
   }
 
   setFinalKeyMeta(itemKey: string, itemMeta: ItemMeta) {
     const dimensions = this.getItemKeyDimension(itemKey);
-    if (dimensions instanceof ListDimensions)
+    if (dimensions instanceof ListDimensionsModel)
       return dimensions.setKeyMeta(itemKey, itemMeta);
     else if (dimensions instanceof Dimension)
       return dimensions.setMeta(itemMeta);
@@ -831,7 +764,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta) {
     const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions)
+    if (dimensions instanceof ListDimensionsModel)
       return dimensions.setKeyMeta(key, itemMeta);
     else if (dimensions instanceof Dimension)
       return dimensions.setMeta(itemMeta);
@@ -840,7 +773,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
   ensureKeyMeta(key: string, listKey: string) {
     const dimensions = this.getDimension(listKey);
-    if (dimensions instanceof ListDimensions)
+    if (dimensions instanceof ListDimensionsModel)
       return dimensions.ensureKeyMeta(key);
     else if (dimensions instanceof Dimension) return dimensions.ensureKeyMeta();
     return null;
@@ -849,7 +782,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   getKeyItemLayout(key: string, listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      return (listDimensions as ListDimensions).getKeyItemLayout(key);
+      return (listDimensions as ListDimensionsModel).getKeyItemLayout(key);
     }
 
     return null;
@@ -858,7 +791,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   getFinalKeyItemLayout(itemKey: string) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions) {
-      return (dimensions as ListDimensions).getKeyItemLayout(itemKey);
+      return (dimensions as ListDimensionsModel).getKeyItemLayout(itemKey);
     }
     return null;
   }
@@ -876,7 +809,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   setFinalKeyItemLayout(itemKey: string, layout: ItemLayout | number) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions) {
-      if (dimensions instanceof ListDimensions) {
+      if (dimensions instanceof ListDimensionsModel) {
         dimensions.setKeyItemLayout(itemKey, layout);
       } else if (dimensions instanceof Dimension) {
         dimensions.setItemLayout(layout);
@@ -887,7 +820,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   setKeyItemLayout(key: string, listKey: string, layout: ItemLayout | number) {
     const dimensions = this.getDimension(listKey);
     if (dimensions) {
-      if (dimensions instanceof ListDimensions) {
+      if (dimensions instanceof ListDimensionsModel) {
         dimensions.setKeyItemLayout(key, layout);
       } else if (dimensions instanceof Dimension) {
         dimensions.setItemLayout(layout);
@@ -916,7 +849,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
         startIndex +
         (dimension instanceof Dimension
           ? 0
-          : Math.max((dimension as ListDimensions).length - 1, 0));
+          : Math.max((dimension as ListDimensionsModel).length - 1, 0));
 
       if (isClamped(min, finalIndex, max)) {
         positionToken.dimensionKey = key;
@@ -1036,7 +969,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
           startIndex: dimensionsStartIndex,
           endIndex: dimensionsStartIndex,
         };
-      } else if (dimensions instanceof ListDimensions) {
+      } else if (dimensions instanceof ListDimensionsModel) {
         const startOffset = this._dimensionsIntervalTree.sumUntil(startIndex);
         const { startIndex: innerStartIndex, endIndex: innerEndIndex } =
           dimensions.computeIndexRange(
@@ -1063,7 +996,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     if (startDimensions instanceof Dimension) {
       nextStartIndex = this.getDimensionStartIndex(startDimensionsKey);
-    } else if (startDimensions instanceof ListDimensions) {
+    } else if (startDimensions instanceof ListDimensionsModel) {
       const startOffset =
         this._dimensionsIntervalTree.sumUntil(_nextStartIndex);
       const dimensionsStartIndex =
@@ -1083,7 +1016,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
 
     if (endDimensions instanceof Dimension) {
       nextEndIndex = this.getDimensionStartIndex(endDimensionsKey);
-    } else if (endDimensions instanceof ListDimensions) {
+    } else if (endDimensions instanceof ListDimensionsModel) {
       const startOffset = this._dimensionsIntervalTree.sumUntil(_nextEndIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(endDimensionsKey);
@@ -1107,12 +1040,12 @@ class ListGroupDimensions<ItemT extends {} = {}>
     return this.findListRange(startIndex, endIndex);
   }
 
-  addStateListener(listener: StateListener) {
-    return this._listBaseDimension.addStateListener(listener);
-  }
+  // addStateListener(listener: StateListener) {
+  //   return this._listBaseDimension.addStateListener(listener);
+  // }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
-    const state = this._store.dispatchMetrics({
+    const state = this.store.dispatchMetrics({
       dimension: this,
       scrollMetrics,
     });
@@ -1143,12 +1076,9 @@ class ListGroupDimensions<ItemT extends {} = {}>
     });
   }
 
-  dispatchScrollMetricsEnabled() {
-    return (
-      this.selector.getDispatchScrollMetricsEnabledStatus() &&
-      ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()
-    );
-  }
+  // dispatchScrollMetricsEnabled() {
+  //   this._listBaseDimension.dispatchScrollMetricsEnabled();
+  // }
 
   updateScrollMetrics(
     _scrollMetrics?: ScrollMetrics,

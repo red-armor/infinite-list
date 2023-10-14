@@ -1,6 +1,6 @@
 import ListDimensions from '../ListDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
-import { ScrollMetrics } from '../deprecate/types';
+import { ScrollMetrics } from '../types';
 
 export type ReducerResult = {
   visibleStartIndex: number;

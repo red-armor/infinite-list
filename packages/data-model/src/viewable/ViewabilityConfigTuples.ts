@@ -4,7 +4,7 @@ import {
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
   ViewabilityScrollMetrics,
-} from '../deprecate/types';
+} from '../types';
 import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 import ItemMeta from '../ItemMeta';

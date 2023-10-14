@@ -9,7 +9,7 @@ import {
   NormalizedViewablityConfig,
   ViewabilityConfigCallbackPair,
   VisiblePercentModeConfig,
-} from '../deprecate/types';
+} from '../types';
 import { isItemViewable } from './viewabilityUtils';
 
 // const createIntervalTreeItemChangedToken = (opts: {

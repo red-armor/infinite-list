@@ -9,7 +9,7 @@ import {
   ItemMetaProps,
   StateEventListener,
   ItemMetaStateEventHelperProps,
-} from './deprecate/types';
+} from './types';
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
@@ -148,13 +148,14 @@ class ItemMeta extends ViewabilityItemMeta {
   }
 
   getContainerOffset() {
-    if (this._isListItem)
-      return (this._owner as BaseDimensions).getContainerOffset();
-    return 0;
+    return this._owner.getContainerOffset();
+    // if (this._isListItem)
+    //   return (this._owner as BaseDimensions).getContainerOffset();
+    // return 0;
   }
 
   getItemLength() {
-    const selectValue = (this._owner as BaseDimensions).getSelectValue();
+    const selectValue = this._owner.getSelectValue();
     return this._layout ? selectValue.selectLength(this._layout) : 0;
   }
 
@@ -173,7 +174,7 @@ class ItemMeta extends ViewabilityItemMeta {
       return this._owner.getItemOffset();
     }
 
-    const selectValue = (this._owner as BaseDimensions).getSelectValue();
+    const selectValue = this._owner.getSelectValue();
     return this._layout ? selectValue.selectOffset(this._layout) : 0;
   }
 

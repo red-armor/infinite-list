@@ -9,7 +9,7 @@ import {
   OnEndReachedHelperProps,
   ScrollMetrics,
   SendOnEndReachedDistanceFromBottomStack,
-} from '../deprecate/types';
+} from '../types';
 import isClamped from '@x-oasis/is-clamped';
 
 class OnEndReachedHelper {
@@ -86,6 +86,15 @@ class OnEndReachedHelper {
       Array.isArray(this.onEndReached) ||
       typeof this.onEndReached === 'function'
     );
+  }
+
+  removeHandler(onEndReached: OnEndReached) {
+    const next = [].concat(this.onEndReached);
+    const index = next.findIndex((handler) => handler === onEndReached);
+    if (index !== -1) {
+      next.splice(index, 1);
+      this.onEndReached = next;
+    }
   }
 
   addHandler(onEndReached: OnEndReached) {

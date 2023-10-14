@@ -1,36 +1,26 @@
-import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
 import omit from '@x-oasis/omit';
-import {
-  selectHorizontalValue,
-  selectVerticalValue,
-} from '@x-oasis/select-value';
 import resolveChanged from '@x-oasis/resolve-changed';
 import isClamped from '@x-oasis/is-clamped';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import Recycler from '@x-oasis/recycler';
+import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import memoizeOne from 'memoize-one';
 
 import {
   isEmpty,
   shallowDiffers,
-  INITIAL_NUM_TO_RENDER,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
-import manager from './deprecate/manager';
 import createStore from './state/createStore';
-import { ActionType, ReducerResult, Store } from './state/types';
+import { ActionType, ReducerResult } from './state/types';
 import {
   SpaceStateToken,
   GetItemLayout,
-  GetItemSeparatorLength,
   ListBaseDimensionsProps,
-  ListRenderState,
   ListState,
-  OnRecyclerProcess,
   OnEndReached,
   PreStateResult,
   ScrollMetrics,
@@ -40,46 +30,35 @@ import {
   FillingMode,
   RecycleStateResult,
   SpaceStateResult,
-} from './deprecate/types';
+  ListBaseDimensionsStore,
+} from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import StillnessHelper from './utils/StillnessHelper';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import BaseLayout from './BaseLayout';
-import ListGroupDimensions from './ListGroupDimensions';
 
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
-class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
-  // public _selectValue: SelectValue;
+abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _getItemLayout: GetItemLayout<ItemT>;
-  private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
+  // private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
   private _stateResult: ListStateResult<ItemT>;
 
-  private _listGroupDimension: ListGroupDimensions;
-
   private _dispatchMetricsBatchinator: Batchinator;
 
-  private _store: Store<ReducerResult>;
+  private _store: ListBaseDimensionsStore;
 
   readonly onEndReachedHelper: OnEndReachedHelper;
 
-  private _scrollMetrics: ScrollMetrics;
-
-  private _isActive = true;
-
-  private _renderState: ListRenderState;
-  private _renderStateListeners: Array<Function> = [];
-  private _renderStateListenersCleaner: Array<Function> = [];
-
-  private _deps: Array<string>;
+  public _scrollMetrics: ScrollMetrics;
 
   public updateStateBatchinator: Batchinator;
 
@@ -107,23 +86,12 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
-  private _getData: { (): any };
-  /**
-   *
-   */
-  private _provider: ListGroupDimensions;
-
   private _releaseSpaceStateItem: boolean;
 
-  constructor(props: ListBaseDimensionsProps<ItemT>) {
+  constructor(props: ListBaseDimensionsProps) {
     super(props);
     const {
       store,
-      getData,
-      horizontal,
-
-      provider,
-      initialNumToRender = INITIAL_NUM_TO_RENDER,
 
       recyclerBufferSize,
       recyclerReservedBufferPerBatch,
@@ -132,15 +100,14 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       onViewableItemsChanged,
       viewabilityConfigCallbackPairs,
 
-      recycleEnabled,
+      // recycleEnabled,
       recyclerTypes,
-      deps = [],
-      getItemLayout,
+      // getItemLayout,
       onEndReached,
-      active = true,
-      listGroupDimension,
+      // active = true,
+      // listGroupDimension,
       onEndReachedThreshold,
-      getItemSeparatorLength,
+      // getItemSeparatorLength,
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
       useItemApproximateLength,
@@ -157,25 +124,26 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-    this._provider = provider;
+    // this._provider = provider;
     this._itemApproximateLength = itemApproximateLength || 0;
-    this._getItemLayout = getItemLayout;
-    this._getData = getData;
+    // this._getItemLayout = getItemLayout;
+    // this._getData = getData;
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
 
     // `_approximateMode` is enabled on default
-    this._approximateMode = recycleEnabled
-      ? defaultBooleanValue(
-          useItemApproximateLength,
-          typeof this._getItemLayout !== 'function' ||
-            !this._itemApproximateLength
-        )
-      : false;
-    this._getItemSeparatorLength = getItemSeparatorLength;
+    // this._approximateMode = recycleEnabled
+    //   ? defaultBooleanValue(
+    //       useItemApproximateLength,
+    //       typeof this._getItemLayout !== 'function' ||
+    //         !this._itemApproximateLength
+    //     )
+    //   : false;
+
+    // this._getItemSeparatorLength = getItemSeparatorLength;
     // for ListItem include a basic items condition
     // this._parentItemsDimensions = parentItemsDimensions;
-    this._listGroupDimension = listGroupDimension;
+    // this._listGroupDimension = listGroupDimension;
     this._dispatchMetricsBatchinator = new Batchinator(
       this.dispatchMetrics.bind(this),
       dispatchMetricsThreshold
@@ -190,10 +158,6 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       maxCountOfHandleOnEndReachedAfterStillness,
     });
 
-    this._selectValue = horizontal
-      ? selectHorizontalValue
-      : selectVerticalValue;
-
     this._configTuple = new ViewabilityConfigTuples({
       viewabilityConfig,
       onViewableItemsChanged,
@@ -207,14 +171,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       handler: this.stillnessHandler,
     });
 
-    this._deps = deps;
-    this._isActive = this.resolveInitialActiveValue(active);
-    this.initialNumToRender = initialNumToRender;
-
     this._recycler = new Recycler({
       recyclerTypes,
       recyclerBufferSize,
-      thresholdIndexValue: initialNumToRender,
+      thresholdIndexValue: this.initialNumToRender,
       recyclerReservedBufferPerBatch,
       metaExtractor: (index) => this.getFinalIndexItemMeta(index),
       indexExtractor: (meta) => {
@@ -270,6 +230,10 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     return this._data.length;
   }
 
+  get store() {
+    return this._store;
+  }
+
   get selector() {
     return this._selector;
   }
@@ -287,50 +251,19 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   addBuffer(recyclerType: string) {
-    return this._recycler.addBuffer(recyclerType);
-  }
-
-  cleanup() {
-    // this._removeList?.();
-    this._renderStateListeners = [];
-  }
-
-  resolveInitialActiveValue(active: boolean) {
-    if (this._deps.length) {
-      const isActive = true;
-      for (let index = 0; index < this._deps.length; index++) {
-        const listKey = this._deps[index];
-        const listHandler = manager.getKeyList(listKey);
-        if (!listHandler) continue;
-      }
-      return isActive;
-    }
-
-    return active;
-  }
-
-  getRenderState() {
-    return this._renderState;
-  }
-
-  setRenderState(state: ListRenderState) {
-    this._renderState = state;
-  }
-
-  setRenderStateFinished() {
-    return (this._renderState = ListRenderState.ON_RENDER_FINISHED);
-  }
-
-  setActive() {
-    this._isActive = true;
+    this._recycler.addBuffer(recyclerType);
   }
 
   addOnEndReached(onEndReached: OnEndReached) {
     return this.onEndReachedHelper.addHandler(onEndReached);
   }
 
+  removeOnEndReached(onEndReached: OnEndReached) {
+    this.onEndReachedHelper.removeHandler(onEndReached);
+  }
+
   resolveInitialState() {
-    if (!this.initialNumToRender || !this._data.length || !this._isActive)
+    if (!this.initialNumToRender || !this._data.length)
       return {
         visibleStartIndex: -1,
         visibleEndIndex: -1,
@@ -365,69 +298,40 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
    *
    * @returns TODO: temp
    */
-  getContainerOffset(): number {
-    return this._provider.getContainerOffset();
-    // return 0;
-    // if (this._listGroupDimension) {
-    //   return (
-    //     this._listGroupDimension.getContainerOffset() + this._offsetInListGroup
-    //   );
-    // }
-    // const layout = this.getContainerLayout();
-    // if (!layout) return 0;
-    // return this._selectValue.selectOffset(layout);
-  }
+  // abstract getContainerOffset(): number
 
   get _data() {
-    return this._provider.getData();
+    return this.getData();
   }
 
-  getData() {
-    return this._provider.getData();
-  }
+  abstract getData();
 
-  getDataLength() {
-    return this._provider.getDataLength();
-  }
+  abstract getDataLength(): number;
+  abstract getTotalLength(): number;
+  abstract getReflowItemsLength(): number;
+  abstract getFinalItemKey(item: any);
+  abstract getFinalIndexItemMeta(index: number);
+  // return this._provider.getFinalIndexItemMeta(index);
 
-  getTotalLength() {
-    return this._provider.getTotalLength();
-  }
+  abstract getFinalItemMeta(item: any);
 
-  getReflowItemsLength() {
-    return this._provider.getReflowItemsLength();
-  }
-  getFinalItemKey(item: any) {
-    return this._provider.getFinalItemKey(item);
-  }
+  abstract getFinalIndexItemLength(index: number);
 
-  getFinalIndexItemMeta(index: number) {
-    return this._provider.getFinalIndexItemMeta(index);
-  }
+  abstract getFinalIndexKeyOffset(index: number);
 
-  getFinalItemMeta(item: any) {
-    return this._provider.getFinalItemMeta(item);
-  }
+  abstract getFinalIndexKeyBottomOffset(index: number);
 
-  getFinalIndexItemLength(index: number) {
-    return this._provider.getFinalIndexItemLength(index);
-  }
-
-  getFinalIndexKeyOffset(index: number) {
-    return this._provider.getFinalIndexKeyOffset(index);
-  }
-
-  getFinalIndexKeyBottomOffset(index: number) {
-    return this._provider.getFinalIndexKeyBottomOffset(index);
-  }
+  abstract getFinalIndexRangeOffsetMap(
+    startIndex: number,
+    endIndex: number,
+    exclusive?: boolean
+  );
 
   hasUnLayoutItems() {
     return this.getReflowItemsLength() < this._data.length;
   }
 
-  computeIndexRange(minOffset: number, maxOffset: number) {
-    return this._provider.computeIndexRange(minOffset, maxOffset);
-  }
+  abstract computeIndexRange(minOffset: number, maxOffset: number);
 
   _recycleEnabled() {
     if (this.fillingMode !== FillingMode.RECYCLE) return false;
@@ -438,42 +342,25 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.setState(this._state, true);
   }
 
-  notifyRenderFinished() {
-    this.setRenderStateFinished();
-    this._renderStateListeners.forEach((listener) => listener());
-  }
-
-  addRenderStateListener(fn: Function) {
-    if (typeof fn === 'function') {
-      const index = this._renderStateListeners.findIndex((s) => s === fn);
-      if (index === -1) this._renderStateListeners.push(fn);
-
-      return () => {
-        const index = this._renderStateListeners.findIndex((s) => s === fn);
-        if (index !== -1) this._renderStateListeners.splice(index, 1);
-      };
-    }
-
-    return noop;
-  }
-
-  cleanRenderStateListeners() {
-    this._renderStateListenersCleaner.forEach((cleaner) => cleaner());
-  }
-
   attemptToHandleEndReached() {
-    if (!this._listGroupDimension) {
-      if (this.initialNumToRender)
-        this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
-    }
+    if (this.initialNumToRender)
+      this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
   }
 
-  setOnEndReached(onEndReached: OnEndReached) {
-    this.onEndReachedHelper.setHandler(onEndReached);
-  }
+  // setOnEndReached(onEndReached: OnEndReached) {
+  //   this.onEndReachedHelper.setHandler(onEndReached);
+  // }
 
   resetViewableItems() {
     if (this._scrollMetrics) this.dispatchMetrics(this._scrollMetrics);
+  }
+
+  getConfigTuple() {
+    return this._configTuple;
+  }
+
+  resolveConfigTuplesDefaultState(defaultValue?: boolean) {
+    return this._configTuple.getDefaultState(defaultValue);
   }
 
   addStateListener(listener: StateListener<ItemT>) {
@@ -609,21 +496,21 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
    * @param exclusive
    * @returns
    */
-  getFinalIndexRangeOffsetMap(
-    startIndex: number,
-    endIndex: number,
-    exclusive?: boolean
-  ) {
-    return this._provider.getFinalIndexRangeOffsetMap(
-      startIndex,
-      endIndex,
-      exclusive
-    );
-  }
+  //  getFinalIndexRangeOffsetMap(
+  //   startIndex: number,
+  //   endIndex: number,
+  //   exclusive?: boolean
+  // ) {
+  //   return this._provider.getFinalIndexRangeOffsetMap(
+  //     startIndex,
+  //     endIndex,
+  //     exclusive
+  //   );
+  // }
 
-  recognizeLengthBeforeLayout() {
-    return this._getItemLayout || this._approximateMode;
-  }
+  // recognizeLengthBeforeLayout() {
+  //   return this._getItemLayout || this._approximateMode;
+  // }
 
   resolveSafeRange(props: {
     visibleStartIndex: number;
@@ -990,7 +877,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         spaceState.push({
           item,
           itemMeta,
-          key: itemMeta.getKey(),
+          key: itemMeta?.getKey(),
           isSpace: false,
           isSticky,
           length: this.getFinalIndexItemLength(startIndex),
@@ -1151,10 +1038,7 @@ class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   dispatchScrollMetricsEnabled() {
     return (
       this.selector.getDispatchScrollMetricsEnabledStatus() &&
-      ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus() &&
-      (this._listGroupDimension
-        ? this._listGroupDimension.dispatchScrollMetricsEnabled()
-        : true)
+      ListSpyUtils.selector.getDispatchScrollMetricsEnabledStatus()
     );
   }
 

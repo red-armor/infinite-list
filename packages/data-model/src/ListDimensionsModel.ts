@@ -1,8 +1,9 @@
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+import layoutEqual from '@x-oasis/layout-equal';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal';
 import {
   INVALID_LENGTH,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
@@ -16,14 +17,12 @@ import {
   ItemLayout,
   KeyExtractor,
   KeysChangedType,
-  ListDimensionsProps,
-  // ScrollMetrics,
+  ListDimensionsModelProps,
+  ListDimensionsModelContainer,
   FillingMode,
-} from './deprecate/types';
+} from './types';
 
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
-
-class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
+class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
 
   private _keyExtractor: KeyExtractor<ItemT>;
@@ -33,11 +32,8 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
 
   private _listGroupDimension: ListGroupDimensions;
-  private _owner: any;
-  // private _parentItemsDimensions: ItemsDimensions;
-
-  // private _scrollMetrics: ScrollMetrics;
-
+  // private _owner: any;
+  private _container: ListDimensionsModelContainer;
   private _offsetInListGroup: number;
   private _anchorKey: string;
 
@@ -45,7 +41,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   private _approximateMode: boolean;
   private _recyclerType: string;
 
-  constructor(props: ListDimensionsProps<ItemT>) {
+  constructor(props: ListDimensionsModelProps<ItemT>) {
     super({
       ...props,
       isIntervalTreeItems: true,
@@ -57,7 +53,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
       anchorKey,
       keyExtractor,
       getItemLayout,
-      owner,
+      container,
       getItemSeparatorLength,
       useItemApproximateLength,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
@@ -77,7 +73,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
         )
       : false;
     this._getItemSeparatorLength = getItemSeparatorLength;
-    this._owner = owner;
+    this._container = container;
 
     this._setData(data);
 
@@ -170,7 +166,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
     // TODO: separatorLength may be included!!!!
     meta = ItemMeta.spawn({
       key,
-      owner: this._owner,
+      owner: this,
       isListItem: true,
       isInitialItem: false,
       recyclerType: this._recyclerType,
@@ -206,7 +202,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   triggerOwnerRecalculateLayout() {
-    this._owner.onItemLayoutChanged();
+    this._container.onItemLayoutChanged();
   }
 
   _recycleEnabled() {
@@ -255,7 +251,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
 
     const meta = ItemMeta.spawn({
       key,
-      owner: this._owner,
+      owner: this,
       isListItem: true,
       isInitialItem,
       recyclerType: this._recyclerType,
@@ -313,10 +309,10 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
 
     // 如果没有值，这个时候要触发一次触底
     if (!data.length && this.initialNumToRender) {
-      this._owner.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
+      this._container.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
 
-    this._owner.onDataSourceChanged();
+    this._container.onDataSourceChanged();
 
     // if (!this._listGroupDimension) {
     //   setTimeout(() => {
@@ -402,16 +398,24 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getIndexInfo(key: string): IndexInfo {
-    return this._owner.getFinalKeyIndexInfo(key, this.id);
+    const info = {} as IndexInfo;
+    info.index = this._indexKeys.indexOf(key);
 
-    if (this._listGroupDimension) {
-      return this._listGroupDimension.getFinalKeyIndexInfo(key, this.id);
-    }
+    return this._container.getFinalKeyIndexInfo(key, this.id);
 
-    return {
-      dimensions: this,
-      index: this._indexKeys.indexOf(key),
-    };
+    // if (this._listGroupDimension) {
+    //   return this._listGroupDimension.getFinalKeyIndexInfo(key, this.id);
+    // }
+
+    // return {
+    //   dimensions: this,
+    //   index: this._indexKeys.indexOf(key),
+    // };
+  }
+
+  computeIndexRange(minOffset: number, maxOffset: number) {
+    const result = this.intervalTree.computeRange(minOffset, maxOffset);
+    return result;
   }
 
   pump(
@@ -554,4 +558,4 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   }
 }
 
-export default ListDataTransformer;
+export default ListDimensionsModel;
