@@ -1,5 +1,5 @@
 import ListDimensions from '../ListDimensions';
-import { ScrollMetrics } from '../types';
+import { ScrollMetrics } from '../deprecate/types';
 import { resolveAction } from './actions';
 import reducer from './reducer';
 import { Reducer, ReducerResult } from './types';

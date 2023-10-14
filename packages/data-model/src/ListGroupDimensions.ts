@@ -8,7 +8,6 @@ import ItemsDimensions from './ItemsDimensions';
 import ListDimensions from './ListDimensions';
 import { isEmpty } from './common';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
-import manager from './manager';
 import createStore from './state/createStore';
 import { ReducerResult, Store } from './state/types';
 import {
@@ -26,7 +25,7 @@ import {
   ListGroupData,
   ListProvider,
   ItemsDimensionsProps,
-} from './types';
+} from './deprecate/types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import EnabledSelector from './utils/EnabledSelector';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -54,7 +53,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
   _onUpdateIntervalTree?: Function;
   _configTuples: ViewabilityConfigTuples;
   readonly onEndReachedHelper: OnEndReachedHelper;
-  private _dispatchMetricsBatchinator: Batchinator;
+  // private _dispatchMetricsBatchinator: Batchinator;
   private _store: Store<ReducerResult>;
   private _scrollMetrics: ScrollMetrics;
   private _renderState: ListRenderState;
@@ -119,10 +118,10 @@ class ListGroupDimensions<ItemT extends {} = {}>
       isListItem: true,
       viewabilityConfigCallbackPairs,
     });
-    this._dispatchMetricsBatchinator = new Batchinator(
-      this.dispatchMetrics.bind(this),
-      50
-    );
+    // this._dispatchMetricsBatchinator = new Batchinator(
+    //   this.dispatchMetrics.bind(this),
+    //   50
+    // );
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id,
@@ -147,8 +146,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.recalculateDimensionsIntervalTree.bind(this),
       50
     );
-
-    this._removeList = manager.addList(this);
 
     this._listBaseDimension = new ListBaseDimensions({
       ...props,
@@ -175,10 +172,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
   }
 
   ensureDimension() {}
-
-  cleanup() {
-    this._removeList?.();
-  }
 
   getOnEndReachedHelper() {
     return this.onEndReachedHelper;
@@ -635,6 +628,14 @@ class ListGroupDimensions<ItemT extends {} = {}>
         if (typeof total === 'number') len += total;
       }
     });
+  }
+
+  onDataSourceChanged() {
+    this.updateScrollMetrics(this._scrollMetrics);
+  }
+
+  onItemLayoutChanged() {
+    this.recalculateDimensionsIntervalTreeBatchinator.schedule();
   }
 
   recalculateDimensionsIntervalTree() {

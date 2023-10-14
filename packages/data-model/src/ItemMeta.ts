@@ -9,7 +9,7 @@ import {
   ItemMetaProps,
   StateEventListener,
   ItemMetaStateEventHelperProps,
-} from './types';
+} from './deprecate/types';
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';

@@ -9,7 +9,7 @@ import {
   OnEndReachedHelperProps,
   ScrollMetrics,
   SendOnEndReachedDistanceFromBottomStack,
-} from '../types';
+} from '../deprecate/types';
 import isClamped from '@x-oasis/is-clamped';
 
 class OnEndReachedHelper {
@@ -82,25 +82,30 @@ class OnEndReachedHelper {
   }
 
   hasHandler() {
-    return Array.isArray(this.onEndReached) || (typeof this.onEndReached === 'function')
+    return (
+      Array.isArray(this.onEndReached) ||
+      typeof this.onEndReached === 'function'
+    );
   }
 
   addHandler(onEndReached: OnEndReached) {
     if (typeof onEndReached === 'function') {
-      const handler = Array.isArray(this.onEndReached) ? this.onEndReached : (
-        this.onEndReached ? [this.onEndReached] : []
-      )
-      const index = handler.findIndex(v => v === onEndReached)
-      if (index === -1) handler.push(onEndReached)
-      this.onEndReached = handler
+      const handler = Array.isArray(this.onEndReached)
+        ? this.onEndReached
+        : this.onEndReached
+        ? [this.onEndReached]
+        : [];
+      const index = handler.findIndex((v) => v === onEndReached);
+      if (index === -1) handler.push(onEndReached);
+      this.onEndReached = handler;
     }
 
     return () => {
       if (Array.isArray(this.onEndReached)) {
-        const index = this.onEndReached.findIndex(v => v === onEndReached)
-        if (index !== -1) this.onEndReached.splice(index, 1)
+        const index = this.onEndReached.findIndex((v) => v === onEndReached);
+        if (index !== -1) this.onEndReached.splice(index, 1);
       }
-    }
+    };
   }
 
   /**
@@ -278,7 +283,7 @@ class OnEndReachedHelper {
   }
 
   onEndReachedHandler(opts: { distanceFromEnd: number }) {
-    if (!this.hasHandler()) return
+    if (!this.hasHandler()) return;
     if (this._waitingForDataChangedSinceEndReached) return;
     this._waitingForDataChangedSinceEndReached = true;
     const { distanceFromEnd } = opts;
@@ -293,13 +298,13 @@ class OnEndReachedHelper {
     this.updateStack(distanceFromEnd);
 
     if (Array.isArray(this.onEndReached)) {
-      this.onEndReached.forEach(handler => {
+      this.onEndReached.forEach((handler) => {
         handler({
           distanceFromEnd,
           cb: this.releaseHandlerMutex(this._currentMutexMS),
           releaseHandlerMutex: this.releaseHandlerMutex(this._currentMutexMS),
-        })
-      })
+        });
+      });
     } else {
       this.onEndReached({
         distanceFromEnd,

@@ -17,9 +17,9 @@ import {
   KeyExtractor,
   KeysChangedType,
   ListDimensionsProps,
-  ScrollMetrics,
+  // ScrollMetrics,
   FillingMode,
-} from './types';
+} from './deprecate/types';
 
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 
@@ -33,10 +33,10 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
 
   private _listGroupDimension: ListGroupDimensions;
-  private _owner: any
+  private _owner: any;
   // private _parentItemsDimensions: ItemsDimensions;
 
-  private _scrollMetrics: ScrollMetrics;
+  // private _scrollMetrics: ScrollMetrics;
 
   private _offsetInListGroup: number;
   private _anchorKey: string;
@@ -57,9 +57,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
       anchorKey,
       keyExtractor,
       getItemLayout,
-      // listGroupDimension,
       owner,
-      // parentItemsDimensions,
       getItemSeparatorLength,
       useItemApproximateLength,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
@@ -79,10 +77,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
         )
       : false;
     this._getItemSeparatorLength = getItemSeparatorLength;
-    // for ListItem include a basic items condition
-    // this._parentItemsDimensions = parentItemsDimensions;
-    // this._listGroupDimension = listGroupDimension;
-    this._owner = owner
+    this._owner = owner;
 
     this._setData(data);
 
@@ -134,7 +129,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getKeyMeta(key: string) {
-    let meta = this._getKeyMeta(key);
+    const meta = this._getKeyMeta(key);
     // if (!meta && this._parentItemsDimensions) {
     //   meta = this._parentItemsDimensions.getKeyMeta(key);
     // }
@@ -211,7 +206,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   triggerOwnerRecalculateLayout() {
-
+    this._owner.onItemLayoutChanged();
   }
 
   _recycleEnabled() {
@@ -228,7 +223,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   setIntervalTreeValue(index: number, length: number) {
     // const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
-    this.triggerOwnerRecalculateLayout()
+    this.triggerOwnerRecalculateLayout();
     // const nextLength = this.intervalTree.getHeap()[1];
     // const len = this.intervalTree.getMaxUsefulLength();
 
@@ -253,7 +248,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   createItemMeta(key: string, data: Array<ItemT>, index: number) {
-    const isInitialItem = index < this.initialNumToRender
+    const isInitialItem = index < this.initialNumToRender;
     // const isInitialItem = this._initializeMode
     //   ? index < this.initialNumToRender
     //   : false;
@@ -307,25 +302,27 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   setData(data: Array<ItemT>) {
     const changedType = this._setData(data);
 
-    if (!this._listGroupDimension && changedType === KeysChangedType.Initial) {
-      const state = this.resolveInitialState();
-      this.setState(state);
-      this._state = state;
-      return changedType;
-    }
+    // if (!this._listGroupDimension && changedType === KeysChangedType.Initial) {
+    //   const state = this.resolveInitialState();
+    //   this.setState(state);
+    //   this._state = state;
+    //   return changedType;
+    // }
 
     if (changedType === KeysChangedType.Equal) return KeysChangedType.Equal;
 
     // 如果没有值，这个时候要触发一次触底
     if (!data.length && this.initialNumToRender) {
-      this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
+      this._owner.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
 
-    if (!this._listGroupDimension) {
-      setTimeout(() => {
-        if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
-      });
-    }
+    this._owner.onDataSourceChanged();
+
+    // if (!this._listGroupDimension) {
+    //   setTimeout(() => {
+    //     if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
+    //   });
+    // }
 
     return changedType;
   }
@@ -405,7 +402,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getIndexInfo(key: string): IndexInfo {
-    return this._owner.getFinalKeyIndexInfo(key, this.id)
+    return this._owner.getFinalKeyIndexInfo(key, this.id);
 
     if (this._listGroupDimension) {
       return this._listGroupDimension.getFinalKeyIndexInfo(key, this.id);
@@ -507,7 +504,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
         }
       } else if (meta.isApproximateLayout) {
         // 比如换了一个item的话，不会触发更新
-        this.triggerOwnerRecalculateLayout()
+        this.triggerOwnerRecalculateLayout();
 
         // if (this._listGroupDimension) {
         //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
@@ -544,7 +541,7 @@ class ListDataTransformer<ItemT extends {} = {}> extends BaseDimensions {
     } else if (meta.isApproximateLayout) {
       meta.isApproximateLayout = false;
       // 比如换了一个item的话，不会触发更新
-      this.triggerOwnerRecalculateLayout()
+      this.triggerOwnerRecalculateLayout();
 
       // if (this._listGroupDimension) {
       //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();

@@ -20,7 +20,7 @@ import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
-import manager from './manager';
+import manager from './deprecate/manager';
 import createStore from './state/createStore';
 import { ActionType, ReducerResult, Store } from './state/types';
 import {
@@ -40,7 +40,7 @@ import {
   FillingMode,
   RecycleStateResult,
   SpaceStateResult,
-} from './types';
+} from './deprecate/types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';

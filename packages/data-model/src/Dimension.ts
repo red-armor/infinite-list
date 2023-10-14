@@ -6,7 +6,7 @@ import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-import { DimensionProps, IndexInfo, ItemLayout } from './types';
+import { DimensionProps, IndexInfo, ItemLayout } from './deprecate/types';
 
 /**
  * Abstraction of singleton item, It is used in ListGroup Condition.

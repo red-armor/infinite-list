@@ -1,5 +1,5 @@
 // import SelectValue from '@x-oasis/select-value';
-import { IsItemViewableOptions } from '../types';
+import { IsItemViewableOptions } from '../deprecate/types';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
 
 // export function resolveMeasureMetrics(

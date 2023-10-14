@@ -6,7 +6,7 @@ import {
   InspectingListener,
   OnIndexKeysChanged,
   AnchorRange,
-} from './types';
+} from './deprecate/types';
 import ListGroupDimensions from './ListGroupDimensions';
 
 class Inspector {

@@ -1,6 +1,6 @@
 import ListDimensions from '../ListDimensions';
 import { INVALID_LENGTH } from '../common';
-import { ScrollMetrics } from '../types';
+import { ScrollMetrics } from '../deprecate/types';
 import { Action, ActionType, ReducerResult } from './types';
 
 // const resolvePseudoVelocity = (velocity: number) => {

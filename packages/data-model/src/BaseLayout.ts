@@ -17,7 +17,7 @@ import {
   ItemLayout,
   FillingMode,
   BaseLayoutProps,
-} from './types';
+} from './deprecate/types';
 
 class BaseLayout {
   private _layout: ItemLayout = DEFAULT_LAYOUT;

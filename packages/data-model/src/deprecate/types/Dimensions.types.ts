@@ -1,16 +1,16 @@
-import Dimension from '../Dimension';
-import PseudoListDimensions from '../PseudoListDimensions';
-import ItemsDimensions from '../ItemsDimensions';
-import ListGroupDimensions from '../ListGroupDimensions';
-import { ActionType } from '../state/types';
+import Dimension from '../../Dimension';
+import PseudoListDimensions from '../../PseudoListDimensions';
+import ItemsDimensions from '../../ItemsDimensions';
+import ListGroupDimensions from '../../ListGroupDimensions';
+import { ActionType } from '../../state/types';
 import { OnEndReachedHelperProps } from './onEndReachedHelper';
-import ItemMeta from '../ItemMeta';
+import ItemMeta from '../../ItemMeta';
 import {
   OnViewableItemsChanged,
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from './viewable';
-import ListDimensions from '../ListDimensions';
+import ListDimensions from '../../ListDimensions';
 
 export type OnRecyclerProcess = (type?: string, index?: number) => boolean;
 

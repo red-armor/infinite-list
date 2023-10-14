@@ -17,7 +17,7 @@ import {
   LAYOUT_EQUAL_CORRECTION_VALUE,
 } from './common';
 import resolveChanged from '@x-oasis/resolve-changed';
-import manager from './manager';
+import manager from './deprecate/manager';
 import createStore from './state/createStore';
 import { ActionType, ReducerResult, Store } from './state/types';
 import {
@@ -40,12 +40,12 @@ import {
   FillingMode,
   RecycleStateResult,
   SpaceStateResult,
-} from './types';
+} from './deprecate/types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
 import EnabledSelector from './utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
-import IntegerBufferSet from './vendor/IntegerBufferSet';
+import IntegerBufferSet from './deprecate/vendor/IntegerBufferSet';
 import memoizeOne from 'memoize-one';
 import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';

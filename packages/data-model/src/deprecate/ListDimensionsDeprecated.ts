@@ -1,9 +1,9 @@
 import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
-import BaseDimensions from './BaseDimensions';
-import ItemMeta from './ItemMeta';
-import ItemsDimensions from './ItemsDimensions';
-import ListGroupDimensions from './ListGroupDimensions';
+import BaseDimensions from '../BaseDimensions';
+import ItemMeta from '../ItemMeta';
+import ItemsDimensions from '../ItemsDimensions';
+import ListGroupDimensions from '../ListGroupDimensions';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import layoutEqual from '@x-oasis/layout-equal';
 import omit from '@x-oasis/omit';
@@ -15,11 +15,11 @@ import {
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   LAYOUT_EQUAL_CORRECTION_VALUE,
-} from './common';
+} from '../common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
-import createStore from './state/createStore';
-import { ActionType, ReducerResult, Store } from './state/types';
+import createStore from '../state/createStore';
+import { ActionType, ReducerResult, Store } from '../state/types';
 import {
   SpaceStateToken,
   GetItemLayout,
@@ -41,15 +41,15 @@ import {
   RecycleStateResult,
   SpaceStateResult,
 } from './types';
-import ListSpyUtils from './utils/ListSpyUtils';
-import OnEndReachedHelper from './viewable/OnEndReachedHelper';
-import EnabledSelector from './utils/EnabledSelector';
+import ListSpyUtils from '../utils/ListSpyUtils';
+import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
+import EnabledSelector from '../utils/EnabledSelector';
 import isClamped from '@x-oasis/is-clamped';
 import IntegerBufferSet from './vendor/IntegerBufferSet';
 import memoizeOne from 'memoize-one';
 import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
-import StillnessHelper from './utils/StillnessHelper';
+import StillnessHelper from '../utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
