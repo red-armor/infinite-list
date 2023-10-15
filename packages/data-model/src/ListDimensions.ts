@@ -1,6 +1,6 @@
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { IndexInfo } from './types';
+import { IndexInfo, ScrollMetrics } from './types';
 import createStore from './state/createStore';
 import { ReducerResult } from './state/types'
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
@@ -25,7 +25,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   }
 
   setData(data: Array<ItemT>) {
-    const changedType = this._dataModel.setData(data);
+    this._dataModel.setData(data);
   }
 
   getDataLength() {
@@ -61,8 +61,10 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
     return this.getIndexKeyOffset(index, exclusive);
   }
 
-  getFinalIndexKeyBottomOffset() {
-    return 0;
+  getFinalIndexKeyBottomOffset(index: number, exclusive?: boolean) {
+    const containerOffset = exclusive ? 0 : this.getContainerOffset()
+    const height = this.getTotalLength()
+    return containerOffset + (typeof height === 'number' ? height : 0)
   }
 
   getFinalIndexRangeOffsetMap(
@@ -92,14 +94,29 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
     return this._dataModel.getIndexItemMeta(index);
   }
 
-  onItemLayoutChanged() {}
+  onItemLayoutChanged() {
+    this.updateScrollMetrics(this._scrollMetrics);
+  }
 
-  onDataSourceChanged() {}
+  onDataSourceChanged() {
+    this.updateScrollMetrics(this._scrollMetrics);
+  }
 
   getFinalKeyIndexInfo(key: string): IndexInfo {
     return {
       index: this._dataModel.getKeyIndex(key) || 0,
     } as IndexInfo;
+  }
+
+  updateScrollMetrics(
+    _scrollMetrics?: ScrollMetrics,
+    _options?: {
+      useCache?: boolean;
+      flush?: boolean;
+    }
+  ) {
+    this._scrollMetrics = _scrollMetrics || this._scrollMetrics;
+    this._updateScrollMetrics(this._scrollMetrics, _options);
   }
 }
 

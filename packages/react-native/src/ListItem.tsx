@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
-// import useMeasureLayout from '../../container/ScrollView/hooks/useMeasureLayoutExperimental';
 import { ListItemProps, DefaultItemT } from './types';
 
 /**

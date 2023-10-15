@@ -297,13 +297,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   setData(data: Array<ItemT>) {
     const changedType = this._setData(data);
 
-    // if (!this._listGroupDimension && changedType === KeysChangedType.Initial) {
-    //   const state = this.resolveInitialState();
-    //   this.setState(state);
-    //   this._state = state;
-    //   return changedType;
-    // }
-
     if (changedType === KeysChangedType.Equal) return KeysChangedType.Equal;
 
     // 如果没有值，这个时候要触发一次触底
@@ -312,12 +305,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     }
 
     this._container.onDataSourceChanged();
-
-    // if (!this._listGroupDimension) {
-    //   setTimeout(() => {
-    //     if (this._scrollMetrics) this.dispatchStoreMetrics(this._scrollMetrics);
-    //   });
-    // }
 
     return changedType;
   }
