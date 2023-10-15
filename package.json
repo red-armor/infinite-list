@@ -30,9 +30,7 @@
           "preminor",
           "prepatch",
           "prerelease",
-          "patch",
-          "minor",
-          "major"
+          "patch"
         ]
       },
       {
