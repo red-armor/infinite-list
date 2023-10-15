@@ -29,8 +29,7 @@
           "premajor",
           "preminor",
           "prepatch",
-          "prerelease",
-          "patch"
+          "prerelease"
         ]
       },
       {
