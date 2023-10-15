@@ -54,8 +54,6 @@ class ListGroupDimensionsExperimental<
     100
   );
 
-  private _listBaseDimension: ListBaseDimensions<any>;
-
   private _reflowItemsLength = 0;
   private _dimensionsIndexRange: Array<{
     dimensions: Dimension | ListDimensionsModel;
@@ -96,7 +94,6 @@ class ListGroupDimensionsExperimental<
       50
     );
 
-    // this.initializeStore()
     this.initializeState()
     this.attemptToHandleEndReached()
   }
@@ -279,14 +276,6 @@ class ListGroupDimensionsExperimental<
     }, 0);
   }
 
-  getState() {
-    return this._listBaseDimension.state;
-  }
-
-  getStateResult() {
-    return this._listBaseDimension.stateResult;
-  }
-
   getKeyIndex(key: string, listKey: string) {
     const listIndex = this.indexKeys.findIndex(
       (indexKey) => indexKey === listKey
@@ -461,14 +450,14 @@ class ListGroupDimensionsExperimental<
       container: this,
       horizontal: this.getHorizontal(),
     });
-    this._listBaseDimension.addBuffer(recyclerType);
+    this.addBuffer(recyclerType);
     this.setDimension(listKey, dimensions);
     this._inspector.push(listKey);
 
     let onEndReachedCleaner = null;
 
     if (listDimensionsProps.onEndReached) {
-      onEndReachedCleaner = this._listBaseDimension.addOnEndReached(
+      onEndReachedCleaner = this.addOnEndReached(
         listDimensionsProps.onEndReached
       );
       this._keyToOnEndReachedMap.set(listKey, listDimensionsProps.onEndReached);
@@ -609,7 +598,7 @@ class ListGroupDimensionsExperimental<
       canIUseRIC: this.canIUseRIC,
     });
     this.setDimension(key, dimensions);
-    this._listBaseDimension.addBuffer(recyclerType);
+    this.addBuffer(recyclerType);
     this._inspector.push(key);
     // for performance boost. only reflow data when less than initial number;
     if (this.getData().length < this.initialNumToRender) {
@@ -681,8 +670,8 @@ class ListGroupDimensionsExperimental<
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
       const _handler = this._keyToOnEndReachedMap.get(listKey);
-      if (_handler) this._listBaseDimension.removeOnEndReached(_handler);
-      this._listBaseDimension.addOnEndReached(onEndReached);
+      if (_handler) this.removeOnEndReached(_handler);
+      this.addOnEndReached(onEndReached);
     }
   }
 
@@ -1045,7 +1034,7 @@ class ListGroupDimensionsExperimental<
 
     if (isEmpty(state)) return;
     if (this.fillingMode === FillingMode.RECYCLE) {
-      this._listBaseDimension.setState({
+      this.setState({
         ...state,
         data: this.getData(),
       });
@@ -1069,10 +1058,6 @@ class ListGroupDimensionsExperimental<
     });
   }
 
-  // dispatchScrollMetricsEnabled() {
-  //   this._listBaseDimension.dispatchScrollMetricsEnabled();
-  // }
-
   updateScrollMetrics(
     _scrollMetrics?: ScrollMetrics,
     _options?: {
@@ -1081,7 +1066,7 @@ class ListGroupDimensionsExperimental<
     }
   ) {
     this._scrollMetrics = _scrollMetrics;
-    this._listBaseDimension.updateScrollMetrics(_scrollMetrics, _options);
+    this._updateScrollMetrics(_scrollMetrics, _options);
   }
 }
 

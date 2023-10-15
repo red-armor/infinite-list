@@ -174,11 +174,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     // @ts-ignore
     // this._state = this.resolveInitialState();
 
-    this._stateResult =
-      this.fillingMode === FillingMode.RECYCLE
-        ? this.memoizedResolveRecycleState(this._state)
-        : this.memoizedResolveSpaceState(this._state);
-
     // this.attemptToHandleEndReached();
 
     // 比如刚开始就有值，并且给了`getItemLayout`的话，需要手动更新Parent中的layout
@@ -201,7 +196,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   initializeDefaultRecycleBuffer() {
-    this._recycler.addBuffer(DEFAULT_RECYCLER_TYPE);
+    this.addBuffer(DEFAULT_RECYCLER_TYPE)
   }
 
   get length() {
@@ -216,16 +211,24 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     return this._selector;
   }
 
-  get stateResult() {
-    return this._stateResult;
-  }
-
   set scrollMetrics(scrollMetrics: ScrollMetrics) {
     this._scrollMetrics = scrollMetrics;
   }
 
+  get stateResult() {
+    return this._stateResult;
+  }
+
   get state() {
     return this._state;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getStateResult() {
+    return this.stateResult;
   }
 
   addBuffer(recyclerType: string) {
@@ -240,12 +243,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.onEndReachedHelper.removeHandler(onEndReached);
   }
 
-  // initializeStore() {
-  //   this._store = this._store || createStore<ReducerResult>() 
-  // }
-
   initializeState() {
     this._state = this.resolveInitialState()
+    this._stateResult =
+    this.fillingMode === FillingMode.RECYCLE
+      ? this.memoizedResolveRecycleState(this._state)
+      : this.memoizedResolveSpaceState(this._state);
   }
 
   resolveInitialState() {
@@ -1035,7 +1038,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._stillnessHelper.isStill;
   }
 
-  updateScrollMetrics(
+  _updateScrollMetrics(
     _scrollMetrics?: ScrollMetrics,
     _options?: {
       useCache?: boolean;
