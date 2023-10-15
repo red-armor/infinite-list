@@ -13,8 +13,6 @@
     "clean": "rimraf ./dist"
   },
   "devDependencies": {
-    "rimraf": "~4.4.0",
-    "tsdx": "^0.14.1",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-native": "^7.0.2",
@@ -23,7 +21,9 @@
     "@types/node": "^16",
     "@types/react": "^17",
     "@types/react-native": "*",
-    "@types/react-test-renderer": "^17.0.1"
+    "@types/react-test-renderer": "^17.0.1",
+    "rimraf": "~4.4.0",
+    "tsdx": "^0.14.1"
   },
   "peerDependencies": {
     "ozone-schema": "*",
@@ -40,6 +40,7 @@
     "@babel/core": "^7.12.3"
   },
   "dependencies": {
-    "@infinite-list/data-model": "workspace:*"
+    "@infinite-list/data-model": "workspace:*",
+    "@x-oasis/shallow-equal": "^0.1.14"
   }
 }

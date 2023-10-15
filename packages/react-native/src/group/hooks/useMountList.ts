@@ -9,7 +9,6 @@ export default (props) => {
   const { listGroupDimensions } = useContext(context);
   const {
     data,
-    groupId,
     keyExtractor = defaultKeyExtractor,
     id,
     renderItem,

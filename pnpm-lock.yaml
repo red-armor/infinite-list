@@ -99,10 +99,12 @@ importers:
       '@types/react': ^17
       '@types/react-native': '*'
       '@types/react-test-renderer': ^17.0.1
+      '@x-oasis/shallow-equal': ^0.1.14
       rimraf: ~4.4.0
       tsdx: ^0.14.1
     dependencies:
       '@infinite-list/data-model': link:../data-model
+      '@x-oasis/shallow-equal': 0.1.14
     devDependencies:
       '@testing-library/jest-dom': 5.17.0
       '@testing-library/react': 11.2.7
