@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [0.4.1](https://github.com/red-armor/infinite-list/compare/v0.4.0...v0.4.1) (2023-10-15)
+
+
+### Features
+
+* export context ([7c1cdfd](https://github.com/red-armor/infinite-list/commit/7c1cdfdaf29588d83d2643dda3888541d961a8a1))
+* update ([d4aac67](https://github.com/red-armor/infinite-list/commit/d4aac67d4b7729168dc470333e9901a860cc88f5))
+
+
+
 # [0.4.0](https://github.com/red-armor/infinite-list/compare/v0.3.0...v0.4.0) (2023-10-15)
 
 
