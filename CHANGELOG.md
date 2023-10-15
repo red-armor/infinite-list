@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [0.4.2](https://github.com/red-armor/infinite-list/compare/v0.4.1...v0.4.2) (2023-10-15)
+
+
+### Bug Fixes
+
+* tracker ([dea2cdf](https://github.com/red-armor/infinite-list/commit/dea2cdf80759a7b6be398039ad31e21833585718))
+
+
+### Features
+
+* update ([3969a95](https://github.com/red-armor/infinite-list/commit/3969a95e1d1ce517214d917467b33857686f6f4d))
+
+
+
 ## [0.4.1](https://github.com/red-armor/infinite-list/compare/v0.4.0...v0.4.1) (2023-10-15)
 
 
