@@ -16,15 +16,9 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
     this.attemptToHandleEndReached()
   }
 
-  // getKeyItem() {}
-
   getItemMeta(item: ItemT, index: number) {
     return this._dataModel.getItemMeta(item, index);
   }
-
-  // getItemDimension() {}
-
-  // getKeyDimension() {}
 
   getData() {
     return this._dataModel.getData();

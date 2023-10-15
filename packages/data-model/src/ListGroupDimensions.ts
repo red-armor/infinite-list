@@ -1065,8 +1065,8 @@ class ListGroupDimensionsExperimental<
       flush?: boolean;
     }
   ) {
-    this._scrollMetrics = _scrollMetrics;
-    this._updateScrollMetrics(_scrollMetrics, _options);
+    this._scrollMetrics = _scrollMetrics || this._scrollMetrics;
+    this._updateScrollMetrics(this._scrollMetrics, _options);
   }
 }
 

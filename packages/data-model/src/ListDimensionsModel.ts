@@ -3,7 +3,6 @@ import layoutEqual from '@x-oasis/layout-equal';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
-import ListGroupDimensions from './ListGroupDimensions';
 import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   LAYOUT_EQUAL_CORRECTION_VALUE,
@@ -30,8 +29,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
 
-  private _listGroupDimension: ListGroupDimensions;
-  // private _owner: any;
   private _container: ListDimensionsModelContainer;
   private _offsetInListGroup: number;
   private _anchorKey: string;
@@ -96,7 +93,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   getContainerOffset(): number {
-    if (this._listGroupDimension) {
+    // 临时方案，只有当是listGroup时才会设置这个值
+    if (this._offsetInListGroup) {
       return this._offsetInListGroup;
     }
     const layout = this.getContainerLayout();
@@ -238,8 +236,9 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this.intervalTree = intervalTree;
     const nextLength = intervalTree.getHeap()[1];
 
-    if (oldLength !== nextLength && this._listGroupDimension) {
-      this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
+    if (oldLength !== nextLength) {
+      this.triggerOwnerRecalculateLayout()
+      // this._container.recalculateDimensionsIntervalTreeBatchinator.schedule();
     }
   }
 
