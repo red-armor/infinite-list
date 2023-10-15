@@ -1,9 +1,9 @@
 import noop from '@x-oasis/noop';
 import Batchinator from '@x-oasis/batchinator';
-import BaseDimensions from '../BaseDimensions';
-import ItemMeta from '../ItemMeta';
-import ItemsDimensions from '../ItemsDimensions';
-import ListGroupDimensions from '../ListGroupDimensions';
+import BaseDimensions from './BaseDimensions';
+import ItemMeta from './ItemMeta';
+import ItemsDimensions from './ItemsDimensions';
+import ListGroupDimensions from './ListGroupDimensions';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import layoutEqual from '@x-oasis/layout-equal';
 import omit from '@x-oasis/omit';
@@ -18,8 +18,8 @@ import {
 } from '../common';
 import resolveChanged from '@x-oasis/resolve-changed';
 import manager from './manager';
-import createStore from '../state/createStore';
-import { ActionType, ReducerResult, Store } from '../state/types';
+import createStore from './state/createStore';
+import { ActionType, ReducerResult, Store } from './state/types';
 import {
   SpaceStateToken,
   GetItemLayout,
@@ -1453,7 +1453,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             ? itemMeta.getState()
             : {}
           : this._configTuple.resolveItemMetaState(
-              itemMeta,
+              itemMeta as any,
               this._scrollMetrics,
               // should add container offset, because indexToOffsetMap containerOffset is
               // exclusive.
@@ -1633,7 +1633,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
             ? itemMeta.getState()
             : {}
           : this._configTuple.resolveItemMetaState(
-              itemMeta,
+              itemMeta as any,
               this._scrollMetrics,
               () => indexToOffsetMap[index]
             );
@@ -1721,7 +1721,7 @@ class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
 
   dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
-      dimension: this,
+      dimension: this as any,
       scrollMetrics,
     });
 

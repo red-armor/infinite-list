@@ -1,5 +1,5 @@
 import ListDimensions from '../ListDimensions';
-import { INVALID_LENGTH } from '../common';
+import { INVALID_LENGTH } from '../../common';
 import { ScrollMetrics } from '../types';
 import { Action, ActionType, ReducerResult } from './types';
 
@@ -32,15 +32,12 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
     const total = dimension.getTotalLength();
     if (
       (visibleStartIndex !== -1 || visibleEndIndex !== -1) &&
-      (total as any as string) !== INVALID_LENGTH &&
+      total !== INVALID_LENGTH &&
       dimension.hasUnLayoutItems()
     ) {
-      const _containerOffset = dimension.getContainerOffset();
-      const containerOffset =
-        typeof _containerOffset === 'number' ? _containerOffset : 0;
       nextIsEndReached = dimension.getOnEndReachedHelper().perform({
         ...scrollMetrics,
-        contentLength: containerOffset + total,
+        contentLength: dimension.getContainerOffset() + total,
       }).isEndReached;
     }
   }

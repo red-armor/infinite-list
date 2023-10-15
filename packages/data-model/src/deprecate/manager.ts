@@ -1,5 +1,5 @@
-import ListDimensions from '../ListDimensions';
-import ListGroupDimensions from '../ListGroupDimensions';
+import ListDimensions from './ListDimensions';
+import ListGroupDimensions from './ListGroupDimensions';
 
 class Manager {
   private _list: Array<ListDimensions | ListGroupDimensions> = [];

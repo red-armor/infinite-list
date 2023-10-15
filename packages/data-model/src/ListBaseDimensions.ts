@@ -18,7 +18,6 @@ import createStore from './state/createStore';
 import { ActionType, ReducerResult } from './state/types';
 import {
   SpaceStateToken,
-  GetItemLayout,
   ListBaseDimensionsProps,
   ListState,
   OnEndReached,
@@ -45,7 +44,7 @@ import BaseLayout from './BaseLayout';
  * will not change.
  */
 abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
-  private _getItemLayout: GetItemLayout<ItemT>;
+  // private _getItemLayout: GetItemLayout<ItemT>;
   // private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
   private _stateListener: StateListener<ItemT>;
 
@@ -93,6 +92,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     const {
       store,
 
+      recyclerTypes,
       recyclerBufferSize,
       recyclerReservedBufferPerBatch,
 
@@ -100,22 +100,16 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       onViewableItemsChanged,
       viewabilityConfigCallbackPairs,
 
-      // recycleEnabled,
-      recyclerTypes,
-      // getItemLayout,
-      onEndReached,
-      // active = true,
-      // listGroupDimension,
-      onEndReachedThreshold,
-      // getItemSeparatorLength,
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
       useItemApproximateLength,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
 
       onRecyclerProcess,
-
       stillnessThreshold,
+
+      onEndReached,
+      onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
       onEndReachedHandlerTimeoutThreshold,
@@ -124,30 +118,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-    // this._provider = provider;
     this._itemApproximateLength = itemApproximateLength || 0;
-    // this._getItemLayout = getItemLayout;
-    // this._getData = getData;
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
+    this.stillnessHandler = this.stillnessHandler.bind(this);
+    this.initializeDefaultRecycleBuffer();
 
-    // `_approximateMode` is enabled on default
-    // this._approximateMode = recycleEnabled
-    //   ? defaultBooleanValue(
-    //       useItemApproximateLength,
-    //       typeof this._getItemLayout !== 'function' ||
-    //         !this._itemApproximateLength
-    //     )
-    //   : false;
-
-    // this._getItemSeparatorLength = getItemSeparatorLength;
-    // for ListItem include a basic items condition
-    // this._parentItemsDimensions = parentItemsDimensions;
-    // this._listGroupDimension = listGroupDimension;
-    this._dispatchMetricsBatchinator = new Batchinator(
-      this.dispatchMetrics.bind(this),
-      dispatchMetricsThreshold
-    );
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,
       onEndReached,
@@ -165,7 +141,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       isListItem: true,
     });
 
-    this.stillnessHandler = this.stillnessHandler.bind(this);
     this._stillnessHelper = new StillnessHelper({
       stillnessThreshold,
       handler: this.stillnessHandler,
@@ -191,6 +166,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this.resolveRecycleState.bind(this)
     );
 
+    this._dispatchMetricsBatchinator = new Batchinator(
+      this.dispatchMetrics.bind(this),
+      dispatchMetricsThreshold
+    );
+
     // @ts-ignore
     this._state = this.resolveInitialState();
 
@@ -214,12 +194,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this.updateState.bind(this),
       50
     );
-    this._recalculateRecycleResultStateBatchinator = new Batchinator(
-      this.recalculateRecycleResultState.bind(this),
-      50
-    );
-
-    this.initializeDefaultRecycleBuffer();
+    this._recalculateRecycleResultStateBatchinator =
+      this._dispatchMetricsBatchinator = new Batchinator(
+        this.dispatchMetrics.bind(this),
+        dispatchMetricsThreshold
+      );
+    new Batchinator(this.recalculateRecycleResultState.bind(this), 50);
   }
 
   initializeDefaultRecycleBuffer() {
@@ -307,11 +287,10 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   abstract getData();
 
   abstract getDataLength(): number;
-  abstract getTotalLength(): number;
+  abstract getTotalLength(): number | string;
   abstract getReflowItemsLength(): number;
   abstract getFinalItemKey(item: any);
   abstract getFinalIndexItemMeta(index: number);
-  // return this._provider.getFinalIndexItemMeta(index);
 
   abstract getFinalItemMeta(item: any);
 
@@ -346,10 +325,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     if (this.initialNumToRender)
       this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
   }
-
-  // setOnEndReached(onEndReached: OnEndReached) {
-  //   this.onEndReachedHelper.setHandler(onEndReached);
-  // }
 
   resetViewableItems() {
     if (this._scrollMetrics) this.dispatchMetrics(this._scrollMetrics);

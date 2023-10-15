@@ -1,13 +1,8 @@
-// import ListDimensions from '../ListDimensions';
-// import ItemsDimensions from '../ItemsDimensions';
-// import Dimension from '../Dimension';
-// import PseudoListDimensions from '../PseudoListDimensions';
-
 import { ItemLayout } from './BaseLayout.types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
 import ItemsDimensions from '../ItemsDimensions';
-// import ListGroupDimensions from '../ListGroupDimensions';
+import PseudoListDimensions from '../PseudoListDimensions';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 
@@ -31,13 +26,11 @@ export type ItemMetaState = {
   [key: string]: boolean;
 };
 
-export type ItemMetaOwner = ListDimensionsModel | Dimension | ItemsDimensions;
-
-// export type ItemMetaOwner =
-//   | ListDimensions
-//   | ItemsDimensions
-//   | Dimension
-//   | PseudoListDimensions;
+export type ItemMetaOwner =
+  | ListDimensionsModel
+  | Dimension
+  | ItemsDimensions
+  | PseudoListDimensions;
 
 export type ItemMetaProps = {
   onViewable?: StateEventListener;

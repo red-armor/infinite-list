@@ -5,7 +5,6 @@ import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
 import {
-  INVALID_LENGTH,
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   LAYOUT_EQUAL_CORRECTION_VALUE,
 } from './common';
@@ -112,7 +111,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   getTotalLength() {
     return this.intervalTree.getMaxUsefulLength()
       ? this.intervalTree.getHeap()[1]
-      : INVALID_LENGTH;
+      : // : INVALID_LENGTH;
+        0;
   }
 
   getReflowItemsLength() {

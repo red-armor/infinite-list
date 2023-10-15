@@ -1,11 +1,7 @@
-// import BaseLayout from './BaseLayout';
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { ListProvider, IndexInfo } from './types';
-class ListDimensions<ItemT extends {} = {}>
-  extends ListBaseDimensions<ItemT>
-  implements ListProvider
-{
+import { IndexInfo } from './types';
+class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
   constructor(props) {
@@ -13,41 +9,86 @@ class ListDimensions<ItemT extends {} = {}>
     this._dataModel = new ListDimensionsModel(props);
   }
 
-  getItemKey() {}
+  // getKeyItem() {}
 
-  getKeyItem() {}
+  getItemMeta(item: ItemT, index: number) {
+    return this._dataModel.getItemMeta(item, index);
+  }
 
-  getItemDimension() {}
+  // getItemDimension() {}
 
-  getKeyDimension() {}
+  // getKeyDimension() {}
 
   getData() {
-    return [];
+    return this._dataModel.getData();
   }
+
+  setData(data: Array<ItemT>) {
+    const changedType = this._dataModel.setData(data);
+  }
+
   getDataLength() {
-    return 0;
+    return this._dataModel.length;
   }
+
   getTotalLength() {
-    return 0;
+    return this._dataModel.getTotalLength();
   }
   getReflowItemsLength() {
+    return this._dataModel.getReflowItemsLength();
+  }
+
+  getFinalItemKey(item: ItemT) {
+    return this._dataModel.getFinalItemKey(item);
+  }
+
+  getFinalIndexItemMeta(index: number) {
+    return this._dataModel.getIndexItemMeta(index);
+  }
+
+  getFinalItemMeta(item: ItemT) {
+    return this._dataModel.getFinalItemMeta(item);
+  }
+
+  getFinalIndexItemLength(index: number) {
+    const itemMeta = this.getFinalIndexItemMeta(index);
+    if (itemMeta) return itemMeta.getItemLength();
     return 0;
   }
-  getFinalItemKey() {}
-  getFinalIndexItemMeta() {}
-  getFinalItemMeta() {}
-  getFinalIndexItemLength() {}
-  getFinalIndexKeyOffset() {}
+
+  getFinalIndexKeyOffset(index: number, exclusive?: boolean) {
+    return this.getIndexKeyOffset(index, exclusive);
+  }
+
   getFinalIndexKeyBottomOffset() {
     return 0;
   }
-  getFinalIndexRangeOffsetMap() {}
-  computeIndexRange() {}
-  getIndexKeyOffset() {
-    return 0;
+
+  getFinalIndexRangeOffsetMap(
+    startIndex: number,
+    endIndex: number,
+    exclusive?: boolean
+  ) {
+    const indexToOffsetMap = {};
+    let startOffset = this.getIndexKeyOffset(startIndex, exclusive);
+    for (let index = startIndex; index <= endIndex; index++) {
+      indexToOffsetMap[index] = startOffset;
+      const item = this._data[index];
+      const itemMeta = this.getItemMeta(item, index);
+      startOffset +=
+        (itemMeta?.getLayout()?.height || 0) +
+        (itemMeta?.getSeparatorLength() || 0);
+    }
+    return indexToOffsetMap;
   }
-  getIndexItemMeta(idx: number) {
-    return null;
+  computeIndexRange(minOffset: number, maxOffset: number) {
+    return this._dataModel.computeIndexRange(minOffset, maxOffset);
+  }
+  getIndexKeyOffset(index: number, exclusive?: boolean) {
+    return this._dataModel.getIndexKeyOffset(index, exclusive);
+  }
+  getIndexItemMeta(index: number) {
+    return this._dataModel.getIndexItemMeta(index);
   }
 
   onItemLayoutChanged() {}

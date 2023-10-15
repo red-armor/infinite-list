@@ -15,7 +15,6 @@ import {
   ListRangeResult,
   OnEndReached,
   ScrollMetrics,
-  ListProvider,
   KeyToOnEndReachedMap,
   KeyToListDimensionsMap,
   RegisteredListProps,
@@ -32,10 +31,9 @@ import Inspector from './Inspector';
  *
  * ListGroup is just like a router.
  */
-class ListGroupDimensions<ItemT extends {} = {}>
-  extends ListBaseDimensions<ItemT>
-  implements ListProvider
-{
+class ListGroupDimensions<
+  ItemT extends {} = {}
+> extends ListBaseDimensions<ItemT> {
   private keyToListDimensionsMap: KeyToListDimensionsMap = new Map();
   private _keyToOnEndReachedMap: KeyToOnEndReachedMap = new Map();
   private _itemsDimensions: ItemsDimensions;
@@ -94,10 +92,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
       this.recalculateDimensionsIntervalTree.bind(this),
       50
     );
-  }
-
-  get selector() {
-    return this._listBaseDimension.selector;
   }
 
   get inspector() {
@@ -277,14 +271,6 @@ class ListGroupDimensions<ItemT extends {} = {}>
       return acc;
     }, 0);
   }
-
-  // getConfigTuple() {
-  //   return this._configTuples;
-  // }
-
-  // resolveConfigTuplesDefaultState(defaultValue?: boolean) {
-  //   return this._configTuples.getDefaultState(defaultValue);
-  // }
 
   getState() {
     return this._listBaseDimension.state;
@@ -611,7 +597,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     const dimensions = new Dimension({
       id: key,
       ...dimensionProps,
-      owner: this,
+      container: this,
       horizontal: this.horizontal,
       canIUseRIC: this.canIUseRIC,
     });
@@ -1071,7 +1057,7 @@ class ListGroupDimensions<ItemT extends {} = {}>
     itemsMeta: Array<ItemMeta>,
     scrollMetrics: ScrollMetrics
   ) {
-    this._configTuples.getViewabilityHelpers().forEach((helper) => {
+    this._configTuple.getViewabilityHelpers().forEach((helper) => {
       helper.onUpdateItemsMeta(itemsMeta, scrollMetrics);
     });
   }
