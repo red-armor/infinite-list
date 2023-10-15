@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react-native",
-  "version": "0.2.44",
+  "version": "0.2.45-recycle-group.42",
   "main": "src/index.ts",
   "publishConfig": {
     "access": "public",
@@ -13,7 +13,34 @@
     "clean": "rimraf ./dist"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.11.10",
+    "@testing-library/react": "^11.2.6",
+    "@testing-library/react-native": "^7.0.2",
+    "@types/dedent": "^0.7.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^16",
+    "@types/react": "^17",
+    "@types/react-native": "*",
+    "@types/react-test-renderer": "^17.0.1",
     "rimraf": "~4.4.0",
     "tsdx": "^0.14.1"
+  },
+  "peerDependencies": {
+    "ozone-schema": "*",
+    "react": "*",
+    "react-native": "*",
+    "react-native-pager-view": "*"
+  },
+  "resolutions": {
+    "typescript": "4.8.3",
+    "@types/react": "^17",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "@babel/core": "^7.12.3"
+  },
+  "dependencies": {
+    "@infinite-list/data-model": "workspace:*",
+    "@x-oasis/shallow-equal": "^0.1.14"
   }
 }

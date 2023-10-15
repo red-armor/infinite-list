@@ -21,7 +21,7 @@ class OnEndReachedHelper {
   readonly _consecutiveDistanceTimeoutThresholdValue = 800;
   readonly sendOnEndReachedDistanceFromEndStack: SendOnEndReachedDistanceFromBottomStack;
 
-  private onEndReached: OnEndReached;
+  private onEndReached: OnEndReached | Array<OnEndReached>;
   private _scrollMetrics: ScrollMetrics;
   private _maxCountOfHandleOnEndReachedAfterStillness: number;
   private _distanceFromEndThresholdValue: number;
@@ -79,6 +79,42 @@ class OnEndReachedHelper {
       this.onEndReached !== onEndReached
     )
       this.onEndReached = onEndReached;
+  }
+
+  hasHandler() {
+    return (
+      Array.isArray(this.onEndReached) ||
+      typeof this.onEndReached === 'function'
+    );
+  }
+
+  removeHandler(onEndReached: OnEndReached) {
+    const next = [].concat(this.onEndReached);
+    const index = next.findIndex((handler) => handler === onEndReached);
+    if (index !== -1) {
+      next.splice(index, 1);
+      this.onEndReached = next;
+    }
+  }
+
+  addHandler(onEndReached: OnEndReached) {
+    if (typeof onEndReached === 'function') {
+      const handler = Array.isArray(this.onEndReached)
+        ? this.onEndReached
+        : this.onEndReached
+        ? [this.onEndReached]
+        : [];
+      const index = handler.findIndex((v) => v === onEndReached);
+      if (index === -1) handler.push(onEndReached);
+      this.onEndReached = handler;
+    }
+
+    return () => {
+      if (Array.isArray(this.onEndReached)) {
+        const index = this.onEndReached.findIndex((v) => v === onEndReached);
+        if (index !== -1) this.onEndReached.splice(index, 1);
+      }
+    };
   }
 
   /**
@@ -206,7 +242,7 @@ class OnEndReachedHelper {
     if (this._waitingForDataChangedSinceEndReached) return;
     const { isEndReached, distanceFromEnd } = info;
 
-    if (typeof this.onEndReached !== 'function') return;
+    if (!this.hasHandler()) return;
     if (isEndReached && !this.isConsecutiveDistance(distanceFromEnd)) {
       if (
         !this.reachCountLimitation() ||
@@ -256,7 +292,7 @@ class OnEndReachedHelper {
   }
 
   onEndReachedHandler(opts: { distanceFromEnd: number }) {
-    if (typeof this.onEndReached !== 'function') return;
+    if (!this.hasHandler()) return;
     if (this._waitingForDataChangedSinceEndReached) return;
     this._waitingForDataChangedSinceEndReached = true;
     const { distanceFromEnd } = opts;
@@ -270,11 +306,21 @@ class OnEndReachedHelper {
 
     this.updateStack(distanceFromEnd);
 
-    this.onEndReached({
-      distanceFromEnd,
-      cb: this.releaseHandlerMutex(this._currentMutexMS),
-      releaseHandlerMutex: this.releaseHandlerMutex(this._currentMutexMS),
-    });
+    if (Array.isArray(this.onEndReached)) {
+      this.onEndReached.forEach((handler) => {
+        handler({
+          distanceFromEnd,
+          cb: this.releaseHandlerMutex(this._currentMutexMS),
+          releaseHandlerMutex: this.releaseHandlerMutex(this._currentMutexMS),
+        });
+      });
+    } else {
+      this.onEndReached({
+        distanceFromEnd,
+        cb: this.releaseHandlerMutex(this._currentMutexMS),
+        releaseHandlerMutex: this.releaseHandlerMutex(this._currentMutexMS),
+      });
+    }
   }
 }
 

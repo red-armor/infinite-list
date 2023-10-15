@@ -2,6 +2,9 @@ import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { describe, expect, it, test, vi, afterEach } from 'vitest';
+
+vi.useFakeTimers();
+
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index,
@@ -18,13 +21,13 @@ vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
   this._callback.apply(this, args);
 });
 
-const startInspection = ListGroupDimensions.prototype.startInspection;
-// https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
-vi.spyOn(ListGroupDimensions.prototype, 'startInspection').mockImplementation(
-  function (...args) {
-    startInspection.call(this);
-  }
-);
+// const startInspection = ListGroupDimensions.prototype.startInspection;
+// // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
+// vi.spyOn(ListGroupDimensions.prototype, 'startInspection').mockImplementation(
+//   function (...args) {
+//     startInspection.call(this);
+//   }
+// );
 
 describe('basic', () => {
   // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
@@ -578,32 +581,32 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 15,
+        endIndex: 16,
         dimensionsKey: 'list_2',
       },
       {
         startIndex: 16,
-        endIndex: 28,
+        endIndex: 29,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 29,
-        endIndex: 29,
+        endIndex: 30,
         dimensionsKey: 'banner2',
       },
       {
         startIndex: 30,
-        endIndex: 49,
+        endIndex: 50,
         dimensionsKey: 'list_4',
       },
     ]);
@@ -664,27 +667,27 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 23,
+        endIndex: 24,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 24,
-        endIndex: 24,
+        endIndex: 25,
         dimensionsKey: 'banner2',
       },
       {
         startIndex: 25,
-        endIndex: 44,
+        endIndex: 45,
         dimensionsKey: 'list_4',
       },
     ]);
@@ -700,22 +703,22 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 23,
+        endIndex: 24,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 24,
-        endIndex: 43,
+        endIndex: 44,
         dimensionsKey: 'list_4',
       },
     ]);
@@ -731,28 +734,28 @@ describe('test dimensionsIndexRange', () => {
     ).toEqual([
       {
         startIndex: 0,
-        endIndex: 0,
+        endIndex: 1,
         dimensionsKey: 'banner',
       },
       {
         startIndex: 1,
-        endIndex: 10,
+        endIndex: 11,
         dimensionsKey: 'list_1',
       },
       {
         startIndex: 11,
-        endIndex: 15,
+        endIndex: 16,
         dimensionsKey: 'list_3',
       },
       {
         startIndex: 16,
-        endIndex: 35,
+        endIndex: 36,
         dimensionsKey: 'list_4',
       },
     ]);
   });
 
-  test('getFinalIndexInfo', () => {
+  test('getFinalIndexIndexInfo', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -794,16 +797,16 @@ describe('test dimensionsIndexRange', () => {
 
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
 
-    expect(listGroupDimensions.getFinalIndexInfo(0)).toEqual({
+    expect(listGroupDimensions.getFinalIndexIndexInfo(0)).toEqual({
       dimensions: bannerDimensions,
       index: 0,
     });
 
-    expect(listGroupDimensions.getFinalIndexInfo(20)).toEqual({
+    expect(listGroupDimensions.getFinalIndexIndexInfo(20)).toEqual({
       dimensions: list3Dimensions,
       index: 4,
     });
-    expect(listGroupDimensions.getFinalIndexInfo(29)).toEqual({
+    expect(listGroupDimensions.getFinalIndexIndexInfo(29)).toEqual({
       dimensions: banner2Dimensions,
       index: 0,
     });
@@ -1081,8 +1084,8 @@ describe('heartBeat', () => {
       'banner2',
       'list_4',
     ]);
-    listGroupDimensions.startInspection();
-    const { heartBeat } = listGroupDimensions.getInspectAPI();
+    listGroupDimensions.inspector.startInspection();
+    const { heartBeat } = listGroupDimensions.inspector.getAPI();
     const inspectingTime = Date.now() + 1;
     heartBeat({ listKey: 'list_1', inspectingTime });
     heartBeat({ listKey: 'banner2', inspectingTime });

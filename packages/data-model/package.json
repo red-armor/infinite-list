@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/data-model",
-  "version": "0.2.44",
+  "version": "0.2.45-recycle-group.42",
   "files": [
     "dist",
     "src"
@@ -27,12 +27,12 @@
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/capitalize": "^0.1.14",
     "@x-oasis/default-boolean-value": "^0.1.14",
-    "@x-oasis/integer-buffer-set": "^0.1.14",
     "@x-oasis/is-clamped": "^0.1.14",
     "@x-oasis/layout-equal": "^0.1.16",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/omit": "^0.1.14",
-    "@x-oasis/prefix-interval-tree": "^0.1.14",
+    "@x-oasis/prefix-interval-tree": "^0.1.18",
+    "@x-oasis/recycler": "^0.1.32",
     "@x-oasis/resolve-changed": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14",
     "@x-oasis/shallow-array-equal": "^0.1.14",

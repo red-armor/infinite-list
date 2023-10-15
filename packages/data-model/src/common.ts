@@ -9,9 +9,16 @@ export const INTERVAL_TREE_INITIAL_SIZE = 16;
 export const ON_END_REACHED_TIMEOUT_THRESHOLD = 200;
 export const ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD = 2000;
 export const DISPATCH_METRICS_THRESHOLD = 16;
-export const RECYCLE_BUFFERED_COUNT = 3;
+
+export const RECYCLER_THRESHOLD_INDEX_VALUE = 0;
+export const RECYCLER_RESERVED_BUFFER_PER_BATCH = 4;
+export const RECYCLER_BUFFER_SIZE = 12;
+export const RECYCLER_RESERVED_BUFFER_SIZE_RATIO = 1.5;
+
 export const LENGTH_PRECISION = 4;
 export const DEFAULT_ITEM_APPROXIMATE_LENGTH = 80;
+
+export const DEFAULT_RECYCLER_TYPE = '__default_recycler_buffer__';
 
 // 建议 ON_END_REACHED_THRESHOLD * VisibleLength > MAX_TO_RENDER_PER_BATCH * itemLength
 // 这样可以在滚动停止的时候，自动获取一屏幕

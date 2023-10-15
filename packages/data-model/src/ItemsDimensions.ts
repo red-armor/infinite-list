@@ -4,12 +4,7 @@ import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import SortedItems from './SortedItems';
 
-import {
-  IndexInfo,
-  ItemLayout,
-  ItemsDimensionsProps,
-  ScrollMetrics,
-} from './types';
+import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 
 class ItemsDimensions extends BaseDimensions {
@@ -62,7 +57,7 @@ class ItemsDimensions extends BaseDimensions {
     if (!meta) {
       this.setKeyMeta(
         key,
-        new ItemMeta({
+        ItemMeta.spawn({
           key,
           owner: this,
           canIUseRIC: this.canIUseRIC,
@@ -73,10 +68,8 @@ class ItemsDimensions extends BaseDimensions {
     return this.getKeyMeta(key);
   }
 
-  getIndexInfo(): IndexInfo {
-    return {
-      index: -1,
-    };
+  getIndexInfo() {
+    return null;
   }
 
   computeIndexRangeMeta(minOffset: number, maxOffset: number) {
