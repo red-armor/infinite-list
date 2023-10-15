@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react",
-  "version": "0.2.46",
+  "version": "0.3.0",
   "main": "src/index.ts",
   "publishConfig": {
     "access": "public",
