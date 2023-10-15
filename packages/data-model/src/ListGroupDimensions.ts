@@ -20,6 +20,8 @@ import {
   RegisteredListProps,
   RegisteredDimensionProps,
 } from './types';
+import createStore from './state/createStore';
+import { ReducerResult } from './state/types'
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
 
@@ -31,7 +33,7 @@ import Inspector from './Inspector';
  *
  * ListGroup is just like a router.
  */
-class ListGroupDimensions<
+class ListGroupDimensionsExperimental<
   ItemT extends {} = {}
 > extends ListBaseDimensions<ItemT> {
   private keyToListDimensionsMap: KeyToListDimensionsMap = new Map();
@@ -70,6 +72,7 @@ class ListGroupDimensions<
     super({
       recycleEnabled: true,
       ...props,
+      store: createStore<ReducerResult>(),
     });
     const { id, onUpdateItemLayout, onUpdateIntervalTree } = props;
 
@@ -92,6 +95,10 @@ class ListGroupDimensions<
       this.recalculateDimensionsIntervalTree.bind(this),
       50
     );
+
+    // this.initializeStore()
+    this.initializeState()
+    this.attemptToHandleEndReached()
   }
 
   get inspector() {
@@ -824,7 +831,7 @@ class ListGroupDimensions<
   findPosition(finalIndex: number) {
     const len = this.indexKeys.length;
     let startIndex = 0;
-    const positionToken = ListGroupDimensions.createPositionToken();
+    const positionToken = ListGroupDimensionsExperimental.createPositionToken();
 
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
@@ -1078,4 +1085,4 @@ class ListGroupDimensions<
   }
 }
 
-export default ListGroupDimensions;
+export default ListGroupDimensionsExperimental;

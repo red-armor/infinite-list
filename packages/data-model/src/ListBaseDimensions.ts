@@ -14,8 +14,7 @@ import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
-import createStore from './state/createStore';
-import { ActionType, ReducerResult } from './state/types';
+import { ActionType } from './state/types';
 import {
   SpaceStateToken,
   ListBaseDimensionsProps,
@@ -122,7 +121,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
-    this.initializeDefaultRecycleBuffer();
+    this._store = store
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,
@@ -158,6 +157,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       },
       getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
     });
+    this.initializeDefaultRecycleBuffer();
 
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
@@ -172,16 +172,14 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     );
 
     // @ts-ignore
-    this._state = this.resolveInitialState();
+    // this._state = this.resolveInitialState();
 
     this._stateResult =
       this.fillingMode === FillingMode.RECYCLE
         ? this.memoizedResolveRecycleState(this._state)
         : this.memoizedResolveSpaceState(this._state);
 
-    this._store = createStore<ReducerResult>() || store;
-
-    this.attemptToHandleEndReached();
+    // this.attemptToHandleEndReached();
 
     // 比如刚开始就有值，并且给了`getItemLayout`的话，需要手动更新Parent中的layout
     // this.hydrateParentIntervalTree();
@@ -199,7 +197,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         this.dispatchMetrics.bind(this),
         dispatchMetricsThreshold
       );
-    new Batchinator(this.recalculateRecycleResultState.bind(this), 50);
+    // new Batchinator(this.recalculateRecycleResultState.bind(this), 50);
   }
 
   initializeDefaultRecycleBuffer() {
@@ -240,6 +238,14 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   removeOnEndReached(onEndReached: OnEndReached) {
     this.onEndReachedHelper.removeHandler(onEndReached);
+  }
+
+  // initializeStore() {
+  //   this._store = this._store || createStore<ReducerResult>() 
+  // }
+
+  initializeState() {
+    this._state = this.resolveInitialState()
   }
 
   resolveInitialState() {
@@ -306,11 +312,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     exclusive?: boolean
   );
 
+  abstract computeIndexRange(minOffset: number, maxOffset: number);
+
   hasUnLayoutItems() {
     return this.getReflowItemsLength() < this._data.length;
   }
-
-  abstract computeIndexRange(minOffset: number, maxOffset: number);
 
   _recycleEnabled() {
     if (this.fillingMode !== FillingMode.RECYCLE) return false;

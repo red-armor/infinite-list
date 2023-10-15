@@ -1,12 +1,19 @@
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
 import { IndexInfo } from './types';
+import createStore from './state/createStore';
+import { ReducerResult } from './state/types'
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
   constructor(props) {
-    super(props);
+    super({
+      ...props,
+      store: createStore<ReducerResult>(),
+    });
     this._dataModel = new ListDimensionsModel(props);
+    this.initializeState()
+    this.attemptToHandleEndReached()
   }
 
   // getKeyItem() {}
