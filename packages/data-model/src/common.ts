@@ -60,3 +60,28 @@ export const isEmpty = (obj: any) => {
 
 export const buildStateTokenIndexKey = (startIndex: number, endIndex: number) =>
   `space_${startIndex}_${endIndex}`;
+
+export function findLastIndex(arr: Array<any>, fn: Function) {
+  // @ts-ignore
+  if (Array.prototype.findLastIndex) return arr.findIndex(fn)
+  const len = arr.length
+  for (let index = len -1; index > 0; index--) {
+    if (fn.apply(arr, [arr[index], index, arr])) {
+        return index
+    }
+  }
+
+  return -1
+}
+
+// Array.prototype.myfindLastIndex = function(fn) {
+//   const context = this
+//   const len = this.length
+//   for (let index = len -1; index > 0; index--) {
+//       if (fn.apply(context, [context[index], index, context])) {
+//           return index
+//       }
+//   }
+
+//      return -1
+//  }

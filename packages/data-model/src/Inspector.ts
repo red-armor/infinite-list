@@ -6,6 +6,7 @@ import {
   InspectingListener,
   OnIndexKeysChanged,
 } from './types';
+import { findLastIndex } from './common'
 import ListGroupDimensions from './ListGroupDimensions';
 
 class Inspector {
@@ -57,7 +58,7 @@ class Inspector {
   push(key: string) {
     const anchorKey = this.owner.getFinalAnchorKey(key);
     // @ts-ignore
-    const index = this._anchorKeys.findLastIndex((v) => v === anchorKey);
+    const index = findLastIndex(this._anchorKeys, (v) => v === anchorKey);
     if (index !== -1) {
       this._indexKeys.splice(index + 1, 0, key);
       this._handleChangeBatchinator.schedule();
