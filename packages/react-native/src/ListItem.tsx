@@ -7,7 +7,7 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 import { ListItemProps, DefaultItemT } from './types';
 
@@ -136,9 +136,9 @@ const ListItem = <T extends DefaultItemT>(
       style={containerStyle}
     >
       {children}
-      <Text style={{ position: 'absolute', right: 20, top: 0, color: 'red' }}>
+      {/* <Text style={{ position: 'absolute', right: 20, top: 0, color: 'red' }}>
         {props.itemMeta.getIndexInfo()?.indexInGroup}
-      </Text>
+      </Text> */}
     </RenderComponent>
   );
 };
