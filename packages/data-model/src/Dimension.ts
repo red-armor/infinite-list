@@ -169,7 +169,13 @@ class Dimension extends BaseContainer {
     return this._meta;
   }
 
-  restart() {}
+  setKeyItemLayout(
+    key: string,
+    layout: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ) {
+    this.setItemLayout(layout, updateIntervalTree);
+  }
 
   setItemLayout(layout: ItemLayout | number, updateIntervalTree?: boolean) {
     const meta = this.getMeta();

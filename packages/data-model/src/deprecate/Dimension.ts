@@ -152,8 +152,6 @@ class Dimension {
     return this._meta;
   }
 
-  restart() {}
-
   setItemLayout(layout: ItemLayout | number, updateIntervalTree?: boolean) {
     const meta = this.getMeta();
     const _update =
