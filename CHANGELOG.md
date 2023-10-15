@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [0.4.0](https://github.com/red-armor/infinite-list/compare/v0.3.0...v0.4.0) (2023-10-15)
+
+
+### Features
+
+* `findLastIndex` need a polyfill ([0224b81](https://github.com/red-armor/infinite-list/commit/0224b81d772cf74f1cef91d4ff0b6ce50697d5a5))
+* update list ([acbcdd7](https://github.com/red-armor/infinite-list/commit/acbcdd7930010b2519e2016ec525c2714fe42090))
+
+
+
 # [0.3.0](https://github.com/red-armor/infinite-list/compare/v0.2.44...v0.3.0) (2023-10-15)
 
 
