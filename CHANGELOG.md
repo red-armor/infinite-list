@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.4.4](https://github.com/red-armor/infinite-list/compare/v0.4.3...v0.4.4) (2023-10-16)
+
+
+### Bug Fixes
+
+* `startIndexInRecycler` ([b6c8e85](https://github.com/red-armor/infinite-list/commit/b6c8e85dc6d01a9fcb8c858f06da18c8fea25579))
+
+
+
 ## [0.4.3](https://github.com/red-armor/infinite-list/compare/v0.4.2...v0.4.3) (2023-10-16)
 
 
