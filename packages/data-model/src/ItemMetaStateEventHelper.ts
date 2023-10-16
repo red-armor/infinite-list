@@ -1,6 +1,7 @@
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import noop from '@x-oasis/noop';
+import { getByValue } from './common';
 import { StateEventListener, ItemMetaStateEventHelperProps } from './types';
 
 let canIUseRIC = false;
@@ -31,6 +32,7 @@ class ItemMetaStateEventHelper {
   private _once: boolean;
   readonly _key: string;
   private _reusableEventListenerMap: Map<string, StateEventListener>;
+  private _reusableStrictEventListenerMap: Map<string, StateEventListener>;
   private _callbackId: number;
   private _callbackStartMinMs: number;
   readonly _canIUseRIC: boolean;
@@ -52,6 +54,7 @@ class ItemMetaStateEventHelper {
     this._key = key;
     this._eventName = eventName;
     this._reusableEventListenerMap = new Map();
+    this._reusableStrictEventListenerMap = new Map();
     this._batchUpdateEnabled =
       typeof batchUpdateEnabled === 'boolean'
         ? batchUpdateEnabled
@@ -117,7 +120,18 @@ class ItemMetaStateEventHelper {
       };
 
     this._reusableEventListenerMap.set(key, listener);
-    this.addListener(listener, triggerOnceIfTrue);
+
+    const index = this._listeners.findIndex((cb) => cb === listener);
+    if (index === -1) {
+      this._handleCountMap.set(listener, 0);
+      this._listeners.push(listener);
+    }
+
+    if (triggerOnceIfTrue && this._value && this.listenerGuard(listener)) {
+      this.incrementHandleCount(listener);
+      listener(this._value);
+    }
+
     return {
       remover: this.remover(listener, key),
     };
@@ -129,14 +143,34 @@ class ItemMetaStateEventHelper {
     key: string,
     triggerOnceIfTrue: boolean
   ) {
-    const count = this._strictListenerKeyToHandleCountMap[key];
-    if (typeof count === 'number') {
-      this._handleCountMap.set(listener, count);
-      this._strictListeners.push(listener);
+    const count = this._strictListenerKeyToHandleCountMap[key] || 0;
+    const index = this._strictListeners.findIndex((cb) => cb === listener);
+
+    const prevListener = this._reusableStrictEventListenerMap.get(key);
+    if (prevListener) {
+      this._handleCountMap.delete(listener);
+      const idx = this._strictListeners.findIndex((l) => l === prevListener);
+      if (idx !== -1) this._strictListeners.splice(idx, 1);
     }
 
-    this._reusableEventListenerMap.set(key, listener);
-    this.addStrictListener(listener, triggerOnceIfTrue);
+    // should set before trigger
+    this._handleCountMap.set(listener, count);
+
+    if (index === -1) {
+      this._strictListeners.push(listener);
+      if (triggerOnceIfTrue && this._value && this.listenerGuard(listener)) {
+        this.incrementHandleCount(listener);
+        listener(this._value);
+      }
+    }
+
+    this._reusableStrictEventListenerMap.set(key, listener);
+
+    if (triggerOnceIfTrue && this._value && this.listenerGuard(listener)) {
+      this.incrementStrictListenerHandleCount(listener);
+      listener(this._value);
+    }
+
     return {
       remover: noop,
     };
@@ -163,27 +197,6 @@ class ItemMetaStateEventHelper {
     return this.remover(listener);
   }
 
-  /**
-   *
-   * @param listener
-   * @param triggerOnceIfTrue on initial, if value is true, then trigger..
-   * @returns
-   */
-  addStrictListener(listener: StateEventListener, triggerOnceIfTrue: boolean) {
-    const index = this._strictListeners.findIndex((cb) => cb === listener);
-    if (index === -1) {
-      this._handleCountMap.set(listener, 0);
-      this._strictListeners.push(listener);
-    }
-
-    if (triggerOnceIfTrue && this._value && this.listenerGuard(listener)) {
-      this.incrementHandleCount(listener);
-      listener(this._value);
-    }
-
-    return noop;
-  }
-
   getHandleCount(handler: StateEventListener) {
     return this._handleCountMap.get(handler) || 0;
   }
@@ -191,6 +204,16 @@ class ItemMetaStateEventHelper {
   incrementHandleCount(handler: StateEventListener) {
     const value = this._handleCountMap.get(handler) || 0;
     this._handleCountMap.set(handler, value + 1);
+  }
+
+  incrementStrictListenerHandleCount(handler: StateEventListener) {
+    const value = this._handleCountMap.get(handler) || 0;
+    this._handleCountMap.set(handler, value + 1);
+    const key = getByValue(this._reusableStrictEventListenerMap, handler);
+    if (key) {
+      const _value = this._strictListenerKeyToHandleCountMap[key];
+      this._strictListenerKeyToHandleCountMap[key] = _value + 1;
+    }
   }
 
   get value() {
@@ -201,6 +224,7 @@ class ItemMetaStateEventHelper {
     this.trigger(value);
   }
 
+  // 大的开关，是否要跑trigger逻辑
   guard() {
     if (!this._once) return true;
     // has a listener still not triggered.
@@ -214,6 +238,7 @@ class ItemMetaStateEventHelper {
    *
    * @param cb
    * @returns to control whether a listener should be triggered or not..
+   * 用来卡，某一个listener是不是需要被触发
    */
   listenerGuard(cb: StateEventListener) {
     if (!this._once) return true;
@@ -248,7 +273,14 @@ class ItemMetaStateEventHelper {
   }
 
   get listeners() {
-    return this._listeners.concat(this._strictListeners);
+    const arr = [];
+    this._listeners.forEach((listener) =>
+      arr.push({ type: 'normal', listener })
+    );
+    this._strictListeners.forEach((listener) =>
+      arr.push({ type: 'strict', listener })
+    );
+    return arr;
   }
 
   _trigger(value: boolean, immediately: boolean) {
@@ -260,10 +292,12 @@ class ItemMetaStateEventHelper {
         this.cancelIdleCallbackPolyfill(this._callbackId);
       }
       if (this._value !== value) {
-        this.listeners.forEach((cb) => {
-          if (this.listenerGuard(cb)) {
-            this.incrementHandleCount(cb);
-            cb(value);
+        this.listeners.forEach(({ listener, type }) => {
+          if (this.listenerGuard(listener)) {
+            if (type === 'strict')
+              this.incrementStrictListenerHandleCount(listener);
+            else this.incrementHandleCount(listener);
+            listener(value);
           }
         });
       }
@@ -277,10 +311,12 @@ class ItemMetaStateEventHelper {
       const handler = (() => {
         if (now < this._callbackStartMinMs) return;
         if (this._value !== value) {
-          this.listeners.forEach((cb) => {
-            if (this.listenerGuard(cb)) {
-              this.incrementHandleCount(cb);
-              cb(value);
+          this.listeners.forEach(({ listener, type }) => {
+            if (this.listenerGuard(listener)) {
+              if (type === 'strict')
+                this.incrementStrictListenerHandleCount(listener);
+              else this.incrementHandleCount(listener);
+              listener(value);
             }
           });
         }

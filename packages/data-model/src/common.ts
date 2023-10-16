@@ -63,15 +63,15 @@ export const buildStateTokenIndexKey = (startIndex: number, endIndex: number) =>
 
 export function findLastIndex(arr: Array<any>, fn: Function) {
   // @ts-ignore
-  if (Array.prototype.findLastIndex) return arr.findIndex(fn)
-  const len = arr.length
-  for (let index = len -1; index > 0; index--) {
+  if (Array.prototype.findLastIndex) return arr.findIndex(fn);
+  const len = arr.length;
+  for (let index = len - 1; index > 0; index--) {
     if (fn.apply(arr, [arr[index], index, arr])) {
-        return index
+      return index;
     }
   }
 
-  return -1
+  return -1;
 }
 
 // Array.prototype.myfindLastIndex = function(fn) {
@@ -85,3 +85,11 @@ export function findLastIndex(arr: Array<any>, fn: Function) {
 
 //      return -1
 //  }
+
+// https://stackoverflow.com/questions/47135661/how-can-i-get-a-key-in-a-javascript-map-by-its-value
+
+export function getByValue(map, searchValue) {
+  for (const [key, value] of map.entries()) {
+    if (value === searchValue) return key;
+  }
+}
