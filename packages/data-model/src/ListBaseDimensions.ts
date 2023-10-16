@@ -121,7 +121,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
-    this._store = store
+    this._store = store;
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,
@@ -155,6 +155,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         const indexInfo = meta.getIndexInfo();
         return indexInfo?.indexInGroup;
       },
+      getMetaType: (meta) => meta.recyclerType,
       getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
     });
     this.initializeDefaultRecycleBuffer();
@@ -196,7 +197,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   initializeDefaultRecycleBuffer() {
-    this.addBuffer(DEFAULT_RECYCLER_TYPE)
+    this.addBuffer(DEFAULT_RECYCLER_TYPE);
   }
 
   get length() {
@@ -244,11 +245,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   initializeState() {
-    this._state = this.resolveInitialState()
+    this._state = this.resolveInitialState();
     this._stateResult =
-    this.fillingMode === FillingMode.RECYCLE
-      ? this.memoizedResolveRecycleState(this._state)
-      : this.memoizedResolveSpaceState(this._state);
+      this.fillingMode === FillingMode.RECYCLE
+        ? this.memoizedResolveRecycleState(this._state)
+        : this.memoizedResolveSpaceState(this._state);
   }
 
   resolveInitialState() {
@@ -657,20 +658,21 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
         if (indexToOffsetMap[targetIndex] != null) {
           const itemMetaState =
-          !this._scrollMetrics || !itemMeta?.getLayout()
-            ? itemMeta
-              ? itemMeta.getState()
-              : {}
-            : this._configTuple.resolveItemMetaState(
-                itemMeta,
-                this._scrollMetrics,
-                // should add container offset, because indexToOffsetMap containerOffset is
-                // exclusive.
-                () =>
-                  indexToOffsetMap[targetIndex] == null
-                    ? this.itemOffsetBeforeLayoutReady
-                    : indexToOffsetMap[targetIndex] + this.getContainerOffset()
-              );
+            !this._scrollMetrics || !itemMeta?.getLayout()
+              ? itemMeta
+                ? itemMeta.getState()
+                : {}
+              : this._configTuple.resolveItemMetaState(
+                  itemMeta,
+                  this._scrollMetrics,
+                  // should add container offset, because indexToOffsetMap containerOffset is
+                  // exclusive.
+                  () =>
+                    indexToOffsetMap[targetIndex] == null
+                      ? this.itemOffsetBeforeLayoutReady
+                      : indexToOffsetMap[targetIndex] +
+                        this.getContainerOffset()
+                );
 
           itemMeta?.setItemMetaState(itemMetaState);
         }
@@ -784,21 +786,22 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
           });
           if (indexToOffsetMap[targetIndex] != null) {
             const itemMetaState =
-            !this._scrollMetrics || !itemMeta?.getLayout()
-              ? itemMeta
-                ? itemMeta.getState()
-                : {}
-              : this._configTuple.resolveItemMetaState(
-                  itemMeta,
-                  this._scrollMetrics,
-                  // should add container offset, because indexToOffsetMap containerOffset is
-                  // exclusive.
-                  () =>
-                    indexToOffsetMap[targetIndex] == null
-                      ? this.itemOffsetBeforeLayoutReady
-                      : indexToOffsetMap[targetIndex] + this.getContainerOffset()
-                );
-  
+              !this._scrollMetrics || !itemMeta?.getLayout()
+                ? itemMeta
+                  ? itemMeta.getState()
+                  : {}
+                : this._configTuple.resolveItemMetaState(
+                    itemMeta,
+                    this._scrollMetrics,
+                    // should add container offset, because indexToOffsetMap containerOffset is
+                    // exclusive.
+                    () =>
+                      indexToOffsetMap[targetIndex] == null
+                        ? this.itemOffsetBeforeLayoutReady
+                        : indexToOffsetMap[targetIndex] +
+                          this.getContainerOffset()
+                  );
+
             // 触发打点
             itemMeta?.setItemMetaState(itemMetaState);
           }

@@ -386,7 +386,7 @@ class ListGroupDimensionsExperimental<
       if (info) return info.startIndex;
     }
 
-    return 0;
+    return -1;
   }
 
   /**

@@ -211,7 +211,7 @@ class ItemMetaStateEventHelper {
     this._handleCountMap.set(handler, value + 1);
     const key = getByValue(this._reusableStrictEventListenerMap, handler);
     if (key) {
-      const _value = this._strictListenerKeyToHandleCountMap[key];
+      const _value = this._strictListenerKeyToHandleCountMap[key] || 0;
       this._strictListenerKeyToHandleCountMap[key] = _value + 1;
     }
   }
