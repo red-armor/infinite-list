@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.4.5](https://github.com/red-armor/infinite-list/compare/v0.4.4...v0.4.5) (2023-10-16)
+
+
+### Features
+
+* for tag ([5725391](https://github.com/red-armor/infinite-list/commit/57253918cff77f0da86db755131c69af9dd1863b))
+
+
+
 ## [0.4.4](https://github.com/red-armor/infinite-list/compare/v0.4.3...v0.4.4) (2023-10-16)
 
 
