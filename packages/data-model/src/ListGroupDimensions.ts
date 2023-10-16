@@ -21,7 +21,7 @@ import {
   RegisteredDimensionProps,
 } from './types';
 import createStore from './state/createStore';
-import { ReducerResult } from './state/types'
+import { ReducerResult } from './state/types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
 
@@ -94,8 +94,8 @@ class ListGroupDimensionsExperimental<
       50
     );
 
-    this.initializeState()
-    this.attemptToHandleEndReached()
+    this.initializeState();
+    this.attemptToHandleEndReached();
   }
 
   get inspector() {
@@ -497,7 +497,7 @@ class ListGroupDimensionsExperimental<
     this._dimensionsIndexRange = this.indexKeys.reduce((acc, key) => {
       const dimensions = this.getDimension(key);
       const recyclerType = dimensions.recyclerType;
-      if (rangeMap[recyclerType] != null) rangeMap[recyclerType] = 0;
+      if (rangeMap[recyclerType] == null) rangeMap[recyclerType] = 0;
 
       const endIndex = startIndex + dimensions.length;
       const startIndexInRecycler = rangeMap[recyclerType];
@@ -507,7 +507,7 @@ class ListGroupDimensionsExperimental<
         endIndex,
         dimensions,
         startIndexInRecycler,
-        enIndexInRecycler: rangeMap[recyclerType],
+        endIndexInRecycler: rangeMap[recyclerType],
       });
       startIndex = endIndex;
       return acc;
