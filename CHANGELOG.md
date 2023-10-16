@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.4.3](https://github.com/red-armor/infinite-list/compare/v0.4.2...v0.4.3) (2023-10-16)
+
+
+### Features
+
+* ItemMetaStateHelper not work ([f782879](https://github.com/red-armor/infinite-list/commit/f7828796bf5d8c00bec3082d9d1e11297f208cf8))
+
+
+
 ## [0.4.2](https://github.com/red-armor/infinite-list/compare/v0.4.1...v0.4.2) (2023-10-15)
 
 
