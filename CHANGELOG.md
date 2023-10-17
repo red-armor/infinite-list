@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.4.8](https://github.com/red-armor/infinite-list/compare/v0.4.7...v0.4.8) (2023-10-17)
+
+
+### Features
+
+* add `teleportItemProps` support ([8c76c17](https://github.com/red-armor/infinite-list/commit/8c76c179d854785ded3bf66605bde750f60b5821))
+
+
+
 ## [0.4.7](https://github.com/red-armor/infinite-list/compare/v0.4.6...v0.4.7) (2023-10-16)
 
 
