@@ -52,8 +52,8 @@ const RecycleContentItem = (props) => {
         style={containerStyle}
         listKey={listKey}
         itemMeta={itemMeta}
-        renderItem={itemMeta._owner.renderItem}
-        teleportItemProps={itemMeta._owner.teleportItemProps}
+        renderItem={itemMeta.getOwner().renderItem}
+        teleportItemProps={itemMeta.getOwner().teleportItemProps}
         containerKey={containerKey}
         dimensions={dimensions}
         scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
@@ -75,7 +75,7 @@ const RecycleContent = <T extends {}>(props: GroupRecycleContentProps<T>) => {
             key={key}
             containerKey={key}
             // @ts-ignore
-            renderItem={itemMeta._owner.renderItem}
+            renderItem={itemMeta.getOwner().renderItem}
             itemMeta={itemMeta}
             {...rest}
             {...stateResultRest}
@@ -106,6 +106,8 @@ const SpaceContent = <T extends {}>(props: GroupSpaceContentProps<T>) => {
             itemMeta={itemMeta}
             // @ts-ignore
             renderItem={itemMeta.getOwner().renderItem}
+            // @ts-ignore
+            teleportItemProps={itemMeta.getOwner().teleportItemProps}
             dimensions={dimensions}
             scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
           />
