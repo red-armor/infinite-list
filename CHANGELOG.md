@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.4.9](https://github.com/red-armor/infinite-list/compare/v0.4.8...v0.4.9) (2023-10-17)
+
+
+### Bug Fixes
+
+* teleport ([79b58a2](https://github.com/red-armor/infinite-list/commit/79b58a243d801d6a5e79ba364982be21acd73e7d))
+
+
+
 ## [0.4.8](https://github.com/red-armor/infinite-list/compare/v0.4.7...v0.4.8) (2023-10-17)
 
 
