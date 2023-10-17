@@ -14,6 +14,7 @@ export default (props) => {
     renderItem,
     onEndReached,
     recyclerType,
+    teleportItemProps,
     ...rest
   } = props;
 
@@ -34,6 +35,8 @@ export default (props) => {
     }).remover;
     // @ts-ignore
     listGroupDimensions!.getDimension(id).renderItem = renderItem;
+    // @ts-ignore
+    listGroupDimensions!.getDimension(id).teleportItemProps = teleportItemProps;
     initialRef.current = false;
   }
 

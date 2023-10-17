@@ -53,6 +53,7 @@ const RecycleContentItem = (props) => {
         listKey={listKey}
         itemMeta={itemMeta}
         renderItem={itemMeta._owner.renderItem}
+        teleportItemProps={itemMeta._owner.teleportItemProps}
         containerKey={containerKey}
         dimensions={dimensions}
         scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
