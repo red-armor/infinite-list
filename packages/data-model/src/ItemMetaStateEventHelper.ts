@@ -1,7 +1,7 @@
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import noop from '@x-oasis/noop';
-import { getByValue } from './common';
+import getMapKeyByValue from '@x-oasis/get-map-key-by-value';
 import { StateEventListener, ItemMetaStateEventHelperProps } from './types';
 
 let canIUseRIC = false;
@@ -209,7 +209,7 @@ class ItemMetaStateEventHelper {
   incrementStrictListenerHandleCount(handler: StateEventListener) {
     const value = this._handleCountMap.get(handler) || 0;
     this._handleCountMap.set(handler, value + 1);
-    const key = getByValue(this._reusableStrictEventListenerMap, handler);
+    const key = getMapKeyByValue(this._reusableStrictEventListenerMap, handler);
     if (key) {
       const _value = this._strictListenerKeyToHandleCountMap[key] || 0;
       this._strictListenerKeyToHandleCountMap[key] = _value + 1;

@@ -6,7 +6,7 @@ import {
   InspectingListener,
   OnIndexKeysChanged,
 } from './types';
-import { findLastIndex } from './common'
+import findLastIndex from '@x-oasis/find-last-index';
 import ListGroupDimensions from './ListGroupDimensions';
 
 class Inspector {

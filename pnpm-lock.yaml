@@ -44,6 +44,8 @@ importers:
       '@x-oasis/batchinator': ^0.1.14
       '@x-oasis/capitalize': ^0.1.14
       '@x-oasis/default-boolean-value': ^0.1.14
+      '@x-oasis/find-last-index': ^0.1.34
+      '@x-oasis/get-map-key-by-value': ^0.1.34
       '@x-oasis/is-clamped': ^0.1.14
       '@x-oasis/layout-equal': ^0.1.16
       '@x-oasis/noop': ^0.1.14
@@ -63,6 +65,8 @@ importers:
       '@x-oasis/batchinator': 0.1.14
       '@x-oasis/capitalize': 0.1.14
       '@x-oasis/default-boolean-value': 0.1.14
+      '@x-oasis/find-last-index': 0.1.34
+      '@x-oasis/get-map-key-by-value': 0.1.34
       '@x-oasis/is-clamped': 0.1.14
       '@x-oasis/layout-equal': 0.1.16
       '@x-oasis/noop': 0.1.14
@@ -2750,6 +2754,14 @@ packages:
 
   /@x-oasis/default-value/0.1.14:
     resolution: {integrity: sha512-X3cfmPlv/3K3Tklj3LShnYcZdP4pmpAv7SJp/XLP+jEee37QKaXxkochZPkI81H5wMCl/6/UHP8iNMhcxdNlfA==}
+    dev: false
+
+  /@x-oasis/find-last-index/0.1.34:
+    resolution: {integrity: sha512-H4iFNTAvfHTzu02YNOJkN7TiJMhtqQSIkHKC7Bw1h/w8EfsHTBUV5foI1vNCxobzlJA1Vj6ea2NUeU+7KvJx1w==}
+    dev: false
+
+  /@x-oasis/get-map-key-by-value/0.1.34:
+    resolution: {integrity: sha512-cPrh1L1ZNHl6RFRFSHl9lQzDH22sDDiIuO+D5VAS1lD42kTAXHZEjr+fb06yMvKidS41b3XbQU1zvsussHc9rQ==}
     dev: false
 
   /@x-oasis/heap/0.1.33:
