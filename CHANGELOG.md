@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [0.4.10](https://github.com/red-armor/infinite-list/compare/v0.4.9...v0.4.10) (2023-10-18)
+
+
+### Features
+
+* use @x-oasis/get-map-key-by-value @x-oasis/find-last-index ([766bb0c](https://github.com/red-armor/infinite-list/commit/766bb0ce3b9f9447e5da71673b812104b5218370))
+
+
+
 ## [0.4.9](https://github.com/red-armor/infinite-list/compare/v0.4.8...v0.4.9) (2023-10-17)
 
 
