@@ -1,7 +1,10 @@
 import { BaseLayoutProps } from './BaseLayout.types';
 import { DimensionProps } from './Dimension.types';
 import { ListDimensionsModelProps } from './ListDimensionsModel.types';
-import { OnEndReached, OnEndReachedHelperProps } from './onEndReachedHelper.types';
+import {
+  OnEndReached,
+  OnEndReachedHelperProps,
+} from './onEndReachedHelper.types';
 import { ViewabilityConfigTuplesProps } from './viewable.types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
@@ -23,12 +26,18 @@ export interface ListGroupDimensionsProps
   extends BaseLayoutProps,
     OnEndReachedHelperProps,
     ViewabilityConfigTuplesProps {
-  onUpdateItemLayout?: Function,
-  onUpdateIntervalTree?: Function,
+  onUpdateItemLayout?: Function;
+  onUpdateIntervalTree?: Function;
   recyclerTypes?: Array<string>;
 }
 
-export type RegisteredListProps<ItemT = {}> = ListDimensionsModelProps<ItemT> & OnEndReachedHelperProps
-export type RegisteredDimensionProps = DimensionProps
-export type KeyToListDimensionsMap = Map<string, ListDimensionsModel | Dimension>
-export type KeyToOnEndReachedMap = Map<string, OnEndReached>
+export type RegisteredListProps<ItemT = {}> = Omit<
+  ListDimensionsModelProps<ItemT> & OnEndReachedHelperProps,
+  'container' | 'id'
+>;
+export type RegisteredDimensionProps = Omit<DimensionProps, 'container' | 'id'>;
+export type KeyToListDimensionsMap = Map<
+  string,
+  ListDimensionsModel | Dimension
+>;
+export type KeyToOnEndReachedMap = Map<string, OnEndReached>;
