@@ -12,7 +12,7 @@ setTimeout(() => {
   canIUseRIC = false;
   finished = true;
 });
-// @ts-ignore
+
 requestIdleCallback(() => {
   canIUseRIC = true;
   finished = true;
