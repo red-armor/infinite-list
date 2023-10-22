@@ -30,6 +30,9 @@ vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
 // );
 
 describe('basic', () => {
+  // beforeEach(() => {
+  //   vi.spyOn(global, 'requestIdleCallback').mockImplementation(cb => cb());
+  // });
   // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
   it('constructor', () => {
     const listGroupDimensions = new ListGroupDimensions({
