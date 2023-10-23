@@ -1,3 +1,5 @@
+// @ts-ignore  eslint-disable-next-line
+// import { requestIdleCallback } from './setup'
 import createStore from '../state/createStore';
 import ListDimensions from '../ListDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';

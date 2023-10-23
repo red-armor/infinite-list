@@ -347,8 +347,7 @@ class ItemMetaStateEventHelper {
       }).bind(this);
 
       this._callbackId = this._canIUseRIC
-        ? // @ts-ignore TODO----
-          setTimeout(handler)
+        ? requestIdleCallback(handler)
         : handler();
     }
   }
