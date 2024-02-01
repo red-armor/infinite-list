@@ -577,7 +577,7 @@ class ListGroupDimensionsExperimental<
 
   registerItem(
     key: string,
-    dimensionProps: RegisteredDimensionProps
+    dimensionProps: RegisteredDimensionProps = {}
   ): {
     dimensions: Dimension;
     remover: () => void;
@@ -589,7 +589,7 @@ class ListGroupDimensionsExperimental<
           this.removeItem(key);
         },
       };
-    const { recyclerType } = dimensionProps;
+    const { recyclerType } = dimensionProps || {};
     const dimensions = new Dimension({
       id: key,
       ...dimensionProps,
