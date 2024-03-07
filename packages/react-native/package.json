@@ -26,7 +26,6 @@
     "tsdx": "^0.14.1"
   },
   "peerDependencies": {
-    "ozone-schema": "*",
     "react": "*",
     "react-native": "*",
     "react-native-pager-view": "*"
