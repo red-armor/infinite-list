@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [0.4.11](https://github.com/red-armor/infinite-list/compare/v0.4.10...v0.4.11) (2024-03-07)
+
+
+
 ## [0.4.10](https://github.com/red-armor/infinite-list/compare/v0.4.9...v0.4.10) (2023-10-18)
 
 
