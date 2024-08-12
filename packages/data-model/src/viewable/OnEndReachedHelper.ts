@@ -243,8 +243,9 @@ class OnEndReachedHelper {
     // if (this._waitingForDataChangedSinceEndReached) return;
     const { isEndReached, distanceFromEnd } = info;
 
-    if (!this.hasHandler()) return;
-    if (isEndReached && !this.isConsecutiveDistance(distanceFromEnd)) {
+    // if (!this.hasHandler()) return;
+    // if (isEndReached && !this.isConsecutiveDistance(distanceFromEnd)) {
+    if (isEndReached) {
       this.onEndReachedHandler({
         distanceFromEnd,
       });
