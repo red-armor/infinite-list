@@ -1,8 +1,8 @@
-import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import noop from '@x-oasis/noop';
 import getMapKeyByValue from '@x-oasis/get-map-key-by-value';
 import { StateEventListener, ItemMetaStateEventHelperProps } from './types';
+import Batchinator from './utils/batchinator';
 
 let canIUseRIC = false;
 let finished = false;

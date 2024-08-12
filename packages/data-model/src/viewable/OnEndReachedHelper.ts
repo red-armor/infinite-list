@@ -1,4 +1,3 @@
-import Batchinator from '@x-oasis/batchinator';
 import {
   ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD,
   ON_END_REACHED_THRESHOLD,
@@ -10,6 +9,8 @@ import {
   ScrollMetrics,
   SendOnEndReachedDistanceFromBottomStack,
 } from '../types';
+import Batchinator from '../utils/batchinator';
+
 import isClamped from '@x-oasis/is-clamped';
 
 class OnEndReachedHelper {
@@ -239,19 +240,25 @@ class OnEndReachedHelper {
   }
 
   performEndReached(info: { isEndReached: boolean; distanceFromEnd: number }) {
-    if (this._waitingForDataChangedSinceEndReached) return;
+    // if (this._waitingForDataChangedSinceEndReached) return;
     const { isEndReached, distanceFromEnd } = info;
 
     if (!this.hasHandler()) return;
     if (isEndReached && !this.isConsecutiveDistance(distanceFromEnd)) {
-      if (
-        !this.reachCountLimitation() ||
-        this.shouldResetCountLimitation(distanceFromEnd)
-      ) {
-        this.onEndReachedHandlerBatchinator.schedule({
-          distanceFromEnd,
-        });
-      }
+      this.onEndReachedHandler({
+        distanceFromEnd,
+      });
+      // this.onEndReachedHandlerBatchinator.schedule({
+      //   distanceFromEnd,
+      // });
+      // if (
+      //   !this.reachCountLimitation() ||
+      //   this.shouldResetCountLimitation(distanceFromEnd)
+      // ) {
+      //   this.onEndReachedHandlerBatchinator.schedule({
+      //     distanceFromEnd,
+      //   });
+      // }
     }
   }
 

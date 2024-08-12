@@ -1,5 +1,4 @@
 import ListDimensions from '../ListDimensions';
-import Batchinator from '@x-oasis/batchinator';
 import {
   KeysChangedType,
   SpaceStateResult,
@@ -7,6 +6,8 @@ import {
 } from '../types';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { buildStateTokenIndexKey } from '../common';
+import Batchinator from './utils/batchinator';
+
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({

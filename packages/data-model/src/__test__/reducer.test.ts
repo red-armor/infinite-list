@@ -1,10 +1,11 @@
 import createStore from '../state/createStore';
 import ListDimensions from '../ListDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
-import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { ActionType } from '../state/types';
 import { vi, describe, it, expect } from 'vitest';
+import Batchinator from '../utils/batchinator';
+
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index,

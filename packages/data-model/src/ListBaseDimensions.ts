@@ -1,10 +1,10 @@
-import Batchinator from '@x-oasis/batchinator';
 import omit from '@x-oasis/omit';
 import resolveChanged from '@x-oasis/resolve-changed';
 import isClamped from '@x-oasis/is-clamped';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import memoizeOne from 'memoize-one';
+import Batchinator from './utils/batchinator';
 
 import {
   isEmpty,

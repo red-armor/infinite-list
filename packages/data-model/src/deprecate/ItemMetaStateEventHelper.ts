@@ -1,5 +1,5 @@
-import Batchinator from '@x-oasis/batchinator';
 import { StateEventListener } from './types';
+import Batchinator from '../utils/batchinator';
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;

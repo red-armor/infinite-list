@@ -1,4 +1,3 @@
-import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import Dimension from './Dimension';
@@ -24,6 +23,7 @@ import createStore from './state/createStore';
 import { ReducerResult } from './state/types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
+import Batchinator from './utils/batchinator';
 
 // TODO: indexRange should be another intervalTree
 /**

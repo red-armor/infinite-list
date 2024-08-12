@@ -1,5 +1,4 @@
 import noop from '@x-oasis/noop';
-import Batchinator from '@x-oasis/batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
@@ -51,6 +50,7 @@ import shallowEqual from '@x-oasis/shallow-equal';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import StillnessHelper from '../utils/StillnessHelper';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import Batchinator from '../utils/batchinator';
 
 class ListDimensions<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];

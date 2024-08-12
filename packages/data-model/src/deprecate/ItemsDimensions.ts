@@ -1,5 +1,5 @@
-import Batchinator from '@x-oasis/batchinator';
 import layoutEqual from '@x-oasis/layout-equal';
+import Batchinator from '../utils/batchinator';
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import SortedItems from '../SortedItems';

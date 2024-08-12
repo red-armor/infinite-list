@@ -1,4 +1,3 @@
-import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
 import noop from '@x-oasis/noop';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
@@ -9,6 +8,7 @@ import BaseLayout from './BaseLayout';
 import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
+import Batchinator from '../utils/batchinator';
 
 import ListDimensions from './ListDimensions';
 import { isEmpty } from '../common';
