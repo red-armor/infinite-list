@@ -65,31 +65,31 @@ class Batchinator {
 
   schedule(...args) {
     this._args = args;
+    this._callback.apply(this, this._args);
+    // if (this._taskHandle) return;
+    // const handler = this._leading
+    //   ? () => {
+    //       this._taskHandle = null;
+    //     }
+    //   : () => {
+    //       this._taskHandle = null;
+    //       this._callback.apply(this, this._args);
+    //     };
 
-    if (this._taskHandle) return;
-    const handler = this._leading
-      ? () => {
-          this._taskHandle = null;
-        }
-      : () => {
-          this._taskHandle = null;
-          this._callback.apply(this, this._args);
-        };
+    // if (!this._delayMS) {
+    //   handler();
+    //   return;
+    // }
 
-    if (!this._delayMS) {
-      handler();
-      return;
-    }
+    // if (this._leading) {
+    //   this._callback.apply(this, this._args);
+    // }
 
-    if (this._leading) {
-      this._callback.apply(this, this._args);
-    }
+    // const timeoutHandle = setTimeout(() => {
+    //   handler();
+    // }, this._delayMS);
 
-    const timeoutHandle = setTimeout(() => {
-      handler();
-    }, this._delayMS);
-
-    this._taskHandle = { cancel: () => clearTimeout(timeoutHandle) };
+    // this._taskHandle = { cancel: () => clearTimeout(timeoutHandle) };
   }
 }
 
