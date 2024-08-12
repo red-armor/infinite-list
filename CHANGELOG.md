@@ -1,6 +1,16 @@
 # CHANGELOG
 
-## [0.4.12-batchinator-alpha.0](https://github.com/red-armor/infinite-list/compare/v0.4.11...v0.4.12-batchinator-alpha.0) (2024-08-12)
+## [0.4.12-batchinator-alpha.1](https://github.com/red-armor/infinite-list/compare/v0.4.11...v0.4.12-batchinator-alpha.1) (2024-08-12)
+
+
+
+## 0.4.12-batchinator-alpha.1 (2024-08-12)
+
+
+### Features
+
+* update ([eee227e](https://github.com/red-armor/infinite-list/commit/eee227efeadfefb589766460dbaf63186e06dfd1))
+* update ([37d82aa](https://github.com/red-armor/infinite-list/commit/37d82aacd8f80a52f6fb6a346af669671d4e3bd1))
 
 
 
