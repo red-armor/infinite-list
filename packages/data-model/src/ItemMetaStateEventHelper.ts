@@ -13,10 +13,6 @@ setTimeout(() => {
   finished = true;
 });
 
-// function requestIdleCallback(cb) {
-//   setTimeout(cb, 0);
-// }
-
 interface IdleRequestCallback {
   (deadline: IdleDeadline): void;
 }
@@ -36,10 +32,11 @@ interface IdleRequestOptions {
 //   options?: IdleRequestOptions
 // ): number;
 
-// requestIdleCallback(() => {
-//   canIUseRIC = true;
-//   finished = true;
-// });
+if (requestIdleCallback)
+  requestIdleCallback(() => {
+    canIUseRIC = true;
+    finished = true;
+  });
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;
@@ -347,8 +344,7 @@ class ItemMetaStateEventHelper {
       }).bind(this);
 
       this._callbackId = this._canIUseRIC
-        ? // @ts-ignore TODO----
-          setTimeout(handler)
+        ? requestIdleCallback(handler)
         : handler();
     }
   }

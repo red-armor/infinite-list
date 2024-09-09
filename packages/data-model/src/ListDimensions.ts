@@ -1,8 +1,8 @@
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { IndexInfo, ScrollMetrics } from './types';
+import { IndexInfo, ScrollMetrics, ItemLayout } from './types';
 import createStore from './state/createStore';
-import { ReducerResult } from './state/types'
+import { ReducerResult } from './state/types';
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
@@ -12,8 +12,8 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       store: createStore<ReducerResult>(),
     });
     this._dataModel = new ListDimensionsModel(props);
-    this.initializeState()
-    this.attemptToHandleEndReached()
+    this.initializeState();
+    this.attemptToHandleEndReached();
   }
 
   getItemMeta(item: ItemT, index: number) {
@@ -62,9 +62,9 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   }
 
   getFinalIndexKeyBottomOffset(index: number, exclusive?: boolean) {
-    const containerOffset = exclusive ? 0 : this.getContainerOffset()
-    const height = this.getTotalLength()
-    return containerOffset + (typeof height === 'number' ? height : 0)
+    const containerOffset = exclusive ? 0 : this.getContainerOffset();
+    const height = this.getTotalLength();
+    return containerOffset + (typeof height === 'number' ? height : 0);
   }
 
   getFinalIndexRangeOffsetMap(
@@ -106,6 +106,14 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
     return {
       index: this._dataModel.getKeyIndex(key) || 0,
     } as IndexInfo;
+  }
+
+  setFinalKeyItemLayout(
+    itemKey: string,
+    layout: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ) {
+    this._dataModel.setKeyItemLayout(itemKey, layout, updateIntervalTree);
   }
 
   updateScrollMetrics(

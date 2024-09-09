@@ -16,7 +16,7 @@ import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
-const context: {
+export const context: {
   [key: string]: ItemMeta;
 } = {};
 

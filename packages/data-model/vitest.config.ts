@@ -3,6 +3,11 @@ import tsPath from 'vite-tsconfig-paths';
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
+  define: {
+    requestIdleCallback: null,
+    // requestIdleCallback:  JSON.stringify('function requestIdleCallback(cb) { setTimeout(cb, 0 )}')
+  },
+
   test: {
     globals: true,
     include: ['src/__test__/**/reducer.test.ts'],

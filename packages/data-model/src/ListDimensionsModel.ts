@@ -62,12 +62,21 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this._getItemLayout = getItemLayout;
 
     // `_approximateMode` is enabled on default
+
+    // console.log('recycleEnabled ', recycleEnabled, useItemApproximateLength, recycleEnabled
+    // ? defaultBooleanValue(
+    //     useItemApproximateLength,
+    //     typeof this._getItemLayout !== 'function'
+    //   )
+    // : false)
+
     this._approximateMode = recycleEnabled
       ? defaultBooleanValue(
           useItemApproximateLength,
           typeof this._getItemLayout !== 'function'
         )
       : false;
+
     this._getItemSeparatorLength = getItemSeparatorLength;
     this._container = container;
 
@@ -237,7 +246,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     const nextLength = intervalTree.getHeap()[1];
 
     if (oldLength !== nextLength) {
-      this.triggerOwnerRecalculateLayout()
+      this.triggerOwnerRecalculateLayout();
       // this._container.recalculateDimensionsIntervalTreeBatchinator.schedule();
     }
   }
@@ -438,6 +447,9 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   append(data: Array<ItemT>) {
     const baseIndex = this._indexKeys.length;
     this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);
+
+    // after set interval tree. should then trigger a update..
+    this.triggerOwnerRecalculateLayout();
   }
 
   shuffle(data: Array<ItemT>) {

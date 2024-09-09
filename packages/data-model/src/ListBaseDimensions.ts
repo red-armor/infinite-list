@@ -27,6 +27,7 @@ import {
   SpaceStateTokenPosition,
   FillingMode,
   RecycleStateResult,
+  ItemLayout,
   SpaceStateResult,
   ListBaseDimensionsStore,
 } from './types';
@@ -246,6 +247,9 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   initializeState() {
     this._state = this.resolveInitialState();
+
+    console.log('state ', this._state);
+
     this._stateResult =
       this.fillingMode === FillingMode.RECYCLE
         ? this.memoizedResolveRecycleState(this._state)
@@ -306,9 +310,15 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   abstract getFinalIndexItemLength(index: number);
 
-  abstract getFinalIndexKeyOffset(index: number);
+  abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean);
 
   abstract getFinalIndexKeyBottomOffset(index: number);
+
+  abstract setFinalKeyItemLayout(
+    key: string,
+    info: ItemLayout | number,
+    updateIntervalTree?: boolean
+  );
 
   abstract getFinalIndexRangeOffsetMap(
     startIndex: number,

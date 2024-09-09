@@ -6,6 +6,7 @@ export default <State extends ReducerResult = ReducerResult>(
   ctx: Ctx
 ) => {
   const { maxIndex, bufferedIndexRange } = ctx;
+  console.log('bvbbbx ', state.bufferedEndIndex, { ...bufferedIndexRange });
 
   // @ts-ignore
   bufferedIndexRange.endIndex = state.bufferedEndIndex
@@ -15,6 +16,8 @@ export default <State extends ReducerResult = ReducerResult>(
         maxIndex
       )
     : Math.min(bufferedIndexRange.endIndex, maxIndex);
+
+  console.log('bvbbb ', state.bufferedEndIndex, bufferedIndexRange);
   // // @ts-ignore
   // bufferedIndexRange.endIndex = state.bufferedEndIndex
   //   ? Math.max(

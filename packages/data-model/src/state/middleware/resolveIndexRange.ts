@@ -26,6 +26,14 @@ export default <State extends ReducerResult = ReducerResult>(
     Math.min(maxOffset, contentLength)
   );
 
+  console.log(
+    'buffer =---',
+    visibleMinOffset,
+    visibleMaxOffset,
+    visibleIndexRange,
+    bufferedIndexRange
+  );
+
   if (visibleIndexRange) ctx.visibleIndexRange = visibleIndexRange;
   if (bufferedIndexRange) ctx.bufferedIndexRange = bufferedIndexRange;
 };

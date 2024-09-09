@@ -64,10 +64,14 @@ export default <State extends ReducerResult = ReducerResult>(
 
   ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
 
+  console.log('_nextBufferedEndIndex ', _nextBufferedEndIndex);
+
   const maxVisibleEndIndex = Math.min(
     ctx.visibleIndexRange.endIndex,
     _nextBufferedEndIndex
   );
 
   ctx.visibleIndexRange.endIndex = maxVisibleEndIndex;
+
+  console.log('ppppp ', ctx.visibleIndexRange.endIndex);
 };
