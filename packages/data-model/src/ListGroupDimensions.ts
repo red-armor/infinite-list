@@ -939,7 +939,11 @@ class ListGroupDimensionsExperimental<
       maxOffset
     );
 
-    const { startIndex, endIndex } = dimensionResult;
+    const { startIndex, endIndex: _endIndex } = dimensionResult;
+
+    const endIndex = _endIndex - 1
+
+    console.log('dimension result ', dimensionResult)
 
     if (startIndex === endIndex) {
       const dimensionKey = this.indexKeys[startIndex];
@@ -976,15 +980,21 @@ class ListGroupDimensionsExperimental<
 
     let nextStartIndex = startIndex;
 
+    // if it is a item...
     if (startDimensions instanceof Dimension) {
       nextStartIndex = this.getDimensionStartIndex(startDimensionsKey);
-    } else if (startDimensions instanceof ListDimensionsModel) {
+    } else if (
+      /**
+       * if it is a List...
+       */
+      startDimensions instanceof ListDimensionsModel
+    ) {
       const startOffset =
         this._dimensionsIntervalTree.sumUntil(_nextStartIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(startDimensionsKey);
 
-      const index = startDimensions.intervalTree.greatestStrictLowerBound(
+      const index = startDimensions.intervalTree.greatestLowerBound(
         minOffset - startOffset
       );
       nextStartIndex = dimensionsStartIndex + index;
@@ -996,13 +1006,18 @@ class ListGroupDimensionsExperimental<
 
     let nextEndIndex = startIndex;
 
+    console.log('wt----')
+
     if (endDimensions instanceof Dimension) {
+      console.log('xxxx ')
       nextEndIndex = this.getDimensionStartIndex(endDimensionsKey);
     } else if (endDimensions instanceof ListDimensionsModel) {
       const startOffset = this._dimensionsIntervalTree.sumUntil(_nextEndIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(endDimensionsKey);
-      const index = endDimensions.intervalTree.greatestStrictLowerBound(
+
+      console.log('max ---- ', maxOffset, startOffset)
+      const index = endDimensions.intervalTree.leastStrictUpperBound(
         maxOffset - startOffset
       );
       nextEndIndex = dimensionsStartIndex + index;
@@ -1021,10 +1036,6 @@ class ListGroupDimensionsExperimental<
     const { startIndex, endIndex } = props;
     return this.findListRange(startIndex, endIndex);
   }
-
-  // addStateListener(listener: StateListener) {
-  //   return this._listBaseDimension.addStateListener(listener);
-  // }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
     const state = this.store.dispatchMetrics({

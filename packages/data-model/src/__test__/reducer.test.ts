@@ -27,7 +27,7 @@ describe('reducer', () => {
       delete itemMetaContext[key];
     });
   });
-  it('basic scrollDown', () => {
+  it.only('basic scrollDown', () => {
     const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
@@ -73,13 +73,16 @@ describe('reducer', () => {
         },
       },
     });
+
+    console.log('listGroupDimensions ', JSON.stringify(listGroupDimensions.getIntervalTree().getHeap()))
+
     expect(listGroupDimensions.getContainerOffset()).toBe(2000);
     expect(store.getState()).toEqual({
       actionType: ActionType.ScrollDown,
-      visibleStartIndex: -1,
-      visibleEndIndex: -1,
+      visibleStartIndex: 0,
+      visibleEndIndex: 0,
       bufferedStartIndex: 0,
-      bufferedEndIndex: 17,
+      bufferedEndIndex: 18,
     });
   });
 

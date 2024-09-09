@@ -1,4 +1,5 @@
 import { ActionPayload, Ctx, ReducerResult } from '../types';
+import { info } from '../../utils/logger'
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -26,13 +27,15 @@ export default <State extends ReducerResult = ReducerResult>(
     Math.min(maxOffset, contentLength)
   );
 
-  console.log(
-    'buffer =---',
-    visibleMinOffset,
-    visibleMaxOffset,
-    visibleIndexRange,
-    bufferedIndexRange
-  );
+  info('scrollMetrics info ', { minOffset: offset, maxOffset: offset + visibleLength})
+  info('visibleRange ', { visibleMinOffset, visibleMaxOffset })
+  info('visibleIndexRange ', visibleIndexRange)
+  info('bufferedRange ', { 
+    bufferedMinOffset: minOffset,
+    bufferedMaxOffset: Math.min(maxOffset, contentLength),
+  })
+  info('bufferedIndexRange ', bufferedIndexRange)
+
 
   if (visibleIndexRange) ctx.visibleIndexRange = visibleIndexRange;
   if (bufferedIndexRange) ctx.bufferedIndexRange = bufferedIndexRange;

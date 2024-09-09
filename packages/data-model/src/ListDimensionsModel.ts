@@ -375,15 +375,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     info.index = this._indexKeys.indexOf(key);
 
     return this._container.getFinalKeyIndexInfo(key, this.id);
-
-    // if (this._listGroupDimension) {
-    //   return this._listGroupDimension.getFinalKeyIndexInfo(key, this.id);
-    // }
-
-    // return {
-    //   dimensions: this,
-    //   index: this._indexKeys.indexOf(key),
-    // };
   }
 
   computeIndexRange(minOffset: number, maxOffset: number) {
