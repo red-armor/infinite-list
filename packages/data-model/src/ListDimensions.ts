@@ -11,7 +11,10 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       ...props,
       store: createStore<ReducerResult>(),
     });
-    this._dataModel = new ListDimensionsModel(props);
+    this._dataModel = new ListDimensionsModel({
+      ...props,
+      container: this,
+    });
     this.initializeState();
     this.attemptToHandleEndReached();
   }

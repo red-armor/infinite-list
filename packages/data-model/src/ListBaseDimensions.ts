@@ -83,8 +83,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     state: ListState<ItemT>
   ) => RecycleStateResult<ItemT>;
 
-  private _itemApproximateLength: number;
-  private _approximateMode: boolean;
   private _releaseSpaceStateItem: boolean;
 
   constructor(props: ListBaseDimensionsProps) {
@@ -118,7 +116,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-    this._itemApproximateLength = itemApproximateLength || 0;
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
@@ -482,30 +479,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       ...options,
     };
   }
-
-  /**
-   * For performance boosting. `getIndexKeyOffset` will call intervalTree's sumUtil
-   * function. this method may cause performance issue.
-   * @param startIndex
-   * @param endIndex
-   * @param exclusive
-   * @returns
-   */
-  //  getFinalIndexRangeOffsetMap(
-  //   startIndex: number,
-  //   endIndex: number,
-  //   exclusive?: boolean
-  // ) {
-  //   return this._provider.getFinalIndexRangeOffsetMap(
-  //     startIndex,
-  //     endIndex,
-  //     exclusive
-  //   );
-  // }
-
-  // recognizeLengthBeforeLayout() {
-  //   return this._getItemLayout || this._approximateMode;
-  // }
 
   resolveSafeRange(props: {
     visibleStartIndex: number;

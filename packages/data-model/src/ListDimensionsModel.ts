@@ -62,14 +62,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this._getItemLayout = getItemLayout;
 
     // `_approximateMode` is enabled on default
-
-    // console.log('recycleEnabled ', recycleEnabled, useItemApproximateLength, recycleEnabled
-    // ? defaultBooleanValue(
-    //     useItemApproximateLength,
-    //     typeof this._getItemLayout !== 'function'
-    //   )
-    // : false)
-
     this._approximateMode = recycleEnabled
       ? defaultBooleanValue(
           useItemApproximateLength,
@@ -133,10 +125,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
   getKeyMeta(key: string) {
     const meta = this._getKeyMeta(key);
-    // if (!meta && this._parentItemsDimensions) {
-    //   meta = this._parentItemsDimensions.getKeyMeta(key);
-    // }
-
     return meta;
   }
 
@@ -208,6 +196,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     return this.getReflowItemsLength() < this._data.length;
   }
 
+  // the hook method to trigger ListDimensions or ListGroupDimension recalculate
+  // after item layout updated.
   triggerOwnerRecalculateLayout() {
     this._container.onItemLayoutChanged();
   }
@@ -227,17 +217,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     // const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
     this.triggerOwnerRecalculateLayout();
-    // const nextLength = this.intervalTree.getHeap()[1];
-    // const len = this.intervalTree.getMaxUsefulLength();
-
-    // // 比如换了一个item的话，不会触发更新
-    // if (this._listGroupDimension) {
-    //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    // }
-
-    // if (!this._listGroupDimension && this._recycleEnabled()) {
-    //   this._recalculateRecycleResultStateBatchinator.schedule();
-    // }
   }
 
   replaceIntervalTree(intervalTree: PrefixIntervalTree) {
@@ -247,7 +226,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
     if (oldLength !== nextLength) {
       this.triggerOwnerRecalculateLayout();
-      // this._container.recalculateDimensionsIntervalTreeBatchinator.schedule();
     }
   }
 
