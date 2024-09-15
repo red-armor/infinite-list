@@ -59,6 +59,7 @@ class Inspector {
     const anchorKey = this.owner.getFinalAnchorKey(key);
     // @ts-ignore
     const index = findLastIndex(this._anchorKeys, (v) => v === anchorKey);
+
     if (index !== -1) {
       this._indexKeys.splice(index + 1, 0, key);
       this._handleChangeBatchinator.schedule();
@@ -71,22 +72,6 @@ class Inspector {
     return () => {
       this.remove(key);
     };
-
-    // const location = this._anchorRange[anchorKey];
-    // // in the middle
-    // if (location && location.endIndex < this._indexKeys.length) {
-    //   this._indexKeys = this._indexKeys
-    //     .slice()
-    //     .splice(location.endIndex, 1, key);
-    //   this.updateAnchorRange();
-    //   this.handleChange();
-    // } else {
-    //   this._indexKeys.push(key);
-    // }
-    // this._startInspectBatchinator.schedule();
-    // return () => {
-    //   this.remove(key);
-    // };
   }
 
   handleChange() {

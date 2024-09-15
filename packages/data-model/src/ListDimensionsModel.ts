@@ -22,6 +22,7 @@ import {
 
 class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
+  private _initialData: Array<ItemT> = [];
 
   private _keyExtractor: KeyExtractor<ItemT>;
   private _getItemLayout: GetItemLayout<ItemT>;
@@ -71,10 +72,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
     this._getItemSeparatorLength = getItemSeparatorLength;
     this._container = container;
-
-    this._setData(data);
-
     this._offsetInListGroup = 0;
+    this._initialData = data
   }
 
   get recyclerType() {
@@ -91,6 +90,10 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
   get anchorKey() {
     return this._anchorKey;
+  }
+
+  applyInitialData() {
+    this._setData(this._initialData);
   }
 
   getContainerOffset(): number {
@@ -152,10 +155,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   ensureKeyMeta(key: string) {
     let meta = this.getKeyMeta(key);
 
-    // if (!meta && this._parentItemsDimensions) {
-    //   meta = this._parentItemsDimensions.ensureKeyMeta(key);
-    // }
-
     if (meta) return meta;
 
     // TODO: separatorLength may be included!!!!
@@ -199,7 +198,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   // the hook method to trigger ListDimensions or ListGroupDimension recalculate
   // after item layout updated.
   triggerOwnerRecalculateLayout() {
-    this._container.onItemLayoutChanged();
+    console.log('index ', this.id)
+    if (this._container) this._container.onItemLayoutChanged();
   }
 
   _recycleEnabled() {
@@ -214,7 +214,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
    * onContentSizeChanged.
    */
   setIntervalTreeValue(index: number, length: number) {
-    // const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
     this.triggerOwnerRecalculateLayout();
   }
@@ -231,9 +230,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
   createItemMeta(key: string, data: Array<ItemT>, index: number) {
     const isInitialItem = index < this.initialNumToRender;
-    // const isInitialItem = this._initializeMode
-    //   ? index < this.initialNumToRender
-    //   : false;
 
     const meta = ItemMeta.spawn({
       key,
@@ -406,11 +402,12 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         // 最后一个不包含separatorLength
         const length =
           index === len - 1 ? itemLength : itemLength + separatorLength;
-        intervalTree.set(currentIndex, length);
+        intervalTree.drySet(currentIndex, length);
       }
-
       keyToMetaMap.set(itemKey, meta);
     }
+
+    intervalTree.applyUpdate()
   }
 
   append(data: Array<ItemT>) {

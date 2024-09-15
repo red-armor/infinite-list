@@ -14,6 +14,8 @@ import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
+export const isValidMetaLayout = (meta: ItemMeta) => meta && (meta.isApproximateLayout || !meta.getLayout())
+
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
 export const context: {
@@ -149,9 +151,6 @@ class ItemMeta extends ViewabilityItemMeta {
 
   getContainerOffset() {
     return this._owner.getContainerOffset();
-    // if (this._isListItem)
-    //   return (this._owner as BaseDimensions).getContainerOffset();
-    // return 0;
   }
 
   getItemLength() {

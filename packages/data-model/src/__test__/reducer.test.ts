@@ -169,7 +169,7 @@ describe('reducer', () => {
     });
   });
 
-  it.only('with ignoredToPerBatch', () => {
+  it('with ignoredToPerBatch', () => {
     const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
@@ -213,7 +213,7 @@ describe('reducer', () => {
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 0,
+      visibleEndIndex: 10,
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
       distanceFromEnd: undefined,
@@ -343,7 +343,6 @@ describe('reducer', () => {
       keyExtractor: defaultKeyExtractor,
     });
 
-    console.log('genini---');
     listGroupDimensions.registerItem('footer_1', {
       ignoredToPerBatch: true,
     });

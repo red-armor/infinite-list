@@ -2,6 +2,7 @@ import Dimension from '../../Dimension';
 import ListDimensions from '../../ListDimensions';
 import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
+import { isValidMetaLayout } from '../../ItemMeta'
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -28,12 +29,12 @@ export default <State extends ReducerResult = ReducerResult>(
       if (currentDimension instanceof Dimension) {
         if (currentDimension?.getIgnoredToPerBatch()) continue;
         const meta = currentDimension.getMeta();
-        if (!meta.getLayout()) count++;
+        if (!isValidMetaLayout(meta)) count++;
       }
 
       if (currentDimension instanceof ListDimensions) {
         const meta = currentDimension.getIndexItemMeta(dimensionInfo.index);
-        if (!meta.getLayout()) count++;
+        if (!isValidMetaLayout(meta)) count++;
       }
 
       if (count >= maxToRenderPerBatch) {
@@ -52,7 +53,7 @@ export default <State extends ReducerResult = ReducerResult>(
     ) {
       const meta = dimension.getIndexItemMeta(startIndex);
       if (!meta) continue;
-      if (!meta.getLayout()) count++;
+      if (!isValidMetaLayout(meta)) count++;
 
       if (count >= maxToRenderPerBatch) {
         _nextBufferedEndIndex = startIndex;

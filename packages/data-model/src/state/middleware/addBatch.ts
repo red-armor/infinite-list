@@ -1,22 +1,19 @@
 import Dimension from '../../Dimension';
 import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
+import { isValidMetaLayout } from '../../ItemMeta';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
   payload: ActionPayload,
   ctx: Ctx
 ) => {
-  const { dimension, scrollMetrics, distanceFromEnd = 0 } = payload;
+  const { dimension } = payload;
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
   const maxToRenderPerBatch = dimension.maxToRenderPerBatch;
 
   let _nextBufferedEndIndex = bufferedIndexRange.endIndex + maxToRenderPerBatch;
-
-  let startCount = false;
-  const { visibleLength } = scrollMetrics;
-  let len = visibleLength + distanceFromEnd;
 
   if (dimension instanceof ListGroupDimensions) {
     let count = 0;
@@ -39,21 +36,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
       const meta = currentDimensions.getIndexItemMeta(currentIndex);
 
-      if (!startCount && meta && meta.getLayout()) {
-        len -= currentDimensions
-          .getSelectValue()
-          .selectLength(meta.getLayout());
-
-        if (len > 0) continue;
-        else {
-          startCount = true;
-          continue;
-        }
-      } else {
-        startCount = true;
-      }
-
-      count++;
+      if (!isValidMetaLayout(meta)) { count++ }
 
       if (count >= maxToRenderPerBatch) {
         _nextBufferedEndIndex = startIndex;
@@ -64,14 +47,8 @@ export default <State extends ReducerResult = ReducerResult>(
 
   ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
 
-  console.log('_nextBufferedEndIndex ', _nextBufferedEndIndex);
-
-  const maxVisibleEndIndex = Math.min(
+  ctx.visibleIndexRange.endIndex = Math.min(
     ctx.visibleIndexRange.endIndex,
     _nextBufferedEndIndex
-  );
-
-  ctx.visibleIndexRange.endIndex = maxVisibleEndIndex;
-
-  console.log('ppppp ', ctx.visibleIndexRange.endIndex);
+  );;
 };

@@ -1,8 +1,9 @@
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
-import { INVALID_LENGTH } from './common';
+import { INVALID_LENGTH, DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from './common';
 import layoutEqual from '@x-oasis/layout-equal';
-import { DimensionProps, IndexInfo, ItemLayout } from './types';
+import { DimensionProps, IndexInfo, ItemLayout, GetDimensionLength } from './types';
 import BaseContainer from './BaseContainer';
 
 /**
@@ -16,10 +17,23 @@ class Dimension extends BaseContainer {
   private _data: Array<any>;
   private _recyclerType: string;
   private _anchorKey: string;
+  private _itemApproximateLength: number;
+  private _approximateMode: boolean;
+  private _getItemLength: GetDimensionLength
 
   constructor(props: DimensionProps) {
     super(props);
-    const { id, recyclerType, container, ignoredToPerBatch, anchorKey } = props;
+    const { 
+      id, 
+      recyclerType, 
+      container, 
+      ignoredToPerBatch, 
+      anchorKey,
+      getItemLength,
+      recycleEnabled,
+      useItemApproximateLength,
+      itemApproximateLength = DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
+    } = props;
 
     this._data = [
       {
@@ -29,15 +43,17 @@ class Dimension extends BaseContainer {
     this._recyclerType = recyclerType;
     this._anchorKey = anchorKey || id;
     this._container = container;
+    this._getItemLength = getItemLength
     this._ignoredToPerBatch = !!ignoredToPerBatch;
-    this._meta = ItemMeta.spawn({
-      key: this.id,
-      isListItem: false,
-      owner: this,
-      recyclerType: this._recyclerType,
-      canIUseRIC: this.canIUseRIC,
-      ignoredToPerBatch: this._ignoredToPerBatch,
-    });
+    this._approximateMode = recycleEnabled
+      ? defaultBooleanValue(
+          useItemApproximateLength,
+          typeof this._getItemLength !== 'function'
+        )
+      : false;
+    this._itemApproximateLength = itemApproximateLength
+
+    this._meta = this.createItemMeta()
     this.resolveConfigTuplesDefaultState =
       this.resolveConfigTuplesDefaultState.bind(this);
   }
@@ -66,6 +82,41 @@ class Dimension extends BaseContainer {
     const meta = this.getMeta();
     const layout = meta.getLayout();
     return layout ? 1 : 0;
+  }
+
+  createItemMeta() {
+    const meta = ItemMeta.spawn({
+      key: this.id,
+      isListItem: false,
+      owner: this,
+      recyclerType: this._recyclerType,
+      canIUseRIC: this.canIUseRIC,
+      ignoredToPerBatch: this._ignoredToPerBatch,
+    });
+
+    if (typeof this._getItemLength === 'function') {
+      const length = this._getItemLength()
+      // only List with getItemLayout has default layout value
+      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
+      this._selectValue.setLength(meta.getLayout(), length);
+      meta.isApproximateLayout = false
+      this.triggerOwnerRecalculateLayout()
+      return meta
+    }
+
+    if (this._approximateMode && meta.isApproximateLayout) {
+      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
+      this._selectValue.setLength(
+        meta.getLayout(),
+        this._itemApproximateLength
+      );
+
+      this.triggerOwnerRecalculateLayout()
+
+      return meta;
+    }
+
+    return meta
   }
 
   hasUnLayoutItems() {
@@ -161,11 +212,14 @@ class Dimension extends BaseContainer {
     this.setItemLayout(layout, updateIntervalTree);
   }
 
+  triggerOwnerRecalculateLayout() {
+    if (this._container) this._container.onItemLayoutChanged();
+  }
+
   setItemLayout(layout: ItemLayout | number, updateIntervalTree?: boolean) {
     const meta = this.getMeta();
     const _update =
       typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
-    // const finalIndex = this._owner.getDimensionStartIndex(this.id);
 
     meta.isApproximateLayout = false;
 
@@ -175,7 +229,7 @@ class Dimension extends BaseContainer {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (_update) {
-          if (this._container) this._container.onItemLayoutChanged();
+          this.triggerOwnerRecalculateLayout()
           return true;
         }
       }
@@ -184,7 +238,7 @@ class Dimension extends BaseContainer {
     if (!layoutEqual(meta.getLayout(), layout as ItemLayout)) {
       meta.setLayout(layout as ItemLayout);
       if (_update) {
-        if (this._container) this._container.onItemLayoutChanged();
+        this.triggerOwnerRecalculateLayout()
         return true;
       }
     }

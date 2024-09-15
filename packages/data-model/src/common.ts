@@ -17,6 +17,7 @@ export const RECYCLER_RESERVED_BUFFER_SIZE_RATIO = 1.5;
 
 export const LENGTH_PRECISION = 4;
 export const DEFAULT_ITEM_APPROXIMATE_LENGTH = 80;
+export const DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH = 1;
 
 export const DEFAULT_RECYCLER_TYPE = '__default_recycler_buffer__';
 

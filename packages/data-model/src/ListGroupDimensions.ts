@@ -457,8 +457,11 @@ class ListGroupDimensionsExperimental<
       recycleEnabled: this._recycleEnable,
     });
     this.addBuffer(recyclerType);
+
     this.setDimension(listKey, dimensions);
     this._inspector.push(listKey);
+
+    dimensions.applyInitialData()
 
     let onEndReachedCleaner = null;
 
@@ -556,10 +559,14 @@ class ListGroupDimensionsExperimental<
   }
 
   recalculateDimensionsIntervalTree() {
+    console.log('indexkey ', this.indexKeys)
+
     this.indexKeys.forEach((key, index) => {
       const dimensions = this.getDimension(key);
       if (dimensions) {
         const len = dimensions.getTotalLength();
+
+        console.log('index ===', index, len)
 
         if (typeof len === 'number')
           this._dimensionsIntervalTree.set(index, len);
@@ -578,7 +585,6 @@ class ListGroupDimensionsExperimental<
       this.deleteDimension(key);
       this._inspector.remove(key);
       this.onItemsCountChanged();
-      // this._onItemsCountChangedBatchinator.schedule();
     }
   }
 
@@ -603,6 +609,7 @@ class ListGroupDimensionsExperimental<
       container: this,
       horizontal: this.horizontal,
       canIUseRIC: this.canIUseRIC,
+      recycleEnabled: this._recycleEnable,
     });
     this.setDimension(key, dimensions);
     this.addBuffer(recyclerType);
@@ -948,17 +955,13 @@ class ListGroupDimensionsExperimental<
 
     const { startIndex, endIndex: _endIndex } = dimensionResult;
 
-    const endIndex = _endIndex - 1;
-
-    console.log(
-      'start ====',
+    info('computeIndexRange ', 
       startIndex,
-      endIndex,
-      this._dimensionsIntervalTree.getHeap(),
-      this._dimensionsIntervalTree.getMaxUsefulLength(),
-      minOffset,
-      maxOffset
-    );
+      _endIndex, 
+      this._dimensionsIntervalTree.getMaxUsefulLength()
+    )
+
+    const endIndex = _endIndex - 1;
 
     if (startIndex === endIndex) {
       const dimensionKey = this.indexKeys[startIndex];
