@@ -87,8 +87,8 @@ importers:
         specifier: ^0.1.14
         version: 0.1.14
       '@x-oasis/prefix-interval-tree':
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.2.4
+        version: 0.2.4
       '@x-oasis/recycler':
         specifier: ^0.1.33
         version: 0.1.33
@@ -3745,8 +3745,8 @@ packages:
     resolution: {integrity: sha512-1PMPI8ppdm+Byv+HLYVxqn4LE00LlpVh4SS0nlfBozalom7nABlcNavZ+H5h6HSv8vSMVAdnIVJDOHzY8Q3SaQ==}
     dev: false
 
-  /@x-oasis/prefix-interval-tree@0.2.2:
-    resolution: {integrity: sha512-cEA52IlzeoOHTNOo2UOuYtASsKt3BjqmyWqZ9QLuKdX05RzIWMQ3ljt+0E2uZo7/JZ4up0VxGa+4T82TbfyvLg==}
+  /@x-oasis/prefix-interval-tree@0.2.4:
+    resolution: {integrity: sha512-oE4dasiGw78tmh/YFh9ezsbukO+4+9wuiuxR9jTgnSC6qhVZaSmJmXOFZyKHsz2ddsqh/CcoBgEAUeQc3wpchw==}
     dev: false
 
   /@x-oasis/recycler@0.1.33:

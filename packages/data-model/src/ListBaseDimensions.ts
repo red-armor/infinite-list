@@ -11,7 +11,6 @@ import {
   shallowDiffers,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
-  DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
 import { ActionType } from './state/types';
@@ -99,9 +98,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       viewabilityConfigCallbackPairs,
 
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
-
-      useItemApproximateLength,
-      itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
 
       onRecyclerProcess,
       stillnessThreshold,

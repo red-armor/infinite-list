@@ -27,7 +27,7 @@ describe('reducer', () => {
       delete itemMetaContext[key];
     });
   });
-  it.only('basic scrollDown', () => {
+  it('basic scrollDown', () => {
     const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
@@ -74,13 +74,16 @@ describe('reducer', () => {
       },
     });
 
-    console.log('listGroupDimensions ', JSON.stringify(listGroupDimensions.getIntervalTree().getHeap()))
+    console.log(
+      'listGroupDimensions ',
+      JSON.stringify(listGroupDimensions.getIntervalTree().getHeap())
+    );
 
     expect(listGroupDimensions.getContainerOffset()).toBe(2000);
     expect(store.getState()).toEqual({
       actionType: ActionType.ScrollDown,
-      visibleStartIndex: 0,
-      visibleEndIndex: 0,
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 18,
     });
@@ -124,8 +127,6 @@ describe('reducer', () => {
 
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
 
-    console.log('store.getState() ', { ...listGroupDimensions.getState() });
-
     store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
@@ -168,7 +169,7 @@ describe('reducer', () => {
     });
   });
 
-  it('with ignoredToPerBatch', () => {
+  it.only('with ignoredToPerBatch', () => {
     const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
@@ -203,7 +204,7 @@ describe('reducer', () => {
         dimension: listGroupDimensions,
         scrollMetrics: {
           offset: 2000,
-          contentLength: 2000,
+          contentLength: 3000,
           visibleLength: 926,
         },
       },

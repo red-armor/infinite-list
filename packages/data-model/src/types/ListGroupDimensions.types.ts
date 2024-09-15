@@ -28,6 +28,7 @@ export interface ListGroupDimensionsProps
     ViewabilityConfigTuplesProps {
   onUpdateItemLayout?: Function;
   onUpdateIntervalTree?: Function;
+  recycleEnabled?: boolean;
   recyclerTypes?: Array<string>;
 }
 

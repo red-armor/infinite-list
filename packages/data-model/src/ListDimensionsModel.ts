@@ -476,12 +476,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       } else if (meta.isApproximateLayout) {
         // 比如换了一个item的话，不会触发更新
         this.triggerOwnerRecalculateLayout();
-
-        // if (this._listGroupDimension) {
-        //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-        // } else if (this._recycleEnabled()) {
-        //   this._recalculateRecycleResultStateBatchinator.schedule();
-        // }
       }
 
       meta.isApproximateLayout = false;
@@ -513,12 +507,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       meta.isApproximateLayout = false;
       // 比如换了一个item的话，不会触发更新
       this.triggerOwnerRecalculateLayout();
-
-      // if (this._listGroupDimension) {
-      //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-      // } else if (this._recycleEnabled()) {
-      //   this._recalculateRecycleResultStateBatchinator.schedule();
-      // }
     }
 
     return false;

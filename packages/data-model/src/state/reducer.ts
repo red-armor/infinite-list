@@ -1,7 +1,7 @@
 import preCheck from './middleware/preCheck';
 import addBatch from './middleware/addBatch';
-import bufferedEndIndexShouldBeReserved from './middleware/bufferedEndIndexShouldBeReserved';
-import bufferedStartIndexShouldBeReserved from './middleware/bufferedStartIndexShouldBeReserved';
+// import bufferedEndIndexShouldBeReserved from './middleware/bufferedEndIndexShouldBeReserved';
+// import bufferedStartIndexShouldBeReserved from './middleware/bufferedStartIndexShouldBeReserved';
 import hydrateOnEndReached from './middleware/hydrateOnEndReached';
 import makeIndexMeaningful from './middleware/makeIndexMeaningful';
 import resolveIndexRange from './middleware/resolveIndexRange';
@@ -42,7 +42,7 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   resolveMaxIndex(state, payload, ctx);
   addBatch(state, payload, ctx);
   resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedEndIndexShouldBeReserved(state, payload, ctx);
+  // bufferedEndIndexShouldBeReserved(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -97,7 +97,7 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
   resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedEndIndexShouldBeReserved(state, payload, ctx);
+  // bufferedEndIndexShouldBeReserved(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -154,7 +154,7 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
   resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedEndIndexShouldBeReserved(state, payload, ctx);
+  // bufferedEndIndexShouldBeReserved(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -211,7 +211,7 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
   resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedStartIndexShouldBeReserved(state, payload, ctx);
+  // bufferedStartIndexShouldBeReserved(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);

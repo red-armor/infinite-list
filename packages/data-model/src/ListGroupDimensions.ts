@@ -24,6 +24,8 @@ import createStore from './state/createStore';
 import { ReducerResult } from './state/types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
+import { info } from './utils/logger';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -49,6 +51,8 @@ class ListGroupDimensionsExperimental<
    * 2. normal list
    */
   private _flattenData: Array<ItemT> = [];
+
+  private _recycleEnable: boolean;
 
   private _dimensionsIntervalTree: PrefixIntervalTree = new PrefixIntervalTree(
     100
@@ -77,6 +81,7 @@ class ListGroupDimensionsExperimental<
     this._itemsDimensions = new ItemsDimensions({
       id,
     });
+    this._recycleEnable = defaultBooleanValue(props.recycleEnabled, true);
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
     this._onItemsCountChangedBatchinator = new Batchinator(
@@ -449,6 +454,7 @@ class ListGroupDimensionsExperimental<
       id: listKey,
       container: this,
       horizontal: this.getHorizontal(),
+      recycleEnabled: this._recycleEnable,
     });
     this.addBuffer(recyclerType);
     this.setDimension(listKey, dimensions);
@@ -554,6 +560,7 @@ class ListGroupDimensionsExperimental<
       const dimensions = this.getDimension(key);
       if (dimensions) {
         const len = dimensions.getTotalLength();
+
         if (typeof len === 'number')
           this._dimensionsIntervalTree.set(index, len);
       }
@@ -941,9 +948,17 @@ class ListGroupDimensionsExperimental<
 
     const { startIndex, endIndex: _endIndex } = dimensionResult;
 
-    const endIndex = _endIndex - 1
+    const endIndex = _endIndex - 1;
 
-    console.log('dimension result ', dimensionResult)
+    console.log(
+      'start ====',
+      startIndex,
+      endIndex,
+      this._dimensionsIntervalTree.getHeap(),
+      this._dimensionsIntervalTree.getMaxUsefulLength(),
+      minOffset,
+      maxOffset
+    );
 
     if (startIndex === endIndex) {
       const dimensionKey = this.indexKeys[startIndex];
@@ -953,7 +968,7 @@ class ListGroupDimensionsExperimental<
       if (dimensions instanceof Dimension) {
         return {
           startIndex: dimensionsStartIndex,
-          endIndex: dimensionsStartIndex,
+          endIndex: dimensionsStartIndex + 1,
         };
       } else if (dimensions instanceof ListDimensionsModel) {
         const startOffset = this._dimensionsIntervalTree.sumUntil(startIndex);
@@ -1006,22 +1021,22 @@ class ListGroupDimensionsExperimental<
 
     let nextEndIndex = startIndex;
 
-    console.log('wt----')
-
     if (endDimensions instanceof Dimension) {
-      console.log('xxxx ')
-      nextEndIndex = this.getDimensionStartIndex(endDimensionsKey);
+      console.log('xxxx ');
+      nextEndIndex = this.getDimensionStartIndex(endDimensionsKey) + 1;
     } else if (endDimensions instanceof ListDimensionsModel) {
       const startOffset = this._dimensionsIntervalTree.sumUntil(_nextEndIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(endDimensionsKey);
 
-      console.log('max ---- ', maxOffset, startOffset)
+      console.log('max ---- ', maxOffset, startOffset);
       const index = endDimensions.intervalTree.leastStrictUpperBound(
         maxOffset - startOffset
       );
       nextEndIndex = dimensionsStartIndex + index;
     }
+
+    info('computedIndexRange ', nextStartIndex, nextEndIndex);
 
     return {
       startIndex: nextStartIndex,

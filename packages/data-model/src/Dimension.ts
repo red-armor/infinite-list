@@ -123,22 +123,6 @@ class Dimension extends BaseContainer {
     return info;
   }
 
-  // /**
-  //  *
-  //  * @param layout container layout
-  //  */
-  // setLayout(layout: ItemLayout) {
-  //   this._layout = layout;
-  // }
-
-  // /**
-  //  *
-  //  * @returns get list dimensions' container layout
-  //  */
-  // getLayout() {
-  //   return this._layout;
-  // }
-
   getFinalItemMeta(item: any) {
     return this.getItemMeta(item);
   }

@@ -35,7 +35,7 @@
     "@x-oasis/layout-equal": "^0.1.16",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/omit": "^0.1.14",
-    "@x-oasis/prefix-interval-tree": "^0.2.2",
+    "@x-oasis/prefix-interval-tree": "^0.2.4",
     "@x-oasis/recycler": "^0.1.33",
     "@x-oasis/resolve-changed": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14",
