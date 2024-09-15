@@ -559,15 +559,10 @@ class ListGroupDimensionsExperimental<
   }
 
   recalculateDimensionsIntervalTree() {
-    console.log('indexkey ', this.indexKeys)
-
     this.indexKeys.forEach((key, index) => {
       const dimensions = this.getDimension(key);
       if (dimensions) {
         const len = dimensions.getTotalLength();
-
-        console.log('index ===', index, len)
-
         if (typeof len === 'number')
           this._dimensionsIntervalTree.set(index, len);
       }
@@ -1025,14 +1020,11 @@ class ListGroupDimensionsExperimental<
     let nextEndIndex = startIndex;
 
     if (endDimensions instanceof Dimension) {
-      console.log('xxxx ');
       nextEndIndex = this.getDimensionStartIndex(endDimensionsKey) + 1;
     } else if (endDimensions instanceof ListDimensionsModel) {
       const startOffset = this._dimensionsIntervalTree.sumUntil(_nextEndIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(endDimensionsKey);
-
-      console.log('max ---- ', maxOffset, startOffset);
       const index = endDimensions.intervalTree.leastStrictUpperBound(
         maxOffset - startOffset
       );

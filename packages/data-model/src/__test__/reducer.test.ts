@@ -85,7 +85,7 @@ describe('reducer', () => {
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
-      bufferedEndIndex: 18,
+      bufferedEndIndex: 10,
     });
   });
 
@@ -144,7 +144,7 @@ describe('reducer', () => {
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
-      bufferedEndIndex: 19,
+      bufferedEndIndex: 8,
     });
 
     store.dispatch({
@@ -165,7 +165,7 @@ describe('reducer', () => {
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
-      bufferedEndIndex: 19,
+      bufferedEndIndex: 10,
     });
   });
 
@@ -213,7 +213,7 @@ describe('reducer', () => {
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 10,
+      visibleEndIndex: 0, 
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
       distanceFromEnd: undefined,
@@ -261,7 +261,7 @@ describe('reducer', () => {
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 0,
+      visibleEndIndex: 9,
       bufferedStartIndex: 0,
       bufferedEndIndex: 9,
     });
@@ -430,8 +430,6 @@ describe('reducer', () => {
         },
       },
     });
-
-    console.log('hhh');
 
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,

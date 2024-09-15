@@ -4,7 +4,8 @@ import hydrateOnEndReached from './middleware/hydrateOnEndReached';
 import makeIndexMeaningful from './middleware/makeIndexMeaningful';
 import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
-import resolveUnLayoutLimitation from './middleware/resolveUnLayoutLimitation';
+import fixBufferedRange from './middleware/fixBufferedRange';
+import fixVisibleRange from './middleware/fixVisibleRange';
 import { Action, ActionPayload, ActionType, Ctx, ReducerResult } from './types';
 
 const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
@@ -18,7 +19,8 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
   addBatch(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -55,7 +57,8 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -92,7 +95,8 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -129,8 +133,8 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
-  // bufferedStartIndexShouldBeReserved(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);

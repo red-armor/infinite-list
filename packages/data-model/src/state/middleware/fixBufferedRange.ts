@@ -1,9 +1,12 @@
 import Dimension from '../../Dimension';
+import ListDimensionsModel from '../../ListDimensionsModel';
 import ListDimensions from '../../ListDimensions';
 import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
 import { isValidMetaLayout } from '../../ItemMeta'
+import { info } from '../../utils/logger';
 
+// recalculate buffer
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
   payload: ActionPayload,
@@ -32,7 +35,7 @@ export default <State extends ReducerResult = ReducerResult>(
         if (!isValidMetaLayout(meta)) count++;
       }
 
-      if (currentDimension instanceof ListDimensions) {
+      if (currentDimension instanceof ListDimensionsModel) {
         const meta = currentDimension.getIndexItemMeta(dimensionInfo.index);
         if (!isValidMetaLayout(meta)) count++;
       }
@@ -61,6 +64,10 @@ export default <State extends ReducerResult = ReducerResult>(
       }
     }
   }
+
+  console.log('-----')
+
+  info('resolve unlayout ', _nextBufferedEndIndex)
 
   ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
 };
