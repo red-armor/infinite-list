@@ -32,6 +32,8 @@ import EnabledSelector from './utils/EnabledSelector';
 import StillnessHelper from './utils/StillnessHelper';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import BaseLayout from './BaseLayout';
+import createStore from './state/createStore';
+import { ReducerResult } from './state/types';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -77,8 +79,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   constructor(props: ListBaseDimensionsProps) {
     super(props);
     const {
-      store,
-
       recyclerTypes,
       recyclerBufferSize,
       recyclerReservedBufferPerBatch,
@@ -105,7 +105,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
-    this._store = store;
+
+    this._store = createStore<ReducerResult>();
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,
@@ -772,7 +773,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     }
   ) {
     const {
-      // data,
       bufferedEndIndex: _bufferedEndIndex,
       bufferedStartIndex: _bufferedStartIndex,
     } = state;
@@ -782,10 +782,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     const bufferedStartIndex = resolver?.bufferedStartIndex
       ? resolver?.bufferedStartIndex(state)
       : _bufferedStartIndex;
+    const data = this.getData()
 
     const nextStart = bufferedStartIndex;
     const nextEnd = bufferedEndIndex + 1;
-    const remainingData = this._data.slice(nextStart, nextEnd);
+    const remainingData = data.slice(nextStart, nextEnd);
     const beforeTokens = this.resolveToken(0, nextStart);
     const spaceState = [];
 

@@ -27,6 +27,14 @@ export enum ActionType {
   Initial = 'initial',
 }
 
+export type RawAction = {
+  type: ActionType; // 应用触底了，但是List仍旧有数据没有渲染
+  payload: {
+    dimension: ListDimensions | ListGroupDimensions;
+    scrollMetrics: ScrollMetrics;
+  };
+}
+
 export type Action = {
   type: ActionType; // 应用触底了，但是List仍旧有数据没有渲染
   payload: ActionPayload;

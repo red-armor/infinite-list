@@ -2,7 +2,7 @@ import ListDimensions from '../ListDimensions';
 import { ScrollMetrics } from '../types';
 import { resolveAction } from './actions';
 import reducer from './reducer';
-import { Reducer, ReducerResult } from './types';
+import { Action, RawAction, Reducer, ReducerResult } from './types';
 
 function createStore<State extends ReducerResult = ReducerResult>(
   _reducer: Reducer<State> = reducer
@@ -10,7 +10,7 @@ function createStore<State extends ReducerResult = ReducerResult>(
   let currentState: State = {} as any as State;
   const currentReducer = _reducer;
 
-  const dispatch = (action) => {
+  const dispatch = (action: Action) => {
     currentState = currentReducer(currentState, action);
     return currentState;
   };

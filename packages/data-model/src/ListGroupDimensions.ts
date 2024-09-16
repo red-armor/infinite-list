@@ -18,7 +18,6 @@ import {
   RegisteredListProps,
   RegisteredDimensionProps,
 } from './types';
-import createStore from './state/createStore';
 import { ReducerResult } from './state/types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
@@ -79,7 +78,6 @@ class ListGroupDimensionsExperimental<
     super({
       recycleEnabled: true,
       ...props,
-      store: createStore<ReducerResult>(),
     });
     const { id, onUpdateItemLayout, onUpdateIntervalTree } = props;
 

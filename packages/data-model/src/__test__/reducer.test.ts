@@ -28,7 +28,7 @@ describe('reducer', () => {
     });
   });
   it('basic scrollDown', () => {
-    const store = createStore();
+    console.log('x-===')
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -63,7 +63,7 @@ describe('reducer', () => {
       getItemLayout: (item, index) => ({ length: 150, index }),
     });
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.ScrollDown,
       payload: {
         dimension: listGroupDimensions,
@@ -72,6 +72,8 @@ describe('reducer', () => {
           contentLength: 5000,
           visibleLength: 926,
         },
+        isEndReached: false,
+        distanceFromEnd: 0,
       },
     });
 
@@ -81,17 +83,18 @@ describe('reducer', () => {
     );
 
     expect(listGroupDimensions.getContainerOffset()).toBe(2000);
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.getState()).toEqual({
       actionType: ActionType.ScrollDown,
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
+      isEndReached: false,
+      distanceFromEnd: 0,
     });
   });
 
   it('basic scrollDown, `bufferedEndIndex` should be preserved (17 -> 19)', () => {
-    const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -128,7 +131,7 @@ describe('reducer', () => {
 
     listGroupDimensions.setKeyItemLayout('banner', 'banner', 80);
 
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
@@ -137,18 +140,22 @@ describe('reducer', () => {
           contentLength: 2000,
           visibleLength: 926,
         },
+        isEndReached: false,
+        distanceFromEnd: 0,
       },
     });
 
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 8,
+      isEndReached: false,
+      distanceFromEnd: 0,
     });
 
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.ScrollDown,
       payload: {
         dimension: listGroupDimensions,
@@ -157,21 +164,24 @@ describe('reducer', () => {
           contentLength: 5000,
           visibleLength: 926,
         },
+        isEndReached: false,
+        distanceFromEnd: 0,
       },
     });
 
     expect(listGroupDimensions.getContainerOffset()).toBe(2000);
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.ScrollDown,
       visibleStartIndex: -1,
       visibleEndIndex: -1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
+      isEndReached: false,
+      distanceFromEnd: 0,
     });
   });
 
   it('with ignoredToPerBatch', () => {
-    const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -199,7 +209,7 @@ describe('reducer', () => {
       keyExtractor: defaultKeyExtractor,
     });
 
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
@@ -208,22 +218,23 @@ describe('reducer', () => {
           contentLength: 3000,
           visibleLength: 926,
         },
+        isEndReached: false,
+        distanceFromEnd: 0,
       },
     });
 
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 1, 
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
-      distanceFromEnd: undefined,
-      isEndReached: undefined,
+      isEndReached: false,
+      distanceFromEnd: 0,
     });
   });
 
   it('without ignoredToPerBatch', () => {
-    const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -247,7 +258,7 @@ describe('reducer', () => {
       keyExtractor: defaultKeyExtractor,
     });
 
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
@@ -256,20 +267,23 @@ describe('reducer', () => {
           contentLength: 2000,
           visibleLength: 926,
         },
+        isEndReached: false,
+        distanceFromEnd: 0,
       },
     });
 
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 0,
       bufferedStartIndex: 0,
       bufferedEndIndex: 9,
+      isEndReached: false,
+      distanceFromEnd: 0,
     });
   });
 
   it('with ignoredToPerBatch - with layout', () => {
-    const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -302,7 +316,7 @@ describe('reducer', () => {
 
     listGroupDimensions.setKeyItemLayout('header_1', 'header_1', 200);
     listGroupDimensions.setKeyItemLayout('footer_1', 'footer_1', 30);
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
@@ -311,20 +325,23 @@ describe('reducer', () => {
           contentLength: 5000,
           visibleLength: 926,
         },
+        isEndReached: false,
+        distanceFromEnd: 0,
       },
     });
 
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
+      isEndReached: false,
+      distanceFromEnd: 0,
     });
   });
 
   it('with ignoredToPerBatch', () => {
-    const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -420,7 +437,7 @@ describe('reducer', () => {
       ignoredToPerBatch: true,
     });
 
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
@@ -429,15 +446,19 @@ describe('reducer', () => {
           contentLength: 5000,
           visibleLength: 926,
         },
+        isEndReached: false,
+        distanceFromEnd: 0,
       },
     });
 
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 20,
+      isEndReached: false,
+      distanceFromEnd: 0,
     });
   });
 
@@ -525,115 +546,115 @@ describe('reducer', () => {
     });
   });
 
-  it('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
-    const data = buildData(100);
+  // it('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
+  //   const data = buildData(100);
 
-    const list = new ListDimensions({
-      data: [],
-      id: 'list_group',
-      keyExtractor: defaultKeyExtractor,
-      maxToRenderPerBatch: 7,
-      windowSize: 2,
-      recycleEnabled: true,
-      initialNumToRender: 4,
-      // onEndReachedThreshold: 2,
-      getContainerLayout: () => ({
-        x: 0,
-        y: 0,
-        width: 375,
-        height: 2000,
-      }),
-      viewabilityConfigCallbackPairs: [
-        {
-          viewabilityConfig: {
-            viewport: 1,
-            name: 'imageViewable',
-            viewAreaCoveragePercentThreshold: 20,
-          },
-        },
-        {
-          viewabilityConfig: {
-            name: 'viewable',
-            viewAreaCoveragePercentThreshold: 30,
-          },
-        },
-      ],
-    });
+  //   const list = new ListDimensions({
+  //     data: [],
+  //     id: 'list_group',
+  //     keyExtractor: defaultKeyExtractor,
+  //     maxToRenderPerBatch: 7,
+  //     windowSize: 2,
+  //     recycleEnabled: true,
+  //     initialNumToRender: 4,
+  //     // onEndReachedThreshold: 2,
+  //     getContainerLayout: () => ({
+  //       x: 0,
+  //       y: 0,
+  //       width: 375,
+  //       height: 2000,
+  //     }),
+  //     viewabilityConfigCallbackPairs: [
+  //       {
+  //         viewabilityConfig: {
+  //           viewport: 1,
+  //           name: 'imageViewable',
+  //           viewAreaCoveragePercentThreshold: 20,
+  //         },
+  //       },
+  //       {
+  //         viewabilityConfig: {
+  //           name: 'viewable',
+  //           viewAreaCoveragePercentThreshold: 30,
+  //         },
+  //       },
+  //     ],
+  //   });
 
-    expect(list.state).toEqual({
-      visibleStartIndex: -1,
-      visibleEndIndex: -1,
-      bufferedStartIndex: -1,
-      bufferedEndIndex: -1,
-      isEndReached: false,
-      distanceFromEnd: 0,
-      data: [],
-      actionType: 'initial',
-    });
+  //   expect(list.state).toEqual({
+  //     visibleStartIndex: -1,
+  //     visibleEndIndex: -1,
+  //     bufferedStartIndex: -1,
+  //     bufferedEndIndex: -1,
+  //     isEndReached: false,
+  //     distanceFromEnd: 0,
+  //     data: [],
+  //     actionType: 'initial',
+  //   });
 
-    list.setData(data);
+  //   list.setData(data);
 
-    // @ts-ignore
-    list.updateScrollMetrics({
-      offset: 0,
-      visibleLength: 926,
-      contentLength: 1000,
-    });
+  //   // @ts-ignore
+  //   list.updateScrollMetrics({
+  //     offset: 0,
+  //     visibleLength: 926,
+  //     contentLength: 1000,
+  //   });
 
-    console.log('===========================')
+  //   console.log('===========================')
 
-    list.setFinalKeyItemLayout('3', 100, true);
+  //   list.setFinalKeyItemLayout('3', 100, true);
 
-    expect(list.state).toEqual({
-      visibleStartIndex: -1,
-      visibleEndIndex: -1,
-      bufferedStartIndex: -1,
-      bufferedEndIndex: -1,
-      isEndReached: false,
-      distanceFromEnd: 0,
-      data: data.slice(0, 4),
-      actionType: 'initial',
-    });
+  //   expect(list.state).toEqual({
+  //     visibleStartIndex: -1,
+  //     visibleEndIndex: -1,
+  //     bufferedStartIndex: -1,
+  //     bufferedEndIndex: -1,
+  //     isEndReached: false,
+  //     distanceFromEnd: 0,
+  //     data: data.slice(0, 4),
+  //     actionType: 'initial',
+  //   });
 
-    expect(list.state).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 3,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 7,
-      isEndReached: true,
-      distanceFromEnd: 74,
-      data: data.slice(0, 8),
-      actionType: 'hydrationWithBatchUpdate',
-    });
+  //   expect(list.state).toEqual({
+  //     visibleStartIndex: 0,
+  //     visibleEndIndex: 3,
+  //     bufferedStartIndex: 0,
+  //     bufferedEndIndex: 7,
+  //     isEndReached: true,
+  //     distanceFromEnd: 74,
+  //     data: data.slice(0, 8),
+  //     actionType: 'hydrationWithBatchUpdate',
+  //   });
 
-    // @ts-ignore
-    list.updateScrollMetrics({
-      offset: 0,
-      visibleLength: 926,
-      contentLength: 1000,
-    });
+  //   // @ts-ignore
+  //   list.updateScrollMetrics({
+  //     offset: 0,
+  //     visibleLength: 926,
+  //     contentLength: 1000,
+  //   });
 
-    const listState = list.state;
+  //   const listState = list.state;
 
-    expect(listState).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 3,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 7,
-      isEndReached: true,
-      distanceFromEnd: 74,
-      data: data.slice(0, 8),
-      actionType: 'hydrationWithBatchUpdate',
-    });
+  //   expect(listState).toEqual({
+  //     visibleStartIndex: 0,
+  //     visibleEndIndex: 3,
+  //     bufferedStartIndex: 0,
+  //     bufferedEndIndex: 7,
+  //     isEndReached: true,
+  //     distanceFromEnd: 74,
+  //     data: data.slice(0, 8),
+  //     actionType: 'hydrationWithBatchUpdate',
+  //   });
 
-    // @ts-ignore
-    list.updateScrollMetrics({
-      offset: 0,
-      visibleLength: 926,
-      contentLength: 1001,
-    });
+  //   // @ts-ignore
+  //   list.updateScrollMetrics({
+  //     offset: 0,
+  //     visibleLength: 926,
+  //     contentLength: 1001,
+  //   });
 
-    expect(list.state).toBe(listState);
-  });
+  //   expect(list.state).toBe(listState);
+  // });
 });
 

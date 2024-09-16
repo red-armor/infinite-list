@@ -6,16 +6,11 @@ import {
   ItemLayout,
   ListDimensionsModelProps,
 } from './types';
-import createStore from './state/createStore';
-import { ReducerResult } from './state/types';
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
   constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
-    super({
-      ...props,
-      store: createStore<ReducerResult>(),
-    });
+    super({ ...props });
     this._dataModel = new ListDimensionsModel({
       recycleEnabled: true,
       ...props,
