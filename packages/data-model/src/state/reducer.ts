@@ -1,11 +1,11 @@
 import preCheck from './middleware/preCheck';
-import addBatch from './middleware/addBatch';
 import hydrateOnEndReached from './middleware/hydrateOnEndReached';
 import makeIndexMeaningful from './middleware/makeIndexMeaningful';
 import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
-import fixBufferedRange from './middleware/fixBufferedRange';
 import fixVisibleRange from './middleware/fixVisibleRange';
+import fixBufferedRange from './middleware/fixBufferedRange';
+import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
 import resolveInitialState from './middleware/resolveInitialState';
 import { Action, ActionPayload, ActionType, Ctx, ReducerResult } from './types';
 
@@ -14,6 +14,9 @@ const initialize = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
+  resolveIndexRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
+  fixInitialBufferedRange(state, payload, ctx);
   resolveInitialState(state, payload, ctx);
 
   const {
@@ -27,7 +30,6 @@ const initialize = <State extends ReducerResult = ReducerResult>(
     ...state,
     isEndReached,
     distanceFromEnd,
-    // pseudoVelocity: payload.pseudoVelocity,
     actionType: 'initial',
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: visibleIndexRange.endIndex,
@@ -46,7 +48,6 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  addBatch(state, payload, ctx);
   fixBufferedRange(state, payload, ctx);
   fixVisibleRange(state, payload, ctx);
 

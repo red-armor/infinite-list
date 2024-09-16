@@ -141,8 +141,8 @@ class BaseLayout extends BaseContainer {
     if (exclusive) return { minOffset, maxOffset };
     if (containerOffset > maxOffset) {
       return {
-        minOffset: -1,
-        maxOffset: -1,
+        minOffset: minOffset - containerOffset,
+        maxOffset: maxOffset - containerOffset,
       };
     }
 

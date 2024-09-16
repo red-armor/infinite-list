@@ -93,7 +93,7 @@ class ListGroupDimensionsExperimental<
       50
     );
 
-    this._isFixedLength = defaultBooleanValue(props.isFixedLength, false);
+    this._isFixedLength = defaultBooleanValue(props.isFixedLength, true);
 
     this._inspector = new Inspector({
       owner: this,

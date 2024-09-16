@@ -39,6 +39,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
       if (currentDimensions instanceof ListDimensionsModel) {
         const meta = currentDimensions.getIndexItemMeta(currentIndex);
+        console.log('in========= ', isValidMetaLayout(meta), nextStartIndex)
         if (!isValidMetaLayout(meta)) break;
       }
     }

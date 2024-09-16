@@ -25,7 +25,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
   const _info = dimension.getOnEndReachedHelper().perform(scrollMetrics);
   const isEndReached = _info.isEndReached;
   const prevDataLength = ctx.dataLength;
-  const nextDataLength = dimension.getTotalLength();
+  const nextDataLength = dimension.getDataLength();
 
   // isEndReached should not be rewrite, or trigger onEndReached...
   let nextIsEndReached = isEndReached;

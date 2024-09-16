@@ -16,7 +16,23 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const maxToRenderPerBatch = dimension.maxToRenderPerBatch;
+  const initialNumToRender = dimension.initialNumToRender
+
+  const {
+    startIndex,
+    endIndex
+  } = visibleIndexRange
+
+  if (endIndex - startIndex >= initialNumToRender)  {
+    ctx.bufferedIndexRange.startIndex = startIndex
+    ctx.bufferedIndexRange.endIndex = endIndex
+    return 
+  }
+
+  const maxToRenderPerBatch = 
+    initialNumToRender > 0 
+    ? Math.min(dimension.maxToRenderPerBatch, initialNumToRender)
+    : dimension.maxToRenderPerBatch
   let _nextBufferedEndIndex = bufferedIndexRange.endIndex;
 
   if (dimension instanceof ListGroupDimensions) {
@@ -66,7 +82,7 @@ export default <State extends ReducerResult = ReducerResult>(
         break;
       }
     }
-    info('fixBufferedRange ', _nextBufferedEndIndex)
+    info('fixInitialBufferedRange ', _nextBufferedEndIndex)
     ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   }
 
