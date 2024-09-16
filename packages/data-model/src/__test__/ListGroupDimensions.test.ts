@@ -616,7 +616,7 @@ describe('test dimensionsIndexRange', () => {
     ]);
   });
 
-  it.only('on delete', () => {
+  it('on delete', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -727,7 +727,8 @@ describe('test dimensionsIndexRange', () => {
       },
     ]);
 
-    list3Dimensions.setData(buildData(5));
+    listGroupDimensions.setListData('list_3', buildData(5))
+    // list3Dimensions.setData(buildData(5));
 
     expect(
       listGroupDimensions.dimensionsIndexRange.map((item) => ({
@@ -759,7 +760,7 @@ describe('test dimensionsIndexRange', () => {
     ]);
   });
 
-  test('getFinalIndexIndexInfo', () => {
+  it('getFinalIndexIndexInfo', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -803,16 +804,22 @@ describe('test dimensionsIndexRange', () => {
 
     expect(listGroupDimensions.getFinalIndexIndexInfo(0)).toEqual({
       dimensions: bannerDimensions,
+      indexInGroup: 0,
+      indexInRecycler: 0,
       index: 0,
     });
 
     expect(listGroupDimensions.getFinalIndexIndexInfo(20)).toEqual({
       dimensions: list3Dimensions,
       index: 4,
+      indexInGroup: 20,
+      indexInRecycler: 20,
     });
     expect(listGroupDimensions.getFinalIndexIndexInfo(29)).toEqual({
       dimensions: banner2Dimensions,
       index: 0,
+      indexInGroup: 29,
+      indexInRecycler: 29,
     });
   });
 

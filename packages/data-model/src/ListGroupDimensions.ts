@@ -532,8 +532,8 @@ class ListGroupDimensionsExperimental<
   }
 
   /**
-   * Important!!! : data change should be reflect immediately. but resolve state could be deferred.
-   * So this.updateScrollMetrics actually is a batch operation ..
+   * Important!!! : data change should be reflect immediately. but resolve state could 
+   * be deferred. So this.updateScrollMetrics actually is a batch operation ..
    */
   onItemsCountChanged() {
     this.reflowFlattenData();
@@ -655,9 +655,16 @@ class ListGroupDimensionsExperimental<
 
   getKeyDimension() {}
 
+  /**
+   * 
+   * @param listKey 
+   * @param data 
+   * 
+   * for child list, the corresponding setData method will not trigger onItemsCountChanged
+   * So setListData comes
+   */
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
-
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensionsModel).setData(data);
 

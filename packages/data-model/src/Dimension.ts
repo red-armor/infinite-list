@@ -229,6 +229,9 @@ class Dimension extends BaseContainer {
     if (typeof layout === 'number') {
       const length = layout;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
+        
+        console.log('layout =====', meta.getLayout(), meta.ensureLayout())
+
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (_update) {
@@ -236,9 +239,12 @@ class Dimension extends BaseContainer {
           return true;
         }
       }
-    }
+    } 
 
-    if (!layoutEqual(meta.getLayout(), layout as ItemLayout)) {
+
+    if (
+      !layoutEqual(meta.getLayout(), layout as ItemLayout)
+    ) {
       meta.setLayout(layout as ItemLayout);
       if (_update) {
         this.triggerOwnerRecalculateLayout()
