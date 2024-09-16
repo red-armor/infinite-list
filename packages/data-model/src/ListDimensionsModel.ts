@@ -37,6 +37,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
   private _recyclerType: string;
+  private _isFixedLength: boolean;
 
   constructor(props: ListDimensionsModelProps<ItemT>) {
     super({
@@ -51,6 +52,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       keyExtractor,
       getItemLayout,
       container,
+      isFixedLength = true,
       getItemSeparatorLength,
       useItemApproximateLength,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
@@ -61,6 +63,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this._recyclerType = recyclerType;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
+    this._isFixedLength = isFixedLength
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -154,19 +157,25 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
    */
   ensureKeyMeta(key: string) {
     let meta = this.getKeyMeta(key);
-
     if (meta) return meta;
+    const index = this.getKeyIndex(key)
 
-    // TODO: separatorLength may be included!!!!
-    meta = ItemMeta.spawn({
-      key,
-      owner: this,
-      isListItem: true,
-      isInitialItem: false,
-      recyclerType: this._recyclerType,
-      canIUseRIC: this.canIUseRIC,
-    });
-    this.setKeyMeta(key, meta);
+    meta = this.createItemMeta(key, this.getData(), index)
+
+    const data = this.getData()
+    const len = data.length
+
+    if (meta.getLayout()) {
+      const itemLength = this._selectValue.selectLength(meta.getLayout());
+      const separatorLength = meta.getSeparatorLength();
+
+      // 最后一个不包含separatorLength
+      const length =
+        index === len - 1 ? itemLength : itemLength + separatorLength;
+      this.intervalTree.set(index, length);
+    }
+
+    this.setKeyMeta(key, meta)
 
     return meta;
   }
@@ -198,7 +207,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   // the hook method to trigger ListDimensions or ListGroupDimension recalculate
   // after item layout updated.
   triggerOwnerRecalculateLayout() {
-    console.log('index ', this.id)
     if (this._container) this._container.onItemLayoutChanged();
   }
 
@@ -240,7 +248,20 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       canIUseRIC: this.canIUseRIC,
     });
 
-    if (this._approximateMode && meta.isApproximateLayout) {
+    if (typeof this._getItemLayout === 'function') {
+      const { length } = this._getItemLayout(data, index);
+      // only List with getItemLayout has default layout value
+      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
+      this._selectValue.setLength(meta.getLayout(), length);
+      if (this._isFixedLength) meta.isApproximateLayout = false
+    }
+
+    if (typeof this._getItemSeparatorLength === 'function') {
+      const { length } = this._getItemSeparatorLength(data, index);
+      meta.setSeparatorLength(length);
+    }
+
+    if (this._approximateMode && meta.isApproximateLayout && !meta.getLayout()) {
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(
         meta.getLayout(),
@@ -248,18 +269,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       );
 
       return meta;
-    }
-
-    if (typeof this._getItemLayout === 'function') {
-      const { length } = this._getItemLayout(data, index);
-      // only List with getItemLayout has default layout value
-      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
-      this._selectValue.setLength(meta.getLayout(), length);
-    }
-
-    if (typeof this._getItemSeparatorLength === 'function') {
-      const { length } = this._getItemSeparatorLength(data, index);
-      meta.setSeparatorLength(length);
     }
 
     return meta;
@@ -374,6 +383,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   computeIndexRange(minOffset: number, maxOffset: number) {
+    console.log('compute======')
     const result = this.intervalTree.computeRange(minOffset, maxOffset);
     return result;
   }
@@ -404,7 +414,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
           index === len - 1 ? itemLength : itemLength + separatorLength;
         intervalTree.drySet(currentIndex, length);
       }
-      keyToMetaMap.set(itemKey, meta);
+      this.setKeyMeta(itemKey, meta)
     }
 
     intervalTree.applyUpdate()
@@ -454,6 +464,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
     if (!meta) return false;
 
+    console.log('info ===', info)
+
     if (typeof info === 'number') {
       let length = this.normalizeLengthNumber(info);
       if (
@@ -466,6 +478,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         if (index !== this._data.length - 1) {
           length = meta.getSeparatorLength() + length;
         }
+
+        console.log('====== ',_update)
         if (_update) {
           this.setIntervalTreeValue(index, length);
           return true;

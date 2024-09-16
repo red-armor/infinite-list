@@ -20,6 +20,7 @@ class Dimension extends BaseContainer {
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
   private _getItemLength: GetDimensionLength
+  private _isFixedLength: boolean;
 
   constructor(props: DimensionProps) {
     super(props);
@@ -30,6 +31,7 @@ class Dimension extends BaseContainer {
       ignoredToPerBatch, 
       anchorKey,
       getItemLength,
+      isFixedLength = true,
       recycleEnabled,
       useItemApproximateLength,
       itemApproximateLength = DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
@@ -52,6 +54,7 @@ class Dimension extends BaseContainer {
         )
       : false;
     this._itemApproximateLength = itemApproximateLength
+    this._isFixedLength = isFixedLength
 
     this._meta = this.createItemMeta()
     this.resolveConfigTuplesDefaultState =
@@ -99,7 +102,7 @@ class Dimension extends BaseContainer {
       // only List with getItemLayout has default layout value
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(meta.getLayout(), length);
-      meta.isApproximateLayout = false
+      if (this._isFixedLength) meta.isApproximateLayout = false
       this.triggerOwnerRecalculateLayout()
       return meta
     }
@@ -248,12 +251,7 @@ class Dimension extends BaseContainer {
 
   ensureKeyMeta() {
     if (this._meta) return this._meta;
-    this._meta = ItemMeta.spawn({
-      key: this.id,
-      owner: this,
-      recyclerType: this._recyclerType,
-      canIUseRIC: this.canIUseRIC,
-    });
+    this._meta = this.createItemMeta()
     return this._meta;
   }
 

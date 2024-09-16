@@ -30,6 +30,7 @@ export interface ListGroupDimensionsProps
   onUpdateIntervalTree?: Function;
   recycleEnabled?: boolean;
   recyclerTypes?: Array<string>;
+  isFixedLength?: boolean;
 }
 
 export type RegisteredListProps<ItemT = {}> = Omit<

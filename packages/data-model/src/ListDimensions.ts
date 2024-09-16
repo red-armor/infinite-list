@@ -1,17 +1,18 @@
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { IndexInfo, ScrollMetrics, ItemLayout } from './types';
+import { IndexInfo, ScrollMetrics, ItemLayout, ListDimensionsModelProps } from './types';
 import createStore from './state/createStore';
 import { ReducerResult } from './state/types';
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
-  constructor(props) {
+  constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
     super({
       ...props,
       store: createStore<ReducerResult>(),
     });
     this._dataModel = new ListDimensionsModel({
+      recycleEnabled: true,
       ...props,
       container: this,
     });
@@ -126,6 +127,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       flush?: boolean;
     }
   ) {
+    console.log('updatescroll metrics')
     this._scrollMetrics = _scrollMetrics || this._scrollMetrics;
     this._updateScrollMetrics(this._scrollMetrics, _options);
   }

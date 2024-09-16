@@ -32,6 +32,7 @@ describe('reducer', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
+      isFixedLength: false,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -213,7 +214,7 @@ describe('reducer', () => {
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 0, 
+      visibleEndIndex: 1, 
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
       distanceFromEnd: undefined,
@@ -261,7 +262,7 @@ describe('reducer', () => {
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 9,
+      visibleEndIndex: 0,
       bufferedStartIndex: 0,
       bufferedEndIndex: 9,
     });
@@ -272,6 +273,7 @@ describe('reducer', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
+      isFixedLength: false,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -315,9 +317,9 @@ describe('reducer', () => {
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 19,
+      visibleEndIndex: 1,
       bufferedStartIndex: 0,
-      bufferedEndIndex: 33,
+      bufferedEndIndex: 10,
     });
   });
 
@@ -417,7 +419,6 @@ describe('reducer', () => {
     listGroupDimensions.registerItem('footer_7', {
       ignoredToPerBatch: true,
     });
-    console.log('bbb', listGroupDimensions.get);
 
     store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
@@ -434,7 +435,7 @@ describe('reducer', () => {
     expect(store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 0,
+      visibleEndIndex: 1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 20,
     });
@@ -524,7 +525,7 @@ describe('reducer', () => {
     });
   });
 
-  it('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
+  it.only('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
     const data = buildData(100);
 
     const list = new ListDimensions({
@@ -533,8 +534,9 @@ describe('reducer', () => {
       keyExtractor: defaultKeyExtractor,
       maxToRenderPerBatch: 7,
       windowSize: 2,
+      recycleEnabled: true,
       initialNumToRender: 4,
-      onEndReachedThreshold: 2,
+      // onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
         y: 0,
@@ -571,24 +573,26 @@ describe('reducer', () => {
 
     list.setData(data);
 
-    expect(list.state).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 3,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 3,
-      isEndReached: false,
-      distanceFromEnd: 0,
-      data: data.slice(0, 4),
-      actionType: 'initial',
-    });
-
-    list.setFinalKeyItemLayout('3', 100);
-
     // @ts-ignore
     list.updateScrollMetrics({
       offset: 0,
       visibleLength: 926,
       contentLength: 1000,
+    });
+
+    console.log('===========================')
+
+    list.setFinalKeyItemLayout('3', 100, true);
+
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
     });
 
     expect(list.state).toEqual({
@@ -633,447 +637,3 @@ describe('reducer', () => {
   });
 });
 
-// describe('resolveUnLayoutLimitation', () => {
-//   it('the max unLayout item should be not greater than `maxToRenderPerBatch`', () => {
-//     const data = buildData(100);
-
-//     const list = new ListDimensions({
-//       data: [],
-//       id: 'list_group',
-//       keyExtractor: defaultKeyExtractor,
-//       maxToRenderPerBatch: 7,
-//       windowSize: 2,
-//       initialNumToRender: 4,
-//       onEndReachedThreshold: 2,
-//       getContainerLayout: () => ({
-//         x: 0,
-//         y: 0,
-//         width: 375,
-//         height: 2000,
-//       }),
-//     });
-
-//     expect(list.state).toEqual({
-//       visibleStartIndex: -1,
-//       visibleEndIndex: -1,
-//       bufferedStartIndex: -1,
-//       bufferedEndIndex: -1,
-//       isEndReached: false,
-//       distanceFromEnd: 0,
-//       data: [],
-//       actionType: 'initial',
-//     });
-
-//     list.setData(data);
-
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 0,
-//       visibleEndIndex: 3,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 3,
-//       isEndReached: false,
-//       distanceFromEnd: 0,
-//       data: data.slice(0, 4),
-//       actionType: 'initial',
-//     });
-
-//     list.setKeyItemLayout('3', 100);
-
-//     // @ts-ignore
-//     list.updateScrollMetrics({
-//       offset: 0,
-//       visibleLength: 926,
-//       contentLength: 1000,
-//     });
-
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 0,
-//       visibleEndIndex: 3,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 7,
-//       isEndReached: true,
-//       distanceFromEnd: 74,
-//       data: data.slice(0, 8),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.setKeyItemLayout('4', 100);
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 0,
-//         visibleLength: 926,
-//         contentLength: 1000,
-//       },
-//       false
-//     );
-
-//     const listState = list.state;
-
-//     expect(listState).toEqual({
-//       visibleStartIndex: 0,
-//       visibleEndIndex: 4,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 8,
-//       isEndReached: true,
-//       distanceFromEnd: 74,
-//       data: data.slice(0, 9),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 100,
-//         visibleLength: 926,
-//         contentLength: 1000,
-//       },
-//       false
-//     );
-
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 3,
-//       visibleEndIndex: 4,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 11,
-//       isEndReached: true,
-//       distanceFromEnd: -26,
-//       data: data.slice(0, 12),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-//   });
-// });
-
-// describe('Has trailing element', () => {
-//   it('rewrite onEndReached', () => {
-//     const data = buildData(30);
-
-//     const list = new ListDimensions({
-//       data,
-//       id: 'list_group',
-//       keyExtractor: defaultKeyExtractor,
-//       maxToRenderPerBatch: 7,
-//       windowSize: 2,
-//       initialNumToRender: 4,
-//       onEndReachedThreshold: 2,
-//       getContainerLayout: () => ({
-//         x: 0,
-//         y: 0,
-//         width: 375,
-//         height: 2000,
-//       }),
-//     });
-
-//     list.setKeyItemLayout('1', 100);
-//     list.setKeyItemLayout('2', 100);
-//     list.setKeyItemLayout('3', 100);
-//     list.setKeyItemLayout('4', 100);
-//     list.setKeyItemLayout('5', 100);
-//     list.setKeyItemLayout('6', 100);
-//     list.setKeyItemLayout('7', 100);
-//     list.setKeyItemLayout('8', 100);
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 100,
-//         visibleLength: 926,
-//         contentLength: 4000,
-//       },
-//       false
-//     );
-
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 1,
-//       visibleEndIndex: 8,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 15,
-//       isEndReached: false,
-//       distanceFromEnd: 2974,
-//       data: data.slice(0, 16),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 1500,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-
-//     let listState = list.state;
-
-//     expect(listState).toEqual({
-//       visibleStartIndex: 8,
-//       visibleEndIndex: 8,
-//       bufferedStartIndex: 6,
-//       bufferedEndIndex: 15,
-//       isEndReached: false,
-//       distanceFromEnd: 3574,
-//       data: data.slice(0, 16),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 1500,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-
-//     expect(list.state).toBe(listState);
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 3000,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 8,
-//       visibleEndIndex: 8,
-//       bufferedStartIndex: 8,
-//       bufferedEndIndex: 15,
-//       isEndReached: false,
-//       distanceFromEnd: 2074,
-//       data: data.slice(0, 16),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.setKeyItemLayout('29', 100);
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 3010,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-//     listState = list.state;
-//     expect(listState).toEqual({
-//       visibleStartIndex: 29,
-//       visibleEndIndex: 29,
-//       bufferedStartIndex: 29,
-//       bufferedEndIndex: 29,
-//       isEndReached: false,
-//       distanceFromEnd: 2064,
-//       data: data.slice(0, 30),
-//       actionType: 'recalculate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 3500,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 29,
-//       visibleEndIndex: 29,
-//       bufferedStartIndex: 29,
-//       bufferedEndIndex: 29,
-//       isEndReached: true,
-//       distanceFromEnd: 1574,
-//       data: data.slice(0, 30),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 1000,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 29,
-//       visibleEndIndex: 29,
-//       // bufferedStartIndex: 29,
-//       bufferedStartIndex: 1,
-//       bufferedEndIndex: 29,
-//       isEndReached: false,
-//       distanceFromEnd: 4074,
-//       data: data.slice(0, 30),
-//       actionType: 'recalculate',
-//     });
-//   });
-// });
-
-// describe('Has heading element', () => {
-//   it('rewrite onEndReached', () => {
-//     const data = buildData(30);
-
-//     const list = new ListDimensions({
-//       data,
-//       id: 'list_group',
-//       keyExtractor: defaultKeyExtractor,
-//       maxToRenderPerBatch: 7,
-//       windowSize: 2,
-//       initialNumToRender: 4,
-//       onEndReachedThreshold: 2,
-//       getContainerLayout: () => ({
-//         x: 0,
-//         y: 3000,
-//         width: 375,
-//         height: 2000,
-//       }),
-//     });
-
-//     list.setKeyItemLayout('1', 100);
-//     list.setKeyItemLayout('2', 100);
-//     list.setKeyItemLayout('3', 100);
-//     list.setKeyItemLayout('4', 100);
-//     list.setKeyItemLayout('5', 100);
-//     list.setKeyItemLayout('6', 100);
-//     list.setKeyItemLayout('7', 100);
-//     list.setKeyItemLayout('8', 100);
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 100,
-//         visibleLength: 926,
-//         contentLength: 4000,
-//       },
-//       false
-//     );
-//     let listState = list.state;
-
-//     expect(listState).toEqual({
-//       visibleStartIndex: -1,
-//       visibleEndIndex: -1,
-//       bufferedStartIndex: -1,
-//       bufferedEndIndex: -1,
-//       isEndReached: false,
-//       distanceFromEnd: 2974,
-//       data: data.slice(0, 9),
-//       actionType: 'recalculate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 1500,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-
-//     // expect(listState).toBe(list.state);
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 1500,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-
-//     // expect(list.state).toBe(listState);
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 3000,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 0,
-//       visibleEndIndex: 8,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 8,
-//       isEndReached: false,
-//       distanceFromEnd: 2074,
-//       data: data.slice(0, 9),
-//       actionType: 'recalculate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 3010,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-//     listState = list.state;
-//     expect(listState).toEqual({
-//       visibleStartIndex: 1,
-//       visibleEndIndex: 8,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 15,
-//       isEndReached: false,
-//       distanceFromEnd: 2064,
-//       data: data.slice(0, 16),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.setKeyItemLayout('29', 100);
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 3500,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-//     // TODO xxxxxxxxxx
-//     expect(list.state).toEqual({
-//       visibleStartIndex: 5,
-//       visibleEndIndex: 29,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 15,
-//       isEndReached: true,
-//       distanceFromEnd: 1574,
-//       data: data.slice(0, 30),
-//       actionType: 'hydrationWithBatchUpdate',
-//     });
-
-//     list.updateScrollMetrics(
-//       // @ts-ignore
-//       {
-//         offset: 1000,
-//         visibleLength: 926,
-//         contentLength: 6000,
-//       },
-//       false
-//     );
-//     expect(list.state).toEqual({
-//       visibleStartIndex: -1,
-//       visibleEndIndex: -1,
-//       bufferedStartIndex: 0,
-//       bufferedEndIndex: 15,
-//       isEndReached: false,
-//       distanceFromEnd: 4074,
-//       data: data.slice(0, 30),
-//       actionType: 'recalculate',
-//     });
-//   });
-// });

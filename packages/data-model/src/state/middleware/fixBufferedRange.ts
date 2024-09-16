@@ -45,6 +45,7 @@ export default <State extends ReducerResult = ReducerResult>(
         break;
       }
     }
+    ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   }
 
   if (dimension instanceof ListDimensions) {
@@ -63,11 +64,8 @@ export default <State extends ReducerResult = ReducerResult>(
         break;
       }
     }
+    info('fixBufferedRange ', _nextBufferedEndIndex)
+    ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   }
 
-  console.log('-----')
-
-  info('resolve unlayout ', _nextBufferedEndIndex)
-
-  ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
 };

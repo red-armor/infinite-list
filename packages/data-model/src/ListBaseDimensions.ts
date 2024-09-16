@@ -450,12 +450,16 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   setState(state: ListState<ItemT>, force = false) {
+    console.log('fill =========', this.fillingMode)
+
     if (this.fillingMode === FillingMode.SPACE) {
       const stateResult = force
         ? this.resolveSpaceState(state)
         : this.memoizedResolveSpaceState(state);
       this.applyStateResult(stateResult);
     } else if (this.fillingMode === FillingMode.RECYCLE) {
+      console.log('reylc=======')
+
       const stateResult = force
         ? this.resolveRecycleState(state)
         : this.memoizedResolveRecycleState(state);
@@ -684,6 +688,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       ? this.resolveRecycleRecycleState(state)
       : [];
     const spaceStateResult = this.resolveRecycleSpaceState(state);
+
+    console.log('resovlve ======')
 
     const stateResult = {
       recycleState: recycleStateResult.filter((v) => v),
@@ -1014,6 +1020,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       data: this.getData(),
     });
 
+    console.log('s========')
+
     // maybe itemMeta approximateLayout change, but will not trigger update...
     // this.updateState(state, scrollMetrics);
 
@@ -1021,7 +1029,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
+
     const state = this.dispatchStoreMetrics(scrollMetrics);
+
+    console.log('sispt =======', state)
+
+
     const { isEndReached, distanceFromEnd } = state;
 
     this.onEndReachedHelper.performEndReached({
@@ -1059,6 +1072,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     const scrollMetrics = _scrollMetrics || this._scrollMetrics;
     const flush = defaultBooleanValue(_options?.flush, false);
 
+    console.log('uppate ====', flush, scrollMetrics, this.dispatchScrollMetricsEnabled())
+
     if (!scrollMetrics) return;
     if (!this.dispatchScrollMetricsEnabled()) {
       this._scrollMetrics = scrollMetrics;
@@ -1069,6 +1084,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     if (flush) {
       this._dispatchMetricsBatchinator.flush(scrollMetrics);
     } else {
+
       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
     }
 

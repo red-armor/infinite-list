@@ -14,5 +14,6 @@ export interface DimensionProps extends BaseContainerProps {
   useItemApproximateLength?: boolean;
   itemApproximateLength?: number;
 
+  isFixedLength?: boolean;
   getItemLength?: GetDimensionLength
 }

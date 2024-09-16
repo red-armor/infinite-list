@@ -25,6 +25,8 @@ export interface ListDimensionsModelProps<ItemT> extends BaseDimensionsProps {
   keyExtractor: KeyExtractor<ItemT>;
   getItemLayout?: GetItemLayout<ItemT>;
   getItemSeparatorLength?: GetItemSeparatorLength<ItemT>;
+
+  isFixedLength?: boolean;
 }
 
 export type ListDimensionsModelContainer = ListGroupDimensions | ListDimensions;

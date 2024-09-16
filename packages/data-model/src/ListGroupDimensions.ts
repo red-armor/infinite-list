@@ -70,6 +70,13 @@ class ListGroupDimensionsExperimental<
 
   private _inspector: Inspector;
 
+  /**
+   * used with `getItemLayout`, on default if `getItemLayout` is provided, itemMeta's 
+   * isApproximateLayout should be false if item layout is resolve from `getItemLayout`.
+   * 
+   */
+  private _isFixedLength: boolean;
+
   constructor(props: ListGroupDimensionsProps) {
     super({
       recycleEnabled: true,
@@ -88,6 +95,8 @@ class ListGroupDimensionsExperimental<
       this.onItemsCountChanged.bind(this),
       50
     );
+
+    this._isFixedLength = defaultBooleanValue(props.isFixedLength, false)
 
     this._inspector = new Inspector({
       owner: this,
@@ -450,10 +459,11 @@ class ListGroupDimensionsExperimental<
     // should update indexKeys first !!!
     const { recyclerType } = listDimensionsProps;
     const dimensions = new ListDimensionsModel({
-      ...listDimensionsProps,
       id: listKey,
       container: this,
       horizontal: this.getHorizontal(),
+      isFixedLength: this._isFixedLength,
+      ...listDimensionsProps,
       recycleEnabled: this._recycleEnable,
     });
     this.addBuffer(recyclerType);
@@ -600,10 +610,11 @@ class ListGroupDimensionsExperimental<
     const { recyclerType } = dimensionProps || {};
     const dimensions = new Dimension({
       id: key,
-      ...dimensionProps,
       container: this,
       horizontal: this.horizontal,
       canIUseRIC: this.canIUseRIC,
+      isFixedLength: this._isFixedLength,
+      ...dimensionProps,
       recycleEnabled: this._recycleEnable,
     });
     this.setDimension(key, dimensions);
