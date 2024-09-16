@@ -1,16 +1,22 @@
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
+import createStore from './state/createStore';
 import {
   IndexInfo,
   ScrollMetrics,
   ItemLayout,
   ListDimensionsModelProps,
 } from './types';
+
+// @ts-ignore
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
   constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
-    super({ ...props });
+    super({ 
+      ...props,
+      store: createStore()
+    });
     this._dataModel = new ListDimensionsModel({
       recycleEnabled: true,
       ...props,

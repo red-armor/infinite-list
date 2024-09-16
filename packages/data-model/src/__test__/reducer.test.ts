@@ -1,5 +1,5 @@
-import createStore from '../state/createStore';
 import ListDimensions from '../ListDimensions';
+import createStore from '../state/createStore';
 import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
@@ -463,7 +463,6 @@ describe('reducer', () => {
   });
 
   it('without ignoredToPerBatch', () => {
-    const store = createStore();
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -525,7 +524,7 @@ describe('reducer', () => {
     });
     listGroupDimensions.registerItem('footer_7');
 
-    store.dispatch({
+    listGroupDimensions.store.dispatch({
       type: ActionType.HydrationWithBatchUpdate,
       payload: {
         dimension: listGroupDimensions,
@@ -537,7 +536,7 @@ describe('reducer', () => {
       },
     });
 
-    expect(store.getState()).toEqual({
+    expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
       visibleEndIndex: 0,

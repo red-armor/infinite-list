@@ -23,6 +23,7 @@ import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
 import { info } from './utils/logger';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import createStore from './state/createStore';
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -77,6 +78,7 @@ class ListGroupDimensionsExperimental<
   constructor(props: ListGroupDimensionsProps) {
     super({
       recycleEnabled: true,
+      store: createStore(),
       ...props,
     });
     const { id, onUpdateItemLayout, onUpdateIntervalTree } = props;

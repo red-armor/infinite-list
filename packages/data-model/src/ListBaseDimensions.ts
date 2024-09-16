@@ -32,8 +32,8 @@ import EnabledSelector from './utils/EnabledSelector';
 import StillnessHelper from './utils/StillnessHelper';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import BaseLayout from './BaseLayout';
-import createStore from './state/createStore';
-import { ReducerResult } from './state/types';
+// import createStore from './state/createStore';
+// import { ReducerResult } from './state/types';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -79,6 +79,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   constructor(props: ListBaseDimensionsProps) {
     super(props);
     const {
+      store,
       recyclerTypes,
       recyclerBufferSize,
       recyclerReservedBufferPerBatch,
@@ -102,11 +103,13 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
+    // this._store = createStore();
+    this._store = store || createStore()
+
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
 
-    this._store = createStore<ReducerResult>();
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,
