@@ -263,33 +263,25 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   abstract getData();
-
   abstract getDataLength(): number;
   abstract getTotalLength(): number | string;
   abstract getReflowItemsLength(): number;
   abstract getFinalItemKey(item: any);
   abstract getFinalIndexItemMeta(index: number);
-
   abstract getFinalItemMeta(item: any);
-
   abstract getFinalIndexItemLength(index: number);
-
   abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean);
-
   abstract getFinalIndexKeyBottomOffset(index: number);
-
   abstract setFinalKeyItemLayout(
     key: string,
     info: ItemLayout | number,
     updateIntervalTree?: boolean
   );
-
   abstract getFinalIndexRangeOffsetMap(
     startIndex: number,
     endIndex: number,
     exclusive?: boolean
   );
-
   abstract computeIndexRange(minOffset: number, maxOffset: number);
 
   hasUnLayoutItems() {
