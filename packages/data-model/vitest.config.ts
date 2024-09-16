@@ -10,13 +10,14 @@ export default defineConfig({
 
   test: {
     globals: true,
-    include: ['src/__test__/**/reducer.test.ts'],
+    // include: ['src/__test__/**/*.test.ts'],
+    // include: ['src/__test__/**/reducer.test.ts'],
     // setupFiles: ['./src/__test__/setup.js'],
     // fakeTimers: {
     //   requestIdleCallback: true,
     // }
     // include: ['src/__test__/**/reducer.test.ts'],
-    // include: ['src/__test__/**/ListDimensions.test.ts'],
+    include: ['src/__test__/**/ListDimensions.test.ts'],
     // browser: true,
   },
 

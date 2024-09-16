@@ -42,10 +42,11 @@ import BaseLayout from './BaseLayout';
 abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _stateListener: StateListener<ItemT>;
 
-  // private _state: ListState<ItemT>;
   private _stateResult: ListStateResult<ItemT>;
 
   private _dispatchMetricsBatchinator: Batchinator;
+
+  private _onEndReachedThreshold: number;
 
   private _store: ListBaseDimensionsStore;
 
@@ -102,9 +103,9 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-    // this._store = createStore();
     this._store = store;
 
+    this._onEndReachedThreshold = onEndReachedThreshold
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
@@ -179,6 +180,10 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   get selector() {
     return this._selector;
+  }
+
+  get onEndReachedThreshold() {
+    return this.onEndReachedHelper.onEndReachedThreshold
   }
 
   set scrollMetrics(scrollMetrics: ScrollMetrics) {

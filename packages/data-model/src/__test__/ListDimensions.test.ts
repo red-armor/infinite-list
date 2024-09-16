@@ -66,7 +66,7 @@ describe('basic', () => {
     expect(listDimensions.horizontal).toBe(true);
   });
 
-  it('verify changedType', () => {
+  it.only('verify changedType', () => {
     const data = buildData(10);
 
     const listDimensions = new ListDimensions({

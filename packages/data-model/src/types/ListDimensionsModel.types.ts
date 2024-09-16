@@ -27,6 +27,8 @@ export interface ListDimensionsModelProps<ItemT> extends BaseDimensionsProps {
   getItemSeparatorLength?: GetItemSeparatorLength<ItemT>;
 
   isFixedLength?: boolean;
+
+  onEndReachedThreshold?: number;
 }
 
 export type ListDimensionsModelContainer = ListGroupDimensions | ListDimensions;

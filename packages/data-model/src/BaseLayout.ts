@@ -17,7 +17,6 @@ class BaseLayout extends BaseContainer {
   private _stickyHeaderIndices = [];
   private _reservedIndices = [];
   private _recycleThreshold: number;
-  readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
   readonly _lengthPrecision: number;
   private _recycleBufferedCount: number;
