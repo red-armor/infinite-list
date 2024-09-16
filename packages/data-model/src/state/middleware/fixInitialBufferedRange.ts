@@ -3,7 +3,7 @@ import ListDimensionsModel from '../../ListDimensionsModel';
 import ListDimensions from '../../ListDimensions';
 import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
-import { isValidMetaLayout } from '../../ItemMeta'
+import { isValidMetaLayout } from '../../ItemMeta';
 import { info } from '../../utils/logger';
 
 // recalculate buffer
@@ -16,23 +16,21 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const initialNumToRender = dimension.initialNumToRender
+  const initialNumToRender = dimension.initialNumToRender;
 
-  const {
-    startIndex,
-    endIndex
-  } = visibleIndexRange
+  const { startIndex, endIndex } = visibleIndexRange;
 
-  if (endIndex - startIndex >= initialNumToRender)  {
-    ctx.bufferedIndexRange.startIndex = startIndex
-    ctx.bufferedIndexRange.endIndex = endIndex
-    return 
+  if (endIndex - startIndex >= initialNumToRender) {
+    ctx.bufferedIndexRange.startIndex = startIndex;
+    ctx.bufferedIndexRange.endIndex = endIndex;
+    return;
   }
 
-  const maxToRenderPerBatch = 
-    initialNumToRender > 0 
-    ? Math.min(dimension.maxToRenderPerBatch, initialNumToRender)
-    : dimension.maxToRenderPerBatch
+  // on initial, maxToRenderPerBatch should be the minimum
+  const maxToRenderPerBatch =
+    initialNumToRender > 0
+      ? Math.min(dimension.maxToRenderPerBatch, initialNumToRender)
+      : dimension.maxToRenderPerBatch;
   let _nextBufferedEndIndex = bufferedIndexRange.endIndex;
 
   if (dimension instanceof ListGroupDimensions) {
@@ -82,8 +80,7 @@ export default <State extends ReducerResult = ReducerResult>(
         break;
       }
     }
-    info('fixInitialBufferedRange ', _nextBufferedEndIndex)
+    info('fixInitialBufferedRange ', _nextBufferedEndIndex);
     ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   }
-
 };
