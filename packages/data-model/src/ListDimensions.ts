@@ -13,16 +13,16 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
   constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
-    super({ 
+    super({
       ...props,
-      store: createStore()
+      store: createStore(),
     });
     this._dataModel = new ListDimensionsModel({
       recycleEnabled: true,
       ...props,
       container: this,
     });
-    this.initializeStateResult();
+    // this.initializeStateResult();
     this.attemptToHandleEndReached();
   }
 

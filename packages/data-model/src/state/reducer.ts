@@ -6,7 +6,35 @@ import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
 import fixBufferedRange from './middleware/fixBufferedRange';
 import fixVisibleRange from './middleware/fixVisibleRange';
+import resolveInitialState from './middleware/resolveInitialState';
 import { Action, ActionPayload, ActionType, Ctx, ReducerResult } from './types';
+
+const initialize = <State extends ReducerResult = ReducerResult>(
+  state: State,
+  payload: ActionPayload
+): State => {
+  const ctx = {} as Ctx;
+  resolveInitialState(state, payload, ctx);
+
+  const {
+    visibleIndexRange,
+    bufferedIndexRange,
+    isEndReached,
+    distanceFromEnd,
+  } = ctx;
+
+  return {
+    ...state,
+    isEndReached,
+    distanceFromEnd,
+    // pseudoVelocity: payload.pseudoVelocity,
+    actionType: 'initial',
+    visibleStartIndex: visibleIndexRange.startIndex,
+    visibleEndIndex: visibleIndexRange.endIndex,
+    bufferedStartIndex: bufferedIndexRange.startIndex,
+    bufferedEndIndex: bufferedIndexRange.endIndex,
+  };
+};
 
 const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -42,7 +70,6 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
-    // @ts-ignore
     bufferedEndIndex: bufferedIndexRange.endIndex,
   };
 };
@@ -80,7 +107,6 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
-    // @ts-ignore
     bufferedEndIndex: bufferedIndexRange.endIndex,
   };
 };
@@ -118,7 +144,6 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
-    // @ts-ignore
     bufferedEndIndex: bufferedIndexRange.endIndex,
   };
 };
@@ -155,7 +180,6 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
     // pseudoVelocity: payload.pseudoVelocity,
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
-    // @ts-ignore
     bufferedStartIndex: bufferedIndexRange.startIndex,
     bufferedEndIndex: Math.min(bufferedIndexRange.endIndex, maxIndex),
   };
@@ -174,6 +198,7 @@ export default <State extends ReducerResult = ReducerResult>(
     case ActionType.ScrollUp:
       return scrollUp(state, payload);
     case ActionType.Initial:
+      return initialize(state, payload);
     case ActionType.Recalculate:
       return recalculate(state, payload);
   }

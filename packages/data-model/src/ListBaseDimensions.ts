@@ -10,7 +10,6 @@ import {
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
-import { ActionType } from './state/types';
 import {
   SpaceStateToken,
   ListBaseDimensionsProps,
@@ -43,7 +42,7 @@ import BaseLayout from './BaseLayout';
 abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   private _stateListener: StateListener<ItemT>;
 
-  private _state: ListState<ItemT>;
+  // private _state: ListState<ItemT>;
   private _stateResult: ListStateResult<ItemT>;
 
   private _dispatchMetricsBatchinator: Batchinator;
@@ -104,12 +103,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
     // this._store = createStore();
-    this._store = store || createStore()
+    this._store = store;
 
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
-
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,
@@ -215,42 +213,40 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.onEndReachedHelper.removeHandler(onEndReached);
   }
 
-  initializeStateResult() {
-    this._state = this.resolveInitialState();
+  // initializeStateResult() {
+  //   this._stateResult =
+  //     this.fillingMode === FillingMode.RECYCLE
+  //       ? this.memoizedResolveRecycleState(this.getState())
+  //       : this.memoizedResolveSpaceState(this.getState());
+  // }
 
-    this._stateResult =
-      this.fillingMode === FillingMode.RECYCLE
-        ? this.memoizedResolveRecycleState(this._state)
-        : this.memoizedResolveSpaceState(this._state);
-  }
+  // resolveInitialState() {
+  //   if (!this.initialNumToRender || !this._data.length)
+  //     return {
+  //       visibleStartIndex: -1,
+  //       visibleEndIndex: -1,
+  //       bufferedStartIndex: -1,
+  //       bufferedEndIndex: -1,
+  //       isEndReached: false,
+  //       distanceFromEnd: 0,
+  //       data: [],
+  //       actionType: ActionType.Initial,
+  //     };
 
-  resolveInitialState() {
-    if (!this.initialNumToRender || !this._data.length)
-      return {
-        visibleStartIndex: -1,
-        visibleEndIndex: -1,
-        bufferedStartIndex: -1,
-        bufferedEndIndex: -1,
-        isEndReached: false,
-        distanceFromEnd: 0,
-        data: [],
-        actionType: ActionType.Initial,
-      };
+  //   if (this._state && this._state.bufferedEndIndex > 0) return this._state;
 
-    if (this._state && this._state.bufferedEndIndex > 0) return this._state;
-
-    const maxIndex = Math.min(this._data.length, this.initialNumToRender) - 1;
-    return {
-      visibleStartIndex: 0,
-      visibleEndIndex: maxIndex,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: maxIndex,
-      isEndReached: false,
-      distanceFromEnd: 0,
-      data: this._data.slice(0, maxIndex + 1),
-      actionType: ActionType.Initial,
-    };
-  }
+  //   const maxIndex = Math.min(this._data.length, this.initialNumToRender) - 1;
+  //   return {
+  //     visibleStartIndex: 0,
+  //     visibleEndIndex: maxIndex,
+  //     bufferedStartIndex: 0,
+  //     bufferedEndIndex: maxIndex,
+  //     isEndReached: false,
+  //     distanceFromEnd: 0,
+  //     data: this._data.slice(0, maxIndex + 1),
+  //     actionType: ActionType.Initial,
+  //   };
+  // }
 
   getOnEndReachedHelper() {
     return this.onEndReachedHelper;
@@ -298,7 +294,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   recalculateRecycleResultState() {
-    this.setState(this._state, true);
+    this.setState(this.getState(), true);
   }
 
   attemptToHandleEndReached() {
@@ -785,7 +781,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     const bufferedStartIndex = resolver?.bufferedStartIndex
       ? resolver?.bufferedStartIndex(state)
       : _bufferedStartIndex;
-    const data = this.getData()
+    const data = this.getData();
 
     const nextStart = bufferedStartIndex;
     const nextEnd = bufferedEndIndex + 1;

@@ -1,5 +1,4 @@
 import ListDimensions from '../ListDimensions';
-import createStore from '../state/createStore';
 import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
@@ -28,7 +27,6 @@ describe('reducer', () => {
     });
   });
   it('basic scrollDown', () => {
-    console.log('x-===')
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,
@@ -76,11 +74,6 @@ describe('reducer', () => {
         distanceFromEnd: 0,
       },
     });
-
-    console.log(
-      'listGroupDimensions ',
-      JSON.stringify(listGroupDimensions.getIntervalTree().getHeap())
-    );
 
     expect(listGroupDimensions.getContainerOffset()).toBe(2000);
     expect(listGroupDimensions.getState()).toEqual({
@@ -226,7 +219,7 @@ describe('reducer', () => {
     expect(listGroupDimensions.store.getState()).toEqual({
       actionType: ActionType.HydrationWithBatchUpdate,
       visibleStartIndex: 0,
-      visibleEndIndex: 1, 
+      visibleEndIndex: 1,
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
       isEndReached: false,
@@ -545,115 +538,106 @@ describe('reducer', () => {
     });
   });
 
-  // it('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
-  //   const data = buildData(100);
+  it('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
+    const data = buildData(100);
 
-  //   const list = new ListDimensions({
-  //     data: [],
-  //     id: 'list_group',
-  //     keyExtractor: defaultKeyExtractor,
-  //     maxToRenderPerBatch: 7,
-  //     windowSize: 2,
-  //     recycleEnabled: true,
-  //     initialNumToRender: 4,
-  //     // onEndReachedThreshold: 2,
-  //     getContainerLayout: () => ({
-  //       x: 0,
-  //       y: 0,
-  //       width: 375,
-  //       height: 2000,
-  //     }),
-  //     viewabilityConfigCallbackPairs: [
-  //       {
-  //         viewabilityConfig: {
-  //           viewport: 1,
-  //           name: 'imageViewable',
-  //           viewAreaCoveragePercentThreshold: 20,
-  //         },
-  //       },
-  //       {
-  //         viewabilityConfig: {
-  //           name: 'viewable',
-  //           viewAreaCoveragePercentThreshold: 30,
-  //         },
-  //       },
-  //     ],
-  //   });
+    const list = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 2,
+      recycleEnabled: true,
+      initialNumToRender: 4,
+      // onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
 
-  //   expect(list.state).toEqual({
-  //     visibleStartIndex: -1,
-  //     visibleEndIndex: -1,
-  //     bufferedStartIndex: -1,
-  //     bufferedEndIndex: -1,
-  //     isEndReached: false,
-  //     distanceFromEnd: 0,
-  //     data: [],
-  //     actionType: 'initial',
-  //   });
+    expect(list.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      actionType: 'initial',
+    });
 
-  //   list.setData(data);
+    list.setData(data);
 
-  //   // @ts-ignore
-  //   list.updateScrollMetrics({
-  //     offset: 0,
-  //     visibleLength: 926,
-  //     contentLength: 1000,
-  //   });
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
 
-  //   console.log('===========================')
+    list.setFinalKeyItemLayout('3', 100, true);
 
-  //   list.setFinalKeyItemLayout('3', 100, true);
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 0,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 6,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      actionType: 'hydrationWithBatchUpdate',
+    });
 
-  //   expect(list.state).toEqual({
-  //     visibleStartIndex: -1,
-  //     visibleEndIndex: -1,
-  //     bufferedStartIndex: -1,
-  //     bufferedEndIndex: -1,
-  //     isEndReached: false,
-  //     distanceFromEnd: 0,
-  //     data: data.slice(0, 4),
-  //     actionType: 'initial',
-  //   });
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1000,
+    });
 
-  //   expect(list.state).toEqual({
-  //     visibleStartIndex: 0,
-  //     visibleEndIndex: 3,
-  //     bufferedStartIndex: 0,
-  //     bufferedEndIndex: 7,
-  //     isEndReached: true,
-  //     distanceFromEnd: 74,
-  //     data: data.slice(0, 8),
-  //     actionType: 'hydrationWithBatchUpdate',
-  //   });
+    const listState = list.state;
 
-  //   // @ts-ignore
-  //   list.updateScrollMetrics({
-  //     offset: 0,
-  //     visibleLength: 926,
-  //     contentLength: 1000,
-  //   });
+    expect(listState).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 0,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 6,
+      isEndReached: true,
+      distanceFromEnd: 74,
+      actionType: 'hydrationWithBatchUpdate',
+    });
 
-  //   const listState = list.state;
+    // @ts-ignore
+    list.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 1001,
+    });
 
-  //   expect(listState).toEqual({
-  //     visibleStartIndex: 0,
-  //     visibleEndIndex: 3,
-  //     bufferedStartIndex: 0,
-  //     bufferedEndIndex: 7,
-  //     isEndReached: true,
-  //     distanceFromEnd: 74,
-  //     data: data.slice(0, 8),
-  //     actionType: 'hydrationWithBatchUpdate',
-  //   });
-
-  //   // @ts-ignore
-  //   list.updateScrollMetrics({
-  //     offset: 0,
-  //     visibleLength: 926,
-  //     contentLength: 1001,
-  //   });
-
-  //   expect(list.state).toBe(listState);
-  // });
+    expect(list.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 0,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 6,
+      isEndReached: true,
+      distanceFromEnd: 75,
+      actionType: 'hydrationWithBatchUpdate',
+    });
+  });
 });
-

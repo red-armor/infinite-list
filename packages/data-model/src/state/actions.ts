@@ -14,14 +14,18 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
   props: {
     scrollMetrics: ScrollMetrics;
     dimension: ListDimensions;
+  },
+  ctx: {
+    dataLength: number;
   }
 ): Action | null => {
   const { scrollMetrics, dimension } = props;
   const { velocity } = scrollMetrics;
-  // const pseudoVelocity = resolvePseudoVelocity(velocity);
 
   const _info = dimension.getOnEndReachedHelper().perform(scrollMetrics);
   const isEndReached = _info.isEndReached;
+  const prevDataLength = ctx.dataLength;
+  const nextDataLength = dimension.getTotalLength();
 
   // isEndReached should not be rewrite, or trigger onEndReached...
   let nextIsEndReached = isEndReached;
@@ -43,6 +47,20 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
         contentLength: containerOffset + total,
       }).isEndReached;
     }
+  }
+
+  ctx.dataLength = nextDataLength;
+
+  if (!prevDataLength && nextDataLength) {
+    return {
+      type: ActionType.Initial,
+      payload: {
+        dimension,
+        scrollMetrics,
+        isEndReached,
+        distanceFromEnd,
+      },
+    };
   }
 
   if (nextIsEndReached) {

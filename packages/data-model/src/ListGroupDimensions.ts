@@ -18,7 +18,6 @@ import {
   RegisteredListProps,
   RegisteredDimensionProps,
 } from './types';
-import { ReducerResult } from './state/types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
 import { info } from './utils/logger';
@@ -106,7 +105,7 @@ class ListGroupDimensionsExperimental<
       50
     );
 
-    this.initializeStateResult();
+    // this.initializeStateResult();
     this.attemptToHandleEndReached();
   }
 
