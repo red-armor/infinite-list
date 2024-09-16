@@ -1,6 +1,11 @@
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { IndexInfo, ScrollMetrics, ItemLayout, ListDimensionsModelProps } from './types';
+import {
+  IndexInfo,
+  ScrollMetrics,
+  ItemLayout,
+  ListDimensionsModelProps,
+} from './types';
 import createStore from './state/createStore';
 import { ReducerResult } from './state/types';
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
@@ -16,7 +21,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       ...props,
       container: this,
     });
-    this.initializeState();
+    this.initializeStateResult();
     this.attemptToHandleEndReached();
   }
 

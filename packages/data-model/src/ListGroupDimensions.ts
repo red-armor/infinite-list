@@ -5,10 +5,8 @@ import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { isEmpty } from './common';
 import {
   IndexInfo,
-  FillingMode,
   ItemLayout,
   KeysChangedType,
   ListGroupDimensionsProps,
@@ -71,9 +69,9 @@ class ListGroupDimensionsExperimental<
   private _inspector: Inspector;
 
   /**
-   * used with `getItemLayout`, on default if `getItemLayout` is provided, itemMeta's 
+   * used with `getItemLayout`, on default if `getItemLayout` is provided, itemMeta's
    * isApproximateLayout should be false if item layout is resolve from `getItemLayout`.
-   * 
+   *
    */
   private _isFixedLength: boolean;
 
@@ -96,7 +94,7 @@ class ListGroupDimensionsExperimental<
       50
     );
 
-    this._isFixedLength = defaultBooleanValue(props.isFixedLength, false)
+    this._isFixedLength = defaultBooleanValue(props.isFixedLength, false);
 
     this._inspector = new Inspector({
       owner: this,
@@ -108,7 +106,7 @@ class ListGroupDimensionsExperimental<
       50
     );
 
-    this.initializeState();
+    this.initializeStateResult();
     this.attemptToHandleEndReached();
   }
 
@@ -471,7 +469,7 @@ class ListGroupDimensionsExperimental<
     this.setDimension(listKey, dimensions);
     this._inspector.push(listKey);
 
-    dimensions.applyInitialData()
+    dimensions.applyInitialData();
 
     let onEndReachedCleaner = null;
 
@@ -961,11 +959,12 @@ class ListGroupDimensionsExperimental<
 
     const { startIndex, endIndex: _endIndex } = dimensionResult;
 
-    info('computeIndexRange ', 
+    info(
+      'computeIndexRange ',
       startIndex,
-      _endIndex, 
+      _endIndex,
       this._dimensionsIntervalTree.getMaxUsefulLength()
-    )
+    );
 
     const endIndex = _endIndex - 1;
 

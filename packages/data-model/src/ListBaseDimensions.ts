@@ -1,6 +1,4 @@
 import Batchinator from '@x-oasis/batchinator';
-import omit from '@x-oasis/omit';
-import resolveChanged from '@x-oasis/resolve-changed';
 import isClamped from '@x-oasis/is-clamped';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
@@ -8,7 +6,6 @@ import memoizeOne from 'memoize-one';
 
 import {
   isEmpty,
-  shallowDiffers,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_RECYCLER_TYPE,
@@ -19,7 +16,6 @@ import {
   ListBaseDimensionsProps,
   ListState,
   OnEndReached,
-  PreStateResult,
   ScrollMetrics,
   StateListener,
   ListStateResult,
@@ -192,8 +188,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   get state() {
-    // return this._state
-    return this.store.getState()
+    return this.store.getState();
   }
 
   getState() {
@@ -216,7 +211,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.onEndReachedHelper.removeHandler(onEndReached);
   }
 
-  initializeState() {
+  initializeStateResult() {
     this._state = this.resolveInitialState();
 
     this._stateResult =
@@ -378,16 +373,16 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     };
   }
 
- /**
-  * 
-  * @param state 
-  * @param force 
-  * 
-  * Pay attention if you want to compare state first, then decide setState or not..
-  * There is a condition the old and new stat are same, but item meta info changed 
-  * such as approximateLayout props change, then the list should rerun
-  * 
-  */
+  /**
+   *
+   * @param state
+   * @param force
+   *
+   * Pay attention if you want to compare state first, then decide setState or not..
+   * There is a condition the old and new stat are same, but item meta info changed
+   * such as approximateLayout props change, then the list should rerun
+   *
+   */
 
   setState(state: ListState<ItemT>, force = false) {
     if (this.fillingMode === FillingMode.SPACE) {
@@ -967,7 +962,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     if (flush) {
       this._dispatchMetricsBatchinator.flush(scrollMetrics);
     } else {
-
       this._dispatchMetricsBatchinator.schedule(scrollMetrics);
     }
 
