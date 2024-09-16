@@ -970,6 +970,9 @@ class ListGroupDimensionsExperimental<
       'computeIndexRange ',
       startIndex,
       _endIndex,
+      minOffset,
+      maxOffset,
+      this._dimensionsIntervalTree.getHeap()[1],
       this._dimensionsIntervalTree.getMaxUsefulLength()
     );
 

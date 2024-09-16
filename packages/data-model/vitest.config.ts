@@ -16,9 +16,12 @@ export default defineConfig({
     // fakeTimers: {
     //   requestIdleCallback: true,
     // }
-    // include: ['src/__test__/**/reducer.test.ts'],
+    include: [
+      'src/__test__/**/reducer.test.ts',
+      'src/__test__/**/ListGroupDimensions.test.ts',
+    ],
     // include: ['src/__test__/**/ListDimensions.test.ts'],
-    include: ['src/__test__/**/ListGroupDimensions.test.ts'],
+    // include: ['src/__test__/**/ListGroupDimensions.test.ts'],
     // browser: true,
   },
 

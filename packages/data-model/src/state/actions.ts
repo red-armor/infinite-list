@@ -51,6 +51,8 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
 
   ctx.dataLength = nextDataLength;
 
+  console.log('preve ====', prevDataLength, nextDataLength)
+
   if (!prevDataLength && nextDataLength) {
     return {
       type: ActionType.Initial,

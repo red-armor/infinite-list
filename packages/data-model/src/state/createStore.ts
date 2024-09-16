@@ -23,6 +23,8 @@ function createStore<State extends ReducerResult = ReducerResult>(
   const currentReducer = _reducer;
 
   const dispatch = (action: Action) => {
+    console.log('action ===== ', action.type, action.payload.scrollMetrics)
+
     currentState = currentReducer(currentState, action);
     return currentState;
   };

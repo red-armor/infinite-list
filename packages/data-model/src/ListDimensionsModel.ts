@@ -78,6 +78,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this._container = container;
     this._offsetInListGroup = 0;
     this._initialData = data;
+
     if (!manuallyApplyInitialData) {
       this.applyInitialData()
     }
@@ -100,7 +101,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   applyInitialData() {
-    this._setData(this._initialData);
+    this.setData(this._initialData);
   }
 
   getContainerOffset(): number {
@@ -228,6 +229,11 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   setIntervalTreeValue(index: number, length: number) {
     this.intervalTree.set(index, length);
     this.triggerOwnerRecalculateLayout();
+  }
+
+  applyIntervalTreeUpdate() {
+    this.intervalTree.applyUpdate()
+    this.triggerOwnerRecalculateLayout()
   }
 
   replaceIntervalTree(intervalTree: PrefixIntervalTree) {
@@ -424,7 +430,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       this.setKeyMeta(itemKey, meta);
     }
 
-    intervalTree.applyUpdate();
+    this.applyIntervalTreeUpdate()
   }
 
   append(data: Array<ItemT>) {
@@ -432,7 +438,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);
 
     // after set interval tree. should then trigger a update..
-    this.triggerOwnerRecalculateLayout();
+    // this.triggerOwnerRecalculateLayout();
   }
 
   shuffle(data: Array<ItemT>) {

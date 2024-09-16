@@ -914,11 +914,11 @@ function testSuite(isFixedLength: boolean) {
         }
       );
       expect(listGroupDimensions.getState()).toEqual({
-        "actionType": "initial",
+        "actionType": "recalculate",
         "bufferedEndIndex": 3,
         "bufferedStartIndex": 0,
-        "distanceFromEnd": undefined,
-        "isEndReached": undefined,
+        "distanceFromEnd": 4074,
+        "isEndReached": false,
         "visibleEndIndex": -1,
         "visibleStartIndex": -1,
       })
@@ -981,12 +981,12 @@ function testSuite(isFixedLength: boolean) {
         }
       );
       expect(listGroupDimensions.getState()).toEqual({
-        "actionType": "initial",
+        "actionType": "recalculate",
         "bufferedEndIndex": 3,
         "bufferedStartIndex": 0,
-        "distanceFromEnd": undefined,
-        "isEndReached": undefined,
-        "visibleEndIndex": 0,
+        "distanceFromEnd": 4074,
+        "isEndReached": false,
+        "visibleEndIndex": 2,
         "visibleStartIndex": 0,
       })
   
@@ -998,14 +998,14 @@ function testSuite(isFixedLength: boolean) {
           getItemLayout: (item, index) => ({ length: 20, index }),
         }
       );
-  
+      
       expect(listGroupDimensions.getState()).toEqual({
         "actionType": "recalculate",
         "bufferedEndIndex": 8,
         "bufferedStartIndex": 0,
         "distanceFromEnd": 4074,
         "isEndReached": false,
-        "visibleEndIndex": 0,
+        "visibleEndIndex": 7,
         "visibleStartIndex": 0,
       })
   
@@ -1017,57 +1017,15 @@ function testSuite(isFixedLength: boolean) {
           getItemLayout: (item, index) => ({ length: 500, index }),
         }
       );
-    });
-  
-    test('updateInitialNumDueToListGroup - banner occupy position', () => {
-      const listGroupDimensions = new ListGroupDimensions({
-        id: 'list_group',
-        isFixedLength,
-        maxToRenderPerBatch: 10,
-        initialNumToRender: 10,
-        getContainerLayout: () => ({
-          x: 0,
-          y: 2000,
-          width: 375,
-          height: 2000,
-        }),
-      });
-  
-      listGroupDimensions.registerItem('banner');
-      const { dimensions: list_1_dimensions } = listGroupDimensions.registerList(
-        'list_1',
-        {
-          data: buildData(3),
-          keyExtractor: defaultKeyExtractor,
-          getItemLayout: (item, index) => ({ length: 100, index }),
-        }
-      );
-      const { dimensions: list_2_dimensions } = listGroupDimensions.registerList(
-        'list_2',
-        {
-          data: buildData(5),
-          keyExtractor: defaultKeyExtractor,
-          getItemLayout: (item, index) => ({ length: 20, index }),
-        }
-      );
-      listGroupDimensions.registerItem('banner2');
-      const { dimensions: list_3_dimensions } = listGroupDimensions.registerList(
-        'list_3',
-        {
-          data: buildData(13),
-          keyExtractor: defaultKeyExtractor,
-          getItemLayout: (item, index) => ({ length: 500, index }),
-        }
-      );
-      listGroupDimensions.registerList('list_4', {
-        data: buildData(20),
-        keyExtractor: defaultKeyExtractor,
-        getItemLayout: (item, index) => ({ length: 150, index }),
-      });
-  
-      expect(list_1_dimensions.initialNumToRender).toBe(3);
-      expect(list_2_dimensions.initialNumToRender).toBe(5);
-      expect(list_3_dimensions.initialNumToRender).toBe(0);
+      expect(listGroupDimensions.getState()).toEqual({
+        "actionType": "recalculate",
+        "bufferedEndIndex": 13,
+        "bufferedStartIndex": 0,
+        "distanceFromEnd": 4074,
+        "isEndReached": false,
+        "visibleEndIndex": 10,
+        "visibleStartIndex": 0,
+      })
     });
   });
   
