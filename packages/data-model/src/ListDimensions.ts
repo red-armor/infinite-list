@@ -127,7 +127,6 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       flush?: boolean;
     }
   ) {
-    console.log('updatescroll metrics')
     this._scrollMetrics = _scrollMetrics || this._scrollMetrics;
     this._updateScrollMetrics(this._scrollMetrics, _options);
   }

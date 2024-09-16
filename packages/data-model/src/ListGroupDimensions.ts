@@ -1058,29 +1058,6 @@ class ListGroupDimensionsExperimental<
     return this.findListRange(startIndex, endIndex);
   }
 
-  dispatchMetrics(scrollMetrics: ScrollMetrics) {
-    const state = this.store.dispatchMetrics({
-      dimension: this,
-      scrollMetrics,
-    });
-
-    if (isEmpty(state)) return;
-    if (this.fillingMode === FillingMode.RECYCLE) {
-      this.setState({
-        ...state,
-        data: this.getData(),
-      });
-
-      const { isEndReached, distanceFromEnd } = state;
-
-      this.onEndReachedHelper.performEndReached({
-        isEndReached,
-        distanceFromEnd,
-      });
-      return;
-    }
-  }
-
   onUpdateDimensionItemsMetaChange(
     itemsMeta: Array<ItemMeta>,
     scrollMetrics: ScrollMetrics

@@ -43,8 +43,6 @@ import BaseLayout from './BaseLayout';
  * will not change.
  */
 abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
-  // private _getItemLayout: GetItemLayout<ItemT>;
-  // private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
   private _stateListener: StateListener<ItemT>;
 
   private _state: ListState<ItemT>;
@@ -58,15 +56,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   public _scrollMetrics: ScrollMetrics;
 
-  public updateStateBatchinator: Batchinator;
-
   private _recalculateRecycleResultStateBatchinator: Batchinator;
 
   private _selector = new EnabledSelector({
     onEnabled: this.onEnableDispatchScrollMetrics.bind(this),
   });
-
-  private _offsetTriggerCachedState = 0;
 
   private _onRecyclerProcess: OnRecyclerProcess;
 
@@ -165,20 +159,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this.dispatchMetrics.bind(this),
       dispatchMetricsThreshold
     );
-    /**
-     * 0911 temp ignore
-     */
-    // this._removeList = this._listGroupDimension ? noop : manager.addList(this);
-    this.updateStateBatchinator = new Batchinator(
-      this.updateState.bind(this),
-      50
-    );
+
     this._recalculateRecycleResultStateBatchinator =
       this._dispatchMetricsBatchinator = new Batchinator(
         this.dispatchMetrics.bind(this),
         dispatchMetricsThreshold
       );
-    // new Batchinator(this.recalculateRecycleResultState.bind(this), 50);
   }
 
   initializeDefaultRecycleBuffer() {
@@ -206,7 +192,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   get state() {
-    return this._state
+    // return this._state
+    return this.store.getState()
   }
 
   getState() {
@@ -384,8 +371,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       }
     }
 
-    console.log('state =======', this._stateResult)
-
     this._stateResult = {
       ...stateResult,
       // @ts-ignore
@@ -393,17 +378,24 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     };
   }
 
-  setState(state: ListState<ItemT>, force = false) {
-    console.log('fill =========', this.fillingMode)
+ /**
+  * 
+  * @param state 
+  * @param force 
+  * 
+  * Pay attention if you want to compare state first, then decide setState or not..
+  * There is a condition the old and new stat are same, but item meta info changed 
+  * such as approximateLayout props change, then the list should rerun
+  * 
+  */
 
+  setState(state: ListState<ItemT>, force = false) {
     if (this.fillingMode === FillingMode.SPACE) {
       const stateResult = force
         ? this.resolveSpaceState(state)
         : this.memoizedResolveSpaceState(state);
       this.applyStateResult(stateResult);
     } else if (this.fillingMode === FillingMode.RECYCLE) {
-      console.log('reylc=======')
-
       const stateResult = force
         ? this.resolveRecycleState(state)
         : this.memoizedResolveRecycleState(state);
@@ -550,7 +542,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         maxCount: 10,
         step: 1,
         onProcess: this._onRecyclerProcess,
-
         /** TODO */
         // maxIndex: this.getData().length,
       });
@@ -632,8 +623,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       ? this.resolveRecycleRecycleState(state)
       : [];
     const spaceStateResult = this.resolveRecycleSpaceState(state);
-
-    console.log('resovlve ======', spaceStateResult)
 
     const stateResult = {
       recycleState: recycleStateResult.filter((v) => v),
@@ -796,7 +785,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     }
   ) {
     const {
-      data,
+      // data,
       bufferedEndIndex: _bufferedEndIndex,
       bufferedStartIndex: _bufferedStartIndex,
     } = state;
@@ -809,7 +798,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
     const nextStart = bufferedStartIndex;
     const nextEnd = bufferedEndIndex + 1;
-    const remainingData = data.slice(nextStart, nextEnd);
+    const remainingData = this._data.slice(nextStart, nextEnd);
     const beforeTokens = this.resolveToken(0, nextStart);
     const spaceState = [];
 
@@ -916,32 +905,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     return spaceState;
   }
 
-  updateState(newState: PreStateResult, scrollMetrics: ScrollMetrics) {
-    const omitKeys = ['data', 'distanceFromEnd', 'isEndReached'];
-
-    const oldData = this._state.data;
-    const newData = this._data;
-
-    const shouldSetState =
-      shallowDiffers(
-        omit(this._state || {}, omitKeys),
-        omit(newState, omitKeys)
-      ) || !resolveChanged(oldData, newData).isEqual;
-
-    if (shouldSetState) {
-      const state = {
-        ...newState,
-        data: newData,
-      };
-
-      // @ts-ignore
-      this.setState(state);
-      // @ts-ignore
-      this._state = state;
-      this._offsetTriggerCachedState = scrollMetrics.offset;
-    }
-  }
-
   dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
       // @ts-ignore
@@ -949,26 +912,13 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics,
     });
     if (isEmpty(state)) return state;
-    this.setState({
-      ...state,
-      // @ts-ignore
-      data: this.getData(),
-    });
-
-    console.log('s========')
-
-    // maybe itemMeta approximateLayout change, but will not trigger update...
-    // this.updateState(state, scrollMetrics);
+    this.setState({ ...state });
 
     return state;
   }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
-
     const state = this.dispatchStoreMetrics(scrollMetrics);
-
-    console.log('sispt =======', state)
-
 
     const { isEndReached, distanceFromEnd } = state;
 
@@ -1006,8 +956,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   ) {
     const scrollMetrics = _scrollMetrics || this._scrollMetrics;
     const flush = defaultBooleanValue(_options?.flush, false);
-
-    console.log('uppate ====', flush, scrollMetrics, this.dispatchScrollMetricsEnabled())
 
     if (!scrollMetrics) return;
     if (!this.dispatchScrollMetricsEnabled()) {
