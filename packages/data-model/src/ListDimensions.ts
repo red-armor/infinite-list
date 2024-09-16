@@ -35,7 +35,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   }
 
   setData(data: Array<ItemT>) {
-    this._dataModel.setData(data);
+    return this._dataModel.setData(data);
   }
 
   getDataLength() {

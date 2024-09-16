@@ -460,6 +460,7 @@ class ListGroupDimensionsExperimental<
       container: this,
       horizontal: this.getHorizontal(),
       isFixedLength: this._isFixedLength,
+      manuallyApplyInitialData: true,
       ...listDimensionsProps,
       recycleEnabled: this._recycleEnable,
     });

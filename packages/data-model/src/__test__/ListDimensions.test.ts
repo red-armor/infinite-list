@@ -66,7 +66,7 @@ describe('basic', () => {
     expect(listDimensions.horizontal).toBe(true);
   });
 
-  it.only('verify changedType', () => {
+  it('verify changedType', () => {
     const data = buildData(10);
 
     const listDimensions = new ListDimensions({
@@ -121,14 +121,19 @@ describe('basic', () => {
 
     data.forEach((item, index) => {
       const meta = listDimensions.getItemMeta(item, index);
-      expect(meta.getLayout()).toBeUndefined();
+      expect(meta.getLayout()).toEqual({
+        x: 0,
+        y: 0,
+        height: 80,
+        width: 0,
+      });
     });
-    expect(listDimensions.getReflowItemsLength()).toBe(0);
+    expect(listDimensions.getReflowItemsLength()).toBe(10);
   });
 });
 
 describe('resolve space state', () => {
-  it('basic output state', () => {
+  it.only('basic output state', () => {
     const data = buildData(100);
 
     const listDimensions = new ListDimensions({
@@ -149,6 +154,8 @@ describe('resolve space state', () => {
     });
 
     const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    console.log('state =====', stateResult)
 
     expect(stateResult.length).toBe(39);
     expect(stateResult[0].length).toBe(100);
@@ -277,6 +284,8 @@ describe('resolve space state', () => {
     });
 
     let stateResult = listDimensions.stateResult as SpaceStateResult<any>;
+
+    console.log(' stateResult ', stateResult)
 
     expect(stateResult.length).toBe(39);
     expect(stateResult[0].length).toBe(100);

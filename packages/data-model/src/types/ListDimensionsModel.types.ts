@@ -29,6 +29,12 @@ export interface ListDimensionsModelProps<ItemT> extends BaseDimensionsProps {
   isFixedLength?: boolean;
 
   onEndReachedThreshold?: number;
+
+  /**
+   * on default, value is false; In ListGroupDimensions, data should not 
+   * be initialized on construct . so add this param..
+   */
+  manuallyApplyInitialData?: boolean;
 }
 
 export type ListDimensionsModelContainer = ListGroupDimensions | ListDimensions;

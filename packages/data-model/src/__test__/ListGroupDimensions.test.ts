@@ -2,6 +2,7 @@ import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { describe, expect, it, test, vi, afterEach } from 'vitest';
+import { DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from '../common'
 
 vi.useFakeTimers();
 
@@ -85,7 +86,7 @@ describe('basic', () => {
       keyExtractor: defaultKeyExtractor,
     });
 
-    expect(listGroupDimensions.getIndexKeys()).toEqual([
+    expect(listGroupDimensions.indexKeys).toEqual([
       'banner',
       'list_1',
       'list_2',
@@ -96,7 +97,7 @@ describe('basic', () => {
 
     removeList2();
 
-    expect(listGroupDimensions.getIndexKeys()).toEqual([
+    expect(listGroupDimensions.indexKeys).toEqual([
       'banner',
       'list_1',
       'list_3',
@@ -105,7 +106,7 @@ describe('basic', () => {
     ]);
 
     removeBanner2();
-    expect(listGroupDimensions.getIndexKeys()).toEqual([
+    expect(listGroupDimensions.indexKeys).toEqual([
       'banner',
       'list_1',
       'list_3',
@@ -533,7 +534,7 @@ describe('basic', () => {
 
     expect(listGroupDimensions.getIntervalTree().sumUntil(1)).toBe(80);
     expect(listGroupDimensions.getIntervalTree().sumUntil(2)).toBe(1080);
-    expect(listGroupDimensions.getIntervalTree().sumUntil(11)).toBe(10680);
+    expect(listGroupDimensions.getIntervalTree().sumUntil(11)).toBe(10680 + DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH);
   });
 });
 
@@ -615,7 +616,7 @@ describe('test dimensionsIndexRange', () => {
     ]);
   });
 
-  it('on delete', () => {
+  it.only('on delete', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,

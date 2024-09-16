@@ -55,6 +55,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       isFixedLength = true,
       getItemSeparatorLength,
       useItemApproximateLength,
+      manuallyApplyInitialData = false,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
     } = props;
 
@@ -77,6 +78,9 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this._container = container;
     this._offsetInListGroup = 0;
     this._initialData = data;
+    if (!manuallyApplyInitialData) {
+      this.applyInitialData()
+    }
   }
 
   get recyclerType() {
