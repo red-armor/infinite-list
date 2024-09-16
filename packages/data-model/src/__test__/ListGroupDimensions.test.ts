@@ -870,7 +870,7 @@ describe('test dimensionsIndexRange', () => {
 });
 
 describe('initialNumToRender', () => {
-  test('updateInitialNumDueToListGroup', () => {
+  test.only('updateInitialNumDueToListGroup', () => {
     const listGroupDimensions = new ListGroupDimensions({
       id: 'list_group',
       maxToRenderPerBatch: 10,

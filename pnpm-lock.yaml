@@ -77,6 +77,9 @@ importers:
       '@x-oasis/is-clamped':
         specifier: ^0.1.14
         version: 0.1.14
+      '@x-oasis/is-object':
+        specifier: ^0.1.35
+        version: 0.1.35
       '@x-oasis/layout-equal':
         specifier: ^0.1.16
         version: 0.1.16
@@ -3733,6 +3736,12 @@ packages:
     resolution: {integrity: sha512-DuySxdr0/gbcTwZNuHg356bAQ+wkweNlMiW9MN/poiDiIQgsxY5weXUyDPlPnzd1HdnIXzG5wUEOAf/H01LttA==}
     dev: false
 
+  /@x-oasis/is-object@0.1.35:
+    resolution: {integrity: sha512-Dqb8kPyTHQNtKiXRpxJSHRbSxar6iKihn88NRGflss/Xu1CnFNbyShUH6i2IH5UJCO4zEQHiemAHWySnA4Jetg==}
+    dependencies:
+      '@x-oasis/to-string': 0.1.35
+    dev: false
+
   /@x-oasis/layout-equal@0.1.16:
     resolution: {integrity: sha512-eT9Kyy1cSfvB9QIsL9kwS/f65yCrCNxhIbwd7556629ejgIbuFsgtZsMq5z6iaWZCyrWIc7nc/PkRIVm2wUK6Q==}
     dev: false
@@ -3773,6 +3782,10 @@ packages:
 
   /@x-oasis/shallow-equal@0.1.14:
     resolution: {integrity: sha512-ZHbUEpiWKH/qYi3f36nrns1dqxASOjv4X/ue1/nveLbhVJawSmtqIFAXrlIiR0wBu9vGtjzLrLkzPQ3WwtzpRw==}
+    dev: false
+
+  /@x-oasis/to-string@0.1.35:
+    resolution: {integrity: sha512-v6pNsaZ7+UGz995stUEe7YrDRbVIAUcybD70NePXaZiEqhe0TErTWFQ55K8I9ii3UAGfxP4/7twT+1iSacaxNw==}
     dev: false
 
   /@x-oasis/unique-array-object@0.1.14:

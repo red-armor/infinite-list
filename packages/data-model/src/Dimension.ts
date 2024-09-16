@@ -1,4 +1,5 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import isObject from '@x-oasis/is-object'
 import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
 import { INVALID_LENGTH, DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from './common';
@@ -241,8 +242,7 @@ class Dimension extends BaseContainer {
       }
     } 
 
-
-    if (
+    if (isObject(layout) &&
       !layoutEqual(meta.getLayout(), layout as ItemLayout)
     ) {
       meta.setLayout(layout as ItemLayout);
