@@ -165,15 +165,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this.dispatchMetrics.bind(this),
       dispatchMetricsThreshold
     );
-
-    // @ts-ignore
-    // this._state = this.resolveInitialState();
-
-    // this.attemptToHandleEndReached();
-
-    // 比如刚开始就有值，并且给了`getItemLayout`的话，需要手动更新Parent中的layout
-    // this.hydrateParentIntervalTree();
-
     /**
      * 0911 temp ignore
      */
@@ -215,7 +206,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   get state() {
-    return this._state;
+    return this._state
   }
 
   getState() {
@@ -240,8 +231,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   initializeState() {
     this._state = this.resolveInitialState();
-
-    console.log('state ', this._state);
 
     this._stateResult =
       this.fillingMode === FillingMode.RECYCLE
@@ -361,53 +350,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   applyStateResult(stateResult: ListStateResult<ItemT>) {
     const shouldStateUpdate = true;
 
-    // if (!this._stateResult && stateResult) {
-    //   shouldStateUpdate = true;
-    // } else if (this.fillingMode === FillingMode.SPACE) {
-    //   shouldStateUpdate = !shallowEqual(stateResult, this._stateResult);
-    // } else if (this.fillingMode === FillingMode.RECYCLE) {
-    //   const _stateResult = stateResult as RecycleStateResult<ItemT>;
-    //   const _oldStateResult = this._stateResult as RecycleStateResult<ItemT>;
-
-    //   const newRecycleState = [];
-    //   const oldRecycleState = [];
-
-    //   let maxIndex = 0;
-
-    //   for (let index = 0; index < _stateResult.recycleState.length; index++) {
-    //     // @ts-ignore
-    //     const { itemMeta, targetIndex } = _stateResult.recycleState[index];
-    //     if (!itemMeta || (itemMeta && itemMeta.getState().viewable)) {
-    //       newRecycleState.push(_stateResult.recycleState[index]);
-    //       oldRecycleState.push(_oldStateResult.recycleState[index]);
-    //       maxIndex = Math.max(targetIndex, index);
-    //     } else {
-    //       newRecycleState.push(null);
-    //       oldRecycleState.push(null);
-    //     }
-    //   }
-
-    //   let exists = true;
-
-    //   // To fix onEndReached condition, data is updated. it will not trigger update issue.
-    //   if (isClamped(0, maxIndex + 1, this._data.length - 1)) {
-    //     exists =
-    //       _oldStateResult.recycleState.findIndex(
-    //         (s) => s?.targetIndex === maxIndex + 1
-    //       ) !== -1;
-    //   }
-
-    //   shouldStateUpdate =
-    //     !(
-    //       shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
-    //       shallowArrayEqual(
-    //         _stateResult.spaceState,
-    //         _oldStateResult.spaceState,
-    //         shallowEqual
-    //       )
-    //     ) || !exists;
-    // }
-
     if (shouldStateUpdate && typeof this._stateListener === 'function') {
       if (this.fillingMode === FillingMode.RECYCLE) {
         const { recycleState: _recycleState, spaceState } =
@@ -441,6 +383,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         this._stateListener(stateResult, this._stateResult);
       }
     }
+
+    console.log('state =======', this._stateResult)
 
     this._stateResult = {
       ...stateResult,
@@ -689,7 +633,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       : [];
     const spaceStateResult = this.resolveRecycleSpaceState(state);
 
-    console.log('resovlve ======')
+    console.log('resovlve ======', spaceStateResult)
 
     const stateResult = {
       recycleState: recycleStateResult.filter((v) => v),
@@ -973,16 +917,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   updateState(newState: PreStateResult, scrollMetrics: ScrollMetrics) {
-    // const {
-    //   bufferedStartIndex: nextBufferedStartIndex,
-    //   bufferedEndIndex: nextBufferedEndIndex,
-    // } = newState;
-
     const omitKeys = ['data', 'distanceFromEnd', 'isEndReached'];
-    // const nextDataLength = Math.max(
-    //   nextBufferedEndIndex + 1,
-    //   this.getReflowItemsLength()
-    // );
 
     const oldData = this._state.data;
     const newData = this._data;

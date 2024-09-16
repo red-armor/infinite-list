@@ -525,7 +525,7 @@ describe('reducer', () => {
     });
   });
 
-  it.only('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
+  it('if visibleStartIndex and visibleEndIndex not change, then return directly', () => {
     const data = buildData(100);
 
     const list = new ListDimensions({
