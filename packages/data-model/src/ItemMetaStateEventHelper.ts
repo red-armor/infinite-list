@@ -12,11 +12,34 @@ setTimeout(() => {
   canIUseRIC = false;
   finished = true;
 });
-// @ts-ignore
-requestIdleCallback(() => {
-  canIUseRIC = true;
-  finished = true;
-});
+
+// function requestIdleCallback(cb) {
+//   setTimeout(cb, 0);
+// }
+
+interface IdleRequestCallback {
+  (deadline: IdleDeadline): void;
+}
+/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline) */
+interface IdleDeadline {
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/didTimeout) */
+  readonly didTimeout: boolean;
+  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/timeRemaining) */
+  timeRemaining(): DOMHighResTimeStamp;
+}
+interface IdleRequestOptions {
+  timeout?: number;
+}
+
+// declare function requestIdleCallback(
+//   callback: IdleRequestCallback,
+//   options?: IdleRequestOptions
+// ): number;
+
+// requestIdleCallback(() => {
+//   canIUseRIC = true;
+//   finished = true;
+// });
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;
@@ -324,8 +347,7 @@ class ItemMetaStateEventHelper {
       }).bind(this);
 
       this._callbackId = this._canIUseRIC
-        ? // @ts-ignore
-          requestIdleCallback(handler)
+        ? requestIdleCallback(handler)
         : handler();
     }
   }

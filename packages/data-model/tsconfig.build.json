@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": [
+      "node",
+      "./types"
+    ]
   },
 
   "include": ["src/**/*"]

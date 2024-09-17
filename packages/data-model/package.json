@@ -16,7 +16,8 @@
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "watch": "tsdx watch --tsconfig tsconfig.build.json",
     "clean": "rimraf ./dist",
-    "test": "vitest"
+    "test": "vitest",
+    "typecheck": "vitest typecheck"
   },
   "devDependencies": {
     "rimraf": "^5.0.1",
