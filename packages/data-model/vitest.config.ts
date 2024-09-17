@@ -17,8 +17,12 @@ export default defineConfig({
     //   requestIdleCallback: true,
     // }
     include: [
-      'src/__test__/**/reducer.test.ts',
+      // 'src/__test__/**/ListDimensions.test.ts',
       'src/__test__/**/ListGroupDimensions.test.ts',
+      'src/__test__/**/reducer.test.ts',
+      'src/__test__/**/SortedItems.test.ts',
+      'src/__test__/**/ViewabilityConfigTuples.test.ts',
+      'src/__test__/**/viewabilityUtils.test.ts',
     ],
     // include: ['src/__test__/**/ListDimensions.test.ts'],
     // include: ['src/__test__/**/ListGroupDimensions.test.ts'],

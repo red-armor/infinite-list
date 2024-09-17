@@ -155,7 +155,7 @@ describe('resolve space state', () => {
 
     const stateResult = listDimensions.stateResult as SpaceStateResult<any>;
 
-    console.log('state =====', stateResult)
+    console.log('state =====', stateResult);
 
     expect(stateResult.length).toBe(39);
     expect(stateResult[0].length).toBe(100);
@@ -285,7 +285,7 @@ describe('resolve space state', () => {
 
     let stateResult = listDimensions.stateResult as SpaceStateResult<any>;
 
-    console.log(' stateResult ', stateResult)
+    console.log(' stateResult ', stateResult);
 
     expect(stateResult.length).toBe(39);
     expect(stateResult[0].length).toBe(100);
@@ -920,14 +920,14 @@ describe('setData', () => {
 
     let _intervalTree = recycleList.intervalTree;
     expect(recycleList.intervalTree.get(19)).toBe(0);
-    recycleList.setKeyItemLayout('0', 100);
-    recycleList.setKeyItemLayout('1', 80);
-    recycleList.setKeyItemLayout('2', 100);
-    recycleList.setKeyItemLayout('3', 20);
-    recycleList.setKeyItemLayout('4', 100);
-    recycleList.setKeyItemLayout('5', 30);
-    recycleList.setKeyItemLayout('6', 100);
-    recycleList.setKeyItemLayout('7', 200);
+    recycleList.setFinalKeyItemLayout('0', 100);
+    recycleList.setFinalKeyItemLayout('1', 80);
+    recycleList.setFinalKeyItemLayout('2', 100);
+    recycleList.setFinalKeyItemLayout('3', 20);
+    recycleList.setFinalKeyItemLayout('4', 100);
+    recycleList.setFinalKeyItemLayout('5', 30);
+    recycleList.setFinalKeyItemLayout('6', 100);
+    recycleList.setFinalKeyItemLayout('7', 200);
     expect(
       recycleList.intervalTree
         .getHeap()
@@ -1171,10 +1171,6 @@ describe('lifecycle', () => {
 
     const spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
     expect(spaceListStateResult.length).toBe(4);
-    // expect(spaceListStateResult[0].viewable).toBe(true);
-    // expect(spaceListStateResult[1].viewable).toBe(true);
-    // expect(spaceListStateResult[2].viewable).toBe(true);
-    // expect(spaceListStateResult[3].viewable).toBe(true);
 
     const recycleList = new ListDimensions({
       id: 'list_group',
@@ -1862,10 +1858,10 @@ describe('data update', () => {
       actionType: 'initial',
     });
 
-    recycleList.setKeyItemLayout('0', 100);
-    recycleList.setKeyItemLayout('1', 80);
-    recycleList.setKeyItemLayout('2', 100);
-    recycleList.setKeyItemLayout('3', 20);
+    recycleList.setFinalKeyItemLayout('0', 100);
+    recycleList.setFinalKeyItemLayout('1', 80);
+    recycleList.setFinalKeyItemLayout('2', 100);
+    recycleList.setFinalKeyItemLayout('3', 20);
 
     // @ts-ignore
     recycleList.updateScrollMetrics({
@@ -1874,16 +1870,16 @@ describe('data update', () => {
       contentLength: 0,
     });
 
-    recycleList.setKeyItemLayout('4', 100);
-    recycleList.setKeyItemLayout('5', 30);
-    recycleList.setKeyItemLayout('6', 100);
-    recycleList.setKeyItemLayout('7', 200);
-    recycleList.setKeyItemLayout('8', 100);
-    recycleList.setKeyItemLayout('9', 100);
-    recycleList.setKeyItemLayout('10', 100);
-    recycleList.setKeyItemLayout('11', 100);
-    recycleList.setKeyItemLayout('12', 100);
-    recycleList.setKeyItemLayout('13', 100);
+    recycleList.setFinalKeyItemLayout('4', 100);
+    recycleList.setFinalKeyItemLayout('5', 30);
+    recycleList.setFinalKeyItemLayout('6', 100);
+    recycleList.setFinalKeyItemLayout('7', 200);
+    recycleList.setFinalKeyItemLayout('8', 100);
+    recycleList.setFinalKeyItemLayout('9', 100);
+    recycleList.setFinalKeyItemLayout('10', 100);
+    recycleList.setFinalKeyItemLayout('11', 100);
+    recycleList.setFinalKeyItemLayout('12', 100);
+    recycleList.setFinalKeyItemLayout('13', 100);
 
     let recycleListStateResult =
       recycleList.stateResult as RecycleStateResult<any>;
@@ -2105,7 +2101,7 @@ describe('updateScrollMetrics', () => {
     });
   });
 
-  it('setKeyItemLayout will not trigger updateScrollMetrics', () => {
+  it('setFinalKeyItemLayout will not trigger updateScrollMetrics', () => {
     const data = buildData(100);
 
     const list = new ListDimensions({
@@ -2163,7 +2159,7 @@ describe('updateScrollMetrics', () => {
       actionType: 'initial',
     });
 
-    list.setKeyItemLayout('3', 100);
+    list.setFinalKeyItemLayout('3', 100);
 
     expect(list.state).toEqual({
       visibleStartIndex: 0,
@@ -2253,7 +2249,7 @@ describe('updateScrollMetrics', () => {
       actionType: 'initial',
     });
 
-    list.setKeyItemLayout('3', 100);
+    list.setFinalKeyItemLayout('3', 100);
 
     expect(list.state).toEqual({
       visibleStartIndex: 0,
@@ -2284,7 +2280,7 @@ describe('updateScrollMetrics', () => {
       actionType: 'hydrationWithBatchUpdate',
     });
 
-    list.setKeyItemLayout('4', 100);
+    list.setFinalKeyItemLayout('4', 100);
 
     // @ts-ignore
     list.updateScrollMetrics({
@@ -2381,7 +2377,7 @@ describe('updateScrollMetrics', () => {
       actionType: 'initial',
     });
 
-    list.setKeyItemLayout('3', 100);
+    list.setFinalKeyItemLayout('3', 100);
 
     expect(list.state).toEqual({
       visibleStartIndex: 0,
