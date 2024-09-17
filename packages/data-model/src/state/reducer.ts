@@ -15,6 +15,7 @@ const initialize = <State extends ReducerResult = ReducerResult>(
 ): State => {
   const ctx = {} as Ctx;
   resolveIndexRange(state, payload, ctx);
+  hydrateOnEndReached(state, payload, ctx);
   fixVisibleRange(state, payload, ctx);
   fixInitialBufferedRange(state, payload, ctx);
   resolveInitialState(state, payload, ctx);

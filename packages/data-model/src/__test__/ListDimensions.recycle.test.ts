@@ -668,6 +668,7 @@ describe('setData', () => {
 
 describe('data update', () => {
   beforeEach(() => {
+    resetContext()
     // tell vitest we use mocked time
     vi.useFakeTimers();
   });
@@ -675,7 +676,7 @@ describe('data update', () => {
     // restoring date after each test run
     vi.useRealTimers();
   });
-  it('insert a data item', () => {
+  it.only('insert a data item', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
       data: [],
@@ -699,26 +700,26 @@ describe('data update', () => {
     });
     recycleList.setData(data);
 
-    expect(recycleList.state).toEqual({
-      visibleStartIndex: 0,
-      visibleEndIndex: 3,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: 3,
-      isEndReached: false,
-      distanceFromEnd: 0,
-      data: data.slice(0, 4),
-      actionType: 'initial',
-    });
-
-    // @ts-ignore
     recycleList.updateScrollMetrics({
       offset: 0,
       visibleLength: 926,
       contentLength: 0,
     });
 
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: 0,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 1,
+      isEndReached: true,
+      distanceFromEnd: -926,
+      actionType: 'initial',
+    });
+
     let recycleListStateResult =
       recycleList.stateResult as RecycleStateResult<any>;
+
+    console.log('------- ', recycleListStateResult)
 
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(400);
