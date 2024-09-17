@@ -687,6 +687,8 @@ describe('data update', () => {
       windowSize: 5,
       initialNumToRender: 4,
       onEndReachedThreshold: 2,
+
+      onRecyclerProcess: () => true,
       getContainerLayout: () => ({
         x: 0,
         y: 2000,
@@ -701,18 +703,18 @@ describe('data update', () => {
     recycleList.setData(data);
 
     recycleList.updateScrollMetrics({
-      offset: 0,
+      offset: 2000,
       visibleLength: 926,
       contentLength: 0,
     });
 
     expect(recycleList.state).toEqual({
-      visibleStartIndex: -1,
-      visibleEndIndex: 0,
+      visibleStartIndex: 0,
+      visibleEndIndex: 10,
       bufferedStartIndex: 0,
-      bufferedEndIndex: 1,
+      bufferedEndIndex: 10,
       isEndReached: true,
-      distanceFromEnd: -926,
+      distanceFromEnd: -2926,
       actionType: 'initial',
     });
 

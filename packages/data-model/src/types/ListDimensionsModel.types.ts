@@ -1,6 +1,7 @@
 import ListDimensions from '../ListDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
 import { BaseDimensionsProps } from './BaseDimensions.types';
+import { ListBaseDimensionsProps } from './ListBaseDimensions.types'
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,
@@ -12,7 +13,7 @@ export type GetItemLayout<ItemT> = (
 ) => { length: number; index: number };
 export type KeyExtractor<ItemT> = (item: ItemT, index: number) => string;
 
-export interface ListDimensionsModelProps<ItemT> extends BaseDimensionsProps {
+export interface ListDimensionsModelProps<ItemT> extends ListBaseDimensionsProps, BaseDimensionsProps {
   data: Array<ItemT>;
   itemApproximateLength?: number;
   useItemApproximateLength?: boolean;
@@ -35,6 +36,8 @@ export interface ListDimensionsModelProps<ItemT> extends BaseDimensionsProps {
    * be initialized on construct . so add this param..
    */
   manuallyApplyInitialData?: boolean;
+
+  recyclerTypes?: Array<string>;
 }
 
 export type ListDimensionsModelContainer = ListGroupDimensions | ListDimensions;

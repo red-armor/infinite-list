@@ -133,8 +133,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     this._recycler = new Recycler({
+      // the following is appended with setting default recyclerType
       recyclerTypes,
       recyclerBufferSize,
+      /**
+       * set recycle start item
+       */
       thresholdIndexValue: this.initialNumToRender,
       recyclerReservedBufferPerBatch,
       metaExtractor: (index) => this.getFinalIndexItemMeta(index),
@@ -145,6 +149,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
     });
+    // default recyclerTypes should be set immediately
     this.initializeDefaultRecycleBuffer();
 
     this.memoizedResolveSpaceState = memoizeOne(
@@ -217,41 +222,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   removeOnEndReached(onEndReached: OnEndReached) {
     this.onEndReachedHelper.removeHandler(onEndReached);
   }
-
-  // initializeStateResult() {
-  //   this._stateResult =
-  //     this.fillingMode === FillingMode.RECYCLE
-  //       ? this.memoizedResolveRecycleState(this.getState())
-  //       : this.memoizedResolveSpaceState(this.getState());
-  // }
-
-  // resolveInitialState() {
-  //   if (!this.initialNumToRender || !this._data.length)
-  //     return {
-  //       visibleStartIndex: -1,
-  //       visibleEndIndex: -1,
-  //       bufferedStartIndex: -1,
-  //       bufferedEndIndex: -1,
-  //       isEndReached: false,
-  //       distanceFromEnd: 0,
-  //       data: [],
-  //       actionType: ActionType.Initial,
-  //     };
-
-  //   if (this._state && this._state.bufferedEndIndex > 0) return this._state;
-
-  //   const maxIndex = Math.min(this._data.length, this.initialNumToRender) - 1;
-  //   return {
-  //     visibleStartIndex: 0,
-  //     visibleEndIndex: maxIndex,
-  //     bufferedStartIndex: 0,
-  //     bufferedEndIndex: maxIndex,
-  //     isEndReached: false,
-  //     distanceFromEnd: 0,
-  //     data: this._data.slice(0, maxIndex + 1),
-  //     actionType: ActionType.Initial,
-  //   };
-  // }
 
   getOnEndReachedHelper() {
     return this.onEndReachedHelper;
@@ -509,6 +479,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this._recycler.thresholdIndexValue
     );
 
+    // console.log('--------', state, this._onRecyclerProcess)
+
     const safeRange = this.resolveSafeRange({
       visibleStartIndex,
       visibleEndIndex,
@@ -521,6 +493,9 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         visibleStartIndex - Math.ceil(recycleBufferedCount / 2),
         this._recycler.thresholdIndexValue
       );
+
+      console.log('tart ====', startIndex, safeRange)
+
       this._recycler.updateIndices({
         safeRange,
         startIndex,
@@ -563,6 +538,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       true
     );
     const targetIndices = this._recycler.getIndices();
+
+    console.log('target indices ', this._recycler, targetIndices, minValue, maxValue)
 
     targetIndices
       .filter((v) => v)

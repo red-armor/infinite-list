@@ -72,6 +72,7 @@ class ItemMeta extends ViewabilityItemMeta {
     this._isListItem = isListItem || false;
     this._stateEventSubscriptions = new Map();
     this._ignoredToPerBatch = !!ignoredToPerBatch;
+    this._useSeparatorLength = useSeparatorLength
     this._state =
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
