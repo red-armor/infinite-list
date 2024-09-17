@@ -771,3 +771,418 @@ describe('viewability', () => {
     // expect(stateResult[29].imageViewable).toBe(false);
   });
 });
+
+describe('lifecycle', () => {
+  it('initialization - empty list', () => {
+    const spaceList = new ListDimensions({
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      data: [],
+      maxToRenderPerBatch: 7,
+      windowSize: 9,
+      initialNumToRender: 10,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+    expect(spaceList.stateResult).toEqual([]);
+
+    const recycleList = new ListDimensions({
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      data: [],
+      recycleEnabled: true,
+      maxToRenderPerBatch: 7,
+      windowSize: 9,
+      initialNumToRender: 10,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+    expect(recycleList.stateResult).toEqual({
+      recycleState: [],
+      spaceState: [],
+    });
+  });
+
+  it('initialization - data source', () => {
+    const data = buildData(20);
+    const spaceList = new ListDimensions({
+      data,
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 9,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    const spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+    // {
+    //   viewable: boolean;
+    //   imageViewable: boolean;
+    // }
+    expect(spaceListStateResult.length).toBe(4);
+    // expect(spaceListStateResult[0].viewable).toBe(true);
+    // expect(spaceListStateResult[1].viewable).toBe(true);
+    // expect(spaceListStateResult[2].viewable).toBe(true);
+    // expect(spaceListStateResult[3].viewable).toBe(true);
+
+    const recycleList = new ListDimensions({
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      data,
+      recycleEnabled: true,
+      maxToRenderPerBatch: 7,
+      windowSize: 9,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    const recycleListStateResult =
+      recycleList.stateResult as RecycleStateResult<any>;
+
+    expect(recycleListStateResult.spaceState.length).toBe(4);
+    // expect(recycleListStateResult.spaceState[0].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
+  });
+
+  it('initialization - update data source', () => {
+    const data = buildData(20);
+    const spaceList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 9,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    spaceList.setData(data);
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    const spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+    expect(spaceListStateResult.length).toBe(4);
+
+    const recycleList = new ListDimensions({
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      data: [],
+      recycleEnabled: true,
+      maxToRenderPerBatch: 7,
+      windowSize: 5,
+      initialNumToRender: 4,
+      onEndReachedThreshold: 2,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    recycleList.setData(data);
+
+    expect(recycleList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 3,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 3,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 4),
+      actionType: 'initial',
+    });
+
+    const recycleListStateResult =
+      recycleList.stateResult as RecycleStateResult<any>;
+
+    expect(recycleListStateResult.spaceState.length).toBe(4);
+    // expect(recycleListStateResult.spaceState[0].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[1].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[2].viewable).toBe(true);
+    // expect(recycleListStateResult.spaceState[3].viewable).toBe(true);
+  });
+
+  it('initialization - update data source (initialNumToRender: 10)', () => {
+    const data = buildData(100);
+    const spaceList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 5,
+      initialNumToRender: 10,
+      onEndReachedThreshold: 2,
+      getItemLayout: (item, index) => ({
+        length: 100,
+        index,
+      }),
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    spaceList.setData(data);
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 9,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 10),
+      actionType: 'initial',
+    });
+
+    let spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+    expect(spaceListStateResult.length).toBe(10);
+    // expect(spaceListStateResult[0].viewable).toBe(true);
+    // expect(spaceListStateResult[1].viewable).toBe(true);
+    // expect(spaceListStateResult[2].viewable).toBe(true);
+    // expect(spaceListStateResult[3].viewable).toBe(true);
+
+    // @ts-ignore
+    spaceList.updateScrollMetrics({
+      offset: 3009,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 10,
+      visibleEndIndex: 19,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 37,
+      isEndReached: false,
+      distanceFromEnd: 6065,
+      data: data.slice(0, 100),
+      actionType: 'recalculate',
+    });
+
+    expect(spaceList.stateResult[38].key).toBe(buildStateTokenIndexKey(38, 99));
+    expect(spaceList.stateResult[38].length).toBe(6200);
+    spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+    // expect(spaceListStateResult[9].viewable).toBe(false);
+    // expect(spaceListStateResult[10].viewable).toBe(true);
+    // expect(spaceListStateResult[11].viewable).toBe(true);
+    // expect(spaceListStateResult[12].viewable).toBe(true);
+    // expect(spaceListStateResult[19].viewable).toBe(true);
+    // expect(spaceListStateResult[20].viewable).toBe(false);
+  });
+
+  it('initialization - update data source (initialNumToRender: 10) and use viewabilityConfig', () => {
+    const data = buildData(100);
+    const spaceList = new ListDimensions({
+      data: [],
+      id: 'list_group',
+      keyExtractor: defaultKeyExtractor,
+      maxToRenderPerBatch: 7,
+      windowSize: 5,
+      initialNumToRender: 10,
+      onEndReachedThreshold: 2,
+      getItemLayout: (item, index) => ({
+        length: 100,
+        index,
+      }),
+      getContainerLayout: () => ({
+        x: 0,
+        y: 2000,
+        width: 375,
+        height: 2000,
+      }),
+      viewabilityConfigCallbackPairs: [
+        {
+          viewabilityConfig: {
+            viewport: 1,
+            name: 'imageViewable',
+            viewAreaCoveragePercentThreshold: 20,
+          },
+        },
+        {
+          viewabilityConfig: {
+            name: 'viewable',
+            viewAreaCoveragePercentThreshold: 30,
+          },
+        },
+      ],
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: -1,
+      visibleEndIndex: -1,
+      bufferedStartIndex: -1,
+      bufferedEndIndex: -1,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: [],
+      actionType: 'initial',
+    });
+
+    spaceList.setData(data);
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 0,
+      visibleEndIndex: 9,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 9,
+      isEndReached: false,
+      distanceFromEnd: 0,
+      data: data.slice(0, 10),
+      actionType: 'initial',
+    });
+
+    let spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+
+    expect(spaceListStateResult.length).toBe(10);
+    // expect(spaceListStateResult[0].viewable).toBe(true);
+    // expect(spaceListStateResult[0].imageViewable).toBe(true);
+    // expect(spaceListStateResult[1].viewable).toBe(true);
+    // expect(spaceListStateResult[1].imageViewable).toBe(true);
+    // expect(spaceListStateResult[2].viewable).toBe(true);
+    // expect(spaceListStateResult[2].imageViewable).toBe(true);
+    // expect(spaceListStateResult[3].viewable).toBe(true);
+    // expect(spaceListStateResult[3].imageViewable).toBe(true);
+    // expect(spaceListStateResult[9].viewable).toBe(true);
+    // expect(spaceListStateResult[9].imageViewable).toBe(true);
+
+    // @ts-ignore
+    spaceList.updateScrollMetrics({
+      offset: 3009,
+      visibleLength: 926,
+      contentLength: 10000,
+    });
+
+    expect(spaceList.state).toEqual({
+      visibleStartIndex: 10,
+      visibleEndIndex: 19,
+      bufferedStartIndex: 0,
+      bufferedEndIndex: 37,
+      isEndReached: false,
+      distanceFromEnd: 6065,
+      data: data.slice(0, 100),
+      actionType: 'recalculate',
+    });
+
+    expect(spaceList.stateResult[38].key).toBe(buildStateTokenIndexKey(38, 99));
+    expect(spaceList.stateResult[38].length).toBe(6200);
+    spaceListStateResult = spaceList.stateResult as SpaceStateResult<any>;
+  });
+});
