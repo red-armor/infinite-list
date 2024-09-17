@@ -42,6 +42,7 @@ class ItemMeta extends ViewabilityItemMeta {
   readonly _canIUseRIC?: boolean;
   private _isApproximateLayout: boolean;
   private _ignoredToPerBatch: boolean;
+  private _useSeparatorLength: boolean;
   private _spawnProps: {
     [key: string]: ItemMetaStateEventHelperProps;
   };
@@ -55,11 +56,14 @@ class ItemMeta extends ViewabilityItemMeta {
       state,
       isListItem,
       canIUseRIC,
-      recyclerType = DEFAULT_RECYCLER_TYPE,
-      isInitialItem = false,
-      ignoredToPerBatch,
-      isApproximateLayout = true,
       spawnProps = {},
+      ignoredToPerBatch,
+      isInitialItem = false,
+      isApproximateLayout = true,
+
+      useSeparatorLength = true,
+
+      recyclerType = DEFAULT_RECYCLER_TYPE,
     } = props;
     this._owner = owner;
     this._id = `item_meta_${count++}`;
@@ -161,6 +165,18 @@ class ItemMeta extends ViewabilityItemMeta {
   getItemLength() {
     const selectValue = this._owner.getSelectValue();
     return this._layout ? selectValue.selectLength(this._layout) : 0;
+  }
+
+  setUseSeparatorLength(value: boolean) {
+    this._useSeparatorLength = value
+  }
+
+  getFinalItemLength() {
+    if (this._useSeparatorLength) {
+      return this.getItemLength() + this.getSeparatorLength()
+    }
+
+    return this.getItemLength()
   }
 
   getItemOffset(exclusive?: boolean) {

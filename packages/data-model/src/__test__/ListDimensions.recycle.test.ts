@@ -163,13 +163,14 @@ describe('setData', () => {
         index,
       }),
     });
+    const _intervalTree = recycleList.getIntervalTree();
     const type = recycleList.setData(data);
     expect(type).toBe(KeysChangedType.Initial);
     // on initial interval tree should not change.
-    // expect(_intervalTree).toBe(recycleList.intervalTree);
+    expect(_intervalTree).toBe(recycleList.getIntervalTree());
   });
 
-  it.only('append', () => {
+  it('append', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
       data,

@@ -245,10 +245,11 @@ class ListGroupDimensionsExperimental<
       indexToOffsetMap[index] = startOffset;
       const itemMeta = this.getFinalIndexItemMeta(index);
       if (itemMeta) {
-        // @ts-ignore
-        startOffset +=
-          (itemMeta?.getLayout()?.height || 0) +
-          (itemMeta?.getSeparatorLength() || 0);
+        startOffset += itemMeta?.getFinalItemLength()
+        // // @ts-ignore
+        // startOffset +=
+        //   (itemMeta?.getLayout()?.height || 0) +
+        //   (itemMeta?.getSeparatorLength() || 0);
       }
     }
     return indexToOffsetMap;

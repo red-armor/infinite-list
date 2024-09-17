@@ -171,12 +171,20 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     const len = data.length;
 
     if (meta.getLayout()) {
-      const itemLength = this._selectValue.selectLength(meta.getLayout());
-      const separatorLength = meta.getSeparatorLength();
-
       // 最后一个不包含separatorLength
-      const length =
-        index === len - 1 ? itemLength : itemLength + separatorLength;
+      if (index === len - 1) {
+        meta.setUseSeparatorLength(true)
+      } else {
+        meta.setUseSeparatorLength(false)
+      }
+
+      const length = meta.getFinalItemLength()
+      // const itemLength = this._selectValue.selectLength(meta.getLayout());
+      // const separatorLength = meta.getSeparatorLength();
+
+      // // 最后一个不包含separatorLength
+      // const length =
+      //   index === len - 1 ? itemLength : itemLength + separatorLength;
       this.intervalTree.set(index, length);
     }
 
@@ -377,14 +385,22 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     const len = this._data.length;
     const index = len - 1;
     const item = this._data[index];
+
+    console.log('item ====== ', item)
+
     if (!item) return;
 
     const meta = this.getItemMeta(item, index);
     const layout = meta?.getLayout();
 
+    console.log('layout ', layout)
+
     if (meta && layout) {
-      const separatorLength = meta.getSeparatorLength();
-      const length = this._selectValue.selectLength(layout) + separatorLength;
+      meta.setUseSeparatorLength(true)
+      // const separatorLength = meta.getSeparatorLength();
+      // const length = this._selectValue.selectLength(layout) + separatorLength;
+      const length = meta.getFinalItemLength()
+      console.log('length ', index, length)
       this.setIntervalTreeValue(index, length);
     }
   }
@@ -419,12 +435,20 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         this.createItemMeta(itemKey, _data, currentIndex);
 
       if (meta.getLayout()) {
-        const itemLength = this._selectValue.selectLength(meta.getLayout());
-        const separatorLength = meta.getSeparatorLength();
-
+        // const itemLength = this._selectValue.selectLength(meta.getLayout());
         // 最后一个不包含separatorLength
-        const length =
-          index === len - 1 ? itemLength : itemLength + separatorLength;
+        if (index === len - 1) {
+          meta.setUseSeparatorLength(false)
+        } else {
+          meta.setUseSeparatorLength(true)
+        }
+
+        const length = meta.getFinalItemLength()
+
+        // const separatorLength = meta.getSeparatorLength();
+
+        // const length =
+        //   index === len - 1 ? itemLength : itemLength + separatorLength;
         intervalTree.drySet(currentIndex, length);
       }
       this.setKeyMeta(itemKey, meta);
@@ -487,8 +511,13 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (index !== this._data.length - 1) {
-          length = meta.getSeparatorLength() + length;
+          meta.setUseSeparatorLength(true)
+          // length = meta.getSeparatorLength() + length;
+        } else {
+          meta.setUseSeparatorLength(false)
         }
+
+        length = meta.getFinalItemLength()
 
         if (_update) {
           this.setIntervalTreeValue(index, length);
@@ -519,8 +548,14 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
       if (currentLength !== length && _update) {
         if (index !== this._data.length - 1) {
-          length = meta.getSeparatorLength() + length;
+          meta.setUseSeparatorLength(true)
+          // length = meta.getSeparatorLength() + length;
+        } else {
+          meta.setUseSeparatorLength(false)
         }
+
+        length = meta.getFinalItemLength()
+
         this.setIntervalTreeValue(index, length);
         return true;
       }

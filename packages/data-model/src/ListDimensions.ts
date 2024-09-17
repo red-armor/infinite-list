@@ -75,7 +75,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
 
   getFinalIndexItemLength(index: number) {
     const itemMeta = this.getFinalIndexItemMeta(index);
-    if (itemMeta) return itemMeta.getItemLength();
+    if (itemMeta) return itemMeta.getFinalItemLength()
     return 0;
   }
 
@@ -100,9 +100,12 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       indexToOffsetMap[index] = startOffset;
       const item = this._data[index];
       const itemMeta = this.getItemMeta(item, index);
-      startOffset +=
-        (itemMeta?.getLayout()?.height || 0) +
-        (itemMeta?.getSeparatorLength() || 0);
+
+      startOffset += itemMeta?.getFinalItemLength()
+
+      // startOffset +=
+      //   (itemMeta?.getLayout()?.height || 0) +
+      //   (itemMeta?.getSeparatorLength() || 0);
     }
     return indexToOffsetMap;
   }

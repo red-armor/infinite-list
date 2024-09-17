@@ -438,8 +438,9 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     for (let idx = 0; idx < max; idx++) {
       const index = startIndex + step * idx;
       const meta = this.getFinalIndexItemMeta(index);
-      const layout = meta?.getLayout();
-      const length = (layout?.height || 0) + (meta?.getSeparatorLength() || 0);
+      // const layout = meta?.getLayout();
+      // const length = (layout?.height || 0) + (meta?.getSeparatorLength() || 0);
+      const length = meta.getFinalItemLength()
       if (meta && !meta?.isApproximateLayout) {
         const offset =
           offsetMap[index] != null
@@ -460,9 +461,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   resolveRecycleItemLayout(info, indexToOffsetMap) {
     const { meta: itemMeta, targetIndex } = info;
-    const itemLayout = itemMeta?.getLayout();
-    const itemLength =
-      (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+    // const itemLayout = itemMeta?.getLayout();
+    // const itemLength =
+    //   (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+    const itemLength = itemMeta.getFinalItemLength()
 
     if (
       !itemMeta.isApproximateLayout &&
@@ -834,10 +838,14 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       if (!itemMeta) return;
       const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
       const isReserved = this.persistanceIndices.indexOf(index) !== -1;
-      const itemLayout = itemMeta?.getLayout();
+
       const itemKey = itemMeta.getKey();
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+      const itemLength = itemMeta?.getFinalItemLength()
+
+      // const itemLayout = itemMeta?.getLayout();
+      // const itemLength =
+      //   (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
       const itemMetaState =
         !this._scrollMetrics || !itemMeta?.getLayout()
