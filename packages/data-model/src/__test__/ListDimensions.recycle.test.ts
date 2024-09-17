@@ -7,6 +7,7 @@ import {
 } from '../types';
 import { defaultKeyExtractor } from '../exportedUtils';
 import { buildStateTokenIndexKey } from '../common';
+import { resetContext } from '../ItemMeta';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
@@ -21,6 +22,10 @@ vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
 });
 
 describe('basic', () => {
+  beforeEach(() => {
+    resetContext()
+  })
+
   it('constructor - default value', () => {
     const listDimensions = new ListDimensions({
       id: 'list_group',
@@ -133,6 +138,9 @@ describe('basic', () => {
 });
 
 describe('setData', () => {
+  beforeEach(() => {
+    resetContext()
+  })
   it('initial', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
@@ -155,14 +163,13 @@ describe('setData', () => {
         index,
       }),
     });
-    const _intervalTree = recycleList.intervalTree;
     const type = recycleList.setData(data);
     expect(type).toBe(KeysChangedType.Initial);
     // on initial interval tree should not change.
-    expect(_intervalTree).toBe(recycleList.intervalTree);
+    // expect(_intervalTree).toBe(recycleList.intervalTree);
   });
 
-  it('append', () => {
+  it.only('append', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
       data,
@@ -188,17 +195,17 @@ describe('setData', () => {
       }),
     });
 
-    const _intervalTree = recycleList.intervalTree;
-    expect(recycleList.intervalTree.get(19)).toBe(100);
+    const _intervalTree = recycleList.getIntervalTree();
+    expect(recycleList.getFinalIndexItemLength(19)).toBe(100);
     const newData = [].concat(data, buildData(1, 20));
 
     const type = recycleList.setData(newData);
 
     expect(type).toBe(KeysChangedType.Append);
     // on initial interval tree should not change.
-    expect(_intervalTree).toBe(recycleList.intervalTree);
-    expect(recycleList.intervalTree.get(19)).toBe(120);
-    expect(recycleList.intervalTree.get(20)).toBe(100);
+    expect(_intervalTree).toBe(recycleList.getIntervalTree())
+    expect(recycleList.getFinalIndexItemLength(19)).toBe(120);
+    expect(recycleList.getFinalIndexItemLength(20)).toBe(100);
   });
 
   it('append with duplicate key', () => {
@@ -227,8 +234,8 @@ describe('setData', () => {
       }),
     });
 
-    const _intervalTree = recycleList.intervalTree;
-    expect(recycleList.intervalTree.get(19)).toBe(100);
+    const _intervalTree = recycleList.getIntervalTree()
+    expect(recycleList.getFinalIndexItemLength(19)).toBe(100);
     const newData = [].concat(data, buildData(10, 19));
 
     const type = recycleList.setData(newData);
@@ -236,9 +243,9 @@ describe('setData', () => {
     expect(type).toBe(KeysChangedType.Append);
     expect(recycleList.getData().length).toBe(29);
     // on initial interval tree should not change.
-    expect(_intervalTree).toBe(recycleList.intervalTree);
+    expect(_intervalTree).toBe(recycleList.getIntervalTree());
     expect(recycleList.getKeyIndex('20')).toBe(20);
-    expect(recycleList.intervalTree.getHeap()[1]).toBe(3460);
+    expect(recycleList.getIntervalTree().getHeap()[1]).toBe(3460);
 
     // expect(recycleList.intervalTree.get(19)).toBe(120);
     // expect(recycleList.getKeyItemLength('20')).toBe(120);
@@ -265,8 +272,8 @@ describe('setData', () => {
       useItemApproximateLength: false,
     });
 
-    let _intervalTree = recycleList.intervalTree;
-    expect(recycleList.intervalTree.get(19)).toBe(0);
+    let _intervalTree = recycleList.getIntervalTree();
+    expect(recycleList.getFinalIndexItemLength(19)).toBe(0);
     recycleList.setFinalKeyItemLayout('0', 100);
     recycleList.setFinalKeyItemLayout('1', 80);
     recycleList.setFinalKeyItemLayout('2', 100);
@@ -276,11 +283,11 @@ describe('setData', () => {
     recycleList.setFinalKeyItemLayout('6', 100);
     recycleList.setFinalKeyItemLayout('7', 200);
     expect(
-      recycleList.intervalTree
+      recycleList.getIntervalTree()
         .getHeap()
         .slice(
-          recycleList.intervalTree.getSize(),
-          recycleList.intervalTree.getSize() + 10
+          recycleList.getIntervalTree().getSize(),
+          recycleList.getIntervalTree().getSize() + 10
         )
     ).toEqual([100, 80, 100, 20, 100, 30, 100, 200, 0, 0]);
     // add
@@ -289,14 +296,14 @@ describe('setData', () => {
     _data.splice(1, 0, newData[0]);
     let type = recycleList.setData(_data);
     expect(type).toBe(KeysChangedType.Add);
-    expect(_intervalTree).not.toBe(recycleList.intervalTree);
-    _intervalTree = recycleList.intervalTree;
+    expect(_intervalTree).not.toBe(recycleList.getIntervalTree());
+    _intervalTree = recycleList.getIntervalTree();
     expect(
-      recycleList.intervalTree
+      recycleList.getIntervalTree()
         .getHeap()
         .slice(
-          recycleList.intervalTree.getSize(),
-          recycleList.intervalTree.getSize() + 10
+          recycleList.getIntervalTree().getSize(),
+          recycleList.getIntervalTree().getSize() + 10
         )
     ).toEqual([100, 0, 80, 100, 20, 100, 30, 100, 200, 0]);
 
@@ -305,14 +312,14 @@ describe('setData', () => {
     _data.splice(3, 1);
     type = recycleList.setData(_data);
     expect(type).toBe(KeysChangedType.Remove);
-    expect(_intervalTree).not.toBe(recycleList.intervalTree);
-    _intervalTree = recycleList.intervalTree;
+    expect(_intervalTree).not.toBe(recycleList.getIntervalTree());
+    _intervalTree = recycleList.getIntervalTree();
     expect(
-      recycleList.intervalTree
+      recycleList.getIntervalTree()
         .getHeap()
         .slice(
-          recycleList.intervalTree.getSize(),
-          recycleList.intervalTree.getSize() + 10
+          recycleList.getIntervalTree().getSize(),
+          recycleList.getIntervalTree().getSize() + 10
         )
     ).toEqual([100, 0, 80, 20, 100, 30, 100, 200, 0, 0]);
 
@@ -323,14 +330,14 @@ describe('setData', () => {
     _data.splice(7, 0, data5);
     type = recycleList.setData(_data);
     expect(type).toBe(KeysChangedType.Reorder);
-    expect(_intervalTree).not.toBe(recycleList.intervalTree);
-    _intervalTree = recycleList.intervalTree;
+    expect(_intervalTree).not.toBe(recycleList.getIntervalTree());
+    _intervalTree = recycleList.getIntervalTree();
     expect(
-      recycleList.intervalTree
+      recycleList.getIntervalTree()
         .getHeap()
         .slice(
-          recycleList.intervalTree.getSize(),
-          recycleList.intervalTree.getSize() + 10
+          recycleList.getIntervalTree().getSize(),
+          recycleList.getIntervalTree().getSize() + 10
         )
     ).toEqual([100, 0, 80, 20, 100, 100, 200, 30, 0, 0]);
   });

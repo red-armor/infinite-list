@@ -18,7 +18,7 @@ export default defineConfig({
     // }
     include: [
       // 'src/__test__/**/ListDimensions.space.test.ts',
-      // 'src/__test__/**/ListDimensions.recycle.test.ts',
+      'src/__test__/**/ListDimensions.recycle.test.ts',
       'src/__test__/**/ListGroupDimensions.test.ts',
       'src/__test__/**/reducer.test.ts',
       'src/__test__/**/SortedItems.test.ts',

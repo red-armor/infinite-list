@@ -18,11 +18,16 @@ export const isValidMetaLayout = (meta: ItemMeta) => !!(meta && !meta.isApproxim
 
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
-export const context: {
+export let context: {
   [key: string]: ItemMeta;
 } = {};
 
 let count = 0;
+
+export const resetContext = () => {
+  context = {}
+}
+
 class ItemMeta extends ViewabilityItemMeta {
   private _isListItem: boolean;
   private _id: string;

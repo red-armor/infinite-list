@@ -26,6 +26,18 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
     this.attemptToHandleEndReached();
   }
 
+  getKeyIndex(key: string) {
+    return this._dataModel.getKeyIndex(key)
+  }
+
+  getIndexKey(index: number) {
+    return this._dataModel.getIndexKey(index)
+  }
+
+  getIntervalTree() {
+    return this._dataModel.intervalTree
+  }
+
   getItemMeta(item: ItemT, index: number) {
     return this._dataModel.getItemMeta(item, index);
   }
