@@ -33,6 +33,10 @@ export type ItemMetaOwner =
   | PseudoListDimensions;
 
 export type ItemMetaProps = {
+  /**
+   * indicate including separatorLength on return item length
+   */
+  useSeparatorLength?: boolean
   onViewable?: StateEventListener;
   onImpression?: StateEventListener;
   key: string;

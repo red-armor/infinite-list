@@ -5,10 +5,8 @@ import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { isEmpty } from './common';
 import {
   IndexInfo,
-  FillingMode,
   ItemLayout,
   KeysChangedType,
   ListGroupDimensionsProps,
@@ -20,10 +18,11 @@ import {
   RegisteredListProps,
   RegisteredDimensionProps,
 } from './types';
-import createStore from './state/createStore';
-import { ReducerResult } from './state/types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
+import { info } from './utils/logger';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import createStore from './state/createStore';
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -50,6 +49,8 @@ class ListGroupDimensionsExperimental<
    */
   private _flattenData: Array<ItemT> = [];
 
+  private _recycleEnable: boolean;
+
   private _dimensionsIntervalTree: PrefixIntervalTree = new PrefixIntervalTree(
     100
   );
@@ -66,23 +67,33 @@ class ListGroupDimensionsExperimental<
 
   private _inspector: Inspector;
 
+  /**
+   * used with `getItemLayout`, on default if `getItemLayout` is provided, itemMeta's
+   * isApproximateLayout should be false if item layout is resolve from `getItemLayout`.
+   *
+   */
+  private _isFixedLength: boolean;
+
   constructor(props: ListGroupDimensionsProps) {
     super({
       recycleEnabled: true,
+      store: createStore(),
       ...props,
-      store: createStore<ReducerResult>(),
     });
     const { id, onUpdateItemLayout, onUpdateIntervalTree } = props;
 
     this._itemsDimensions = new ItemsDimensions({
       id,
     });
+    this._recycleEnable = defaultBooleanValue(props.recycleEnabled, true);
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
     this._onItemsCountChangedBatchinator = new Batchinator(
       this.onItemsCountChanged.bind(this),
       50
     );
+
+    this._isFixedLength = defaultBooleanValue(props.isFixedLength, true);
 
     this._inspector = new Inspector({
       owner: this,
@@ -94,7 +105,7 @@ class ListGroupDimensionsExperimental<
       50
     );
 
-    this.initializeState();
+    // this.initializeStateResult();
     this.attemptToHandleEndReached();
   }
 
@@ -234,10 +245,11 @@ class ListGroupDimensionsExperimental<
       indexToOffsetMap[index] = startOffset;
       const itemMeta = this.getFinalIndexItemMeta(index);
       if (itemMeta) {
-        // @ts-ignore
-        startOffset +=
-          (itemMeta?.getLayout()?.height || 0) +
-          (itemMeta?.getSeparatorLength() || 0);
+        startOffset += itemMeta?.getFinalItemLength()
+        // // @ts-ignore
+        // startOffset +=
+        //   (itemMeta?.getLayout()?.height || 0) +
+        //   (itemMeta?.getSeparatorLength() || 0);
       }
     }
     return indexToOffsetMap;
@@ -445,14 +457,20 @@ class ListGroupDimensionsExperimental<
     // should update indexKeys first !!!
     const { recyclerType } = listDimensionsProps;
     const dimensions = new ListDimensionsModel({
-      ...listDimensionsProps,
       id: listKey,
       container: this,
       horizontal: this.getHorizontal(),
+      isFixedLength: this._isFixedLength,
+      manuallyApplyInitialData: true,
+      ...listDimensionsProps,
+      recycleEnabled: this._recycleEnable,
     });
     this.addBuffer(recyclerType);
+
     this.setDimension(listKey, dimensions);
     this._inspector.push(listKey);
+
+    dimensions.applyInitialData();
 
     let onEndReachedCleaner = null;
 
@@ -515,8 +533,8 @@ class ListGroupDimensionsExperimental<
   }
 
   /**
-   * Important!!! : data change should be reflect immediately. but resolve state could be deferred.
-   * So this.updateScrollMetrics actually is a batch operation ..
+   * Important!!! : data change should be reflect immediately. but resolve state could 
+   * be deferred. So this.updateScrollMetrics actually is a batch operation ..
    */
   onItemsCountChanged() {
     this.reflowFlattenData();
@@ -571,13 +589,12 @@ class ListGroupDimensionsExperimental<
       this.deleteDimension(key);
       this._inspector.remove(key);
       this.onItemsCountChanged();
-      // this._onItemsCountChangedBatchinator.schedule();
     }
   }
 
   registerItem(
     key: string,
-    dimensionProps: RegisteredDimensionProps
+    dimensionProps: RegisteredDimensionProps = {}
   ): {
     dimensions: Dimension;
     remover: () => void;
@@ -589,13 +606,15 @@ class ListGroupDimensionsExperimental<
           this.removeItem(key);
         },
       };
-    const { recyclerType } = dimensionProps;
+    const { recyclerType } = dimensionProps || {};
     const dimensions = new Dimension({
       id: key,
-      ...dimensionProps,
       container: this,
       horizontal: this.horizontal,
       canIUseRIC: this.canIUseRIC,
+      isFixedLength: this._isFixedLength,
+      ...dimensionProps,
+      recycleEnabled: this._recycleEnable,
     });
     this.setDimension(key, dimensions);
     this.addBuffer(recyclerType);
@@ -637,9 +656,16 @@ class ListGroupDimensionsExperimental<
 
   getKeyDimension() {}
 
+  /**
+   * 
+   * @param listKey 
+   * @param data 
+   * 
+   * for child list, the corresponding setData method will not trigger onItemsCountChanged
+   * So setListData comes
+   */
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
-
     if (listDimensions) {
       const changedType = (listDimensions as ListDimensionsModel).setData(data);
 
@@ -939,7 +965,19 @@ class ListGroupDimensionsExperimental<
       maxOffset
     );
 
-    const { startIndex, endIndex } = dimensionResult;
+    const { startIndex, endIndex: _endIndex } = dimensionResult;
+
+    info(
+      'computeIndexRange ',
+      startIndex,
+      _endIndex,
+      minOffset,
+      maxOffset,
+      this._dimensionsIntervalTree.getHeap()[1],
+      this._dimensionsIntervalTree.getMaxUsefulLength()
+    );
+
+    const endIndex = _endIndex - 1;
 
     if (startIndex === endIndex) {
       const dimensionKey = this.indexKeys[startIndex];
@@ -949,7 +987,7 @@ class ListGroupDimensionsExperimental<
       if (dimensions instanceof Dimension) {
         return {
           startIndex: dimensionsStartIndex,
-          endIndex: dimensionsStartIndex,
+          endIndex: dimensionsStartIndex + 1,
         };
       } else if (dimensions instanceof ListDimensionsModel) {
         const startOffset = this._dimensionsIntervalTree.sumUntil(startIndex);
@@ -976,15 +1014,21 @@ class ListGroupDimensionsExperimental<
 
     let nextStartIndex = startIndex;
 
+    // if it is a item...
     if (startDimensions instanceof Dimension) {
       nextStartIndex = this.getDimensionStartIndex(startDimensionsKey);
-    } else if (startDimensions instanceof ListDimensionsModel) {
+    } else if (
+      /**
+       * if it is a List...
+       */
+      startDimensions instanceof ListDimensionsModel
+    ) {
       const startOffset =
         this._dimensionsIntervalTree.sumUntil(_nextStartIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(startDimensionsKey);
 
-      const index = startDimensions.intervalTree.greatestStrictLowerBound(
+      const index = startDimensions.intervalTree.greatestLowerBound(
         minOffset - startOffset
       );
       nextStartIndex = dimensionsStartIndex + index;
@@ -997,16 +1041,18 @@ class ListGroupDimensionsExperimental<
     let nextEndIndex = startIndex;
 
     if (endDimensions instanceof Dimension) {
-      nextEndIndex = this.getDimensionStartIndex(endDimensionsKey);
+      nextEndIndex = this.getDimensionStartIndex(endDimensionsKey) + 1;
     } else if (endDimensions instanceof ListDimensionsModel) {
       const startOffset = this._dimensionsIntervalTree.sumUntil(_nextEndIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(endDimensionsKey);
-      const index = endDimensions.intervalTree.greatestStrictLowerBound(
+      const index = endDimensions.intervalTree.leastStrictUpperBound(
         maxOffset - startOffset
       );
       nextEndIndex = dimensionsStartIndex + index;
     }
+
+    info('computedIndexRange ', nextStartIndex, nextEndIndex);
 
     return {
       startIndex: nextStartIndex,
@@ -1020,33 +1066,6 @@ class ListGroupDimensionsExperimental<
   }): ListRangeResult {
     const { startIndex, endIndex } = props;
     return this.findListRange(startIndex, endIndex);
-  }
-
-  // addStateListener(listener: StateListener) {
-  //   return this._listBaseDimension.addStateListener(listener);
-  // }
-
-  dispatchMetrics(scrollMetrics: ScrollMetrics) {
-    const state = this.store.dispatchMetrics({
-      dimension: this,
-      scrollMetrics,
-    });
-
-    if (isEmpty(state)) return;
-    if (this.fillingMode === FillingMode.RECYCLE) {
-      this.setState({
-        ...state,
-        data: this.getData(),
-      });
-
-      const { isEndReached, distanceFromEnd } = state;
-
-      this.onEndReachedHelper.performEndReached({
-        isEndReached,
-        distanceFromEnd,
-      });
-      return;
-    }
   }
 
   onUpdateDimensionItemsMetaChange(

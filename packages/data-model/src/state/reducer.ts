@@ -1,13 +1,43 @@
 import preCheck from './middleware/preCheck';
-import addBatch from './middleware/addBatch';
-import bufferedEndIndexShouldBeReserved from './middleware/bufferedEndIndexShouldBeReserved';
-import bufferedStartIndexShouldBeReserved from './middleware/bufferedStartIndexShouldBeReserved';
 import hydrateOnEndReached from './middleware/hydrateOnEndReached';
 import makeIndexMeaningful from './middleware/makeIndexMeaningful';
 import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
-import resolveUnLayoutLimitation from './middleware/resolveUnLayoutLimitation';
+import fixVisibleRange from './middleware/fixVisibleRange';
+import fixBufferedRange from './middleware/fixBufferedRange';
+import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
+import resolveInitialState from './middleware/resolveInitialState';
 import { Action, ActionPayload, ActionType, Ctx, ReducerResult } from './types';
+
+const initialize = <State extends ReducerResult = ReducerResult>(
+  state: State,
+  payload: ActionPayload
+): State => {
+  const ctx = {} as Ctx;
+  resolveIndexRange(state, payload, ctx);
+  hydrateOnEndReached(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
+  fixInitialBufferedRange(state, payload, ctx);
+  resolveInitialState(state, payload, ctx);
+
+  const {
+    visibleIndexRange,
+    bufferedIndexRange,
+    isEndReached,
+    distanceFromEnd,
+  } = ctx;
+
+  return {
+    ...state,
+    isEndReached,
+    distanceFromEnd,
+    actionType: 'initial',
+    visibleStartIndex: visibleIndexRange.startIndex,
+    visibleEndIndex: visibleIndexRange.endIndex,
+    bufferedStartIndex: bufferedIndexRange.startIndex,
+    bufferedEndIndex: bufferedIndexRange.endIndex,
+  };
+};
 
 const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -16,33 +46,11 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   const ctx = {} as Ctx;
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
-  // const { dimension } = payload;
-
-  // if visibleStartIndex and visibleEndIndex not change, then return directly
-  // if (
-  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex &&
-  //   !dimension.hasUnLayoutItems()
-  // ) {
-  //   if (state.actionType === 'hydrationWithBatchUpdate')
-  //     return {
-  //       ...state,
-  //       isEndReached: payload.isEndReached,
-  //       distanceFromEnd: payload.distanceFromEnd,
-  //     };
-  //   return {
-  //     ...state,
-  //     isEndReached: payload.isEndReached,
-  //     distanceFromEnd: payload.distanceFromEnd,
-  //     actionType: 'hydrationWithBatchUpdate',
-  //   };
-  // }
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  addBatch(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedEndIndexShouldBeReserved(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -64,7 +72,6 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
-    // @ts-ignore
     bufferedEndIndex: bufferedIndexRange.endIndex,
   };
 };
@@ -77,27 +84,10 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
 
-  // if (
-  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex
-  // ) {
-  //   if (state.actionType === 'recalculate')
-  //     return {
-  //       ...state,
-  //       isEndReached: payload.isEndReached,
-  //       distanceFromEnd: payload.distanceFromEnd,
-  //     };
-  //   return {
-  //     ...state,
-  //     isEndReached: payload.isEndReached,
-  //     distanceFromEnd: payload.distanceFromEnd,
-  //     actionType: 'recalculate',
-  //   };
-  // }
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedEndIndexShouldBeReserved(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -119,7 +109,6 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
-    // @ts-ignore
     bufferedEndIndex: bufferedIndexRange.endIndex,
   };
 };
@@ -132,29 +121,10 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
 
-  // if (
-  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex
-  // ) {
-  //   if (state.actionType === 'scrollDown')
-  //     return {
-  //       ...state,
-  //       isEndReached: payload.isEndReached,
-  //       distanceFromEnd: payload.distanceFromEnd,
-  //     };
-
-  //   return {
-  //     ...state,
-  //     isEndReached: payload.isEndReached,
-  //     distanceFromEnd: payload.distanceFromEnd,
-  //     actionType: 'scrollDown',
-  //   };
-  // }
-
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedEndIndexShouldBeReserved(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -176,7 +146,6 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
     bufferedStartIndex: bufferedIndexRange.startIndex,
-    // @ts-ignore
     bufferedEndIndex: bufferedIndexRange.endIndex,
   };
 };
@@ -189,29 +158,10 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
   preCheck(state, payload, ctx);
   resolveIndexRange(state, payload, ctx);
 
-  // if (
-  //   state.visibleEndIndex === ctx.visibleIndexRange.endIndex &&
-  //   state.visibleStartIndex === ctx.visibleIndexRange.startIndex
-  // ) {
-  //   if (state.actionType === 'scrollUp')
-  //     return {
-  //       ...state,
-  //       isEndReached: payload.isEndReached,
-  //       distanceFromEnd: payload.distanceFromEnd,
-  //     };
-
-  //   return {
-  //     ...state,
-  //     isEndReached: payload.isEndReached,
-  //     distanceFromEnd: payload.distanceFromEnd,
-  //     actionType: 'scrollUp',
-  //   };
-  // }
-
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  resolveUnLayoutLimitation(state, payload, ctx);
-  bufferedStartIndexShouldBeReserved(state, payload, ctx);
+  fixBufferedRange(state, payload, ctx);
+  fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -232,7 +182,6 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
     // pseudoVelocity: payload.pseudoVelocity,
     visibleStartIndex: visibleIndexRange.startIndex,
     visibleEndIndex: Math.min(visibleIndexRange.endIndex, maxIndex),
-    // @ts-ignore
     bufferedStartIndex: bufferedIndexRange.startIndex,
     bufferedEndIndex: Math.min(bufferedIndexRange.endIndex, maxIndex),
   };
@@ -251,6 +200,7 @@ export default <State extends ReducerResult = ReducerResult>(
     case ActionType.ScrollUp:
       return scrollUp(state, payload);
     case ActionType.Initial:
+      return initialize(state, payload);
     case ActionType.Recalculate:
       return recalculate(state, payload);
   }

@@ -22,6 +22,7 @@ import {
 
 class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   private _data: Array<ItemT> = [];
+  private _initialData: Array<ItemT> = [];
 
   private _keyExtractor: KeyExtractor<ItemT>;
   private _getItemLayout: GetItemLayout<ItemT>;
@@ -36,6 +37,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
   private _recyclerType: string;
+  private _isFixedLength: boolean;
 
   constructor(props: ListDimensionsModelProps<ItemT>) {
     super({
@@ -50,8 +52,10 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       keyExtractor,
       getItemLayout,
       container,
+      isFixedLength = true,
       getItemSeparatorLength,
       useItemApproximateLength,
+      manuallyApplyInitialData = false,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
     } = props;
 
@@ -60,6 +64,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this._recyclerType = recyclerType;
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
+    this._isFixedLength = isFixedLength;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -68,12 +73,15 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
           typeof this._getItemLayout !== 'function'
         )
       : false;
+
     this._getItemSeparatorLength = getItemSeparatorLength;
     this._container = container;
-
-    this._setData(data);
-
     this._offsetInListGroup = 0;
+    this._initialData = data;
+
+    if (!manuallyApplyInitialData) {
+      this.applyInitialData();
+    }
   }
 
   get recyclerType() {
@@ -90,6 +98,10 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
   get anchorKey() {
     return this._anchorKey;
+  }
+
+  applyInitialData() {
+    this.setData(this._initialData);
   }
 
   getContainerOffset(): number {
@@ -124,10 +136,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
   getKeyMeta(key: string) {
     const meta = this._getKeyMeta(key);
-    // if (!meta && this._parentItemsDimensions) {
-    //   meta = this._parentItemsDimensions.getKeyMeta(key);
-    // }
-
     return meta;
   }
 
@@ -154,22 +162,32 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
    */
   ensureKeyMeta(key: string) {
     let meta = this.getKeyMeta(key);
-
-    // if (!meta && this._parentItemsDimensions) {
-    //   meta = this._parentItemsDimensions.ensureKeyMeta(key);
-    // }
-
     if (meta) return meta;
+    const index = this.getKeyIndex(key);
 
-    // TODO: separatorLength may be included!!!!
-    meta = ItemMeta.spawn({
-      key,
-      owner: this,
-      isListItem: true,
-      isInitialItem: false,
-      recyclerType: this._recyclerType,
-      canIUseRIC: this.canIUseRIC,
-    });
+    meta = this.createItemMeta(key, this.getData(), index);
+
+    const data = this.getData();
+    const len = data.length;
+
+    if (meta.getLayout()) {
+      // 最后一个不包含separatorLength
+      if (index === len - 1) {
+        meta.setUseSeparatorLength(true);
+      } else {
+        meta.setUseSeparatorLength(false);
+      }
+
+      const length = meta.getFinalItemLength();
+      // const itemLength = this._selectValue.selectLength(meta.getLayout());
+      // const separatorLength = meta.getSeparatorLength();
+
+      // // 最后一个不包含separatorLength
+      // const length =
+      //   index === len - 1 ? itemLength : itemLength + separatorLength;
+      this.intervalTree.set(index, length);
+    }
+
     this.setKeyMeta(key, meta);
 
     return meta;
@@ -199,8 +217,10 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     return this.getReflowItemsLength() < this._data.length;
   }
 
+  // the hook method to trigger ListDimensions or ListGroupDimension recalculate
+  // after item layout updated.
   triggerOwnerRecalculateLayout() {
-    this._container.onItemLayoutChanged();
+    if (this._container) this._container.onItemLayoutChanged();
   }
 
   _recycleEnabled() {
@@ -215,38 +235,27 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
    * onContentSizeChanged.
    */
   setIntervalTreeValue(index: number, length: number) {
-    // const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree.set(index, length);
     this.triggerOwnerRecalculateLayout();
-    // const nextLength = this.intervalTree.getHeap()[1];
-    // const len = this.intervalTree.getMaxUsefulLength();
-
-    // // 比如换了一个item的话，不会触发更新
-    // if (this._listGroupDimension) {
-    //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    // }
-
-    // if (!this._listGroupDimension && this._recycleEnabled()) {
-    //   this._recalculateRecycleResultStateBatchinator.schedule();
-    // }
   }
 
-  replaceIntervalTree(intervalTree: PrefixIntervalTree) {
-    const oldLength = this.intervalTree.getHeap()[1];
-    this.intervalTree = intervalTree;
-    const nextLength = intervalTree.getHeap()[1];
-
-    if (oldLength !== nextLength) {
-      this.triggerOwnerRecalculateLayout()
-      // this._container.recalculateDimensionsIntervalTreeBatchinator.schedule();
-    }
+  applyIntervalTreeUpdate(intervalTree: PrefixIntervalTree) {
+    intervalTree.applyUpdate();
+    this.triggerOwnerRecalculateLayout();
   }
+
+  // replaceIntervalTree(intervalTree: PrefixIntervalTree) {
+  //   const oldLength = this.intervalTree.getHeap()[1];
+  //   this.intervalTree = intervalTree;
+  //   const nextLength = intervalTree.getHeap()[1];
+
+  //   if (oldLength !== nextLength) {
+  //     this.triggerOwnerRecalculateLayout();
+  //   }
+  // }
 
   createItemMeta(key: string, data: Array<ItemT>, index: number) {
     const isInitialItem = index < this.initialNumToRender;
-    // const isInitialItem = this._initializeMode
-    //   ? index < this.initialNumToRender
-    //   : false;
 
     const meta = ItemMeta.spawn({
       key,
@@ -257,7 +266,24 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       canIUseRIC: this.canIUseRIC,
     });
 
-    if (this._approximateMode && meta.isApproximateLayout) {
+    if (typeof this._getItemLayout === 'function') {
+      const { length } = this._getItemLayout(data, index);
+      // only List with getItemLayout has default layout value
+      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
+      this._selectValue.setLength(meta.getLayout(), length);
+      if (this._isFixedLength) meta.isApproximateLayout = false;
+    }
+
+    if (typeof this._getItemSeparatorLength === 'function') {
+      const { length } = this._getItemSeparatorLength(data, index);
+      meta.setSeparatorLength(length);
+    }
+
+    if (
+      this._approximateMode &&
+      meta.isApproximateLayout &&
+      !meta.getLayout()
+    ) {
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(
         meta.getLayout(),
@@ -265,18 +291,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       );
 
       return meta;
-    }
-
-    if (typeof this._getItemLayout === 'function') {
-      const { length } = this._getItemLayout(data, index);
-      // only List with getItemLayout has default layout value
-      meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
-      this._selectValue.setLength(meta.getLayout(), length);
-    }
-
-    if (typeof this._getItemSeparatorLength === 'function') {
-      const { length } = this._getItemSeparatorLength(data, index);
-      meta.setSeparatorLength(length);
     }
 
     return meta;
@@ -337,6 +351,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       (index: number) => this._data[index] === data[index]
     );
 
+    console.log('date === ', dataChangedType);
+
     switch (dataChangedType) {
       case KeysChangedType.Equal:
         break;
@@ -371,14 +387,17 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     const len = this._data.length;
     const index = len - 1;
     const item = this._data[index];
+
     if (!item) return;
 
     const meta = this.getItemMeta(item, index);
     const layout = meta?.getLayout();
 
     if (meta && layout) {
-      const separatorLength = meta.getSeparatorLength();
-      const length = this._selectValue.selectLength(layout) + separatorLength;
+      meta.setUseSeparatorLength(true);
+      // const separatorLength = meta.getSeparatorLength();
+      // const length = this._selectValue.selectLength(layout) + separatorLength;
+      const length = meta.getFinalItemLength();
       this.setIntervalTreeValue(index, length);
     }
   }
@@ -388,19 +407,17 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     info.index = this._indexKeys.indexOf(key);
 
     return this._container.getFinalKeyIndexInfo(key, this.id);
-
-    // if (this._listGroupDimension) {
-    //   return this._listGroupDimension.getFinalKeyIndexInfo(key, this.id);
-    // }
-
-    // return {
-    //   dimensions: this,
-    //   index: this._indexKeys.indexOf(key),
-    // };
   }
 
   computeIndexRange(minOffset: number, maxOffset: number) {
     const result = this.intervalTree.computeRange(minOffset, maxOffset);
+
+    console.log(
+      'computeIndexRange result ',
+      this.intervalTree.getHeap()[1],
+      result
+    );
+
     return result;
   }
 
@@ -422,30 +439,52 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         this.createItemMeta(itemKey, _data, currentIndex);
 
       if (meta.getLayout()) {
-        const itemLength = this._selectValue.selectLength(meta.getLayout());
-        const separatorLength = meta.getSeparatorLength();
-
+        // const itemLength = this._selectValue.selectLength(meta.getLayout());
         // 最后一个不包含separatorLength
-        const length =
-          index === len - 1 ? itemLength : itemLength + separatorLength;
-        intervalTree.set(currentIndex, length);
+        if (index === len - 1) {
+          meta.setUseSeparatorLength(false);
+        } else {
+          meta.setUseSeparatorLength(true);
+        }
+
+        const length = meta.getFinalItemLength();
+
+        // const separatorLength = meta.getSeparatorLength();
+
+        // const length =
+        //   index === len - 1 ? itemLength : itemLength + separatorLength;
+        intervalTree.drySet(currentIndex, length);
       }
 
+      // TODO=======
+      // this.setKeyMeta(itemKey, meta);
       keyToMetaMap.set(itemKey, meta);
     }
+
+    this.applyIntervalTreeUpdate(intervalTree);
   }
 
   append(data: Array<ItemT>) {
     const baseIndex = this._indexKeys.length;
     this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);
+
+    // after set interval tree. should then trigger a update..
+    // this.triggerOwnerRecalculateLayout();
   }
 
   shuffle(data: Array<ItemT>) {
-    const itemIntervalTree = this.createIntervalTree();
+    const oldLength = this.intervalTree.getHeap()[1];
+    this.intervalTree = this.createIntervalTree();
+    // const itemIntervalTree = this.createIntervalTree();
     const keyToMetaMap = new Map();
-    this.pump(data, 0, keyToMetaMap, itemIntervalTree);
-    this.replaceIntervalTree(itemIntervalTree);
+    this.pump(data, 0, keyToMetaMap, this.intervalTree);
+    // this.replaceIntervalTree(itemIntervalTree);
     this._keyToMetaMap = keyToMetaMap;
+    const nextLength = this.intervalTree.getHeap()[1];
+
+    if (oldLength !== nextLength) {
+      this.triggerOwnerRecalculateLayout();
+    }
   }
 
   /**
@@ -486,8 +525,14 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (index !== this._data.length - 1) {
-          length = meta.getSeparatorLength() + length;
+          meta.setUseSeparatorLength(true);
+          // length = meta.getSeparatorLength() + length;
+        } else {
+          meta.setUseSeparatorLength(false);
         }
+
+        length = meta.getFinalItemLength();
+
         if (_update) {
           this.setIntervalTreeValue(index, length);
           return true;
@@ -495,12 +540,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       } else if (meta.isApproximateLayout) {
         // 比如换了一个item的话，不会触发更新
         this.triggerOwnerRecalculateLayout();
-
-        // if (this._listGroupDimension) {
-        //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-        // } else if (this._recycleEnabled()) {
-        //   this._recalculateRecycleResultStateBatchinator.schedule();
-        // }
       }
 
       meta.isApproximateLayout = false;
@@ -523,8 +562,14 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
       if (currentLength !== length && _update) {
         if (index !== this._data.length - 1) {
-          length = meta.getSeparatorLength() + length;
+          meta.setUseSeparatorLength(true);
+          // length = meta.getSeparatorLength() + length;
+        } else {
+          meta.setUseSeparatorLength(false);
         }
+
+        length = meta.getFinalItemLength();
+
         this.setIntervalTreeValue(index, length);
         return true;
       }
@@ -532,12 +577,6 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       meta.isApproximateLayout = false;
       // 比如换了一个item的话，不会触发更新
       this.triggerOwnerRecalculateLayout();
-
-      // if (this._listGroupDimension) {
-      //   this._listGroupDimension.recalculateDimensionsIntervalTreeBatchinator.schedule();
-      // } else if (this._recycleEnabled()) {
-      //   this._recalculateRecycleResultStateBatchinator.schedule();
-      // }
     }
 
     return false;

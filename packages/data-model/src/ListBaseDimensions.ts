@@ -1,6 +1,4 @@
 import Batchinator from '@x-oasis/batchinator';
-import omit from '@x-oasis/omit';
-import resolveChanged from '@x-oasis/resolve-changed';
 import isClamped from '@x-oasis/is-clamped';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
@@ -8,25 +6,22 @@ import memoizeOne from 'memoize-one';
 
 import {
   isEmpty,
-  shallowDiffers,
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
-  DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
 } from './common';
-import { ActionType } from './state/types';
 import {
   SpaceStateToken,
   ListBaseDimensionsProps,
   ListState,
   OnEndReached,
-  PreStateResult,
   ScrollMetrics,
   StateListener,
   ListStateResult,
   SpaceStateTokenPosition,
   FillingMode,
   RecycleStateResult,
+  ItemLayout,
   SpaceStateResult,
   ListBaseDimensionsStore,
 } from './types';
@@ -36,6 +31,8 @@ import EnabledSelector from './utils/EnabledSelector';
 import StillnessHelper from './utils/StillnessHelper';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import BaseLayout from './BaseLayout';
+// import createStore from './state/createStore';
+// import { ReducerResult } from './state/types';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -43,14 +40,13 @@ import BaseLayout from './BaseLayout';
  * will not change.
  */
 abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
-  // private _getItemLayout: GetItemLayout<ItemT>;
-  // private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
   private _stateListener: StateListener<ItemT>;
 
-  private _state: ListState<ItemT>;
   private _stateResult: ListStateResult<ItemT>;
 
   private _dispatchMetricsBatchinator: Batchinator;
+
+  private _onEndReachedThreshold: number;
 
   private _store: ListBaseDimensionsStore;
 
@@ -58,15 +54,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   public _scrollMetrics: ScrollMetrics;
 
-  public updateStateBatchinator: Batchinator;
-
   private _recalculateRecycleResultStateBatchinator: Batchinator;
 
   private _selector = new EnabledSelector({
     onEnabled: this.onEnableDispatchScrollMetrics.bind(this),
   });
-
-  private _offsetTriggerCachedState = 0;
 
   private _onRecyclerProcess: OnRecyclerProcess;
 
@@ -82,15 +74,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     state: ListState<ItemT>
   ) => RecycleStateResult<ItemT>;
 
-  private _itemApproximateLength: number;
-  private _approximateMode: boolean;
   private _releaseSpaceStateItem: boolean;
 
   constructor(props: ListBaseDimensionsProps) {
     super(props);
     const {
       store,
-
       recyclerTypes,
       recyclerBufferSize,
       recyclerReservedBufferPerBatch,
@@ -100,9 +89,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       viewabilityConfigCallbackPairs,
 
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
-
-      useItemApproximateLength,
-      itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
 
       onRecyclerProcess,
       stillnessThreshold,
@@ -117,11 +103,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
-    this._itemApproximateLength = itemApproximateLength || 0;
+    this._store = store;
+
+    this._onEndReachedThreshold = onEndReachedThreshold;
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
-    this._store = store;
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,
@@ -146,18 +133,23 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     });
 
     this._recycler = new Recycler({
+      // the following is appended with setting default recyclerType
       recyclerTypes,
       recyclerBufferSize,
+      /**
+       * set recycle start item
+       */
       thresholdIndexValue: this.initialNumToRender,
       recyclerReservedBufferPerBatch,
       metaExtractor: (index) => this.getFinalIndexItemMeta(index),
       indexExtractor: (meta) => {
         const indexInfo = meta.getIndexInfo();
-        return indexInfo?.indexInGroup;
+        return indexInfo?.indexInGroup || indexInfo.index;
       },
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
     });
+    // default recyclerTypes should be set immediately
     this.initializeDefaultRecycleBuffer();
 
     this.memoizedResolveSpaceState = memoizeOne(
@@ -172,28 +164,11 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       dispatchMetricsThreshold
     );
 
-    // @ts-ignore
-    // this._state = this.resolveInitialState();
-
-    // this.attemptToHandleEndReached();
-
-    // 比如刚开始就有值，并且给了`getItemLayout`的话，需要手动更新Parent中的layout
-    // this.hydrateParentIntervalTree();
-
-    /**
-     * 0911 temp ignore
-     */
-    // this._removeList = this._listGroupDimension ? noop : manager.addList(this);
-    this.updateStateBatchinator = new Batchinator(
-      this.updateState.bind(this),
-      50
-    );
     this._recalculateRecycleResultStateBatchinator =
       this._dispatchMetricsBatchinator = new Batchinator(
         this.dispatchMetrics.bind(this),
         dispatchMetricsThreshold
       );
-    // new Batchinator(this.recalculateRecycleResultState.bind(this), 50);
   }
 
   initializeDefaultRecycleBuffer() {
@@ -212,6 +187,10 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     return this._selector;
   }
 
+  get onEndReachedThreshold() {
+    return this.onEndReachedHelper.onEndReachedThreshold;
+  }
+
   set scrollMetrics(scrollMetrics: ScrollMetrics) {
     this._scrollMetrics = scrollMetrics;
   }
@@ -221,7 +200,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   get state() {
-    return this._state;
+    return this.store.getState();
   }
 
   getState() {
@@ -244,42 +223,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     this.onEndReachedHelper.removeHandler(onEndReached);
   }
 
-  initializeState() {
-    this._state = this.resolveInitialState();
-    this._stateResult =
-      this.fillingMode === FillingMode.RECYCLE
-        ? this.memoizedResolveRecycleState(this._state)
-        : this.memoizedResolveSpaceState(this._state);
-  }
-
-  resolveInitialState() {
-    if (!this.initialNumToRender || !this._data.length)
-      return {
-        visibleStartIndex: -1,
-        visibleEndIndex: -1,
-        bufferedStartIndex: -1,
-        bufferedEndIndex: -1,
-        isEndReached: false,
-        distanceFromEnd: 0,
-        data: [],
-        actionType: ActionType.Initial,
-      };
-
-    if (this._state && this._state.bufferedEndIndex > 0) return this._state;
-
-    const maxIndex = Math.min(this._data.length, this.initialNumToRender) - 1;
-    return {
-      visibleStartIndex: 0,
-      visibleEndIndex: maxIndex,
-      bufferedStartIndex: 0,
-      bufferedEndIndex: maxIndex,
-      isEndReached: false,
-      distanceFromEnd: 0,
-      data: this._data.slice(0, maxIndex + 1),
-      actionType: ActionType.Initial,
-    };
-  }
-
   getOnEndReachedHelper() {
     return this.onEndReachedHelper;
   }
@@ -295,27 +238,25 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   abstract getData();
-
   abstract getDataLength(): number;
   abstract getTotalLength(): number | string;
   abstract getReflowItemsLength(): number;
   abstract getFinalItemKey(item: any);
   abstract getFinalIndexItemMeta(index: number);
-
   abstract getFinalItemMeta(item: any);
-
   abstract getFinalIndexItemLength(index: number);
-
-  abstract getFinalIndexKeyOffset(index: number);
-
+  abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean);
   abstract getFinalIndexKeyBottomOffset(index: number);
-
+  abstract setFinalKeyItemLayout(
+    key: string,
+    info: ItemLayout | number,
+    updateIntervalTree?: boolean
+  );
   abstract getFinalIndexRangeOffsetMap(
     startIndex: number,
     endIndex: number,
     exclusive?: boolean
   );
-
   abstract computeIndexRange(minOffset: number, maxOffset: number);
 
   hasUnLayoutItems() {
@@ -328,7 +269,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   recalculateRecycleResultState() {
-    this.setState(this._state, true);
+    this.setState(this.getState(), true);
   }
 
   attemptToHandleEndReached() {
@@ -357,53 +298,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   applyStateResult(stateResult: ListStateResult<ItemT>) {
     const shouldStateUpdate = true;
-
-    // if (!this._stateResult && stateResult) {
-    //   shouldStateUpdate = true;
-    // } else if (this.fillingMode === FillingMode.SPACE) {
-    //   shouldStateUpdate = !shallowEqual(stateResult, this._stateResult);
-    // } else if (this.fillingMode === FillingMode.RECYCLE) {
-    //   const _stateResult = stateResult as RecycleStateResult<ItemT>;
-    //   const _oldStateResult = this._stateResult as RecycleStateResult<ItemT>;
-
-    //   const newRecycleState = [];
-    //   const oldRecycleState = [];
-
-    //   let maxIndex = 0;
-
-    //   for (let index = 0; index < _stateResult.recycleState.length; index++) {
-    //     // @ts-ignore
-    //     const { itemMeta, targetIndex } = _stateResult.recycleState[index];
-    //     if (!itemMeta || (itemMeta && itemMeta.getState().viewable)) {
-    //       newRecycleState.push(_stateResult.recycleState[index]);
-    //       oldRecycleState.push(_oldStateResult.recycleState[index]);
-    //       maxIndex = Math.max(targetIndex, index);
-    //     } else {
-    //       newRecycleState.push(null);
-    //       oldRecycleState.push(null);
-    //     }
-    //   }
-
-    //   let exists = true;
-
-    //   // To fix onEndReached condition, data is updated. it will not trigger update issue.
-    //   if (isClamped(0, maxIndex + 1, this._data.length - 1)) {
-    //     exists =
-    //       _oldStateResult.recycleState.findIndex(
-    //         (s) => s?.targetIndex === maxIndex + 1
-    //       ) !== -1;
-    //   }
-
-    //   shouldStateUpdate =
-    //     !(
-    //       shallowArrayEqual(newRecycleState, oldRecycleState, shallowEqual) &&
-    //       shallowArrayEqual(
-    //         _stateResult.spaceState,
-    //         _oldStateResult.spaceState,
-    //         shallowEqual
-    //       )
-    //     ) || !exists;
-    // }
 
     if (shouldStateUpdate && typeof this._stateListener === 'function') {
       if (this.fillingMode === FillingMode.RECYCLE) {
@@ -446,6 +340,17 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     };
   }
 
+  /**
+   *
+   * @param state
+   * @param force
+   *
+   * Pay attention if you want to compare state first, then decide setState or not..
+   * There is a condition the old and new stat are same, but item meta info changed
+   * such as approximateLayout props change, then the list should rerun
+   *
+   */
+
   setState(state: ListState<ItemT>, force = false) {
     if (this.fillingMode === FillingMode.SPACE) {
       const stateResult = force
@@ -472,30 +377,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       ...options,
     };
   }
-
-  /**
-   * For performance boosting. `getIndexKeyOffset` will call intervalTree's sumUtil
-   * function. this method may cause performance issue.
-   * @param startIndex
-   * @param endIndex
-   * @param exclusive
-   * @returns
-   */
-  //  getFinalIndexRangeOffsetMap(
-  //   startIndex: number,
-  //   endIndex: number,
-  //   exclusive?: boolean
-  // ) {
-  //   return this._provider.getFinalIndexRangeOffsetMap(
-  //     startIndex,
-  //     endIndex,
-  //     exclusive
-  //   );
-  // }
-
-  // recognizeLengthBeforeLayout() {
-  //   return this._getItemLayout || this._approximateMode;
-  // }
 
   resolveSafeRange(props: {
     visibleStartIndex: number;
@@ -527,8 +408,9 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     for (let idx = 0; idx < max; idx++) {
       const index = startIndex + step * idx;
       const meta = this.getFinalIndexItemMeta(index);
-      const layout = meta?.getLayout();
-      const length = (layout?.height || 0) + (meta?.getSeparatorLength() || 0);
+      // const layout = meta?.getLayout();
+      // const length = (layout?.height || 0) + (meta?.getSeparatorLength() || 0);
+      const length = meta.getFinalItemLength();
       if (meta && !meta?.isApproximateLayout) {
         const offset =
           offsetMap[index] != null
@@ -549,9 +431,12 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   resolveRecycleItemLayout(info, indexToOffsetMap) {
     const { meta: itemMeta, targetIndex } = info;
-    const itemLayout = itemMeta?.getLayout();
-    const itemLength =
-      (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+    // const itemLayout = itemMeta?.getLayout();
+    // const itemLength =
+    //   (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+    const itemLength = itemMeta.getFinalItemLength();
 
     if (
       !itemMeta.isApproximateLayout &&
@@ -594,6 +479,8 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       this._recycler.thresholdIndexValue
     );
 
+    // console.log('--------', state, this._onRecyclerProcess)
+
     const safeRange = this.resolveSafeRange({
       visibleStartIndex,
       visibleEndIndex,
@@ -606,6 +493,9 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         visibleStartIndex - Math.ceil(recycleBufferedCount / 2),
         this._recycler.thresholdIndexValue
       );
+
+      // console.log('tart ====', startIndex, safeRange)
+
       this._recycler.updateIndices({
         safeRange,
         startIndex,
@@ -623,7 +513,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         maxCount: 10,
         step: 1,
         onProcess: this._onRecyclerProcess,
-
         /** TODO */
         // maxIndex: this.getData().length,
       });
@@ -867,7 +756,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     }
   ) {
     const {
-      data,
       bufferedEndIndex: _bufferedEndIndex,
       bufferedStartIndex: _bufferedStartIndex,
     } = state;
@@ -877,6 +765,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     const bufferedStartIndex = resolver?.bufferedStartIndex
       ? resolver?.bufferedStartIndex(state)
       : _bufferedStartIndex;
+    const data = this.getData();
 
     const nextStart = bufferedStartIndex;
     const nextEnd = bufferedEndIndex + 1;
@@ -924,10 +813,14 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       if (!itemMeta) return;
       const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
       const isReserved = this.persistanceIndices.indexOf(index) !== -1;
-      const itemLayout = itemMeta?.getLayout();
+
       const itemKey = itemMeta.getKey();
-      const itemLength =
-        (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
+
+      const itemLength = itemMeta?.getFinalItemLength();
+
+      // const itemLayout = itemMeta?.getLayout();
+      // const itemLength =
+      //   (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
       const itemMetaState =
         !this._scrollMetrics || !itemMeta?.getLayout()
@@ -987,41 +880,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     return spaceState;
   }
 
-  updateState(newState: PreStateResult, scrollMetrics: ScrollMetrics) {
-    // const {
-    //   bufferedStartIndex: nextBufferedStartIndex,
-    //   bufferedEndIndex: nextBufferedEndIndex,
-    // } = newState;
-
-    const omitKeys = ['data', 'distanceFromEnd', 'isEndReached'];
-    // const nextDataLength = Math.max(
-    //   nextBufferedEndIndex + 1,
-    //   this.getReflowItemsLength()
-    // );
-
-    const oldData = this._state.data;
-    const newData = this._data;
-
-    const shouldSetState =
-      shallowDiffers(
-        omit(this._state || {}, omitKeys),
-        omit(newState, omitKeys)
-      ) || !resolveChanged(oldData, newData).isEqual;
-
-    if (shouldSetState) {
-      const state = {
-        ...newState,
-        data: newData,
-      };
-
-      // @ts-ignore
-      this.setState(state);
-      // @ts-ignore
-      this._state = state;
-      this._offsetTriggerCachedState = scrollMetrics.offset;
-    }
-  }
-
   dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
       // @ts-ignore
@@ -1029,20 +887,14 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       scrollMetrics,
     });
     if (isEmpty(state)) return state;
-    this.setState({
-      ...state,
-      // @ts-ignore
-      data: this.getData(),
-    });
-
-    // maybe itemMeta approximateLayout change, but will not trigger update...
-    // this.updateState(state, scrollMetrics);
+    this.setState({ ...state });
 
     return state;
   }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
     const state = this.dispatchStoreMetrics(scrollMetrics);
+
     const { isEndReached, distanceFromEnd } = state;
 
     this.onEndReachedHelper.performEndReached({

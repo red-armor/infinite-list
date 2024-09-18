@@ -1,6 +1,3 @@
-// import BaseDimensions from '../../BaseDimensions';
-// import ListBaseDimensions from '../../ListBaseDimensions';
-// import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
 
 export default <State extends ReducerResult = ReducerResult>(

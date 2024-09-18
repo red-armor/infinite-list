@@ -14,13 +14,20 @@ import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
+export const isValidMetaLayout = (meta: ItemMeta) => !!(meta && !meta.isApproximateLayout && meta.getLayout())
+
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
-const context: {
+export let context: {
   [key: string]: ItemMeta;
 } = {};
 
 let count = 0;
+
+export const resetContext = () => {
+  context = {}
+}
+
 class ItemMeta extends ViewabilityItemMeta {
   private _isListItem: boolean;
   private _id: string;
@@ -35,6 +42,7 @@ class ItemMeta extends ViewabilityItemMeta {
   readonly _canIUseRIC?: boolean;
   private _isApproximateLayout: boolean;
   private _ignoredToPerBatch: boolean;
+  private _useSeparatorLength: boolean;
   private _spawnProps: {
     [key: string]: ItemMetaStateEventHelperProps;
   };
@@ -48,11 +56,14 @@ class ItemMeta extends ViewabilityItemMeta {
       state,
       isListItem,
       canIUseRIC,
-      recyclerType = DEFAULT_RECYCLER_TYPE,
-      isInitialItem = false,
-      ignoredToPerBatch,
-      isApproximateLayout = true,
       spawnProps = {},
+      ignoredToPerBatch,
+      isInitialItem = false,
+      isApproximateLayout = true,
+
+      useSeparatorLength = true,
+
+      recyclerType = DEFAULT_RECYCLER_TYPE,
     } = props;
     this._owner = owner;
     this._id = `item_meta_${count++}`;
@@ -61,6 +72,7 @@ class ItemMeta extends ViewabilityItemMeta {
     this._isListItem = isListItem || false;
     this._stateEventSubscriptions = new Map();
     this._ignoredToPerBatch = !!ignoredToPerBatch;
+    this._useSeparatorLength = useSeparatorLength
     this._state =
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
@@ -149,14 +161,23 @@ class ItemMeta extends ViewabilityItemMeta {
 
   getContainerOffset() {
     return this._owner.getContainerOffset();
-    // if (this._isListItem)
-    //   return (this._owner as BaseDimensions).getContainerOffset();
-    // return 0;
   }
 
   getItemLength() {
     const selectValue = this._owner.getSelectValue();
     return this._layout ? selectValue.selectLength(this._layout) : 0;
+  }
+
+  setUseSeparatorLength(value: boolean) {
+    this._useSeparatorLength = value
+  }
+
+  getFinalItemLength() {
+    if (this._useSeparatorLength) {
+      return this.getItemLength() + this.getSeparatorLength()
+    }
+
+    return this.getItemLength()
   }
 
   getItemOffset(exclusive?: boolean) {

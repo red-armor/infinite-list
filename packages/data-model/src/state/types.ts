@@ -17,7 +17,6 @@ export type ActionPayload = {
   scrollMetrics: ScrollMetrics;
   isEndReached: boolean;
   distanceFromEnd: number;
-  // pseudoVelocity: number;
 };
 
 export enum ActionType {
@@ -26,6 +25,14 @@ export enum ActionType {
   ScrollUp = 'scrollUp',
   Recalculate = 'recalculate',
   Initial = 'initial',
+}
+
+export type RawAction = {
+  type: ActionType; // 应用触底了，但是List仍旧有数据没有渲染
+  payload: {
+    dimension: ListDimensions | ListGroupDimensions;
+    scrollMetrics: ScrollMetrics;
+  };
 }
 
 export type Action = {

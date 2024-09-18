@@ -71,5 +71,5 @@ export type PreStateResult = {
 };
 
 export type ListState<ItemT extends {} = {}> = {
-  data: Array<ItemT>;
+  // data: Array<ItemT>;
 } & PreStateResult;

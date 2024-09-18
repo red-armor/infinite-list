@@ -1,19 +1,41 @@
 import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { IndexInfo, ScrollMetrics } from './types';
 import createStore from './state/createStore';
-import { ReducerResult } from './state/types'
+import {
+  IndexInfo,
+  ScrollMetrics,
+  ItemLayout,
+  ListDimensionsModelProps,
+} from './types';
+
+// @ts-ignore
 class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
-  constructor(props) {
+  constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
     super({
       ...props,
-      store: createStore<ReducerResult>(),
+      store: createStore(),
     });
-    this._dataModel = new ListDimensionsModel(props);
-    this.initializeState()
-    this.attemptToHandleEndReached()
+    this._dataModel = new ListDimensionsModel({
+      recycleEnabled: true,
+      ...props,
+      container: this,
+    });
+    // this.initializeStateResult();
+    this.attemptToHandleEndReached();
+  }
+
+  getKeyIndex(key: string) {
+    return this._dataModel.getKeyIndex(key)
+  }
+
+  getIndexKey(index: number) {
+    return this._dataModel.getIndexKey(index)
+  }
+
+  getIntervalTree() {
+    return this._dataModel.intervalTree
   }
 
   getItemMeta(item: ItemT, index: number) {
@@ -25,7 +47,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   }
 
   setData(data: Array<ItemT>) {
-    this._dataModel.setData(data);
+    return this._dataModel.setData(data);
   }
 
   getDataLength() {
@@ -53,7 +75,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
 
   getFinalIndexItemLength(index: number) {
     const itemMeta = this.getFinalIndexItemMeta(index);
-    if (itemMeta) return itemMeta.getItemLength();
+    if (itemMeta) return itemMeta.getFinalItemLength()
     return 0;
   }
 
@@ -62,9 +84,9 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   }
 
   getFinalIndexKeyBottomOffset(index: number, exclusive?: boolean) {
-    const containerOffset = exclusive ? 0 : this.getContainerOffset()
-    const height = this.getTotalLength()
-    return containerOffset + (typeof height === 'number' ? height : 0)
+    const containerOffset = exclusive ? 0 : this.getContainerOffset();
+    const height = this.getTotalLength();
+    return containerOffset + (typeof height === 'number' ? height : 0);
   }
 
   getFinalIndexRangeOffsetMap(
@@ -78,9 +100,12 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       indexToOffsetMap[index] = startOffset;
       const item = this._data[index];
       const itemMeta = this.getItemMeta(item, index);
-      startOffset +=
-        (itemMeta?.getLayout()?.height || 0) +
-        (itemMeta?.getSeparatorLength() || 0);
+
+      startOffset += itemMeta?.getFinalItemLength()
+
+      // startOffset +=
+      //   (itemMeta?.getLayout()?.height || 0) +
+      //   (itemMeta?.getSeparatorLength() || 0);
     }
     return indexToOffsetMap;
   }
@@ -106,6 +131,14 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
     return {
       index: this._dataModel.getKeyIndex(key) || 0,
     } as IndexInfo;
+  }
+
+  setFinalKeyItemLayout(
+    itemKey: string,
+    layout: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ) {
+    this._dataModel.setKeyItemLayout(itemKey, layout, updateIntervalTree);
   }
 
   updateScrollMetrics(

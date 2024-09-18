@@ -38,10 +38,10 @@ export type ScrollMetrics = {
   visibleLength: number | undefined;
 
   // not used
-  dOffset: number;
-  dt: number;
-  timestamp: number;
-  velocity: number;
+  dOffset?: number;
+  dt?: number;
+  timestamp?: number;
+  velocity?: number;
 };
 
 export type ContentSize = {

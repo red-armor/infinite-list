@@ -17,7 +17,6 @@ class BaseLayout extends BaseContainer {
   private _stickyHeaderIndices = [];
   private _reservedIndices = [];
   private _recycleThreshold: number;
-  readonly _onEndReachedThreshold: number;
   readonly _fillingMode: FillingMode;
   readonly _lengthPrecision: number;
   private _recycleBufferedCount: number;
@@ -142,8 +141,8 @@ class BaseLayout extends BaseContainer {
     if (exclusive) return { minOffset, maxOffset };
     if (containerOffset > maxOffset) {
       return {
-        minOffset: -1,
-        maxOffset: -1,
+        minOffset: minOffset - containerOffset,
+        maxOffset: maxOffset - containerOffset,
       };
     }
 
