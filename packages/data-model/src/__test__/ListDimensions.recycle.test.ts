@@ -1,12 +1,7 @@
 import ListDimensions from '../ListDimensions';
 import Batchinator from '@x-oasis/batchinator';
-import {
-  KeysChangedType,
-  SpaceStateResult,
-  RecycleStateResult,
-} from '../types';
+import { KeysChangedType, RecycleStateResult } from '../types';
 import { defaultKeyExtractor } from '../exportedUtils';
-import { buildStateTokenIndexKey } from '../common';
 import { resetContext } from '../ItemMeta';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 const buildData = (count: number, startIndex = 0) =>
@@ -23,8 +18,8 @@ vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
 
 describe('basic', () => {
   beforeEach(() => {
-    resetContext()
-  })
+    resetContext();
+  });
 
   it('constructor - default value', () => {
     const listDimensions = new ListDimensions({
@@ -139,8 +134,8 @@ describe('basic', () => {
 
 describe('setData', () => {
   beforeEach(() => {
-    resetContext()
-  })
+    resetContext();
+  });
   it('initial', () => {
     const data = buildData(20);
     const recycleList = new ListDimensions({
@@ -204,7 +199,7 @@ describe('setData', () => {
 
     expect(type).toBe(KeysChangedType.Append);
     // on initial interval tree should not change.
-    expect(_intervalTree).toBe(recycleList.getIntervalTree())
+    expect(_intervalTree).toBe(recycleList.getIntervalTree());
     expect(recycleList.getFinalIndexItemLength(19)).toBe(120);
     expect(recycleList.getFinalIndexItemLength(20)).toBe(100);
   });
@@ -235,7 +230,7 @@ describe('setData', () => {
       }),
     });
 
-    const _intervalTree = recycleList.getIntervalTree()
+    const _intervalTree = recycleList.getIntervalTree();
     expect(recycleList.getFinalIndexItemLength(19)).toBe(100);
     const newData = [].concat(data, buildData(10, 19));
 
@@ -280,7 +275,8 @@ describe('setData', () => {
     recycleList.setFinalKeyItemLayout('6', 100);
     recycleList.setFinalKeyItemLayout('7', 200);
     expect(
-      recycleList.getIntervalTree()
+      recycleList
+        .getIntervalTree()
         .getHeap()
         .slice(
           recycleList.getIntervalTree().getSize(),
@@ -296,7 +292,8 @@ describe('setData', () => {
     expect(_intervalTree).not.toBe(recycleList.getIntervalTree());
     _intervalTree = recycleList.getIntervalTree();
     expect(
-      recycleList.getIntervalTree()
+      recycleList
+        .getIntervalTree()
         .getHeap()
         .slice(
           recycleList.getIntervalTree().getSize(),
@@ -312,7 +309,8 @@ describe('setData', () => {
     expect(_intervalTree).not.toBe(recycleList.getIntervalTree());
     _intervalTree = recycleList.getIntervalTree();
     expect(
-      recycleList.getIntervalTree()
+      recycleList
+        .getIntervalTree()
         .getHeap()
         .slice(
           recycleList.getIntervalTree().getSize(),
@@ -330,7 +328,8 @@ describe('setData', () => {
     expect(_intervalTree).not.toBe(recycleList.getIntervalTree());
     _intervalTree = recycleList.getIntervalTree();
     expect(
-      recycleList.getIntervalTree()
+      recycleList
+        .getIntervalTree()
         .getHeap()
         .slice(
           recycleList.getIntervalTree().getSize(),
@@ -668,7 +667,7 @@ describe('setData', () => {
 
 describe('data update', () => {
   beforeEach(() => {
-    resetContext()
+    resetContext();
     // tell vitest we use mocked time
     vi.useFakeTimers();
   });
@@ -705,7 +704,7 @@ describe('data update', () => {
     recycleList.updateScrollMetrics({
       offset: 2000,
       visibleLength: 926,
-      contentLength: 0,
+      contentLength: 3500,
     });
 
     expect(recycleList.state).toEqual({
@@ -714,19 +713,19 @@ describe('data update', () => {
       bufferedStartIndex: 0,
       bufferedEndIndex: 10,
       isEndReached: true,
-      distanceFromEnd: -2926,
+      distanceFromEnd: 574,
       actionType: 'initial',
     });
 
     let recycleListStateResult =
       recycleList.stateResult as RecycleStateResult<any>;
 
-    console.log('------- ', recycleListStateResult)
-
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(400);
     // the forth as first item in recycleState
     expect(recycleListStateResult.recycleState[0].targetKey).toBe('4');
+
+    // console.log('start ====next ===')
 
     const _data = data.slice();
     const newData = buildData(1, 20);
@@ -735,6 +734,9 @@ describe('data update', () => {
     vi.runAllTimers();
 
     recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
+
+    // console.log('------- ', recycleListStateResult.recycleState)
+
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(400);
     // the third as first item in recycleState

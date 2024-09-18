@@ -80,7 +80,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this._initialData = data;
 
     if (!manuallyApplyInitialData) {
-      this.applyInitialData()
+      this.applyInitialData();
     }
   }
 
@@ -173,12 +173,12 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     if (meta.getLayout()) {
       // 最后一个不包含separatorLength
       if (index === len - 1) {
-        meta.setUseSeparatorLength(true)
+        meta.setUseSeparatorLength(true);
       } else {
-        meta.setUseSeparatorLength(false)
+        meta.setUseSeparatorLength(false);
       }
 
-      const length = meta.getFinalItemLength()
+      const length = meta.getFinalItemLength();
       // const itemLength = this._selectValue.selectLength(meta.getLayout());
       // const separatorLength = meta.getSeparatorLength();
 
@@ -239,20 +239,20 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     this.triggerOwnerRecalculateLayout();
   }
 
-  applyIntervalTreeUpdate() {
-    this.intervalTree.applyUpdate()
-    this.triggerOwnerRecalculateLayout()
+  applyIntervalTreeUpdate(intervalTree: PrefixIntervalTree) {
+    intervalTree.applyUpdate();
+    this.triggerOwnerRecalculateLayout();
   }
 
-  replaceIntervalTree(intervalTree: PrefixIntervalTree) {
-    const oldLength = this.intervalTree.getHeap()[1];
-    this.intervalTree = intervalTree;
-    const nextLength = intervalTree.getHeap()[1];
+  // replaceIntervalTree(intervalTree: PrefixIntervalTree) {
+  //   const oldLength = this.intervalTree.getHeap()[1];
+  //   this.intervalTree = intervalTree;
+  //   const nextLength = intervalTree.getHeap()[1];
 
-    if (oldLength !== nextLength) {
-      this.triggerOwnerRecalculateLayout();
-    }
-  }
+  //   if (oldLength !== nextLength) {
+  //     this.triggerOwnerRecalculateLayout();
+  //   }
+  // }
 
   createItemMeta(key: string, data: Array<ItemT>, index: number) {
     const isInitialItem = index < this.initialNumToRender;
@@ -351,6 +351,8 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       (index: number) => this._data[index] === data[index]
     );
 
+    console.log('date === ', dataChangedType);
+
     switch (dataChangedType) {
       case KeysChangedType.Equal:
         break;
@@ -386,21 +388,16 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     const index = len - 1;
     const item = this._data[index];
 
-    console.log('item ====== ', item)
-
     if (!item) return;
 
     const meta = this.getItemMeta(item, index);
     const layout = meta?.getLayout();
 
-    console.log('layout ', layout)
-
     if (meta && layout) {
-      meta.setUseSeparatorLength(true)
+      meta.setUseSeparatorLength(true);
       // const separatorLength = meta.getSeparatorLength();
       // const length = this._selectValue.selectLength(layout) + separatorLength;
-      const length = meta.getFinalItemLength()
-      console.log('length ', index, length)
+      const length = meta.getFinalItemLength();
       this.setIntervalTreeValue(index, length);
     }
   }
@@ -414,6 +411,13 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
 
   computeIndexRange(minOffset: number, maxOffset: number) {
     const result = this.intervalTree.computeRange(minOffset, maxOffset);
+
+    console.log(
+      'computeIndexRange result ',
+      this.intervalTree.getHeap()[1],
+      result
+    );
+
     return result;
   }
 
@@ -438,12 +442,12 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         // const itemLength = this._selectValue.selectLength(meta.getLayout());
         // 最后一个不包含separatorLength
         if (index === len - 1) {
-          meta.setUseSeparatorLength(false)
+          meta.setUseSeparatorLength(false);
         } else {
-          meta.setUseSeparatorLength(true)
+          meta.setUseSeparatorLength(true);
         }
 
-        const length = meta.getFinalItemLength()
+        const length = meta.getFinalItemLength();
 
         // const separatorLength = meta.getSeparatorLength();
 
@@ -451,10 +455,13 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         //   index === len - 1 ? itemLength : itemLength + separatorLength;
         intervalTree.drySet(currentIndex, length);
       }
-      this.setKeyMeta(itemKey, meta);
+
+      // TODO=======
+      // this.setKeyMeta(itemKey, meta);
+      keyToMetaMap.set(itemKey, meta);
     }
 
-    this.applyIntervalTreeUpdate()
+    this.applyIntervalTreeUpdate(intervalTree);
   }
 
   append(data: Array<ItemT>) {
@@ -466,11 +473,18 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
   }
 
   shuffle(data: Array<ItemT>) {
-    const itemIntervalTree = this.createIntervalTree();
+    const oldLength = this.intervalTree.getHeap()[1];
+    this.intervalTree = this.createIntervalTree();
+    // const itemIntervalTree = this.createIntervalTree();
     const keyToMetaMap = new Map();
-    this.pump(data, 0, keyToMetaMap, itemIntervalTree);
-    this.replaceIntervalTree(itemIntervalTree);
+    this.pump(data, 0, keyToMetaMap, this.intervalTree);
+    // this.replaceIntervalTree(itemIntervalTree);
     this._keyToMetaMap = keyToMetaMap;
+    const nextLength = this.intervalTree.getHeap()[1];
+
+    if (oldLength !== nextLength) {
+      this.triggerOwnerRecalculateLayout();
+    }
   }
 
   /**
@@ -511,13 +525,13 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (index !== this._data.length - 1) {
-          meta.setUseSeparatorLength(true)
+          meta.setUseSeparatorLength(true);
           // length = meta.getSeparatorLength() + length;
         } else {
-          meta.setUseSeparatorLength(false)
+          meta.setUseSeparatorLength(false);
         }
 
-        length = meta.getFinalItemLength()
+        length = meta.getFinalItemLength();
 
         if (_update) {
           this.setIntervalTreeValue(index, length);
@@ -548,13 +562,13 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
       if (currentLength !== length && _update) {
         if (index !== this._data.length - 1) {
-          meta.setUseSeparatorLength(true)
+          meta.setUseSeparatorLength(true);
           // length = meta.getSeparatorLength() + length;
         } else {
-          meta.setUseSeparatorLength(false)
+          meta.setUseSeparatorLength(false);
         }
 
-        length = meta.getFinalItemLength()
+        length = meta.getFinalItemLength();
 
         this.setIntervalTreeValue(index, length);
         return true;

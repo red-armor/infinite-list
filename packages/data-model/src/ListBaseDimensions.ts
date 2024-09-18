@@ -105,7 +105,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     } = props;
     this._store = store;
 
-    this._onEndReachedThreshold = onEndReachedThreshold
+    this._onEndReachedThreshold = onEndReachedThreshold;
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
     this.stillnessHandler = this.stillnessHandler.bind(this);
@@ -144,7 +144,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       metaExtractor: (index) => this.getFinalIndexItemMeta(index),
       indexExtractor: (meta) => {
         const indexInfo = meta.getIndexInfo();
-        return indexInfo?.indexInGroup;
+        return indexInfo?.indexInGroup || indexInfo.index;
       },
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
@@ -188,7 +188,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   get onEndReachedThreshold() {
-    return this.onEndReachedHelper.onEndReachedThreshold
+    return this.onEndReachedHelper.onEndReachedThreshold;
   }
 
   set scrollMetrics(scrollMetrics: ScrollMetrics) {
@@ -410,7 +410,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       const meta = this.getFinalIndexItemMeta(index);
       // const layout = meta?.getLayout();
       // const length = (layout?.height || 0) + (meta?.getSeparatorLength() || 0);
-      const length = meta.getFinalItemLength()
+      const length = meta.getFinalItemLength();
       if (meta && !meta?.isApproximateLayout) {
         const offset =
           offsetMap[index] != null
@@ -436,7 +436,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     // const itemLength =
     //   (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
-    const itemLength = itemMeta.getFinalItemLength()
+    const itemLength = itemMeta.getFinalItemLength();
 
     if (
       !itemMeta.isApproximateLayout &&
@@ -494,7 +494,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         this._recycler.thresholdIndexValue
       );
 
-      console.log('tart ====', startIndex, safeRange)
+      // console.log('tart ====', startIndex, safeRange)
 
       this._recycler.updateIndices({
         safeRange,
@@ -538,8 +538,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
       true
     );
     const targetIndices = this._recycler.getIndices();
-
-    console.log('target indices ', this._recycler, targetIndices, minValue, maxValue)
 
     targetIndices
       .filter((v) => v)
@@ -818,7 +816,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
       const itemKey = itemMeta.getKey();
 
-      const itemLength = itemMeta?.getFinalItemLength()
+      const itemLength = itemMeta?.getFinalItemLength();
 
       // const itemLayout = itemMeta?.getLayout();
       // const itemLength =
