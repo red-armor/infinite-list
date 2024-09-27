@@ -1,1 +1,1 @@
-const fn = (count: number) => count++;
+export * from './lib/react';

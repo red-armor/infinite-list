@@ -30,14 +30,6 @@
     "react-native": "*",
     "react-native-pager-view": "*"
   },
-  "resolutions": {
-    "typescript": "4.8.3",
-    "@types/react": "^17",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "@babel/core": "^7.12.3"
-  },
   "dependencies": {
     "@infinite-list/data-model": "workspace:*",
     "@x-oasis/shallow-equal": "^0.1.14"

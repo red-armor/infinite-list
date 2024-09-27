@@ -1,0 +1,15 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "declaration": true,
+    "moduleResolution": "node",
+    "target": "esnext",
+    "module": "ESnext",
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@infinite-list/react": ["packages/react/src/index.ts"]
+    }
+  }
+}

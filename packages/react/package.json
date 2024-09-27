@@ -1,19 +1,15 @@
 {
   "name": "@infinite-list/react",
-  "version": "0.4.10",
-  "main": "src/index.ts",
-  "publishConfig": {
-    "access": "public",
-    "main": "dist/index.js"
+  "version": "0.0.1",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
   },
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsdx build --tsconfig tsconfig.build.json",
-    "clean": "rimraf ./dist"
-  },
-  "devDependencies": {
-    "rimraf": "~4.4.0",
-    "tsdx": "^0.14.1"
+  "dependencies": {
+    "@infinite-list/data-model": "link:../data-model"
   }
 }
