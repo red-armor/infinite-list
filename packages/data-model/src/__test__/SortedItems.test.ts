@@ -23,6 +23,9 @@ const getKeys = (items: Array<ItemMeta>) => {
 };
 
 describe('basic', () => {
+  beforeAll(() => {
+    vi.useFakeTimers({ toFake: ['requestIdleCallback'] });
+  });
   it('basic 1', () => {
     const sortedItems = createSortedItems();
     const item1 = new ItemMeta({

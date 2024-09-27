@@ -13,30 +13,30 @@ setTimeout(() => {
   finished = true;
 });
 
-interface IdleRequestCallback {
-  (deadline: IdleDeadline): void;
-}
+// interface IdleRequestCallback {
+//   (deadline: IdleDeadline): void;
+// }
 /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline) */
-interface IdleDeadline {
-  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/didTimeout) */
-  readonly didTimeout: boolean;
-  /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/timeRemaining) */
-  timeRemaining(): DOMHighResTimeStamp;
-}
-interface IdleRequestOptions {
-  timeout?: number;
-}
+// interface IdleDeadline {
+//   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/didTimeout) */
+//   readonly didTimeout: boolean;
+//   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/timeRemaining) */
+//   timeRemaining(): DOMHighResTimeStamp;
+// }
+// interface IdleRequestOptions {
+//   timeout?: number;
+// }
 
 // declare function requestIdleCallback(
 //   callback: IdleRequestCallback,
 //   options?: IdleRequestOptions
 // ): number;
 
-if (requestIdleCallback)
-  requestIdleCallback(() => {
-    canIUseRIC = true;
-    finished = true;
-  });
+// if (requestIdleCallback)
+//   requestIdleCallback(() => {
+//     canIUseRIC = true;
+//     finished = true;
+//   });
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;
@@ -268,9 +268,7 @@ class ItemMetaStateEventHelper {
 
   cancelIdleCallbackPolyfill(callbackId: number) {
     if (this._canIUseRIC) {
-      // @ts-ignore
       if (typeof cancelIdleCallback === 'function') {
-        // @ts-ignore
         cancelIdleCallback(callbackId);
       }
     }

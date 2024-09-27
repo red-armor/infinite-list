@@ -1,30 +1,8 @@
 {
   "name": "@infinite-list/data-model",
-  "version": "0.4.10",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "module": "src/index.ts",
-  "publishConfig": {
-    "access": "public",
-    "main": "dist/index.js"
-  },
-  "scripts": {
-    "build": "tsdx build --tsconfig tsconfig.build.json",
-    "watch": "tsdx watch --tsconfig tsconfig.build.json",
-    "clean": "rimraf ./dist",
-    "test": "vitest",
-    "test-watch": "vitest --watch",
-    "typecheck": "vitest typecheck"
-  },
-  "devDependencies": {
-    "rimraf": "^5.0.1",
-    "tsdx": "^0.14.1"
-  },
+  "version": "0.0.1",
   "dependencies": {
+    "tslib": "^2.3.0",
     "@x-oasis/batchinate-last": "^0.1.14",
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/capitalize": "^0.1.14",
@@ -44,5 +22,8 @@
     "@x-oasis/shallow-equal": "^0.1.14",
     "@x-oasis/unique-array-object": "^0.1.14",
     "memoize-one": "^6.0.0"
-  }
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
 }

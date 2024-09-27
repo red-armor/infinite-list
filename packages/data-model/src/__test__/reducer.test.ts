@@ -23,6 +23,9 @@ testSuite(false);
 
 function testSuite(isFixedLength: boolean) {
   describe('reducer', () => {
+    beforeAll(() => {
+      vi.useFakeTimers({ toFake: ['requestIdleCallback'] });
+    });
     beforeEach(() => {
       const keys = Object.keys(itemMetaContext);
       keys.forEach((key) => {
@@ -594,7 +597,6 @@ function testSuite(isFixedLength: boolean) {
 
       list.setData(data);
 
-      // @ts-ignore
       list.updateScrollMetrics({
         offset: 0,
         visibleLength: 926,
@@ -613,7 +615,6 @@ function testSuite(isFixedLength: boolean) {
         actionType: 'hydrationWithBatchUpdate',
       });
 
-      // @ts-ignore
       list.updateScrollMetrics({
         offset: 0,
         visibleLength: 926,
@@ -632,7 +633,6 @@ function testSuite(isFixedLength: boolean) {
         actionType: 'hydrationWithBatchUpdate',
       });
 
-      // @ts-ignore
       list.updateScrollMetrics({
         offset: 0,
         visibleLength: 926,

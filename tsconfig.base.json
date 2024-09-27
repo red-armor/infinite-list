@@ -9,8 +9,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@infinite-list/react": ["packages/react/src/index.ts"],
-
+      "@infinite-list/data-model": ["packages/data-model/src/index.ts"],
+      "@infinite-list/react": ["packages/react/src/index.ts"]
     }
   }
 }

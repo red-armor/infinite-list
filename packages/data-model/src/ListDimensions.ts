@@ -8,8 +8,11 @@ import {
   ListDimensionsModelProps,
 } from './types';
 
-// @ts-ignore
-class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
+class ListDimensions<
+  ItemT extends {
+    [key: string]: any;
+  }
+> extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel;
 
   constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
@@ -27,15 +30,15 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
   }
 
   getKeyIndex(key: string) {
-    return this._dataModel.getKeyIndex(key)
+    return this._dataModel.getKeyIndex(key);
   }
 
   getIndexKey(index: number) {
-    return this._dataModel.getIndexKey(index)
+    return this._dataModel.getIndexKey(index);
   }
 
   getIntervalTree() {
-    return this._dataModel.intervalTree
+    return this._dataModel.intervalTree;
   }
 
   getItemMeta(item: ItemT, index: number) {
@@ -75,7 +78,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
 
   getFinalIndexItemLength(index: number) {
     const itemMeta = this.getFinalIndexItemMeta(index);
-    if (itemMeta) return itemMeta.getFinalItemLength()
+    if (itemMeta) return itemMeta.getFinalItemLength();
     return 0;
   }
 
@@ -101,7 +104,7 @@ class ListDimensions<ItemT extends {} = {}> extends ListBaseDimensions<ItemT> {
       const item = this._data[index];
       const itemMeta = this.getItemMeta(item, index);
 
-      startOffset += itemMeta?.getFinalItemLength()
+      startOffset += itemMeta?.getFinalItemLength();
 
       // startOffset +=
       //   (itemMeta?.getLayout()?.height || 0) +
