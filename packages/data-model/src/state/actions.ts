@@ -36,7 +36,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
       const _containerOffset = dimension.getContainerOffset();
       const containerOffset =
         typeof _containerOffset === 'number' ? _containerOffset : 0;
-      nextIsEndReached = dimension.getOnEndReachedHelper()?.perform({
+      nextIsEndReached = dimension.getOnEndReachedHelper().perform({
         ...scrollMetrics,
         contentLength: containerOffset + total,
       }).isEndReached;

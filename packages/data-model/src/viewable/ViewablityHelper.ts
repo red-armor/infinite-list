@@ -12,45 +12,9 @@ import {
 } from '../types';
 import { isItemViewable } from './viewabilityUtils';
 
-// const createIntervalTreeItemChangedToken = (opts: {
-//   helper: ViewabilityItemMeta;
-//   falsy?: boolean;
-//   propsKey: string;
-// }) => {
-//   const { helper, falsy, propsKey } = opts;
-//   const helperMeta = {};
-//   // const helperMeta = helper?.getMetaOnViewableItemsChanged
-//   //   ? helper.getMetaOnViewableItemsChanged() || {}
-//   //   : {};
-//   return {
-//     helper,
-//     key: helper.getKey(),
-//     [propsKey]: !!falsy,
-//     ...helperMeta,
-//   };
-// };
-
-// const createBasicItemChangedToken = (opts: {
-//   helper: ViewabilityItemMeta;
-//   falsy?: boolean;
-//   propsKey: string;
-// }): {
-//   helper: ViewabilityItemMeta;
-//   key: string;
-// } => {
-//   const { helper, falsy, propsKey } = opts;
-//   return {
-//     helper,
-//     key: helper.getKey(),
-//     [propsKey]: !!falsy,
-//   };
-// };
-
 const createChangedToken = (opts: {
   helper: ViewabilityItemMeta;
   isViewable: boolean;
-  // falsy?: boolean;
-  // propsKey: string;
   isListItem?: boolean;
 }) => {
   const { helper, isViewable } = opts;
@@ -61,9 +25,6 @@ const createChangedToken = (opts: {
     // TODO
     index: null,
   };
-  // const { isListItem = false, ...rest } = opts;
-  // if (isListItem) return createIntervalTreeItemChangedToken(rest);
-  // return createBasicItemChangedToken(rest);
 };
 
 class ViewablityHelper {
@@ -112,9 +73,9 @@ class ViewablityHelper {
   /**
    * View Token for `onItemsChanged` callback
    */
-  createChangedViewToken() {}
+  // createChangedViewToken() {}
 
-  resolveChangedViewTokenCallbackInfo() {}
+  // resolveChangedViewTokenCallbackInfo() {}
 
   /**
    *
@@ -177,48 +138,6 @@ class ViewablityHelper {
     return nextData;
   }
 
-  // onUpdateTupleConfig(
-  //   configKey: string,
-  //   tupleConfig: ViewabilityConfig,
-  //   options: {
-  //     dimensions: BaseDimensions;
-  //     scrollMetrics: ScrollMetrics;
-  //   }
-  // ) {
-  //   const { scrollMetrics, dimensions } = options;
-  //   const {
-  //     offset: scrollOffset,
-  //     contentLength,
-  //     visibleLength: viewportLength,
-  //   } = scrollMetrics;
-  //   const length = dimensions.getContainerOffset();
-
-  //   let nextData = [] as Array<ViewabilityItemMeta>;
-
-  //   // 如果是一个List的话，那么它是基于container offset来算的
-  //   const startOffset = this.isListItem ? length : 0;
-  //   // const config = this.tuple.configMap[configKey];
-  //   const viewport = tupleConfig.viewport || 0;
-  //   const minOffset = Math.max(
-  //     0,
-  //     scrollOffset - startOffset - viewportLength * viewport
-  //   );
-  //   const maxOffset = Math.min(
-  //     scrollOffset - startOffset + viewportLength * (viewport + 1),
-  //     contentLength - startOffset
-  //   );
-
-  //   nextData = dimensions.computeIndexRangeMeta(minOffset, maxOffset);
-
-  //   nextData = this.resolveViewableItems(
-  //     nextData,
-  //     configKey,
-  //     tupleConfig,
-  //     options
-  //   );
-  //   return nextData;
-  // }
-
   onUpdateItemsMeta(
     itemsMeta: Array<ViewabilityItemMeta>,
     scrollMetrics: ScrollMetrics
@@ -234,7 +153,7 @@ class ViewablityHelper {
   performViewableItemsChangedCallback(
     nextViewableItems: Array<ViewabilityItemMeta> = []
   ) {
-    // 触发changed items callback；
+    // trigger changed items callback；
     if (typeof this._callback === 'function') {
       const { removed, added } = resolveChanged(
         this._changed,
@@ -247,8 +166,6 @@ class ViewablityHelper {
             createChangedToken({
               helper: itemMeta,
               isViewable: !entryIndex,
-              // falsy: !entryIndex,
-              // propsKey: 'isViewable',
               isListItem: this.isListItem,
             })
           )
@@ -259,8 +176,6 @@ class ViewablityHelper {
           createChangedToken({
             helper,
             isViewable: true,
-            // falsy: true,
-            // propsKey: 'isViewable',
             isListItem: this.isListItem,
           })
         ),

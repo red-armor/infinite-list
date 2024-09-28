@@ -8,6 +8,7 @@ import {
 import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 import ItemMeta from '../ItemMeta';
+import ViewabilityItemMeta from './ViewabilityItemMeta';
 
 class ViewabilityConfigTuples {
   private _tuple: ViewabilityConfigCallbackPairs = [];
@@ -104,7 +105,7 @@ class ViewabilityConfigTuples {
   resolveItemMetaState(
     itemMeta: ItemMeta,
     viewabilityScrollMetrics: ViewabilityScrollMetrics,
-    getItemOffset?: (itemMeta: ItemMeta) => number
+    getItemOffset?: (itemMeta: ItemMeta | ViewabilityItemMeta) => number
   ) {
     if (!viewabilityScrollMetrics || !itemMeta) return {};
     if (!itemMeta.getLayout()) return {};

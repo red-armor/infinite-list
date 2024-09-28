@@ -56,7 +56,7 @@ abstract class ListBaseDimensions<
 
   private _store: ListBaseDimensionsStore;
 
-  readonly onEndReachedHelper?: OnEndReachedHelper;
+  readonly onEndReachedHelper: OnEndReachedHelper;
 
   public _scrollMetrics?: ScrollMetrics;
 

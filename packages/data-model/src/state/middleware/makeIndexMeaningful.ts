@@ -5,10 +5,10 @@ export default <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload,
   ctx: Ctx
 ) => {
-  const { bufferedIndexRange, visibleIndexRange } = ctx;
+  const { bufferedIndexRange } = ctx;
 
-  const { startIndex: visibleStartIndex, endIndex: visibleEndIndex } =
-    visibleIndexRange;
+  // const { startIndex: visibleStartIndex, endIndex: visibleEndIndex } =
+  //   visibleIndexRange;
   const { startIndex: bufferedStartIndex, endIndex: bufferedEndIndex } =
     bufferedIndexRange;
 

@@ -14,7 +14,7 @@ import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
-export const isValidMetaLayout = (meta: ItemMeta) =>
+export const isValidMetaLayout = (meta: ItemMeta | null | undefined) =>
   !!(meta && !meta.isApproximateLayout && meta.getLayout());
 
 // make itemMeta could be shared, such as data source ref change, but it's value

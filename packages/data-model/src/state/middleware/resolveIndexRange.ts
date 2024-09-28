@@ -7,7 +7,7 @@ export default <State extends ReducerResult = ReducerResult>(
   ctx: Ctx
 ) => {
   const { dimension, scrollMetrics } = payload;
-  const { contentLength, offset, visibleLength } = scrollMetrics;
+  const { contentLength, offset, visibleLength = 0 } = scrollMetrics;
   const bufferSize = dimension.getBufferSize();
   const { minOffset, maxOffset } = dimension.resolveOffsetRange(
     Math.max(offset - visibleLength * bufferSize, 0),

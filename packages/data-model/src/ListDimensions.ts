@@ -11,7 +11,7 @@ import {
 class ListDimensions<
   ItemT extends {
     [key: string]: any;
-  }
+  } = object
 > extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel<ItemT>;
 

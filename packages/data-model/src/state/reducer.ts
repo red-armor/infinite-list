@@ -44,7 +44,7 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload, ctx);
+  preCheck(state, payload);
   resolveIndexRange(state, payload, ctx);
 
   hydrateOnEndReached(state, payload, ctx);
@@ -81,7 +81,7 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload, ctx);
+  preCheck(state, payload);
   resolveIndexRange(state, payload, ctx);
 
   hydrateOnEndReached(state, payload, ctx);
@@ -118,7 +118,7 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload, ctx);
+  preCheck(state, payload);
   resolveIndexRange(state, payload, ctx);
 
   hydrateOnEndReached(state, payload, ctx);
@@ -155,7 +155,7 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload, ctx);
+  preCheck(state, payload);
   resolveIndexRange(state, payload, ctx);
 
   hydrateOnEndReached(state, payload, ctx);

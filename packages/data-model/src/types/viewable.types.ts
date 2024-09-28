@@ -85,3 +85,10 @@ export type ViewabilityConfigTuplesProps = {
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
   onViewableItemsChanged?: OnViewableItemsChanged;
 };
+
+export type ViewabilityHelperChangedToken = {
+  item: null;
+  key: string;
+  isViewable: boolean;
+  index: null | number;
+};
