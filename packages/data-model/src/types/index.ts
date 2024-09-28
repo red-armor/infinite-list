@@ -12,5 +12,4 @@ export * from './ListBaseDimensions.types';
 export * from './ListDimensions.types';
 export * from './PseudoListDimensions.types';
 export * from './ListGroupDimensions.types';
-export * from './onEndReachedHelper.types'
-export * from './ListProvider'
+export * from './onEndReachedHelper.types';

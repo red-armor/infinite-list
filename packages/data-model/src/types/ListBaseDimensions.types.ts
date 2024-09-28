@@ -64,7 +64,7 @@ export interface ListBaseDimensionsProps
     OnEndReachedHelperProps,
     ViewabilityConfigTuplesProps {
   releaseSpaceStateItem?: boolean;
-  store?: ListBaseDimensionsStore;
+  store: ListBaseDimensionsStore;
   dispatchMetricsThreshold?: number;
   useItemApproximateLength?: boolean;
   itemApproximateLength?: number;

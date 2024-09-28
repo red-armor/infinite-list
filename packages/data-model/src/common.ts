@@ -25,6 +25,8 @@ export const DEFAULT_RECYCLER_TYPE = '__default_recycler_buffer__';
 // 这样可以在滚动停止的时候，自动获取一屏幕
 export const ON_END_REACHED_THRESHOLD = 2;
 
+export const STILLNESS_THRESHOLD = 50;
+
 export const WINDOW_SIZE = 5;
 export const INITIAL_NUM_TO_RENDER = 10;
 export const MAX_TO_RENDER_PER_BATCH = 10;

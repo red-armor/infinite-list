@@ -158,7 +158,7 @@ class ItemMeta extends ViewabilityItemMeta {
   }
 
   getSeparatorLength() {
-    return this._separatorLength;
+    return this._separatorLength || 0;
   }
 
   getContainerOffset() {
@@ -224,7 +224,7 @@ class ItemMeta extends ViewabilityItemMeta {
     this._state = { ...state };
   }
 
-  getKey() {
+  override getKey() {
     return this._key;
   }
 

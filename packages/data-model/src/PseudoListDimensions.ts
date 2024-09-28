@@ -109,7 +109,7 @@ class PseudoListDimensions extends BaseDimensions {
     this.intervalTree = itemIntervalTree;
   }
 
-  resolveKeysChangedType(keys: Array<string>) {
+  override resolveKeysChangedType(keys: Array<string>) {
     const oldLen = this._indexKeys.length;
     const newLen = keys.length;
 

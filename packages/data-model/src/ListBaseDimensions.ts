@@ -9,6 +9,8 @@ import {
   buildStateTokenIndexKey,
   DISPATCH_METRICS_THRESHOLD,
   DEFAULT_RECYCLER_TYPE,
+  ON_END_REACHED_THRESHOLD,
+  STILLNESS_THRESHOLD,
 } from './common';
 import {
   SpaceStateToken,
@@ -97,10 +99,10 @@ abstract class ListBaseDimensions<
       dispatchMetricsThreshold = DISPATCH_METRICS_THRESHOLD,
 
       onRecyclerProcess,
-      stillnessThreshold,
+      stillnessThreshold = STILLNESS_THRESHOLD,
 
       onEndReached,
-      onEndReachedThreshold,
+      onEndReachedThreshold = ON_END_REACHED_THRESHOLD,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
       onEndReachedHandlerTimeoutThreshold,

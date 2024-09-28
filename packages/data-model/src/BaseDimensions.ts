@@ -143,7 +143,7 @@ abstract class BaseDimensions extends BaseLayout {
       const currentKey = this._indexKeys[index];
       const nextKey = keys[index];
 
-      if (currentKey !== nextKey || !equal(index)) {
+      if (currentKey !== nextKey || !equal?.(index)) {
         if (oldLen === newLen) return KeysChangedType.Reorder;
         return KeysChangedType.Add;
       }
@@ -201,7 +201,7 @@ abstract class BaseDimensions extends BaseLayout {
     return this._setKeyItemLayout(key, layout, updateIntervalTree);
   }
 
-  setKeyItemLength(key: string, length, updateIntervalTree?: boolean) {
+  setKeyItemLength(key: string, length: number, updateIntervalTree?: boolean) {
     this._setKeyItemLayout(key, length, updateIntervalTree);
   }
 

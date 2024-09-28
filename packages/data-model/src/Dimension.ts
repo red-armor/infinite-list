@@ -155,7 +155,7 @@ class Dimension extends BaseContainer {
     this._offsetInListGroup = value;
   }
 
-  getContainerOffset(exclusive?: boolean | number) {
+  override getContainerOffset(exclusive?: boolean | number) {
     return exclusive ? 0 : this._offsetInListGroup;
   }
 
@@ -239,8 +239,6 @@ class Dimension extends BaseContainer {
     if (typeof layout === 'number') {
       const length = layout;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
-        console.log('layout =====', meta.getLayout(), meta.ensureLayout());
-
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (_update) {
@@ -270,7 +268,7 @@ class Dimension extends BaseContainer {
     return this._meta;
   }
 
-  getSelectValue() {
+  override getSelectValue() {
     return this._selectValue;
   }
 }

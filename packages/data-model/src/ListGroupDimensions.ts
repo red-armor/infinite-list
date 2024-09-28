@@ -239,7 +239,9 @@ class ListGroupDimensionsExperimental<
     endIndex: number,
     exclusive?: boolean
   ) {
-    const indexToOffsetMap = {};
+    const indexToOffsetMap: {
+      [key: number]: number;
+    } = {};
     let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
     for (let index = startIndex; index <= endIndex; index++) {
       indexToOffsetMap[index] = startOffset;
@@ -811,18 +813,19 @@ class ListGroupDimensionsExperimental<
 
   setIndexItemLayout(index: number, listKey: string, layout: ItemLayout) {
     const key = this.getIndexKey(index, listKey);
-    this.setKeyItemLayout(key, listKey, layout);
+    if (key) this.setKeyItemLayout(key, listKey, layout);
   }
 
   setFinalKeyItemLayout(itemKey: string, layout: ItemLayout | number) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions) {
       if (dimensions instanceof ListDimensionsModel) {
-        dimensions.setKeyItemLayout(itemKey, layout);
+        return dimensions.setKeyItemLayout(itemKey, layout);
       } else if (dimensions instanceof Dimension) {
-        dimensions.setItemLayout(layout);
+        return dimensions.setItemLayout(layout);
       }
     }
+    return false;
   }
 
   setKeyItemLayout(key: string, listKey: string, layout: ItemLayout | number) {
@@ -839,7 +842,7 @@ class ListGroupDimensionsExperimental<
   static createPositionToken() {
     return {
       dimensionKey: '',
-      index: null,
+      index: -1,
     };
   }
 
@@ -911,6 +914,7 @@ class ListGroupDimensionsExperimental<
         continue;
       }
 
+      if (!dimension) continue;
       const len = dimension.length;
 
       // the same list
@@ -934,7 +938,7 @@ class ListGroupDimensionsExperimental<
       }
 
       for (let idx = range.startIndex; idx < range.endIndex + 1; idx++) {
-        const meta = dimension.getIndexItemMeta(idx);
+        const meta = dimension?.getIndexItemMeta(idx);
         if (meta) currentValues.push(meta);
       }
 

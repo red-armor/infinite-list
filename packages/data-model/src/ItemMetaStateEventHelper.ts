@@ -53,8 +53,8 @@ class ItemMetaStateEventHelper {
   readonly _key: string;
   private _reusableEventListenerMap: Map<string, StateEventListener>;
   private _reusableStrictEventListenerMap: Map<string, StateEventListener>;
-  private _callbackId: number;
-  private _callbackStartMinMs: number;
+  private _callbackId?: number;
+  private _callbackStartMinMs?: number;
   readonly _canIUseRIC: boolean;
   private _strictListenerKeyToHandleCountMap: {
     [key: string]: number;
@@ -273,7 +273,7 @@ class ItemMetaStateEventHelper {
       }
     }
 
-    this._callbackId = null;
+    this._callbackId = undefined;
   }
 
   trigger(value: boolean) {
@@ -291,7 +291,10 @@ class ItemMetaStateEventHelper {
   }
 
   get listeners() {
-    const arr = [];
+    const arr: {
+      type: 'normal' | 'strict';
+      listener: StateEventListener;
+    }[] = [];
     this._listeners.forEach((listener) =>
       arr.push({ type: 'normal', listener })
     );

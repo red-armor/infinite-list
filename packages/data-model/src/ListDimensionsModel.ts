@@ -35,7 +35,7 @@ class ListDimensionsModel<
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
 
-  private _container: ListDimensionsModelContainer;
+  private _container: ListDimensionsModelContainer<ItemT>;
   private _offsetInListGroup: number;
   private _anchorKey: string;
 
@@ -109,7 +109,7 @@ class ListDimensionsModel<
     this.setData(this._initialData);
   }
 
-  getContainerOffset(): number {
+  override getContainerOffset(): number {
     // 临时方案，只有当是listGroup时才会设置这个值
     if (this._offsetInListGroup) {
       return this._offsetInListGroup;
@@ -139,12 +139,12 @@ class ListDimensionsModel<
     return this.getItemMeta(item, index);
   }
 
-  getKeyMeta(key: string) {
+  override getKeyMeta(key: string) {
     const meta = this._getKeyMeta(key);
     return meta;
   }
 
-  getFinalKeyMeta(key: string) {
+  override getFinalKeyMeta(key: string) {
     return this.getKeyMeta(key);
   }
 
@@ -239,7 +239,7 @@ class ListDimensionsModel<
    * In RN, layout change will not trigger `updateScrollMetrics`, because it's replaced with
    * onContentSizeChanged.
    */
-  setIntervalTreeValue(index: number, length: number) {
+  override setIntervalTreeValue(index: number, length: number) {
     this.intervalTree.set(index, length);
     this.triggerOwnerRecalculateLayout();
   }
@@ -339,7 +339,7 @@ class ListDimensionsModel<
     const data = _data.filter((item, index) => {
       const itemKey = this.getItemKey(item, index);
       const _index = keyToIndexArray.findIndex((key) => key === itemKey);
-      if (_index === -1) {
+      if (_index === -1 && itemKey) {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);
@@ -355,8 +355,6 @@ class ListDimensionsModel<
       keyToIndexArray,
       (index: number) => this._data[index] === data[index]
     );
-
-    console.log('date === ', dataChangedType);
 
     switch (dataChangedType) {
       case KeysChangedType.Equal:

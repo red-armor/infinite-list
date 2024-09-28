@@ -7,7 +7,10 @@ class StillnessHelper {
 
   public startClockBatchinateLast: BatchinateLast;
 
-  constructor(props) {
+  constructor(props: {
+    handler: (...args: any[]) => void;
+    stillnessThreshold: number;
+  }) {
     const { handler, stillnessThreshold } = props;
     this._isStill = true;
     this._handler = handler;
@@ -28,7 +31,7 @@ class StillnessHelper {
     return false;
   }
 
-  clock(...args) {
+  clock(...args: any[]) {
     if (typeof this._handler === 'function') {
       this._handler.apply(this, args); // eslint-disable-line
     }

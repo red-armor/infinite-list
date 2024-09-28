@@ -9,14 +9,18 @@ import {
 import findLastIndex from '@x-oasis/find-last-index';
 import ListGroupDimensions from './ListGroupDimensions';
 
-class Inspector {
+class Inspector<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> {
   private _indexKeys: Array<string> = [];
   // private _anchorRange: AnchorRange = {};
-  private _owner: ListGroupDimensions;
+  private _owner: ListGroupDimensions<ItemT>;
   private _inspectingTime: number = Date.now();
   private _inspectingTimes = 0;
   private _heartBeatingIndexKeys: Array<string> = [];
-  private _inspectingListener: InspectingListener;
+  private _inspectingListener?: InspectingListener;
   private _startInspectBatchinator: Batchinator;
   private _handleChangeBatchinator: Batchinator;
   private _updateAnchorKeysBatchinator: Batchinator;

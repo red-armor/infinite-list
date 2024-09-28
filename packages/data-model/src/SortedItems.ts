@@ -91,9 +91,9 @@ export default class SortedItems {
       minOffset,
       maxOffset,
     });
-    const values = [];
+    const values: ItemMeta[] = [];
 
-    const mergedValues = [].concat(headValues, tailValues);
+    const mergedValues = ([] as ItemMeta[]).concat(headValues, tailValues);
     mergedValues.forEach((value) => {
       const index = values.indexOf(value);
       if (index === -1) values.push(value);

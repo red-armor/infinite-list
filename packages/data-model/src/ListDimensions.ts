@@ -106,7 +106,7 @@ class ListDimensions<
       const item = this._data[index];
       const itemMeta = this.getItemMeta(item, index);
 
-      startOffset += itemMeta?.getFinalItemLength();
+      startOffset += itemMeta?.getFinalItemLength() || 0;
     }
     return indexToOffsetMap;
   }
