@@ -1,6 +1,4 @@
 import ItemMeta from '../ItemMeta';
-// import ListDimensions from '../ListDimensions';
-// import ListGroupDimensions from '../ListGroupDimensions';
 import { BaseLayoutProps } from './BaseLayout.types';
 import { OnEndReachedHelperProps } from './onEndReachedHelper.types';
 import { ViewabilityConfigTuplesProps } from './viewable.types';
@@ -27,18 +25,32 @@ export type RecycleStateToken<ItemT> = {
 } & SpaceStateToken<ItemT>;
 
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
-export type RecycleState<ItemT> = Array<RecycleStateToken<ItemT>>;
+export type RecycleRecycleState<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> = Array<RecycleStateToken<ItemT>>;
 
-export type RecycleStateResult<ItemT> = {
+export type RecycleStateResult<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> = {
   spaceState: SpaceStateResult<ItemT>;
-  recycleState: RecycleState<ItemT>;
+  recycleState: RecycleRecycleState<ItemT>;
 };
 
-export type ListStateResult<ItemT> =
-  | SpaceStateResult<ItemT>
-  | RecycleStateResult<ItemT>;
+export type ListStateResult<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> = SpaceStateResult<ItemT> | RecycleStateResult<ItemT>;
 
-export type StateListener<ItemT = {}> = (
+export type StateListener<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> = (
   newState: ListStateResult<ItemT>,
   oldState: ListStateResult<ItemT>
 ) => void;
@@ -70,6 +82,6 @@ export type PreStateResult = {
   actionType: ActionType;
 };
 
-export type ListState<ItemT extends {} = {}> = {
+export type ListState = {
   // data: Array<ItemT>;
 } & PreStateResult;

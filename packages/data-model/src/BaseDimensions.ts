@@ -153,7 +153,7 @@ abstract class BaseDimensions extends BaseLayout {
     return KeysChangedType.Append;
   }
 
-  getKeyItemLayout(key: string): ItemLayout {
+  getKeyItemLayout(key: string): ItemLayout | null | undefined {
     const meta = this.getKeyMeta(key);
     if (meta) {
       return meta.getLayout();

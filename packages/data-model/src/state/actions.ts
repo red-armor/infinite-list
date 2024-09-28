@@ -3,12 +3,6 @@ import { INVALID_LENGTH } from '../common';
 import { ScrollMetrics } from '../types';
 import { Action, ActionType, ReducerResult } from './types';
 
-// const resolvePseudoVelocity = (velocity: number) => {
-//   if (velocity > 0) return 1;
-//   if (velocity < 0) return -1;
-//   return 0;
-// };
-
 export const resolveAction = <State extends ReducerResult = ReducerResult>(
   state: State,
   props: {
@@ -20,16 +14,16 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
   }
 ): Action | null => {
   const { scrollMetrics, dimension } = props;
-  const { velocity } = scrollMetrics;
+  const { velocity = 0 } = scrollMetrics;
 
-  const _info = dimension.getOnEndReachedHelper().perform(scrollMetrics);
-  const isEndReached = _info.isEndReached;
+  const _info = dimension.getOnEndReachedHelper()?.perform(scrollMetrics);
+  const isEndReached = _info?.isEndReached;
   const prevDataLength = ctx.dataLength;
   const nextDataLength = dimension.getDataLength();
 
   // isEndReached should not be rewrite, or trigger onEndReached...
   let nextIsEndReached = isEndReached;
-  const distanceFromEnd = _info.distanceFromEnd;
+  const distanceFromEnd = _info?.distanceFromEnd;
 
   if (!nextIsEndReached) {
     const { visibleEndIndex, visibleStartIndex } = state;
@@ -42,7 +36,7 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
       const _containerOffset = dimension.getContainerOffset();
       const containerOffset =
         typeof _containerOffset === 'number' ? _containerOffset : 0;
-      nextIsEndReached = dimension.getOnEndReachedHelper().perform({
+      nextIsEndReached = dimension.getOnEndReachedHelper()?.perform({
         ...scrollMetrics,
         contentLength: containerOffset + total,
       }).isEndReached;
@@ -50,8 +44,6 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
   }
 
   ctx.dataLength = nextDataLength;
-
-  console.log('preve ====', prevDataLength, nextDataLength)
 
   if (!prevDataLength && nextDataLength) {
     return {

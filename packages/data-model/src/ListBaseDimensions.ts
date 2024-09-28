@@ -24,6 +24,7 @@ import {
   ItemLayout,
   SpaceStateResult,
   ListBaseDimensionsStore,
+  RecycleRecycleState,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -55,7 +56,7 @@ abstract class ListBaseDimensions<
 
   private _store: ListBaseDimensionsStore;
 
-  readonly onEndReachedHelper: OnEndReachedHelper;
+  readonly onEndReachedHelper?: OnEndReachedHelper;
 
   public _scrollMetrics?: ScrollMetrics;
 
@@ -65,7 +66,7 @@ abstract class ListBaseDimensions<
     onEnabled: this.onEnableDispatchScrollMetrics.bind(this),
   });
 
-  private _onRecyclerProcess: OnRecyclerProcess;
+  private _onRecyclerProcess?: OnRecyclerProcess;
 
   private _stillnessHelper: StillnessHelper;
   private _recycler: Recycler;
@@ -73,10 +74,10 @@ abstract class ListBaseDimensions<
   _configTuple: ViewabilityConfigTuples;
 
   private memoizedResolveSpaceState: (
-    state: ListState<ItemT>
+    state: ListState
   ) => SpaceStateResult<ItemT>;
   private memoizedResolveRecycleState: (
-    state: ListState<ItemT>
+    state: ListState
   ) => RecycleStateResult<ItemT>;
 
   private _releaseSpaceStateItem: boolean;
@@ -193,7 +194,7 @@ abstract class ListBaseDimensions<
   }
 
   get onEndReachedThreshold() {
-    return this.onEndReachedHelper.onEndReachedThreshold;
+    return this.onEndReachedHelper?.onEndReachedThreshold;
   }
 
   set scrollMetrics(scrollMetrics: ScrollMetrics) {
@@ -221,11 +222,11 @@ abstract class ListBaseDimensions<
   }
 
   addOnEndReached(onEndReached: OnEndReached) {
-    return this.onEndReachedHelper.addHandler(onEndReached);
+    return this.onEndReachedHelper?.addHandler(onEndReached);
   }
 
   removeOnEndReached(onEndReached: OnEndReached) {
-    this.onEndReachedHelper.removeHandler(onEndReached);
+    this.onEndReachedHelper?.removeHandler(onEndReached);
   }
 
   getOnEndReachedHelper() {
@@ -287,7 +288,7 @@ abstract class ListBaseDimensions<
 
   attemptToHandleEndReached() {
     if (this.initialNumToRender)
-      this.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
+      this.onEndReachedHelper?.attemptToHandleOnEndReachedBatchinator.schedule();
   }
 
   resetViewableItems() {
@@ -364,7 +365,7 @@ abstract class ListBaseDimensions<
    *
    */
 
-  setState(state: ListState<ItemT>, force = false) {
+  setState(state: ListState, force = false) {
     if (this.fillingMode === FillingMode.SPACE) {
       const stateResult = force
         ? this.resolveSpaceState(state)
@@ -482,17 +483,15 @@ abstract class ListBaseDimensions<
     return { offset, length: itemLength };
   }
 
-  resolveRecycleRecycleState(state: ListState<ItemT>) {
+  resolveRecycleRecycleState(state: ListState) {
     const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
-    const recycleStateResult = [];
+    const recycleRecycleStateResult: RecycleRecycleState[] = [];
     const velocity = this._scrollMetrics?.velocity || 0;
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
       this._recycler.thresholdIndexValue
     );
-
-    // console.log('--------', state, this._onRecyclerProcess)
 
     const safeRange = this.resolveSafeRange({
       visibleStartIndex,
@@ -506,8 +505,6 @@ abstract class ListBaseDimensions<
         visibleStartIndex - Math.ceil(recycleBufferedCount / 2),
         this._recycler.thresholdIndexValue
       );
-
-      // console.log('tart ====', startIndex, safeRange)
 
       this._recycler.updateIndices({
         safeRange,
@@ -579,7 +576,7 @@ abstract class ListBaseDimensions<
           itemMeta?.setItemMetaState(itemMetaState);
         }
 
-        recycleStateResult.push({
+        recycleRecycleStateResult.push({
           key: recyclerKey,
           targetKey: itemMeta.getKey(),
           targetIndex,
@@ -597,10 +594,10 @@ abstract class ListBaseDimensions<
           ...this.resolveRecycleItemLayout(info, indexToOffsetMap),
         });
       });
-    return recycleStateResult;
+    return recycleRecycleStateResult;
   }
 
-  resolveRecycleState(state: ListState<ItemT>) {
+  resolveRecycleState(state: ListState) {
     const recycleEnabled = this._recycleEnabled();
     // 只有当recycleEnabled为true的时候，才进行位置替换
     const recycleStateResult = recycleEnabled
@@ -663,7 +660,7 @@ abstract class ListBaseDimensions<
     return tokens;
   }
 
-  resolveRecycleSpaceState(state: ListState<ItemT>) {
+  resolveRecycleSpaceState(state: ListState) {
     if (!this._releaseSpaceStateItem) {
       const nextData = this._data.slice(0, this.initialNumToRender);
       const spaceState = [];
@@ -760,12 +757,12 @@ abstract class ListBaseDimensions<
   }
 
   resolveSpaceState(
-    state: ListState<ItemT>,
+    state: ListState,
     resolver?: {
-      bufferedStartIndex?: (state: ListState<ItemT>) => number;
-      bufferedEndIndex?: (state: ListState<ItemT>) => number;
-      visibleStartIndex?: (state: ListState<ItemT>) => number;
-      visibleEndIndex?: (state: ListState<ItemT>) => number;
+      bufferedStartIndex?: (state: ListState) => number;
+      bufferedEndIndex?: (state: ListState) => number;
+      visibleStartIndex?: (state: ListState) => number;
+      visibleEndIndex?: (state: ListState) => number;
     }
   ) {
     const {
@@ -905,12 +902,13 @@ abstract class ListBaseDimensions<
     return state;
   }
 
-  dispatchMetrics(scrollMetrics: ScrollMetrics) {
+  dispatchMetrics(scrollMetrics: ScrollMetrics | undefined) {
+    if (!scrollMetrics) return;
     const state = this.dispatchStoreMetrics(scrollMetrics);
 
     const { isEndReached, distanceFromEnd } = state;
 
-    this.onEndReachedHelper.performEndReached({
+    this.onEndReachedHelper?.performEndReached({
       isEndReached,
       distanceFromEnd,
     });

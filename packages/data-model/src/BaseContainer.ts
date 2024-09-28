@@ -18,7 +18,7 @@ class BaseContainer {
     const { id, canIUseRIC, horizontal = false, getContainerLayout } = props;
 
     this.id = id;
-    this._canIUseRIC = canIUseRIC;
+    this._canIUseRIC = !!canIUseRIC;
     this._horizontal = !!horizontal;
     this._selectValue = horizontal
       ? selectHorizontalValue
