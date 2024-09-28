@@ -23,6 +23,8 @@ export type RecycleStateToken<ItemT> = {
   targetKey: string;
   targetIndex: number;
   offset: number;
+
+  viewable: boolean;
 } & SpaceStateToken<ItemT>;
 
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
@@ -74,3 +76,7 @@ export type PreStateResult = {
 export type ListState = {
   // data: Array<ItemT>;
 } & PreStateResult;
+
+export type IndexToOffsetMap = {
+  [key: number]: number;
+};

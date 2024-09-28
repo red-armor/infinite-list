@@ -19,6 +19,7 @@ import {
   DimensionsIndexRange,
   GenericItemT,
   ListGroupChildDimensions,
+  IndexToOffsetMap,
 } from './types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
@@ -235,9 +236,7 @@ class ListGroupDimensions<
     endIndex: number,
     exclusive?: boolean
   ) {
-    const indexToOffsetMap: {
-      [key: number]: number;
-    } = {};
+    const indexToOffsetMap: IndexToOffsetMap = {};
     let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
     for (let index = startIndex; index <= endIndex; index++) {
       indexToOffsetMap[index] = startOffset;

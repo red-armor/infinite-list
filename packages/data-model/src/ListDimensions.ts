@@ -6,6 +6,7 @@ import {
   ItemLayout,
   ListDimensionsModelProps,
   ListIndexInfo,
+  IndexToOffsetMap,
 } from './types';
 
 class ListDimensions<
@@ -99,9 +100,7 @@ class ListDimensions<
     endIndex: number,
     exclusive?: boolean
   ) {
-    const indexToOffsetMap: {
-      [key: number]: number;
-    } = {};
+    const indexToOffsetMap: IndexToOffsetMap = {};
     let startOffset = this.getIndexKeyOffset(startIndex, exclusive);
     for (let index = startIndex; index <= endIndex; index++) {
       indexToOffsetMap[index] = startOffset;

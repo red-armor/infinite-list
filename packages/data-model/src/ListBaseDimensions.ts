@@ -29,6 +29,7 @@ import {
   RecycleRecycleState,
   GenericItemT,
   IndexInfo,
+  IndexToOffsetMap,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -268,9 +269,7 @@ abstract class ListBaseDimensions<
     startIndex: number,
     endIndex: number,
     exclusive?: boolean
-  ): {
-    [key: string]: number;
-  };
+  ): IndexToOffsetMap;
   abstract computeIndexRange(
     minOffset: number,
     maxOffset: number
@@ -318,7 +317,7 @@ abstract class ListBaseDimensions<
   addStateListener(listener: StateListener<ItemT>) {
     if (typeof listener === 'function') this._stateListener = listener;
     return () => {
-      if (typeof listener === 'function') this._stateListener = null;
+      if (typeof listener === 'function') this._stateListener = undefined;
     };
   }
 
@@ -333,7 +332,8 @@ abstract class ListBaseDimensions<
         const recycleState = _recycleState.map((state) => {
           if (!state) return null;
           const copy = { ...state };
-          delete copy['viewable'];
+          // @ts-expect-error
+          delete copy.viewable;
 
           return copy;
         });
@@ -600,7 +600,7 @@ abstract class ListBaseDimensions<
           /**
            * itemMeta should get from parent
            */
-          viewable: itemMeta.getState().viewable,
+          viewable: !!itemMeta.getState()['viewable'],
           // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
           position: 'buffered',
           ...this.resolveRecycleItemLayout(info, indexToOffsetMap),
