@@ -189,6 +189,9 @@ importers:
       '@x-oasis/default-boolean-value':
         specifier: ^0.1.14
         version: 0.1.35
+      '@x-oasis/default-value':
+        specifier: ^0.1.35
+        version: 0.1.35
       '@x-oasis/find-last-index':
         specifier: ^0.1.34
         version: 0.1.35
@@ -17545,10 +17548,7 @@ snapshots:
       pretty-format: 25.5.0
       throat: 5.0.0
     transitivePeerDependencies:
-      - bufferutil
-      - canvas
       - supports-color
-      - utf-8-validate
 
   jest-junit@14.0.1:
     dependencies:

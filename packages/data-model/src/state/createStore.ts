@@ -17,8 +17,11 @@ function createStore<State extends ReducerResult = ReducerResult>(
     actionType: ActionType.Initial,
   } as any as State;
 
+  const getState = () => currentState;
+
   const storeContext = {
     dataLength: 0,
+    getState,
   };
   const currentReducer = _reducer;
 
@@ -32,11 +35,13 @@ function createStore<State extends ReducerResult = ReducerResult>(
     scrollMetrics: ScrollMetrics;
   }) => {
     const action = resolveAction(currentState, props, storeContext);
-    if (action) return dispatch(action);
+    if (action) {
+      currentState = dispatch(action);
+      return currentState;
+    }
     return currentState;
   };
 
-  const getState = () => currentState;
   const setState = (state: State) => {
     currentState = state;
   };

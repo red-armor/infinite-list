@@ -151,6 +151,7 @@ class ViewablityHelper {
     this.performViewableItemsChangedCallback(nextViewableItems);
   }
 
+  // TODO =====
   performViewableItemsChangedCallback(
     nextViewableItems: Array<ViewabilityItemMeta> = []
   ) {

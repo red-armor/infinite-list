@@ -1,7 +1,9 @@
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ListDimensions from '../ListDimensions';
 import { INVALID_LENGTH } from '../common';
 import { ScrollMetrics } from '../types';
 import { Action, ActionType, ReducerResult } from './types';
+import defaultValue from '@x-oasis/default-value';
 
 export const resolveAction = <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -11,19 +13,27 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
   },
   ctx: {
     dataLength: number;
+    getState: () => State;
   }
 ): Action | null => {
   const { scrollMetrics, dimension } = props;
   const { velocity = 0 } = scrollMetrics;
+  const currentState = { ...ctx.getState() };
 
   const _info = dimension.getOnEndReachedHelper()?.perform(scrollMetrics);
-  const isEndReached = _info?.isEndReached;
+  const isEndReached = defaultBooleanValue(
+    _info?.isEndReached,
+    currentState.isEndReached
+  );
   const prevDataLength = ctx.dataLength;
   const nextDataLength = dimension.getDataLength();
 
   // isEndReached should not be rewrite, or trigger onEndReached...
   let nextIsEndReached = isEndReached;
-  const distanceFromEnd = _info?.distanceFromEnd;
+  const distanceFromEnd = defaultValue(
+    _info?.distanceFromEnd,
+    currentState.distanceFromEnd
+  );
 
   if (!nextIsEndReached) {
     const { visibleEndIndex, visibleStartIndex } = state;
@@ -36,10 +46,10 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
       const _containerOffset = dimension.getContainerOffset();
       const containerOffset =
         typeof _containerOffset === 'number' ? _containerOffset : 0;
-      nextIsEndReached = dimension.getOnEndReachedHelper().perform({
+      nextIsEndReached = !!dimension.getOnEndReachedHelper().perform({
         ...scrollMetrics,
         contentLength: containerOffset + total,
-      }).isEndReached;
+      })?.isEndReached;
     }
   }
 
@@ -78,7 +88,6 @@ export const resolveAction = <State extends ReducerResult = ReducerResult>(
         scrollMetrics,
         isEndReached,
         distanceFromEnd,
-        // pseudoVelocity,
       },
     };
   }
