@@ -52,7 +52,9 @@ export default <State extends ReducerResult = ReducerResult>(
       }
 
       if (currentDimension instanceof ListDimensionsModel) {
-        const meta = currentDimension.getIndexItemMeta(dimensionInfo.index);
+        const meta = currentDimension.getIndexItemMeta(
+          dimensionInfo?.index || -1
+        );
         if (!isValidMetaLayout(meta)) count++;
       }
 
