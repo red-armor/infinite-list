@@ -6,7 +6,7 @@ import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
 import {
-  IndexInfo,
+  ListGroupIndexInfo,
   ItemLayout,
   KeysChangedType,
   ListGroupDimensionsProps,
@@ -318,7 +318,7 @@ class ListGroupDimensions<
     return null;
   }
 
-  getFinalIndexIndexInfo(idx: number): IndexInfo | null {
+  getFinalIndexIndexInfo(idx: number): ListGroupIndexInfo<ItemT> | null {
     const len = this._dimensionsIndexRange.length;
     for (let index = 0; index < len; index++) {
       const info = this._dimensionsIndexRange[index];
@@ -339,7 +339,7 @@ class ListGroupDimensions<
   getFinalKeyIndexInfo(
     itemKey: string,
     listKey: string
-  ): IndexInfo<ItemT> | null {
+  ): ListGroupIndexInfo<ItemT> | null {
     const dimensions = this.getDimension(listKey);
     if (dimensions) {
       const info = this.dimensionsIndexRange.find(

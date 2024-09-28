@@ -2,10 +2,10 @@ import ListBaseDimensions from './ListBaseDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
 import createStore from './state/createStore';
 import {
-  IndexInfo,
   ScrollMetrics,
   ItemLayout,
   ListDimensionsModelProps,
+  ListIndexInfo,
 } from './types';
 
 class ListDimensions<
@@ -22,7 +22,7 @@ class ListDimensions<
       ...props,
       store: createStore(),
     });
-    this._dataModel = new ListDimensionsModel({
+    this._dataModel = new ListDimensionsModel<ItemT>({
       recycleEnabled: true,
       ...props,
       container: this,
@@ -130,10 +130,11 @@ class ListDimensions<
     this.updateScrollMetrics(this._scrollMetrics);
   }
 
-  getFinalKeyIndexInfo(key: string): IndexInfo {
+  getFinalKeyIndexInfo(key: string): ListIndexInfo<ItemT> {
     return {
+      dimensions: this._dataModel,
       index: this._dataModel.getKeyIndex(key) || 0,
-    } as IndexInfo;
+    };
   }
 
   setFinalKeyItemLayout(

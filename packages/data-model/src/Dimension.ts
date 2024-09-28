@@ -13,7 +13,7 @@ import {
   ItemLayout,
   GetDimensionLength,
   GenericItemT,
-  ListGroupDimensionsModelContainer,
+  ListGroupChildDimensionsContainer,
 } from './types';
 import BaseContainer from './BaseContainer';
 import ListGroupDimensions from './ListGroupDimensions';
@@ -25,7 +25,7 @@ class Dimension<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseContainer {
   private _meta: ItemMeta<ItemT>;
-  readonly _container: ListGroupDimensionsModelContainer<ItemT>;
+  readonly _container: ListGroupChildDimensionsContainer<ItemT>;
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup = 0;
   private _data: Array<any>;

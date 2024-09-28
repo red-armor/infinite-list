@@ -28,6 +28,7 @@ import {
   ListBaseDimensionsStore,
   RecycleRecycleState,
   GenericItemT,
+  IndexInfo,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -249,7 +250,9 @@ abstract class ListBaseDimensions<
   abstract getTotalLength(): number | string;
   abstract getReflowItemsLength(): number;
   abstract getFinalItemKey(item: any): string;
-  abstract getFinalIndexItemMeta(index: number): ItemMeta | null | undefined;
+  abstract getFinalIndexItemMeta(
+    index: number
+  ): ItemMeta<ItemT> | null | undefined;
   abstract getFinalItemMeta(item: any): ItemMeta<ItemT> | null | undefined;
   abstract getFinalIndexItemLength(index: number): number;
   abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean): number;
@@ -273,6 +276,11 @@ abstract class ListBaseDimensions<
     startIndex: number;
     endIndex: number;
   };
+  abstract getFinalKeyIndexInfo(
+    itemKey: string,
+    groupId?: string
+  ): IndexInfo<ItemT> | null;
+  abstract onDataSourceChanged(): void;
 
   hasUnLayoutItems() {
     return this.getReflowItemsLength() < this._data.length;

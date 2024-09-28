@@ -17,7 +17,7 @@ import {
   KeyExtractor,
   KeysChangedType,
   ListDimensionsModelProps,
-  ListGroupDimensionsModelContainer,
+  ListDimensionsModelContainer,
   FillingMode,
   GenericItemT,
 } from './types';
@@ -34,7 +34,7 @@ class ListDimensionsModel<
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
 
-  private _container: ListGroupDimensionsModelContainer<ItemT>;
+  private _container: ListDimensionsModelContainer<ItemT>;
   private _offsetInListGroup: number;
   private _anchorKey: string;
 
@@ -405,7 +405,7 @@ class ListDimensionsModel<
     }
   }
 
-  getIndexInfo(key: string): IndexInfo | null {
+  getIndexInfo(key: string): IndexInfo<ItemT> | null {
     const info = {} as IndexInfo;
     info.index = this._indexKeys.indexOf(key);
 
@@ -427,7 +427,7 @@ class ListDimensionsModel<
   pump(
     _data: Array<ItemT>,
     baseIndex = 0,
-    keyToMetaMap: Map<string, ItemMeta>,
+    keyToMetaMap: Map<string, ItemMeta<ItemT>>,
     intervalTree: PrefixIntervalTree
   ) {
     const data = _data.slice(baseIndex);

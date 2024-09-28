@@ -7,8 +7,11 @@ import {
 // import ListDimensions from '../ListDimensions';
 // import ListDimensionsModel from '../ListDimensionsModel';
 // import Dimension from '../Dimension';
-import { GenericItemT } from './generic.types';
-import { ListGroupDimensionsModelContainer } from './ListDimensionsModel.types';
+// import { GenericItemT } from './generic.types';
+// import { ListGroupChildDimensionsContainer } from './ListDimensionsModel.types';
+// import ListDimensions from '../ListDimensions';
+// import ListGroupDimensions from '../ListGroupDimensions';
+// import Dimension from '../Dimension';
 
 export interface BaseDimensionsProps extends BaseLayoutProps {
   ignoredToPerBatch?: boolean;
@@ -33,10 +36,3 @@ export enum KeysChangedType {
   'Reorder' = 'reorder',
   'Idle' = 'idle',
 }
-
-export type IndexInfo<ItemT extends GenericItemT = GenericItemT> = {
-  dimensions: ListGroupDimensionsModelContainer<ItemT>;
-  index: number;
-  indexInGroup?: number;
-  indexInRecycler?: number;
-};

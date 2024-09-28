@@ -1,10 +1,8 @@
 import { ItemLayout } from './BaseLayout.types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
-// import ItemsDimensions from '../ItemsDimensions';
-// import PseudoListDimensions from '../PseudoListDimensions';
 import { GenericItemT } from './generic.types';
-// import ListGroupDimensions from '../ListGroupDimensions';
+import { ListGroupIndexInfo } from './ListGroupDimensions.types';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 
@@ -29,10 +27,8 @@ export type ItemMetaState = {
 };
 
 export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
-  // | ListGroupDimensions<ItemT>
-  ListDimensionsModel<ItemT> | Dimension<ItemT>;
-// | ItemsDimensions
-// | PseudoListDimensions;
+  | ListDimensionsModel<ItemT>
+  | Dimension<ItemT>;
 
 export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   /**
@@ -59,3 +55,12 @@ export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
 
   isApproximateLayout?: boolean;
 };
+
+export type ListIndexInfo<ItemT extends GenericItemT = GenericItemT> = {
+  dimensions: ListDimensionsModel<ItemT>;
+  index: number;
+};
+
+export type IndexInfo<ItemT extends GenericItemT = GenericItemT> =
+  | ListGroupIndexInfo<ItemT>
+  | ListIndexInfo<ItemT>;

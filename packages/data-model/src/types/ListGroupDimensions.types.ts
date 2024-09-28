@@ -55,9 +55,9 @@ export type DimensionsIndexRange<ItemT extends GenericItemT = GenericItemT> = {
   endIndexInRecycler: number;
 };
 
-export type ListGroupDimensionsModelContainer<
-  ItemT extends GenericItemT = GenericItemT
-> = ListGroupDimensions<ItemT>;
+// export type ListGroupDimensionsModelContainer<
+//   ItemT extends GenericItemT = GenericItemT
+// > = ListGroupDimensions<ItemT>;
 // export type ListGroupDimensionsModelContainer<
 //   ItemT extends GenericItemT = GenericItemT
 // > = ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
@@ -65,3 +65,14 @@ export type ListGroupDimensionsModelContainer<
 export type ListGroupChildDimensions<
   ItemT extends GenericItemT = GenericItemT
 > = ListDimensionsModel<ItemT> | Dimension<ItemT>;
+
+export type ListGroupChildDimensionsContainer<
+  ItemT extends GenericItemT = GenericItemT
+> = ListGroupDimensions<ItemT>;
+
+export type ListGroupIndexInfo<ItemT extends GenericItemT = GenericItemT> = {
+  dimensions: ListGroupChildDimensions<ItemT>;
+  index: number;
+  indexInGroup?: number;
+  indexInRecycler?: number;
+};
