@@ -19,12 +19,11 @@ import {
   ListDimensionsModelProps,
   ListDimensionsModelContainer,
   FillingMode,
+  GenericItemT,
 } from './types';
 
 class ListDimensionsModel<
-  ItemT extends {
-    [key: string]: any;
-  } = object
+  ItemT extends GenericItemT = GenericItemT
 > extends BaseDimensions {
   private _data: Array<ItemT> = [];
   private _initialData: Array<ItemT> = [];
@@ -44,7 +43,8 @@ class ListDimensionsModel<
   private _recyclerType: string;
   private _isFixedLength: boolean;
 
-  constructor(props: ListDimensionsModelProps<ItemT>) {
+  constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'store'>) {
+    // constructor(props: ListDimensionsModelProps<ItemT>) {
     super({
       ...props,
       isIntervalTreeItems: true,

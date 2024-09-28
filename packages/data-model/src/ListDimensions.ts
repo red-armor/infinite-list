@@ -15,7 +15,9 @@ class ListDimensions<
 > extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel<ItemT>;
 
-  constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
+  constructor(
+    props: Omit<ListDimensionsModelProps<ItemT>, 'container' | 'store'>
+  ) {
     super({
       ...props,
       store: createStore(),
@@ -65,7 +67,7 @@ class ListDimensions<
   }
 
   getFinalItemKey(item: ItemT) {
-    return this._dataModel.getFinalItemKey(item);
+    return this._dataModel.getFinalItemKey(item) || '';
   }
 
   getFinalIndexItemMeta(index: number) {

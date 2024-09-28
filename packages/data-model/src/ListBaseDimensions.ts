@@ -27,6 +27,7 @@ import {
   SpaceStateResult,
   ListBaseDimensionsStore,
   RecycleRecycleState,
+  GenericItemT,
 } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 import OnEndReachedHelper from './viewable/OnEndReachedHelper';
@@ -44,9 +45,7 @@ import ItemMeta from './ItemMeta';
  * will not change.
  */
 abstract class ListBaseDimensions<
-  ItemT extends {
-    [key: string]: any;
-  } = object
+  ItemT extends GenericItemT = GenericItemT
 > extends BaseLayout {
   private _stateListener: StateListener<ItemT>;
 
@@ -250,8 +249,8 @@ abstract class ListBaseDimensions<
   abstract getTotalLength(): number | string;
   abstract getReflowItemsLength(): number;
   abstract getFinalItemKey(item: any): string;
-  abstract getFinalIndexItemMeta(index: number): ItemMeta;
-  abstract getFinalItemMeta(item: any): ItemMeta;
+  abstract getFinalIndexItemMeta(index: number): ItemMeta | null | undefined;
+  abstract getFinalItemMeta(item: any): ItemMeta | null | undefined;
   abstract getFinalIndexItemLength(index: number): number;
   abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean): number;
   abstract getFinalIndexKeyBottomOffset(index: number): number;

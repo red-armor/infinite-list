@@ -1,6 +1,10 @@
 {
   "name": "@infinite-list/data-model",
-  "version": "0.0.1",
+  "version": "0.4.10",
+  "files": [
+    "dist",
+    "src"
+  ],
   "dependencies": {
     "tslib": "^2.3.0",
     "@x-oasis/batchinate-last": "^0.1.14",

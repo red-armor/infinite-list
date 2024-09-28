@@ -1,13 +1,10 @@
 import ListGroupDimensions from '../ListGroupDimensions';
+import { GenericItemT } from './generic.types';
 
 export type IndexKeys = Array<string>;
 export type OnIndexKeysChanged = { (props?: { indexKeys: IndexKeys }): void };
 
-export type InspectorProps<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> = {
+export type InspectorProps<ItemT extends GenericItemT = GenericItemT> = {
   owner: ListGroupDimensions<ItemT>;
   onChange: OnIndexKeysChanged;
 };

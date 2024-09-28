@@ -1,7 +1,7 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isObject from '@x-oasis/is-object';
 import ItemMeta from './ItemMeta';
-import ListGroupDimensions from './ListGroupDimensions';
+// import ListGroupDimensions from './ListGroupDimensions';
 import {
   INVALID_LENGTH,
   DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
@@ -13,15 +13,19 @@ import {
   IndexInfo,
   ItemLayout,
   GetDimensionLength,
+  GenericItemT,
+  ListDimensionsModelContainer,
 } from './types';
 import BaseContainer from './BaseContainer';
 
 /**
  * Abstraction of singleton item, It is used in ListGroup Condition.
  */
-class Dimension extends BaseContainer {
+class Dimension<
+  ItemT extends GenericItemT = GenericItemT
+> extends BaseContainer {
   private _meta: ItemMeta;
-  readonly _container: ListGroupDimensions;
+  readonly _container: ListDimensionsModelContainer<ItemT>;
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup = 0;
   private _data: Array<any>;

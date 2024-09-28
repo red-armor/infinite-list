@@ -18,6 +18,7 @@ import {
   RegisteredListProps,
   RegisteredDimensionProps,
   DimensionsIndexRange,
+  GenericItemT,
 } from './types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
@@ -34,9 +35,7 @@ import createStore from './state/createStore';
  * ListGroup is just like a router.
  */
 class ListGroupDimensions<
-  ItemT extends {
-    [key: string]: any;
-  } = object
+  ItemT extends GenericItemT
 > extends ListBaseDimensions<ItemT> {
   private keyToListDimensionsMap: KeyToListDimensionsMap = new Map();
   private _keyToOnEndReachedMap: KeyToOnEndReachedMap = new Map();
@@ -61,7 +60,7 @@ class ListGroupDimensions<
   private _reflowItemsLength = 0;
   private _dimensionsIndexRange: DimensionsIndexRange<ItemT>[] = [];
 
-  private _inspector: Inspector;
+  private _inspector: Inspector<ItemT>;
 
   /**
    * used with `getItemLayout`, on default if `getItemLayout` is provided, itemMeta's
@@ -181,7 +180,7 @@ class ListGroupDimensions<
       const itemKey = dimension?.getFinalItemKey(item);
       if (itemKey) return itemKey;
     }
-    return null;
+    return '';
   }
 
   getFinalItemMeta(item: any) {
@@ -316,7 +315,7 @@ class ListGroupDimensions<
     return null;
   }
 
-  getFinalIndexIndexInfo(idx: number): IndexInfo {
+  getFinalIndexIndexInfo(idx: number): IndexInfo | null {
     const len = this._dimensionsIndexRange.length;
     for (let index = 0; index < len; index++) {
       const info = this._dimensionsIndexRange[index];
@@ -644,14 +643,6 @@ class ListGroupDimensions<
     }, []);
     return this._flattenData;
   }
-
-  // getItemKey() {}
-
-  // getKeyItem() {}
-
-  // getItemDimension() {}
-
-  // getKeyDimension() {}
 
   /**
    *

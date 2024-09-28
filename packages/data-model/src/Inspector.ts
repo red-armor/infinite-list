@@ -5,16 +5,13 @@ import {
   InspectingAPI,
   InspectingListener,
   OnIndexKeysChanged,
+  GenericItemT,
 } from './types';
 import findLastIndex from '@x-oasis/find-last-index';
 import ListGroupDimensions from './ListGroupDimensions';
 
-class Inspector<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> {
-  private _indexKeys: Array<string> = [];
+class Inspector<ItemT extends GenericItemT = GenericItemT> {
+  private _indexKeys: string[] = [];
   // private _anchorRange: AnchorRange = {};
   private _owner: ListGroupDimensions<ItemT>;
   private _inspectingTime: number = Date.now();
@@ -28,7 +25,7 @@ class Inspector<
   private _onChange?: OnIndexKeysChanged;
   private _anchorKeys: Array<string> = [];
 
-  constructor(props: InspectorProps) {
+  constructor(props: InspectorProps<ItemT>) {
     const { onChange, owner } = props || {};
     // 主要用来巡检
     this._startInspectBatchinator = new Batchinator(

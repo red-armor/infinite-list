@@ -30,11 +30,13 @@ class ItemsDimensions extends BaseDimensions {
   _setKeyItemLayout(key: string, info: ItemLayout | number) {
     const meta = this.getKeyMeta(key);
     if (!meta) return false;
+    const layout = meta.ensureLayout();
 
     if (typeof info === 'number') {
       const length = this.normalizeLengthNumber(info);
-      if (this._selectValue.selectLength(meta.getLayout()) !== length) {
-        this._selectValue.setLength(meta.getLayout(), length);
+      meta.isApproximateLayout = false;
+      if (this._selectValue.selectLength(layout) !== length) {
+        this._selectValue.setLength(layout, length);
         this._sortedItems.add(meta);
         return true;
       }
@@ -43,7 +45,8 @@ class ItemsDimensions extends BaseDimensions {
 
     const _info = this.normalizeLengthInfo(info);
 
-    if (!layoutEqual(meta.getLayout(), _info as ItemLayout)) {
+    if (!layoutEqual(layout, _info as ItemLayout)) {
+      meta.isApproximateLayout = false;
       meta.setLayout(_info as ItemLayout);
       this._sortedItems.add(meta);
       return true;

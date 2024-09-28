@@ -8,6 +8,7 @@ import {
 import { ViewabilityConfigTuplesProps } from './viewable.types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
+import { GenericItemT } from './generic.types';
 
 export type ListRangeResult = Array<ListRange>;
 export type ListRange = {
@@ -48,11 +49,7 @@ export type KeyToListDimensionsMap = Map<
 >;
 export type KeyToOnEndReachedMap = Map<string, OnEndReached>;
 
-export type DimensionsIndexRange<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> = {
+export type DimensionsIndexRange<ItemT extends GenericItemT = GenericItemT> = {
   dimensions: Dimension | ListDimensionsModel<ItemT>;
   startIndex: number;
   endIndex: number;

@@ -1,6 +1,7 @@
 import ListDimensions from '../ListDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
 import { BaseDimensionsProps } from './BaseDimensions.types';
+import { GenericItemT } from './generic.types';
 import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 
 export type GetItemSeparatorLength<ItemT> = (
@@ -14,9 +15,7 @@ export type GetItemLayout<ItemT> = (
 export type KeyExtractor<ItemT> = (item: ItemT, index: number) => string;
 
 export interface ListDimensionsModelProps<
-  ItemT extends {
-    [key: string]: any;
-  } = object
+  ItemT extends GenericItemT = GenericItemT
 > extends ListBaseDimensionsProps,
     BaseDimensionsProps {
   data: Array<ItemT>;
@@ -46,7 +45,5 @@ export interface ListDimensionsModelProps<
 }
 
 export type ListDimensionsModelContainer<
-  ItemT extends {
-    [key: string]: any;
-  } = object
+  ItemT extends GenericItemT = GenericItemT
 > = ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
