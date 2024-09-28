@@ -28,6 +28,7 @@ export type RecycleStateToken<ItemT> = {
 } & SpaceStateToken<ItemT>;
 
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
+
 export type RecycleRecycleState<ItemT extends GenericItemT = GenericItemT> =
   Array<RecycleStateToken<ItemT>>;
 

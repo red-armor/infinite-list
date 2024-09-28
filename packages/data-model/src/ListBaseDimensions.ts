@@ -38,8 +38,6 @@ import StillnessHelper from './utils/StillnessHelper';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import BaseLayout from './BaseLayout';
 import ItemMeta from './ItemMeta';
-// import createStore from './state/createStore';
-// import { ReducerResult } from './state/types';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -455,12 +453,8 @@ abstract class ListBaseDimensions<
     return this.itemOffsetBeforeLayoutReady;
   }
 
-  resolveRecycleItemLayout(info, indexToOffsetMap) {
+  resolveRecycleItemLayout(info, indexToOffsetMap: IndexToOffsetMap) {
     const { meta: itemMeta, targetIndex } = info;
-
-    // const itemLayout = itemMeta?.getLayout();
-    // const itemLength =
-    //   (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
 
     const itemLength = itemMeta.getFinalItemLength();
 

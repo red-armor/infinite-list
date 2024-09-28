@@ -7,12 +7,11 @@ import {
   ListDimensionsModelProps,
   ListIndexInfo,
   IndexToOffsetMap,
+  GenericItemT,
 } from './types';
 
 class ListDimensions<
-  ItemT extends {
-    [key: string]: any;
-  } = object
+  ItemT extends GenericItemT = GenericItemT
 > extends ListBaseDimensions<ItemT> {
   private _dataModel: ListDimensionsModel<ItemT>;
 
