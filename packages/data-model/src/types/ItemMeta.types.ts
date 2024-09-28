@@ -36,13 +36,13 @@ export type ItemMetaProps = {
   /**
    * indicate including separatorLength on return item length
    */
-  useSeparatorLength?: boolean
+  useSeparatorLength?: boolean;
   onViewable?: StateEventListener;
   onImpression?: StateEventListener;
   key: string;
   separatorLength?: number;
   layout?: ItemLayout;
-  owner?: ItemMetaOwner;
+  owner: ItemMetaOwner;
   isListItem?: boolean;
   setState?: Function;
   state?: ItemMetaState;

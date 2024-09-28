@@ -54,7 +54,7 @@ abstract class BaseDimensions extends BaseLayout {
 
   getKeyIndex(key: string) {
     const index = this._keyToIndexMap.get(key);
-    if (index >= 0) return index;
+    if (typeof index === 'number') return index;
     return -1;
   }
 

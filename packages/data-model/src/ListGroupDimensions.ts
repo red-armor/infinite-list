@@ -33,7 +33,9 @@ import createStore from './state/createStore';
  * ListGroup is just like a router.
  */
 class ListGroupDimensionsExperimental<
-  ItemT extends {} = {}
+  ItemT extends {
+    [key: string]: any;
+  } = object
 > extends ListBaseDimensions<ItemT> {
   private keyToListDimensionsMap: KeyToListDimensionsMap = new Map();
   private _keyToOnEndReachedMap: KeyToOnEndReachedMap = new Map();
@@ -57,7 +59,7 @@ class ListGroupDimensionsExperimental<
 
   private _reflowItemsLength = 0;
   private _dimensionsIndexRange: Array<{
-    dimensions: Dimension | ListDimensionsModel;
+    dimensions: Dimension | ListDimensionsModel<ItemT>;
     startIndex: number;
     endIndex: number;
 
@@ -117,13 +119,11 @@ class ListGroupDimensionsExperimental<
     return this._inspector.indexKeys;
   }
 
-  ensureDimension() {}
-
   getDimension(key: string) {
     return this.keyToListDimensionsMap.get(key);
   }
 
-  setDimension(key: string, dimension: ListDimensionsModel | Dimension) {
+  setDimension(key: string, dimension: ListDimensionsModel<T> | Dimension) {
     return this.keyToListDimensionsMap.set(key, dimension);
   }
 
@@ -221,7 +221,7 @@ class ListGroupDimensionsExperimental<
     if (typeof index === 'number') {
       const indexInfo = this.getFinalIndexIndexInfo(index);
       if (indexInfo) {
-        const { dimensions, index: _index } = indexInfo;
+        const { dimensions } = indexInfo;
         const height = dimensions.getTotalLength();
         // _offsetInListGroup should be included. so exclusive should be false on default.
         return (
@@ -245,7 +245,7 @@ class ListGroupDimensionsExperimental<
       indexToOffsetMap[index] = startOffset;
       const itemMeta = this.getFinalIndexItemMeta(index);
       if (itemMeta) {
-        startOffset += itemMeta?.getFinalItemLength()
+        startOffset += itemMeta?.getFinalItemLength();
         // // @ts-ignore
         // startOffset +=
         //   (itemMeta?.getLayout()?.height || 0) +
@@ -265,7 +265,7 @@ class ListGroupDimensionsExperimental<
     return this._reflowItemsLength;
   }
 
-  hasUnLayoutItems() {
+  override hasUnLayoutItems() {
     const len = this.indexKeys.length;
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
@@ -338,7 +338,7 @@ class ListGroupDimensionsExperimental<
     return null;
   }
 
-  getFinalKeyIndexInfo(itemKey: string, listKey: string): IndexInfo {
+  getFinalKeyIndexInfo(itemKey: string, listKey: string): IndexInfo | null {
     const dimensions = this.getDimension(listKey);
     if (dimensions) {
       const info = this.dimensionsIndexRange.find(
@@ -412,7 +412,7 @@ class ListGroupDimensionsExperimental<
       const info = this._dimensionsIndexRange.find(
         ({ dimensions }) => dimensions === _dimensions
       );
-      return info.startIndex;
+      return info?.startIndex;
     }
 
     return 0;
@@ -444,12 +444,12 @@ class ListGroupDimensionsExperimental<
     listKey: string,
     listDimensionsProps: RegisteredListProps
   ): {
-    dimensions: ListDimensionsModel;
+    dimensions: ListDimensionsModel<ItemT>;
     remover: () => void;
   } {
     if (this.getDimension(listKey))
       return {
-        dimensions: this.getDimension(listKey) as ListDimensionsModel,
+        dimensions: this.getDimension(listKey) as ListDimensionsModel<ItemT>,
         remover: () => {
           this.removeListDimensions(listKey);
         },
@@ -533,7 +533,7 @@ class ListGroupDimensionsExperimental<
   }
 
   /**
-   * Important!!! : data change should be reflect immediately. but resolve state could 
+   * Important!!! : data change should be reflect immediately. but resolve state could
    * be deferred. So this.updateScrollMetrics actually is a batch operation ..
    */
   onItemsCountChanged() {
@@ -648,19 +648,19 @@ class ListGroupDimensionsExperimental<
     return this._flattenData;
   }
 
-  getItemKey() {}
+  // getItemKey() {}
 
-  getKeyItem() {}
+  // getKeyItem() {}
 
-  getItemDimension() {}
+  // getItemDimension() {}
 
-  getKeyDimension() {}
+  // getKeyDimension() {}
 
   /**
-   * 
-   * @param listKey 
-   * @param data 
-   * 
+   *
+   * @param listKey
+   * @param data
+   *
    * for child list, the corresponding setData method will not trigger onItemsCountChanged
    * So setListData comes
    */

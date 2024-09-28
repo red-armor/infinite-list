@@ -22,7 +22,7 @@ class OnEndReachedHelper {
   readonly sendOnEndReachedDistanceFromEndStack: SendOnEndReachedDistanceFromBottomStack;
 
   private onEndReached: OnEndReached | Array<OnEndReached>;
-  private _scrollMetrics: ScrollMetrics;
+  private _scrollMetrics?: ScrollMetrics;
   private _maxCountOfHandleOnEndReachedAfterStillness: number;
   private _distanceFromEndThresholdValue: number;
   private _waitingForDataChangedSinceEndReached = false;

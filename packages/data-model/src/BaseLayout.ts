@@ -13,9 +13,9 @@ class BaseLayout extends BaseContainer {
   readonly _windowSize: number;
   readonly _maxToRenderPerBatch: number;
   private _initialNumToRender: number;
-  private _persistanceIndices = [];
-  private _stickyHeaderIndices = [];
-  private _reservedIndices = [];
+  private _persistanceIndices: number[] = [];
+  private _stickyHeaderIndices: number[] = [];
+  private _reservedIndices: number[] = [];
   private _recycleThreshold: number;
   readonly _fillingMode: FillingMode;
   readonly _lengthPrecision: number;
@@ -78,7 +78,7 @@ class BaseLayout extends BaseContainer {
 
   updateReservedIndices() {
     const indices = new Set(
-      [].concat(this.persistanceIndices, this.stickyHeaderIndices)
+      ([] as number[]).concat(this.persistanceIndices, this.stickyHeaderIndices)
     );
     this._reservedIndices = Array.from(indices).sort((a, b) => a - b);
   }

@@ -1,4 +1,3 @@
-
-export const info = (...args) => {
-  console.info(...args)
-}
+export const info = (...args: any[]) => {
+  console.info(...args);
+};

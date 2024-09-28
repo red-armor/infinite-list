@@ -13,7 +13,7 @@ class ListDimensions<
     [key: string]: any;
   }
 > extends ListBaseDimensions<ItemT> {
-  private _dataModel: ListDimensionsModel;
+  private _dataModel: ListDimensionsModel<ItemT>;
 
   constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'container'>) {
     super({
@@ -97,7 +97,9 @@ class ListDimensions<
     endIndex: number,
     exclusive?: boolean
   ) {
-    const indexToOffsetMap = {};
+    const indexToOffsetMap: {
+      [key: number]: number;
+    } = {};
     let startOffset = this.getIndexKeyOffset(startIndex, exclusive);
     for (let index = startIndex; index <= endIndex; index++) {
       indexToOffsetMap[index] = startOffset;
@@ -105,10 +107,6 @@ class ListDimensions<
       const itemMeta = this.getItemMeta(item, index);
 
       startOffset += itemMeta?.getFinalItemLength();
-
-      // startOffset +=
-      //   (itemMeta?.getLayout()?.height || 0) +
-      //   (itemMeta?.getSeparatorLength() || 0);
     }
     return indexToOffsetMap;
   }
@@ -141,7 +139,11 @@ class ListDimensions<
     layout: ItemLayout | number,
     updateIntervalTree?: boolean
   ) {
-    this._dataModel.setKeyItemLayout(itemKey, layout, updateIntervalTree);
+    return this._dataModel.setKeyItemLayout(
+      itemKey,
+      layout,
+      updateIntervalTree
+    );
   }
 
   updateScrollMetrics(

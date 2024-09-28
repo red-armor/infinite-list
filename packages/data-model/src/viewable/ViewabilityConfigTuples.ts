@@ -91,7 +91,7 @@ class ViewabilityConfigTuples {
       [key: string]: boolean;
     }>((acc, pair) => {
       const { viewabilityConfig } = pair;
-      const { name } = viewabilityConfig;
+      const { name } = viewabilityConfig || {};
       if (name) acc[name] = !!defaultValue;
       return acc;
     }, {});
@@ -108,7 +108,9 @@ class ViewabilityConfigTuples {
   ) {
     if (!viewabilityScrollMetrics || !itemMeta) return {};
     if (!itemMeta.getLayout()) return {};
-    return this.viewabilityHelpers.reduce((value, helper) => {
+    return this.viewabilityHelpers.reduce<{
+      [key: string]: boolean;
+    }>((value, helper) => {
       const falsy = helper.checkItemViewability(
         itemMeta,
         viewabilityScrollMetrics,

@@ -14,7 +14,8 @@ import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
-export const isValidMetaLayout = (meta: ItemMeta) => !!(meta && !meta.isApproximateLayout && meta.getLayout())
+export const isValidMetaLayout = (meta: ItemMeta) =>
+  !!(meta && !meta.isApproximateLayout && meta.getLayout());
 
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
@@ -25,8 +26,8 @@ export let context: {
 let count = 0;
 
 export const resetContext = () => {
-  context = {}
-}
+  context = {};
+};
 
 class ItemMeta extends ViewabilityItemMeta {
   private _isListItem: boolean;
@@ -34,11 +35,10 @@ class ItemMeta extends ViewabilityItemMeta {
   private _layout?: ItemLayout;
   private _separatorLength?: number;
   private _recyclerType: string;
-  private _owner?: ItemMetaOwner;
+  private _owner: ItemMetaOwner;
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
   readonly getMetaOnViewableItemsChanged?: any;
-  readonly _ownerId: string;
   readonly _canIUseRIC?: boolean;
   private _isApproximateLayout: boolean;
   private _ignoredToPerBatch: boolean;
@@ -72,7 +72,7 @@ class ItemMeta extends ViewabilityItemMeta {
     this._isListItem = isListItem || false;
     this._stateEventSubscriptions = new Map();
     this._ignoredToPerBatch = !!ignoredToPerBatch;
-    this._useSeparatorLength = useSeparatorLength
+    this._useSeparatorLength = useSeparatorLength;
     this._state =
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
@@ -91,7 +91,9 @@ class ItemMeta extends ViewabilityItemMeta {
     const ancestor = context[props.key];
     if (ancestor) {
       const layout = ancestor.getLayout();
-      const spawnProps = {};
+      const spawnProps: {
+        [key: string]: any;
+      } = {};
       for (const [key, value] of ancestor._stateEventSubscriptions) {
         const _props = ItemMetaStateEventHelper.spawn(value);
         if (_props) spawnProps[key] = _props;
@@ -169,15 +171,15 @@ class ItemMeta extends ViewabilityItemMeta {
   }
 
   setUseSeparatorLength(value: boolean) {
-    this._useSeparatorLength = value
+    this._useSeparatorLength = value;
   }
 
   getFinalItemLength() {
     if (this._useSeparatorLength) {
-      return this.getItemLength() + this.getSeparatorLength()
+      return this.getItemLength() + this.getSeparatorLength();
     }
 
-    return this.getItemLength()
+    return this.getItemLength();
   }
 
   getItemOffset(exclusive?: boolean) {
@@ -337,7 +339,7 @@ class ItemMeta extends ViewabilityItemMeta {
       // get initial value
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
-    return stateEventHelper.addStrictReusableListener(
+    return stateEventHelper?.addStrictReusableListener(
       callback,
       key,
       defaultBooleanValue(triggerOnceIfTrue, true)
@@ -355,7 +357,7 @@ class ItemMeta extends ViewabilityItemMeta {
       // get initial value
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
-    return stateEventHelper.addListener(
+    return stateEventHelper?.addListener(
       callback,
       defaultBooleanValue(triggerOnceIfTrue, true)
     );

@@ -1,10 +1,19 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import isObject from '@x-oasis/is-object'
+import isObject from '@x-oasis/is-object';
 import ItemMeta from './ItemMeta';
 import ListGroupDimensions from './ListGroupDimensions';
-import { INVALID_LENGTH, DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from './common';
+import {
+  INVALID_LENGTH,
+  DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
+  DEFAULT_RECYCLER_TYPE,
+} from './common';
 import layoutEqual from '@x-oasis/layout-equal';
-import { DimensionProps, IndexInfo, ItemLayout, GetDimensionLength } from './types';
+import {
+  DimensionProps,
+  IndexInfo,
+  ItemLayout,
+  GetDimensionLength,
+} from './types';
 import BaseContainer from './BaseContainer';
 
 /**
@@ -14,22 +23,22 @@ class Dimension extends BaseContainer {
   private _meta: ItemMeta;
   readonly _container: ListGroupDimensions;
   readonly _ignoredToPerBatch: boolean;
-  private _offsetInListGroup: number;
+  private _offsetInListGroup = 0;
   private _data: Array<any>;
   private _recyclerType: string;
   private _anchorKey: string;
   private _itemApproximateLength: number;
   private _approximateMode: boolean;
-  private _getItemLength: GetDimensionLength
+  private _getItemLength?: GetDimensionLength;
   private _isFixedLength: boolean;
 
   constructor(props: DimensionProps) {
     super(props);
-    const { 
-      id, 
-      recyclerType, 
-      container, 
-      ignoredToPerBatch, 
+    const {
+      id,
+      recyclerType = DEFAULT_RECYCLER_TYPE,
+      container,
+      ignoredToPerBatch,
       anchorKey,
       getItemLength,
       isFixedLength = true,
@@ -46,7 +55,7 @@ class Dimension extends BaseContainer {
     this._recyclerType = recyclerType;
     this._anchorKey = anchorKey || id;
     this._container = container;
-    this._getItemLength = getItemLength
+    this._getItemLength = getItemLength;
     this._ignoredToPerBatch = !!ignoredToPerBatch;
     this._approximateMode = recycleEnabled
       ? defaultBooleanValue(
@@ -54,10 +63,10 @@ class Dimension extends BaseContainer {
           typeof this._getItemLength !== 'function'
         )
       : false;
-    this._itemApproximateLength = itemApproximateLength
-    this._isFixedLength = isFixedLength
+    this._itemApproximateLength = itemApproximateLength;
+    this._isFixedLength = isFixedLength;
 
-    this._meta = this.createItemMeta()
+    this._meta = this.createItemMeta();
     this.resolveConfigTuplesDefaultState =
       this.resolveConfigTuplesDefaultState.bind(this);
   }
@@ -99,13 +108,13 @@ class Dimension extends BaseContainer {
     });
 
     if (typeof this._getItemLength === 'function') {
-      const length = this._getItemLength()
+      const length = this._getItemLength();
       // only List with getItemLayout has default layout value
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(meta.getLayout(), length);
-      if (this._isFixedLength) meta.isApproximateLayout = false
-      this.triggerOwnerRecalculateLayout()
-      return meta
+      if (this._isFixedLength) meta.isApproximateLayout = false;
+      this.triggerOwnerRecalculateLayout();
+      return meta;
     }
 
     if (this._approximateMode && meta.isApproximateLayout) {
@@ -115,12 +124,12 @@ class Dimension extends BaseContainer {
         this._itemApproximateLength
       );
 
-      this.triggerOwnerRecalculateLayout()
+      this.triggerOwnerRecalculateLayout();
 
       return meta;
     }
 
-    return meta
+    return meta;
   }
 
   hasUnLayoutItems() {
@@ -230,24 +239,24 @@ class Dimension extends BaseContainer {
     if (typeof layout === 'number') {
       const length = layout;
       if (this._selectValue.selectLength(meta.getLayout() || {}) !== length) {
-        
-        console.log('layout =====', meta.getLayout(), meta.ensureLayout())
+        console.log('layout =====', meta.getLayout(), meta.ensureLayout());
 
         this._selectValue.setLength(meta.ensureLayout(), length);
 
         if (_update) {
-          this.triggerOwnerRecalculateLayout()
+          this.triggerOwnerRecalculateLayout();
           return true;
         }
       }
-    } 
+    }
 
-    if (isObject(layout) &&
+    if (
+      isObject(layout) &&
       !layoutEqual(meta.getLayout(), layout as ItemLayout)
     ) {
       meta.setLayout(layout as ItemLayout);
       if (_update) {
-        this.triggerOwnerRecalculateLayout()
+        this.triggerOwnerRecalculateLayout();
         return true;
       }
     }
@@ -257,7 +266,7 @@ class Dimension extends BaseContainer {
 
   ensureKeyMeta() {
     if (this._meta) return this._meta;
-    this._meta = this.createItemMeta()
+    this._meta = this.createItemMeta();
     return this._meta;
   }
 

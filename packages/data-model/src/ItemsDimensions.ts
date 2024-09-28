@@ -9,7 +9,7 @@ import ListSpyUtils from './utils/ListSpyUtils';
 
 class ItemsDimensions extends BaseDimensions {
   private _sortedItems: SortedItems;
-  private _scrollMetrics: ScrollMetrics;
+  private _scrollMetrics?: ScrollMetrics;
   private _dispatchMetricsBatchinator: Batchinator;
   private _onUpdateItemsMetaChangeBatchinator: Batchinator;
 
@@ -82,9 +82,9 @@ class ItemsDimensions extends BaseDimensions {
       maxOffset,
     });
 
-    const values = [];
+    const values: ItemMeta[] = [];
 
-    const mergedValues = [].concat(headValues, tailValues);
+    const mergedValues = ([] as ItemMeta[]).concat(headValues, tailValues);
     mergedValues.forEach((value) => {
       const index = values.indexOf(value);
       if (index === -1) values.push(value);
@@ -95,14 +95,16 @@ class ItemsDimensions extends BaseDimensions {
   dispatchMetrics(scrollMetrics: ScrollMetrics) {
     const { offset: scrollOffset, visibleLength } = scrollMetrics;
     const minOffset = scrollOffset;
-    const maxOffset = scrollOffset + visibleLength;
+    const maxOffset = scrollOffset + (visibleLength || 0);
 
     const itemsMeta = this.computeIndexRangeMeta(minOffset, maxOffset);
 
     this._onUpdateItemsMetaChangeBatchinator.schedule(itemsMeta, scrollMetrics);
   }
 
-  updateScrollMetrics(scrollMetrics: ScrollMetrics = this._scrollMetrics) {
+  updateScrollMetrics(
+    scrollMetrics: ScrollMetrics | undefined = this._scrollMetrics
+  ) {
     if (!scrollMetrics) return;
     if (
       !this._scrollMetrics ||

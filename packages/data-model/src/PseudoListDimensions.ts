@@ -93,7 +93,7 @@ class PseudoListDimensions extends BaseDimensions {
   shuffle(keys: Array<string>) {
     const itemIntervalTree = this.createIntervalTree();
     const keyToIndexMap = new Map();
-    const keyToIndexArray = [];
+    const keyToIndexArray: string[] = [];
     const keyToMetaMap = new Map();
     this.pump(
       keys,
@@ -171,7 +171,7 @@ class PseudoListDimensions extends BaseDimensions {
     return false;
   }
 
-  computeIndexRangeMeta(minOffset: number, maxOffset: number) {
+  computeIndexRangeMeta() {
     return [];
   }
 }

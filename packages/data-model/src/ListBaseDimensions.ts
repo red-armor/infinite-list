@@ -31,6 +31,7 @@ import EnabledSelector from './utils/EnabledSelector';
 import StillnessHelper from './utils/StillnessHelper';
 import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 import BaseLayout from './BaseLayout';
+import ItemMeta from './ItemMeta';
 // import createStore from './state/createStore';
 // import { ReducerResult } from './state/types';
 
@@ -39,7 +40,11 @@ import BaseLayout from './BaseLayout';
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
-abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
+abstract class ListBaseDimensions<
+  ItemT extends {
+    [key: string]: any;
+  }
+> extends BaseLayout {
   private _stateListener: StateListener<ItemT>;
 
   private _stateResult: ListStateResult<ItemT>;
@@ -52,7 +57,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
   readonly onEndReachedHelper: OnEndReachedHelper;
 
-  public _scrollMetrics: ScrollMetrics;
+  public _scrollMetrics?: ScrollMetrics;
 
   private _recalculateRecycleResultStateBatchinator: Batchinator;
 
@@ -237,27 +242,35 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
     return this.getData();
   }
 
-  abstract getData();
+  abstract getData(): any[];
   abstract getDataLength(): number;
   abstract getTotalLength(): number | string;
   abstract getReflowItemsLength(): number;
-  abstract getFinalItemKey(item: any);
-  abstract getFinalIndexItemMeta(index: number);
-  abstract getFinalItemMeta(item: any);
-  abstract getFinalIndexItemLength(index: number);
-  abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean);
-  abstract getFinalIndexKeyBottomOffset(index: number);
+  abstract getFinalItemKey(item: any): string;
+  abstract getFinalIndexItemMeta(index: number): ItemMeta;
+  abstract getFinalItemMeta(item: any): ItemMeta;
+  abstract getFinalIndexItemLength(index: number): number;
+  abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean): number;
+  abstract getFinalIndexKeyBottomOffset(index: number): number;
   abstract setFinalKeyItemLayout(
     key: string,
     info: ItemLayout | number,
     updateIntervalTree?: boolean
-  );
+  ): boolean;
   abstract getFinalIndexRangeOffsetMap(
     startIndex: number,
     endIndex: number,
     exclusive?: boolean
-  );
-  abstract computeIndexRange(minOffset: number, maxOffset: number);
+  ): {
+    [key: string]: number;
+  };
+  abstract computeIndexRange(
+    minOffset: number,
+    maxOffset: number
+  ): {
+    startIndex: number;
+    endIndex: number;
+  };
 
   hasUnLayoutItems() {
     return this.getReflowItemsLength() < this._data.length;
@@ -306,9 +319,10 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
         // @ts-ignore
         const recycleState = _recycleState.map((state) => {
           if (!state) return null;
-          // @ts-ignore
-          const { viewable, ...rest } = state;
-          return rest;
+          const copy = { ...state };
+          delete copy['viewable'];
+
+          return copy;
         });
 
         if (
@@ -335,7 +349,6 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
 
     this._stateResult = {
       ...stateResult,
-      // @ts-ignore
       rangeState: stateResult.rangeState,
     };
   }
@@ -919,7 +932,7 @@ abstract class ListBaseDimensions<ItemT extends {} = {}> extends BaseLayout {
   }
 
   isStill() {
-    this._stillnessHelper.isStill;
+    return this._stillnessHelper.isStill;
   }
 
   _updateScrollMetrics(

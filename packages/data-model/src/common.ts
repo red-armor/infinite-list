@@ -33,12 +33,19 @@ export const INVALID_LENGTH = 'invalid_length';
 export const ITEM_OFFSET_BEFORE_LAYOUT_READY = -4000;
 export const LAYOUT_EQUAL_CORRECTION_VALUE = 0.5;
 
-export const removeItemsKeyword = (configKey) =>
+export const removeItemsKeyword = (configKey: string) =>
   (configKey.match(/(.*)[iI]tems/) || [])[1] || configKey;
 
 // Pulled from react-compat
 // https://github.com/developit/preact-compat/blob/7c5de00e7c85e2ffd011bf3af02899b63f699d3a/src/index.js#L349
-export function shallowDiffers(prev: Object, next: Object): boolean {
+export function shallowDiffers(
+  prev: {
+    [key: string]: any;
+  },
+  next: {
+    [key: string]: any;
+  }
+): boolean {
   for (const attribute in prev) {
     if (!(attribute in next)) {
       return true;

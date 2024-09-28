@@ -5,6 +5,7 @@ import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
+  DEFAULT_RECYCLER_TYPE,
   LAYOUT_EQUAL_CORRECTION_VALUE,
 } from './common';
 
@@ -20,13 +21,17 @@ import {
   FillingMode,
 } from './types';
 
-class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
+class ListDimensionsModel<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> extends BaseDimensions {
   private _data: Array<ItemT> = [];
   private _initialData: Array<ItemT> = [];
 
   private _keyExtractor: KeyExtractor<ItemT>;
-  private _getItemLayout: GetItemLayout<ItemT>;
-  private _getItemSeparatorLength: GetItemSeparatorLength<ItemT>;
+  private _getItemLayout?: GetItemLayout<ItemT>;
+  private _getItemSeparatorLength?: GetItemSeparatorLength<ItemT>;
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
 
@@ -45,7 +50,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
       isIntervalTreeItems: true,
     });
     const {
-      recyclerType,
+      recyclerType = DEFAULT_RECYCLER_TYPE,
       recycleEnabled,
       data = [],
       anchorKey,
@@ -499,7 +504,7 @@ class ListDimensionsModel<ItemT extends {} = {}> extends BaseDimensions {
     info: ItemLayout | number,
     updateIntervalTree?: boolean
   ) {
-    const falsy = this.performKeyOperationGuard(key);
+    // const falsy = this.performKeyOperationGuard(key);
     const _update =
       typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
 

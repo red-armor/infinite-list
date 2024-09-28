@@ -21,11 +21,11 @@ class Inspector {
   private _handleChangeBatchinator: Batchinator;
   private _updateAnchorKeysBatchinator: Batchinator;
   private _isCollecting = false;
-  private _onChange: OnIndexKeysChanged;
+  private _onChange?: OnIndexKeysChanged;
   private _anchorKeys: Array<string> = [];
 
-  constructor(props?: InspectorProps) {
-    const { onChange, owner } = props;
+  constructor(props: InspectorProps) {
+    const { onChange, owner } = props || {};
     // 主要用来巡检
     this._startInspectBatchinator = new Batchinator(
       this.startInspection.bind(this),
@@ -57,7 +57,6 @@ class Inspector {
 
   push(key: string) {
     const anchorKey = this.owner.getFinalAnchorKey(key);
-    // @ts-ignore
     const index = findLastIndex(this._anchorKeys, (v) => v === anchorKey);
 
     if (index !== -1) {
