@@ -17,6 +17,7 @@ import {
   KeyToListDimensionsMap,
   RegisteredListProps,
   RegisteredDimensionProps,
+  DimensionsIndexRange,
 } from './types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
@@ -58,14 +59,7 @@ class ListGroupDimensions<
   );
 
   private _reflowItemsLength = 0;
-  private _dimensionsIndexRange: Array<{
-    dimensions: Dimension | ListDimensionsModel<ItemT>;
-    startIndex: number;
-    endIndex: number;
-
-    startIndexInRecycler: number;
-    endIndexInRecycler: number;
-  }> = [];
+  private _dimensionsIndexRange: DimensionsIndexRange<ItemT>[] = [];
 
   private _inspector: Inspector;
 
@@ -165,7 +159,7 @@ class ListGroupDimensions<
     for (let index = 0; index < this.indexKeys.length; index++) {
       const key = this.indexKeys[index];
       const dimensions = this.getDimension(key);
-      len += dimensions.length;
+      len += dimensions?.length || 0;
     }
     return len;
   }
@@ -184,7 +178,7 @@ class ListGroupDimensions<
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemKey = dimension.getFinalItemKey(item);
+      const itemKey = dimension?.getFinalItemKey(item);
       if (itemKey) return itemKey;
     }
     return null;
@@ -195,7 +189,7 @@ class ListGroupDimensions<
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemMeta = dimension.getFinalItemMeta(item);
+      const itemMeta = dimension?.getFinalItemMeta(item);
       if (itemMeta) return itemMeta;
     }
     return null;
@@ -457,7 +451,6 @@ class ListGroupDimensions<
         },
       };
     // should update indexKeys first !!!
-    const { recyclerType } = listDimensionsProps;
     const dimensions = new ListDimensionsModel({
       id: listKey,
       container: this,
@@ -467,7 +460,7 @@ class ListGroupDimensions<
       ...listDimensionsProps,
       recycleEnabled: this._recycleEnable,
     });
-    this.addBuffer(recyclerType);
+    this.addBuffer(dimensions.recyclerType);
 
     this.setDimension(listKey, dimensions);
     this._inspector.push(listKey);
@@ -514,8 +507,11 @@ class ListGroupDimensions<
     const rangeMap: {
       [key: string]: number;
     } = {};
-    this._dimensionsIndexRange = this.indexKeys.reduce((acc, key) => {
+    this._dimensionsIndexRange = this.indexKeys.reduce<
+      DimensionsIndexRange<ItemT>[]
+    >((acc, key) => {
       const dimensions = this.getDimension(key);
+      if (!dimensions) return acc;
       const recyclerType = dimensions.recyclerType;
       if (rangeMap[recyclerType] == null) rangeMap[recyclerType] = 0;
 
@@ -608,7 +604,6 @@ class ListGroupDimensions<
           this.removeItem(key);
         },
       };
-    const { recyclerType } = dimensionProps || {};
     const dimensions = new Dimension({
       id: key,
       container: this,
@@ -619,7 +614,7 @@ class ListGroupDimensions<
       recycleEnabled: this._recycleEnable,
     });
     this.setDimension(key, dimensions);
-    this.addBuffer(recyclerType);
+    this.addBuffer(dimensions.recyclerType);
     this._inspector.push(key);
     // for performance boost. only reflow data when less than initial number;
     if (this.getData().length < this.initialNumToRender) {

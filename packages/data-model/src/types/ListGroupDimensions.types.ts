@@ -33,7 +33,11 @@ export interface ListGroupDimensionsProps
   isFixedLength?: boolean;
 }
 
-export type RegisteredListProps<ItemT = {}> = Omit<
+export type RegisteredListProps<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> = Omit<
   ListDimensionsModelProps<ItemT> & OnEndReachedHelperProps,
   'container' | 'id'
 >;
@@ -43,3 +47,16 @@ export type KeyToListDimensionsMap = Map<
   ListDimensionsModel | Dimension
 >;
 export type KeyToOnEndReachedMap = Map<string, OnEndReached>;
+
+export type DimensionsIndexRange<
+  ItemT extends {
+    [key: string]: any;
+  } = object
+> = {
+  dimensions: Dimension | ListDimensionsModel<ItemT>;
+  startIndex: number;
+  endIndex: number;
+
+  startIndexInRecycler: number;
+  endIndexInRecycler: number;
+};

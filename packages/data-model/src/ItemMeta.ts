@@ -228,7 +228,10 @@ class ItemMeta extends ViewabilityItemMeta {
     return this._key;
   }
 
-  ensureStateHelper(eventName: string, value: boolean) {
+  ensureStateHelper(
+    eventName: string,
+    value: boolean
+  ): ItemMetaStateEventHelper {
     if (!this._stateEventSubscriptions.get(eventName)) {
       const helper = new ItemMetaStateEventHelper({
         ...(this._spawnProps[eventName] || {}),
@@ -240,7 +243,7 @@ class ItemMeta extends ViewabilityItemMeta {
       this._stateEventSubscriptions.set(eventName, helper);
     }
 
-    return this._stateEventSubscriptions.get(eventName);
+    return this._stateEventSubscriptions.get(eventName)!;
   }
 
   getIndexInfo() {

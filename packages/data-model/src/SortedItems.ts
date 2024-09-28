@@ -133,7 +133,6 @@ export default class SortedItems {
     if (startIndex > 0) {
       const prev = data[startIndex - 1];
       const layout = prev.getLayout();
-      // 这里要严格`<`；
       if (minOffset < selectLength(layout) + selectOffset(layout)) {
         startIndex = startIndex - 1;
       }

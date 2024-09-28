@@ -275,7 +275,7 @@ class ListDimensionsModel<
       const { length } = this._getItemLayout(data, index);
       // only List with getItemLayout has default layout value
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
-      this._selectValue.setLength(meta.getLayout(), length);
+      this._selectValue.setLength(meta.getLayout()!, length);
       if (this._isFixedLength) meta.isApproximateLayout = false;
     }
 
@@ -291,7 +291,7 @@ class ListDimensionsModel<
     ) {
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(
-        meta.getLayout(),
+        meta.getLayout()!,
         this._itemApproximateLength
       );
 
@@ -437,6 +437,7 @@ class ListDimensionsModel<
       const item = data[index];
       const currentIndex = index + baseIndex;
       const itemKey = this.getItemKey(item, currentIndex);
+      if (!itemKey) continue;
       const meta =
         this.getKeyMeta(itemKey) ||
         this.createItemMeta(itemKey, _data, currentIndex);
@@ -549,9 +550,11 @@ class ListDimensionsModel<
       return false;
     }
     const _info = this.normalizeLengthInfo(info);
+    const metaLayout = meta.getLayout();
 
     if (
-      !layoutEqual(meta.getLayout(), _info as ItemLayout, {
+      !metaLayout ||
+      !layoutEqual(metaLayout, _info as ItemLayout, {
         keysToCheck: this.horizontal ? ['width'] : ['height'],
         correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
       })

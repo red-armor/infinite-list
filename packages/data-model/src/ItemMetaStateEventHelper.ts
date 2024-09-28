@@ -53,7 +53,7 @@ class ItemMetaStateEventHelper {
   readonly _key: string;
   private _reusableEventListenerMap: Map<string, StateEventListener>;
   private _reusableStrictEventListenerMap: Map<string, StateEventListener>;
-  private _callbackId?: number;
+  private _callbackId?: number | void;
   private _callbackStartMinMs?: number;
   readonly _canIUseRIC: boolean;
   private _strictListenerKeyToHandleCountMap: {
@@ -330,7 +330,7 @@ class ItemMetaStateEventHelper {
       this._callbackStartMinMs = now;
 
       const handler = (() => {
-        if (now < this._callbackStartMinMs) return;
+        if (now < this._callbackStartMinMs!) return;
         if (this._value !== value) {
           this.listeners.forEach(({ listener, type }) => {
             if (this.listenerGuard(listener)) {
