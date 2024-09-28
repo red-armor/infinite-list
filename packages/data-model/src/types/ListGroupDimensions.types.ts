@@ -11,18 +11,21 @@ import Dimension from '../Dimension';
 import { GenericItemT } from './generic.types';
 import ListGroupDimensions from '../ListGroupDimensions';
 
-export type ListRangeResult = Array<ListRange>;
-export type ListRange = {
-  listKey: string;
-  isDimension: boolean;
-  value: {
-    startIndex: number;
-    endIndex: number;
-    data: Array<{
-      [key: string]: any;
-    }>;
-  };
-};
+export type ListRangeResult<ItemT> = ListRange<ItemT>[];
+export type ListRange<ItemT> =
+  | {
+      listKey: string;
+      isDimension: boolean;
+      value: {
+        startIndex: number;
+        endIndex: number;
+        data: ItemT[];
+      };
+    }
+  | {
+      listKey: string;
+      isDimension: boolean;
+    };
 
 export interface ListGroupDimensionsProps
   extends BaseLayoutProps,

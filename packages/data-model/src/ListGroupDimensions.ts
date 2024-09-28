@@ -1066,7 +1066,7 @@ class ListGroupDimensions<
   computeIndexRangeMeta(props: {
     startIndex: number;
     endIndex: number;
-  }): ListRangeResult {
+  }): ListRangeResult<ItemT> {
     const { startIndex, endIndex } = props;
     return this.findListRange(startIndex, endIndex);
   }

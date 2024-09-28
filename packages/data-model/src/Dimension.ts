@@ -102,7 +102,7 @@ class Dimension<
   }
 
   createItemMeta() {
-    const meta = ItemMeta<ItemT>.spawn({
+    const meta = ItemMeta.spawn({
       key: this.id,
       isListItem: false,
       owner: this,

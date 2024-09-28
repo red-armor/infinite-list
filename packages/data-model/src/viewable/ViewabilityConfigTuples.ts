@@ -55,6 +55,7 @@ class ViewabilityConfigTuples {
       this._tuple.push({
         onViewableItemsChanged,
         viewabilityConfig: {
+          // @ts-expect-error
           name: 'viewable',
           ...viewabilityConfig,
         },
@@ -62,12 +63,14 @@ class ViewabilityConfigTuples {
     } else if (viewabilityConfig) {
       this.tuple.push({
         viewabilityConfig: {
+          // @ts-expect-error
           name: 'viewable',
           ...viewabilityConfig,
         },
       });
     }
 
+    // @ts-expect-error
     this._tuple = uniqueArrayObject(
       this._tuple,
       (config) => config.viewabilityConfig.name

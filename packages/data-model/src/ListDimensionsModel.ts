@@ -198,7 +198,7 @@ class ListDimensionsModel<
     return meta;
   }
 
-  setItemMeta(item: ItemT, index: number, meta: ItemMeta) {
+  setItemMeta(item: ItemT, index: number, meta: ItemMeta<ItemT>) {
     const key = this.getItemKey(item, index);
     if (key) {
       this.setKeyMeta(key, meta);
@@ -333,7 +333,10 @@ class ListDimensionsModel<
     const keyToIndexMap: Map<string, number> = new Map();
     const keyToIndexArray: Array<string> = [];
     const itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
-    const itemToDimensionMap: WeakMap<ItemT, BaseDimensions> = new WeakMap();
+    const itemToDimensionMap: WeakMap<
+      ItemT,
+      BaseDimensions<ItemT>
+    > = new WeakMap();
     let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {

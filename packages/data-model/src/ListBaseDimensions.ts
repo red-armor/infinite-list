@@ -283,6 +283,7 @@ abstract class ListBaseDimensions<
     groupId?: string
   ): IndexInfo<ItemT> | null;
   abstract onDataSourceChanged(): void;
+  abstract onItemLayoutChanged(): void;
 
   hasUnLayoutItems() {
     return this.getReflowItemsLength() < this._data.length;

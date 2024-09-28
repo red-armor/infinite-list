@@ -40,15 +40,15 @@ export default class SortedItems {
     const { selectOffset, selectLength } = this.selectValue;
 
     this._headValues.sort((a, b) => {
-      const a1 = selectOffset(a.getLayout());
-      const b1 = selectOffset(b.getLayout());
+      const a1 = selectOffset(a.getLayout()!);
+      const b1 = selectOffset(b.getLayout()!);
       // 由小到大
       return a1 - b1;
     });
 
     this._tailValues.sort((a, b) => {
-      const a1 = selectOffset(a.getLayout()) + selectLength(a.getLayout());
-      const b1 = selectOffset(b.getLayout()) + selectLength(b.getLayout());
+      const a1 = selectOffset(a.getLayout()!) + selectLength(a.getLayout()!);
+      const b1 = selectOffset(b.getLayout()!) + selectLength(b.getLayout()!);
       // 由小到大
       return a1 - b1;
     });
