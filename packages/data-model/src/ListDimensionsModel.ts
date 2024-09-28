@@ -405,7 +405,7 @@ class ListDimensionsModel<
     }
   }
 
-  getIndexInfo(key: string): IndexInfo {
+  getIndexInfo(key: string): IndexInfo | null {
     const info = {} as IndexInfo;
     info.index = this._indexKeys.indexOf(key);
 

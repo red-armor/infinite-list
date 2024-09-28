@@ -247,6 +247,11 @@ class ItemMeta extends ViewabilityItemMeta {
     return this._owner.getIndexInfo(this._key);
   }
 
+  override getIndex() {
+    const info = this.getIndexInfo();
+    return info?.index || -1;
+  }
+
   /**
    *
    * @param event

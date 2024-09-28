@@ -9,6 +9,7 @@ import {
   NormalizedViewablityConfig,
   ViewabilityConfigCallbackPair,
   VisiblePercentModeConfig,
+  ViewabilityHelperChangedToken,
 } from '../types';
 import { isItemViewable } from './viewabilityUtils';
 
@@ -23,7 +24,7 @@ const createChangedToken = (opts: {
     key: helper.getKey(),
     isViewable,
     // TODO
-    index: null,
+    index: helper.getIndex(),
   };
 };
 
@@ -32,7 +33,7 @@ class ViewablityHelper {
   private _configName: string;
   private _changed: Array<ViewabilityItemMeta> = [];
   private _config: NormalizedViewablityConfig;
-  private _callback: OnViewableItemsChanged;
+  private _callback?: OnViewableItemsChanged;
   readonly _pair: ViewabilityConfigCallbackPair;
 
   constructor(props: {
@@ -179,7 +180,10 @@ class ViewablityHelper {
             isListItem: this.isListItem,
           })
         ),
-        changed: [].concat(addedTokens, removedTokens),
+        changed: ([] as ViewabilityHelperChangedToken[]).concat(
+          addedTokens,
+          removedTokens
+        ),
       });
     }
     this._changed = nextViewableItems;

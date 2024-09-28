@@ -14,6 +14,8 @@ abstract class ViewabilityItemMeta {
     return this._key;
   }
 
+  abstract getIndex(): number;
+
   // getMetaOnViewableItemsChanged() {
   //   return {}
   // }
