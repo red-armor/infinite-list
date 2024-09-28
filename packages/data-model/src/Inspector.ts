@@ -132,9 +132,9 @@ class Inspector<
   }
 
   updateAnchorKeys() {
-    this._anchorKeys = this._indexKeys.map((key) =>
-      this.owner.getFinalAnchorKey(key)
-    );
+    this._anchorKeys = this._indexKeys
+      .map((key) => this.owner.getFinalAnchorKey(key))
+      .filter((v) => v != null);
 
     // this._anchorRange = this._indexKeys.reduce<AnchorRange>(
     //   (acc, cur, index) => {

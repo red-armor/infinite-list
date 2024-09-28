@@ -168,7 +168,7 @@ abstract class BaseDimensions extends BaseLayout {
 
   getKeyItemLength(key: string) {
     const layout = this.getKeyItemLayout(key);
-    return this._selectValue.selectLength(layout);
+    return layout ? this._selectValue.selectLength(layout) : 0;
   }
 
   getIndexItemLength(index: number) {
@@ -237,9 +237,11 @@ abstract class BaseDimensions extends BaseLayout {
       type: BoundInfoType.OutOfBoundary,
       index: -1,
     };
-    const listOffset = exclusive
-      ? 0
-      : this._selectValue.selectOffset(this.getContainerLayout());
+    const containerLayout = this.getContainerLayout();
+    const listOffset =
+      exclusive || !containerLayout
+        ? 0
+        : this._selectValue.selectOffset(containerLayout);
     if (offset < listOffset) return info;
     const maxValue = this._intervalTree.getMaxValue();
     if (offset > listOffset + maxValue) {

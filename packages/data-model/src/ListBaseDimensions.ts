@@ -46,7 +46,7 @@ import ItemMeta from './ItemMeta';
 abstract class ListBaseDimensions<
   ItemT extends {
     [key: string]: any;
-  }
+  } = object
 > extends BaseLayout {
   private _stateListener: StateListener<ItemT>;
 

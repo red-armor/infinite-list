@@ -111,7 +111,7 @@ class Dimension extends BaseContainer {
       const length = this._getItemLength();
       // only List with getItemLayout has default layout value
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
-      this._selectValue.setLength(meta.getLayout(), length);
+      this._selectValue.setLength(meta.getLayout()!, length);
       if (this._isFixedLength) meta.isApproximateLayout = false;
       this.triggerOwnerRecalculateLayout();
       return meta;
@@ -120,7 +120,7 @@ class Dimension extends BaseContainer {
     if (this._approximateMode && meta.isApproximateLayout) {
       meta.setLayout({ x: 0, y: 0, height: 0, width: 0 });
       this._selectValue.setLength(
-        meta.getLayout(),
+        meta.getLayout()!,
         this._itemApproximateLength
       );
 
@@ -247,10 +247,11 @@ class Dimension extends BaseContainer {
         }
       }
     }
+    const itemMetaLayout = meta.getLayout();
 
     if (
       isObject(layout) &&
-      !layoutEqual(meta.getLayout(), layout as ItemLayout)
+      (!itemMetaLayout || !layoutEqual(itemMetaLayout, layout as ItemLayout))
     ) {
       meta.setLayout(layout as ItemLayout);
       if (_update) {

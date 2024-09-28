@@ -32,7 +32,7 @@ import createStore from './state/createStore';
  *
  * ListGroup is just like a router.
  */
-class ListGroupDimensionsExperimental<
+class ListGroupDimensions<
   ItemT extends {
     [key: string]: any;
   } = object
@@ -849,7 +849,7 @@ class ListGroupDimensionsExperimental<
   findPosition(finalIndex: number) {
     const len = this.indexKeys.length;
     let startIndex = 0;
-    const positionToken = ListGroupDimensionsExperimental.createPositionToken();
+    const positionToken = ListGroupDimensions.createPositionToken();
 
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
@@ -1093,4 +1093,4 @@ class ListGroupDimensionsExperimental<
   }
 }
 
-export default ListGroupDimensionsExperimental;
+export default ListGroupDimensions;
