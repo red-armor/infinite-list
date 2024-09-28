@@ -71,7 +71,7 @@ abstract class ListBaseDimensions<
   private _onRecyclerProcess?: OnRecyclerProcess;
 
   private _stillnessHelper: StillnessHelper;
-  private _recycler: Recycler;
+  private _recycler: Recycler<ItemMeta>;
 
   _configTuple: ViewabilityConfigTuples;
 
@@ -140,7 +140,7 @@ abstract class ListBaseDimensions<
       handler: this.stillnessHandler,
     });
 
-    this._recycler = new Recycler({
+    this._recycler = new Recycler<ItemMeta>({
       // the following is appended with setting default recyclerType
       recyclerTypes,
       recyclerBufferSize,
@@ -155,7 +155,9 @@ abstract class ListBaseDimensions<
         return indexInfo?.indexInGroup || indexInfo.index;
       },
       getMetaType: (meta) => meta.recyclerType,
-      getType: (index) => this.getFinalIndexItemMeta(index)?.recyclerType,
+      getType: (index) =>
+        this.getFinalIndexItemMeta(index)?.recyclerType ||
+        DEFAULT_RECYCLER_TYPE,
     });
     // default recyclerTypes should be set immediately
     this.initializeDefaultRecycleBuffer();

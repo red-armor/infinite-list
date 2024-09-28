@@ -6,7 +6,6 @@
     "src"
   ],
   "dependencies": {
-    "tslib": "^2.3.0",
     "@x-oasis/batchinate-last": "^0.1.14",
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/capitalize": "^0.1.14",
@@ -19,13 +18,14 @@
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/omit": "^0.1.14",
     "@x-oasis/prefix-interval-tree": "^0.2.4",
-    "@x-oasis/recycler": "^0.1.33",
+    "@x-oasis/recycler": "^0.1.36",
     "@x-oasis/resolve-changed": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14",
     "@x-oasis/shallow-array-equal": "^0.1.14",
     "@x-oasis/shallow-equal": "^0.1.14",
     "@x-oasis/unique-array-object": "^0.1.14",
-    "memoize-one": "^6.0.0"
+    "memoize-one": "^6.0.0",
+    "tslib": "^2.3.0"
   },
   "type": "commonjs",
   "main": "./src/index.js",

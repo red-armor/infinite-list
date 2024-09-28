@@ -9,11 +9,11 @@ import {
 import layoutEqual from '@x-oasis/layout-equal';
 import {
   DimensionProps,
-  IndexInfo,
   ItemLayout,
   GetDimensionLength,
   GenericItemT,
   ListGroupChildDimensionsContainer,
+  ListGroupIndexInfo,
 } from './types';
 import BaseContainer from './BaseContainer';
 import ListGroupDimensions from './ListGroupDimensions';
@@ -182,7 +182,7 @@ class Dimension<
   getIndexInfo() {
     const info = {
       index: 0,
-    } as IndexInfo;
+    } as ListGroupIndexInfo;
     if (this._container) {
       const index = (
         this._container as ListGroupDimensions<ItemT>

@@ -4,6 +4,7 @@ import { OnEndReachedHelperProps } from './onEndReachedHelper.types';
 import { ViewabilityConfigTuplesProps } from './viewable.types';
 import { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
 import { ReducerResult, Store, ActionType } from '../state/types';
+import { GenericItemT } from './generic.types';
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
@@ -25,32 +26,20 @@ export type RecycleStateToken<ItemT> = {
 } & SpaceStateToken<ItemT>;
 
 export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
-export type RecycleRecycleState<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> = Array<RecycleStateToken<ItemT>>;
+export type RecycleRecycleState<ItemT extends GenericItemT = GenericItemT> =
+  Array<RecycleStateToken<ItemT>>;
 
-export type RecycleStateResult<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> = {
+export type RecycleStateResult<ItemT extends GenericItemT = GenericItemT> = {
+  rangeState: ListState;
   spaceState: SpaceStateResult<ItemT>;
   recycleState: RecycleRecycleState<ItemT>;
 };
 
-export type ListStateResult<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> = SpaceStateResult<ItemT> | RecycleStateResult<ItemT>;
+export type ListStateResult<ItemT extends GenericItemT = GenericItemT> =
+  | SpaceStateResult<ItemT>
+  | RecycleStateResult<ItemT>;
 
-export type StateListener<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> = (
+export type StateListener<ItemT extends GenericItemT = GenericItemT> = (
   newState: ListStateResult<ItemT>,
   oldState: ListStateResult<ItemT>
 ) => void;

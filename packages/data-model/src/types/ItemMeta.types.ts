@@ -3,6 +3,8 @@ import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
 import { GenericItemT } from './generic.types';
 import { ListGroupIndexInfo } from './ListGroupDimensions.types';
+import PseudoListDimensions from '../PseudoListDimensions';
+import ItemsDimensions from '../ItemsDimensions';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 
@@ -28,7 +30,9 @@ export type ItemMetaState = {
 
 export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
   | ListDimensionsModel<ItemT>
-  | Dimension<ItemT>;
+  | Dimension<ItemT>
+  | PseudoListDimensions
+  | ItemsDimensions;
 
 export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   /**

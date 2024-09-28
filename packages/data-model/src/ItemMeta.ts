@@ -89,7 +89,7 @@ class ItemMeta<
     this._spawnProps = spawnProps;
 
     this.addStateEventListener = this.addStateEventListener.bind(this);
-    context[this.key] = this;
+    (context as any)[this.key] = this;
   }
 
   static spawn<T extends GenericItemT = GenericItemT>(props: ItemMetaProps<T>) {
@@ -189,7 +189,7 @@ class ItemMeta<
 
   getItemOffset(exclusive?: boolean) {
     if (this._isListItem) {
-      const offset = (this._owner as BaseDimensions).getKeyItemOffset(
+      const offset = (this._owner as BaseDimensions<ItemT>).getKeyItemOffset(
         this._key,
         exclusive
       );
