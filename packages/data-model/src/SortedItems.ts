@@ -107,7 +107,7 @@ export default class SortedItems {
   }): Array<ItemMeta> {
     const { selectOffset, selectLength } = this.selectValue;
     const { minOffset, maxOffset } = props;
-    const getValue = (item: ItemMeta) => selectOffset(item.getLayout());
+    const getValue = (item: ItemMeta) => selectOffset(item.getLayout()!);
     const data = this._headValues;
     if (!data.length) return [];
 
@@ -133,8 +133,10 @@ export default class SortedItems {
     if (startIndex > 0) {
       const prev = data[startIndex - 1];
       const layout = prev.getLayout();
-      if (minOffset < selectLength(layout) + selectOffset(layout)) {
-        startIndex = startIndex - 1;
+      if (layout) {
+        if (minOffset < selectLength(layout) + selectOffset(layout)) {
+          startIndex = startIndex - 1;
+        }
       }
     }
 
@@ -147,8 +149,8 @@ export default class SortedItems {
   }): Array<ItemMeta> {
     const { selectOffset, selectLength } = this.selectValue;
     const { minOffset, maxOffset } = props;
-    const getValue = (item) =>
-      selectOffset(item.getLayout()) + selectLength(item.getLayout());
+    const getValue = (item: ItemMeta) =>
+      selectOffset(item.getLayout()!) + selectLength(item.getLayout()!);
     const data = this._headValues;
     const len = data.length;
     if (!len) return [];
@@ -174,8 +176,9 @@ export default class SortedItems {
 
     if (endIndex < len) {
       const item = data[endIndex];
+      const layout = item?.getLayout();
       // 即使相等也要将最后一个包含进去
-      if (maxOffset >= selectOffset(item.getLayout())) {
+      if (layout && maxOffset >= selectOffset(layout)) {
         endIndex = endIndex + 1;
       }
     }

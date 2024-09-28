@@ -32,6 +32,9 @@ export const resetContext = () => {
   context = {};
 };
 
+/**
+ * _layout should always exist. `_isApproximateLayout` should make the difference.
+ */
 class ItemMeta<
   ItemT extends GenericItemT = GenericItemT
 > extends ViewabilityItemMeta {
