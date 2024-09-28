@@ -9,6 +9,7 @@ import { ViewabilityConfigTuplesProps } from './viewable.types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
 import { GenericItemT } from './generic.types';
+import ListGroupDimensions from '../ListGroupDimensions';
 
 export type ListRangeResult = Array<ListRange>;
 export type ListRange = {
@@ -34,26 +35,33 @@ export interface ListGroupDimensionsProps
   isFixedLength?: boolean;
 }
 
-export type RegisteredListProps<
-  ItemT extends {
-    [key: string]: any;
-  } = object
-> = Omit<
-  ListDimensionsModelProps<ItemT> & OnEndReachedHelperProps,
-  'container' | 'id'
->;
-export type RegisteredDimensionProps = Omit<DimensionProps, 'container' | 'id'>;
-export type KeyToListDimensionsMap = Map<
-  string,
-  ListDimensionsModel | Dimension
->;
+export type RegisteredListProps<ItemT extends GenericItemT = GenericItemT> =
+  Omit<
+    ListDimensionsModelProps<ItemT> & OnEndReachedHelperProps,
+    'container' | 'id'
+  >;
+export type RegisteredDimensionProps<
+  ItemT extends GenericItemT = GenericItemT
+> = Omit<DimensionProps<ItemT>, 'container' | 'id'>;
+
 export type KeyToOnEndReachedMap = Map<string, OnEndReached>;
 
 export type DimensionsIndexRange<ItemT extends GenericItemT = GenericItemT> = {
-  dimensions: Dimension | ListDimensionsModel<ItemT>;
+  dimensions: ListGroupChildDimensions<ItemT>;
   startIndex: number;
   endIndex: number;
 
   startIndexInRecycler: number;
   endIndexInRecycler: number;
 };
+
+export type ListGroupDimensionsModelContainer<
+  ItemT extends GenericItemT = GenericItemT
+> = ListGroupDimensions<ItemT>;
+// export type ListGroupDimensionsModelContainer<
+//   ItemT extends GenericItemT = GenericItemT
+// > = ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
+
+export type ListGroupChildDimensions<
+  ItemT extends GenericItemT = GenericItemT
+> = ListDimensionsModel<ItemT> | Dimension<ItemT>;

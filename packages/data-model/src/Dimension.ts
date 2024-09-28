@@ -1,7 +1,6 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isObject from '@x-oasis/is-object';
 import ItemMeta from './ItemMeta';
-// import ListGroupDimensions from './ListGroupDimensions';
 import {
   INVALID_LENGTH,
   DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
@@ -14,9 +13,10 @@ import {
   ItemLayout,
   GetDimensionLength,
   GenericItemT,
-  ListDimensionsModelContainer,
+  ListGroupDimensionsModelContainer,
 } from './types';
 import BaseContainer from './BaseContainer';
+import ListGroupDimensions from './ListGroupDimensions';
 
 /**
  * Abstraction of singleton item, It is used in ListGroup Condition.
@@ -24,8 +24,8 @@ import BaseContainer from './BaseContainer';
 class Dimension<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseContainer {
-  private _meta: ItemMeta;
-  readonly _container: ListDimensionsModelContainer<ItemT>;
+  private _meta: ItemMeta<ItemT>;
+  readonly _container: ListGroupDimensionsModelContainer<ItemT>;
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup = 0;
   private _data: Array<any>;
@@ -36,7 +36,7 @@ class Dimension<
   private _getItemLength?: GetDimensionLength;
   private _isFixedLength: boolean;
 
-  constructor(props: DimensionProps) {
+  constructor(props: DimensionProps<ItemT>) {
     super(props);
     const {
       id,
@@ -102,7 +102,7 @@ class Dimension<
   }
 
   createItemMeta() {
-    const meta = ItemMeta.spawn({
+    const meta = ItemMeta<ItemT>.spawn({
       key: this.id,
       isListItem: false,
       owner: this,
@@ -184,7 +184,9 @@ class Dimension<
       index: 0,
     } as IndexInfo;
     if (this._container) {
-      const index = this._container.getDimensionStartIndex(this.id);
+      const index = (
+        this._container as ListGroupDimensions<ItemT>
+      ).getDimensionStartIndex(this.id);
       if (index !== -1) info.indexInGroup = index;
     }
 
@@ -213,7 +215,7 @@ class Dimension<
     return this._meta;
   }
 
-  setMeta(meta: ItemMeta) {
+  setMeta(meta: ItemMeta<ItemT>) {
     this._meta = meta;
   }
 

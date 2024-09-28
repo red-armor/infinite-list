@@ -14,11 +14,11 @@ import {
   OnEndReached,
   ScrollMetrics,
   KeyToOnEndReachedMap,
-  KeyToListDimensionsMap,
   RegisteredListProps,
   RegisteredDimensionProps,
   DimensionsIndexRange,
   GenericItemT,
+  ListGroupChildDimensions,
 } from './types';
 import ListBaseDimensions from './ListBaseDimensions';
 import Inspector from './Inspector';
@@ -35,9 +35,12 @@ import createStore from './state/createStore';
  * ListGroup is just like a router.
  */
 class ListGroupDimensions<
-  ItemT extends GenericItemT
+  ItemT extends GenericItemT = GenericItemT
 > extends ListBaseDimensions<ItemT> {
-  private keyToListDimensionsMap: KeyToListDimensionsMap = new Map();
+  private keyToListDimensionsMap = new Map<
+    string,
+    ListGroupChildDimensions<ItemT>
+  >();
   private _keyToOnEndReachedMap: KeyToOnEndReachedMap = new Map();
   private _itemsDimensions: ItemsDimensions;
   private _onUpdateItemLayout?: Function;
@@ -116,7 +119,7 @@ class ListGroupDimensions<
     return this.keyToListDimensionsMap.get(key);
   }
 
-  setDimension(key: string, dimension: ListDimensionsModel<T> | Dimension) {
+  setDimension(key: string, dimension: ListGroupChildDimensions<ItemT>) {
     return this.keyToListDimensionsMap.set(key, dimension);
   }
 
@@ -333,7 +336,10 @@ class ListGroupDimensions<
     return null;
   }
 
-  getFinalKeyIndexInfo(itemKey: string, listKey: string): IndexInfo | null {
+  getFinalKeyIndexInfo(
+    itemKey: string,
+    listKey: string
+  ): IndexInfo<ItemT> | null {
     const dimensions = this.getDimension(listKey);
     if (dimensions) {
       const info = this.dimensionsIndexRange.find(
@@ -437,7 +443,7 @@ class ListGroupDimensions<
    */
   registerList(
     listKey: string,
-    listDimensionsProps: RegisteredListProps
+    listDimensionsProps: RegisteredListProps<ItemT>
   ): {
     dimensions: ListDimensionsModel<ItemT>;
     remover: () => void;
@@ -591,14 +597,14 @@ class ListGroupDimensions<
 
   registerItem(
     key: string,
-    dimensionProps: RegisteredDimensionProps = {}
+    dimensionProps: RegisteredDimensionProps<ItemT>
   ): {
-    dimensions: Dimension;
+    dimensions: Dimension<ItemT>;
     remover: () => void;
   } {
     if (this.getDimension(key))
       return {
-        dimensions: this.getDimension(key) as Dimension,
+        dimensions: this.getDimension(key) as Dimension<ItemT>,
         remover: () => {
           this.removeItem(key);
         },
@@ -634,10 +640,10 @@ class ListGroupDimensions<
   }
 
   reflowFlattenData() {
-    this._flattenData = this.indexKeys.reduce((acc, key) => {
+    this._flattenData = this.indexKeys.reduce<ItemT[]>((acc, key) => {
       const dimension = this.getDimension(key);
       if (dimension) {
-        acc = [].concat(acc, dimension.getData());
+        acc = ([] as ItemT[]).concat(acc, dimension.getData());
       }
       return acc;
     }, []);
@@ -655,7 +661,9 @@ class ListGroupDimensions<
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      const changedType = (listDimensions as ListDimensionsModel).setData(data);
+      const changedType = (
+        listDimensions as ListDimensionsModel<ItemT>
+      ).setData(data);
 
       if (
         [
@@ -692,7 +700,7 @@ class ListGroupDimensions<
   getListData(listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions)
-      return (listDimensions as ListDimensionsModel).getData();
+      return (listDimensions as ListDimensionsModel<ItemT>).getData();
     return [];
   }
 
@@ -714,7 +722,7 @@ class ListGroupDimensions<
     if (dimension) {
       const containerOffset = exclusive ? 0 : this.getContainerOffset();
       return (
-        (dimension as ListDimensionsModel).getKeyItemOffset(itemKey) +
+        (dimension as ListDimensionsModel<ItemT>).getKeyItemOffset(itemKey) +
         containerOffset
       );
     }
@@ -726,7 +734,7 @@ class ListGroupDimensions<
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
       return (
-        (listDimensions as ListDimensionsModel).getKeyItemOffset(key) +
+        (listDimensions as ListDimensionsModel<ItemT>).getKeyItemOffset(key) +
         containerOffset
       );
     }
@@ -749,7 +757,7 @@ class ListGroupDimensions<
     return null;
   }
 
-  setFinalKeyMeta(itemKey: string, itemMeta: ItemMeta) {
+  setFinalKeyMeta(itemKey: string, itemMeta: ItemMeta<ItemT>) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions instanceof ListDimensionsModel)
       return dimensions.setKeyMeta(itemKey, itemMeta);
@@ -758,7 +766,7 @@ class ListGroupDimensions<
     return null;
   }
 
-  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta) {
+  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta<ItemT>) {
     const dimensions = this.getDimension(listKey);
     if (dimensions instanceof ListDimensionsModel)
       return dimensions.setKeyMeta(key, itemMeta);
@@ -778,7 +786,9 @@ class ListGroupDimensions<
   getKeyItemLayout(key: string, listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      return (listDimensions as ListDimensionsModel).getKeyItemLayout(key);
+      return (listDimensions as ListDimensionsModel<ItemT>).getKeyItemLayout(
+        key
+      );
     }
 
     return null;
@@ -787,14 +797,17 @@ class ListGroupDimensions<
   getFinalKeyItemLayout(itemKey: string) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions) {
-      return (dimensions as ListDimensionsModel).getKeyItemLayout(itemKey);
+      return (dimensions as ListDimensionsModel<ItemT>).getKeyItemLayout(
+        itemKey
+      );
     }
     return null;
   }
 
   getIndexItemLayout(index: number, listKey: string) {
     const key = this.getIndexKey(index, listKey);
-    return this.getKeyItemLayout(key, listKey);
+    if (key) return this.getKeyItemLayout(key, listKey);
+    return null;
   }
 
   setIndexItemLayout(index: number, listKey: string, layout: ItemLayout) {
@@ -846,7 +859,7 @@ class ListGroupDimensions<
         startIndex +
         (dimension instanceof Dimension
           ? 0
-          : Math.max((dimension as ListDimensionsModel).length - 1, 0));
+          : Math.max((dimension as ListDimensionsModel<ItemT>).length - 1, 0));
 
       if (isClamped(min, finalIndex, max)) {
         positionToken.dimensionKey = key;

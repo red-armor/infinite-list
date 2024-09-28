@@ -17,14 +17,14 @@ import {
   KeyExtractor,
   KeysChangedType,
   ListDimensionsModelProps,
-  ListDimensionsModelContainer,
+  ListGroupDimensionsModelContainer,
   FillingMode,
   GenericItemT,
 } from './types';
 
 class ListDimensionsModel<
   ItemT extends GenericItemT = GenericItemT
-> extends BaseDimensions {
+> extends BaseDimensions<ItemT> {
   private _data: Array<ItemT> = [];
   private _initialData: Array<ItemT> = [];
 
@@ -34,7 +34,7 @@ class ListDimensionsModel<
 
   private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
 
-  private _container: ListDimensionsModelContainer<ItemT>;
+  private _container: ListGroupDimensionsModelContainer<ItemT>;
   private _offsetInListGroup: number;
   private _anchorKey: string;
 

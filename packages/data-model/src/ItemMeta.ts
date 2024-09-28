@@ -9,6 +9,7 @@ import {
   ItemMetaProps,
   StateEventListener,
   ItemMetaStateEventHelperProps,
+  GenericItemT,
 } from './types';
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
@@ -17,11 +18,13 @@ import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 export const isValidMetaLayout = (meta: ItemMeta | null | undefined) =>
   !!(meta && !meta.isApproximateLayout && meta.getLayout());
 
+type ItemMetaContext<T extends GenericItemT = GenericItemT> = {
+  [key: string]: ItemMeta<T>;
+};
+
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
-export let context: {
-  [key: string]: ItemMeta;
-} = {};
+export let context: ItemMetaContext = {};
 
 let count = 0;
 
@@ -29,13 +32,15 @@ export const resetContext = () => {
   context = {};
 };
 
-class ItemMeta extends ViewabilityItemMeta {
+class ItemMeta<
+  ItemT extends GenericItemT = GenericItemT
+> extends ViewabilityItemMeta {
   private _isListItem: boolean;
   private _id: string;
   private _layout?: ItemLayout;
   private _separatorLength?: number;
   private _recyclerType: string;
-  private _owner: ItemMetaOwner;
+  private _owner: ItemMetaOwner<ItemT>;
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
   readonly getMetaOnViewableItemsChanged?: any;
@@ -47,7 +52,7 @@ class ItemMeta extends ViewabilityItemMeta {
     [key: string]: ItemMetaStateEventHelperProps;
   };
 
-  constructor(props: ItemMetaProps) {
+  constructor(props: ItemMetaProps<ItemT>) {
     super(props);
     const {
       owner,
@@ -87,7 +92,7 @@ class ItemMeta extends ViewabilityItemMeta {
     context[this.key] = this;
   }
 
-  static spawn(props: ItemMetaProps) {
+  static spawn<T extends GenericItemT = GenericItemT>(props: ItemMetaProps<T>) {
     const ancestor = context[props.key];
     if (ancestor) {
       const layout = ancestor.getLayout();

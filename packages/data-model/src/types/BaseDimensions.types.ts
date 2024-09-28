@@ -4,9 +4,11 @@ import {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from './viewable.types';
-import ListDimensions from '../ListDimensions';
-import ListDimensionsModel from '../ListDimensionsModel';
-import Dimension from '../Dimension';
+// import ListDimensions from '../ListDimensions';
+// import ListDimensionsModel from '../ListDimensionsModel';
+// import Dimension from '../Dimension';
+import { GenericItemT } from './generic.types';
+import { ListGroupDimensionsModelContainer } from './ListDimensionsModel.types';
 
 export interface BaseDimensionsProps extends BaseLayoutProps {
   ignoredToPerBatch?: boolean;
@@ -32,8 +34,8 @@ export enum KeysChangedType {
   'Idle' = 'idle',
 }
 
-export type IndexInfo = {
-  dimensions: ListDimensions | Dimension | ListDimensionsModel;
+export type IndexInfo<ItemT extends GenericItemT = GenericItemT> = {
+  dimensions: ListGroupDimensionsModelContainer<ItemT>;
   index: number;
   indexInGroup?: number;
   indexInRecycler?: number;

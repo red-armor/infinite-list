@@ -47,9 +47,9 @@ import ItemMeta from './ItemMeta';
 abstract class ListBaseDimensions<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseLayout {
-  private _stateListener: StateListener<ItemT>;
+  private _stateListener?: StateListener<ItemT>;
 
-  private _stateResult: ListStateResult<ItemT>;
+  private _stateResult?: ListStateResult<ItemT>;
 
   private _dispatchMetricsBatchinator: Batchinator;
 
@@ -250,7 +250,7 @@ abstract class ListBaseDimensions<
   abstract getReflowItemsLength(): number;
   abstract getFinalItemKey(item: any): string;
   abstract getFinalIndexItemMeta(index: number): ItemMeta | null | undefined;
-  abstract getFinalItemMeta(item: any): ItemMeta | null | undefined;
+  abstract getFinalItemMeta(item: any): ItemMeta<ItemT> | null | undefined;
   abstract getFinalIndexItemLength(index: number): number;
   abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean): number;
   abstract getFinalIndexKeyBottomOffset(index: number): number;

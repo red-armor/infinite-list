@@ -18,7 +18,7 @@ const initialize = <State extends ReducerResult = ReducerResult>(
   hydrateOnEndReached(state, payload, ctx);
   fixVisibleRange(state, payload, ctx);
   fixInitialBufferedRange(state, payload, ctx);
-  resolveInitialState(state, payload, ctx);
+  resolveInitialState(state, payload);
 
   const {
     visibleIndexRange,

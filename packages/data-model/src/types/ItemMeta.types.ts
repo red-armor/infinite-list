@@ -1,8 +1,10 @@
 import { ItemLayout } from './BaseLayout.types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
-import ItemsDimensions from '../ItemsDimensions';
-import PseudoListDimensions from '../PseudoListDimensions';
+// import ItemsDimensions from '../ItemsDimensions';
+// import PseudoListDimensions from '../PseudoListDimensions';
+import { GenericItemT } from './generic.types';
+// import ListGroupDimensions from '../ListGroupDimensions';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 
@@ -26,13 +28,13 @@ export type ItemMetaState = {
   [key: string]: boolean;
 };
 
-export type ItemMetaOwner =
-  | ListDimensionsModel
-  | Dimension
-  | ItemsDimensions
-  | PseudoListDimensions;
+export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
+  // | ListGroupDimensions<ItemT>
+  ListDimensionsModel<ItemT> | Dimension<ItemT>;
+// | ItemsDimensions
+// | PseudoListDimensions;
 
-export type ItemMetaProps = {
+export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   /**
    * indicate including separatorLength on return item length
    */
@@ -42,7 +44,7 @@ export type ItemMetaProps = {
   key: string;
   separatorLength?: number;
   layout?: ItemLayout;
-  owner: ItemMetaOwner;
+  owner: ItemMetaOwner<ItemT>;
   isListItem?: boolean;
   setState?: Function;
   state?: ItemMetaState;

@@ -6,15 +6,18 @@ import {
   BaseDimensionsProps,
   BoundInfo,
   BoundInfoType,
+  GenericItemT,
   ItemLayout,
   KeysChangedType,
   ScrollMetrics,
 } from './types';
 
-abstract class BaseDimensions extends BaseLayout {
+abstract class BaseDimensions<
+  ItemT extends GenericItemT = GenericItemT
+> extends BaseLayout {
   _keyToIndexMap: Map<string, number> = new Map();
   _indexKeys: Array<string> = [];
-  _keyToMetaMap: Map<string, ItemMeta> = new Map();
+  _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
   _configTuple: ViewabilityConfigTuples;
 
   _onUpdateItemLayout?: Function;
@@ -121,11 +124,11 @@ abstract class BaseDimensions extends BaseLayout {
     return this._getKeyMeta(key);
   }
 
-  _setKeyMeta(key: string, meta: ItemMeta) {
+  _setKeyMeta(key: string, meta: ItemMeta<ItemT>) {
     return this._keyToMetaMap.set(key, meta);
   }
 
-  setKeyMeta(key: string, meta: ItemMeta) {
+  setKeyMeta(key: string, meta: ItemMeta<ItemT>) {
     return this._setKeyMeta(key, meta);
   }
 
