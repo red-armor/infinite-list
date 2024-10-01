@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { ItemProps } from './types';
+import { RecycleItemProps } from './types';
 
-const Item = (props: ItemProps) => {
+const RecycleItem = (props: RecycleItemProps) => {
   const { data, dimensions, renderItem: RenderItem } = props;
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, offset } = data;
@@ -14,15 +14,16 @@ const Item = (props: ItemProps) => {
         right: 0,
       };
   }, [offset]);
-  const itemMetaRef = useRef(itemMeta);
 
   useEffect(() => {
     const rect = itemRef.current?.getBoundingClientRect();
     if (rect) {
       const { height } = rect;
-      dimensions.setFinalKeyItemLayout(itemMetaRef.current.getKey(), height);
+      console.log('======', itemMeta, itemMeta?.getKey(), rect?.height);
+
+      if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), height);
     }
-  }, []);
+  }, [itemMeta]);
 
   return (
     <div ref={itemRef} key={key} style={style}>
@@ -31,4 +32,4 @@ const Item = (props: ItemProps) => {
   );
 };
 
-export default Item;
+export default RecycleItem;

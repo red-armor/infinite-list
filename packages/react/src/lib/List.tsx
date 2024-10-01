@@ -1,7 +1,15 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useCallback,
+  UIEventHandler,
+} from 'react';
 import { ListProps } from './types';
 import { ListDimensions } from '@infinite-list/data-model';
-import Item from './Item';
+import RecycleItem from './RecycleItem';
+import SpaceItem from './SpaceItem';
 
 const List = (props: ListProps) => {
   const { renderItem } = props;
@@ -39,12 +47,30 @@ const List = (props: ListProps) => {
     }
   }, []);
 
-  console.log('stae =', state);
+  const onScrollHandler: UIEventHandler<HTMLDivElement> = useCallback(() => {
+    if (listRef.current) {
+      listModel.updateScrollMetrics({
+        offset: listRef.current?.scrollTop,
+        visibleLength: listRef.current?.clientHeight,
+        contentLength: listRef.current?.scrollHeight,
+      });
+    }
+  }, []);
+
+  console.log('state ==== ', state);
 
   return (
-    <div ref={listRef} style={style.container}>
+    <div ref={listRef} style={style.container} onScroll={onScrollHandler}>
       {state.recycleState.map((data) => (
-        <Item
+        <RecycleItem
+          key={data.key}
+          data={data}
+          renderItem={renderItem}
+          dimensions={listModel}
+        />
+      ))}
+      {state.spaceState.map((data) => (
+        <SpaceItem
           key={data.key}
           data={data}
           renderItem={renderItem}

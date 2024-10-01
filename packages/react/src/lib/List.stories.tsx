@@ -22,6 +22,7 @@ const meta: Meta<typeof List> = {
           id="basic"
           initialNumToRender={4}
           data={buildData(100)}
+          recyclerBufferSize={20}
           renderItem={(props) => {
             const { item } = props;
             return (
@@ -31,6 +32,7 @@ const meta: Meta<typeof List> = {
                   width: '100%',
                   backgroundColor: '#efdbff',
                   paddingBottom: '5px',
+                  boxSizing: 'border-box',
                 }}
               >
                 {item.key}
