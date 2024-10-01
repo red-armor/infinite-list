@@ -295,6 +295,10 @@ abstract class BaseImpl<
     return this._stillnessHelper.isStill;
   }
 
+  getStateResult() {
+    return this.stateResult;
+  }
+
   get stateResult() {
     return this._stateHub.stateResult;
   }

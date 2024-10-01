@@ -7,6 +7,7 @@ export { default as PseudoListDimensions } from './PseudoListDimensions';
 export { default as ItemMetaExperimental } from './ItemMeta';
 
 export { default as ListSpyUtils } from './utils/ListSpyUtils';
+export * from './exportedUtils';
 
 export * from './viewable/viewabilityUtils';
 export * from './exportedUtils';

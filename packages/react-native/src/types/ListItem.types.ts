@@ -1,7 +1,7 @@
 import {
   ItemMeta,
   ListGroupDimensionsExperimental,
-  ListDimensionsExperimental,
+  ListDimensions,
 } from '@infinite-list/data-model';
 import React, { ForwardedRef } from 'react';
 import { ViewStyle, LayoutChangeEvent } from 'react-native';
@@ -35,7 +35,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   itemMeta: ItemMeta;
 
-  dimensions: ListGroupDimensionsExperimental | ListDimensionsExperimental;
+  dimensions: ListGroupDimensionsExperimental | ListDimensions;
 
   withWrapper?: boolean;
   onLayout?: OnLayout;

@@ -90,6 +90,9 @@ importers:
       '@types/react-dom':
         specifier: 18.3.0
         version: 18.3.0
+      '@types/react-native':
+        specifier: ^0.73.0
+        version: 0.73.0(@babel/core@7.25.2)(@types/react@18.3.1)(react@18.3.1)(typescript@5.5.4)
       '@vitejs/plugin-react':
         specifier: ^4.2.0
         version: 4.3.1(vite@5.4.8(@types/node@18.16.9)(terser@5.33.0))
@@ -12266,6 +12269,15 @@ snapshots:
     optionalDependencies:
       '@types/react': 17.0.82
 
+  '@react-native/virtualized-lists@0.75.3(@types/react@18.3.1)(react-native@0.75.3(@babel/core@7.25.2)(@types/react@18.3.1)(react@18.3.1)(typescript@5.5.4))(react@18.3.1)':
+    dependencies:
+      invariant: 2.2.4
+      nullthrows: 1.1.1
+      react: 18.3.1
+      react-native: 0.75.3(@babel/core@7.25.2)(@types/react@18.3.1)(react@18.3.1)(typescript@5.5.4)
+    optionalDependencies:
+      '@types/react': 18.3.1
+
   '@rollup/plugin-babel@5.3.1(@babel/core@7.25.2)(@types/babel__core@7.20.5)(rollup@1.32.1)':
     dependencies:
       '@babel/core': 7.25.2
@@ -13298,6 +13310,20 @@ snapshots:
   '@types/react-native@0.73.0(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@17.0.82)(react@18.3.1)(typescript@5.5.4)':
     dependencies:
       react-native: 0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@17.0.82)(react@18.3.1)(typescript@5.5.4)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/preset-env'
+      - '@types/react'
+      - bufferutil
+      - encoding
+      - react
+      - supports-color
+      - typescript
+      - utf-8-validate
+
+  '@types/react-native@0.73.0(@babel/core@7.25.2)(@types/react@18.3.1)(react@18.3.1)(typescript@5.5.4)':
+    dependencies:
+      react-native: 0.75.3(@babel/core@7.25.2)(@types/react@18.3.1)(react@18.3.1)(typescript@5.5.4)
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
@@ -17563,7 +17589,10 @@ snapshots:
       pretty-format: 25.5.0
       throat: 5.0.0
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - utf-8-validate
 
   jest-junit@14.0.1:
     dependencies:
@@ -19798,6 +19827,59 @@ snapshots:
       yargs: 17.7.2
     optionalDependencies:
       '@types/react': 17.0.82
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@babel/preset-env'
+      - bufferutil
+      - encoding
+      - supports-color
+      - typescript
+      - utf-8-validate
+
+  react-native@0.75.3(@babel/core@7.25.2)(@types/react@18.3.1)(react@18.3.1)(typescript@5.5.4):
+    dependencies:
+      '@jest/create-cache-key-function': 29.7.0
+      '@react-native-community/cli': 14.1.0(typescript@5.5.4)
+      '@react-native-community/cli-platform-android': 14.1.0
+      '@react-native-community/cli-platform-ios': 14.1.0
+      '@react-native/assets-registry': 0.75.3
+      '@react-native/codegen': 0.75.3(@babel/preset-env@7.25.4(@babel/core@7.25.2))
+      '@react-native/community-cli-plugin': 0.75.3(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))
+      '@react-native/gradle-plugin': 0.75.3
+      '@react-native/js-polyfills': 0.75.3
+      '@react-native/normalize-colors': 0.75.3
+      '@react-native/virtualized-lists': 0.75.3(@types/react@18.3.1)(react-native@0.75.3(@babel/core@7.25.2)(@types/react@18.3.1)(react@18.3.1)(typescript@5.5.4))(react@18.3.1)
+      abort-controller: 3.0.0
+      anser: 1.4.10
+      ansi-regex: 5.0.1
+      base64-js: 1.5.1
+      chalk: 4.1.2
+      commander: 9.5.0
+      event-target-shim: 5.0.1
+      flow-enums-runtime: 0.0.6
+      glob: 7.2.3
+      invariant: 2.2.4
+      jest-environment-node: 29.7.0
+      jsc-android: 250231.0.0
+      memoize-one: 5.2.1
+      metro-runtime: 0.80.12
+      metro-source-map: 0.80.12
+      mkdirp: 0.5.6
+      nullthrows: 1.1.1
+      pretty-format: 26.6.2
+      promise: 8.3.0
+      react: 18.3.1
+      react-devtools-core: 5.3.1
+      react-refresh: 0.14.2
+      regenerator-runtime: 0.13.11
+      scheduler: 0.24.0-canary-efb381bbf-20230505
+      semver: 7.6.3
+      stacktrace-parser: 0.1.10
+      whatwg-fetch: 3.6.20
+      ws: 6.2.3
+      yargs: 17.7.2
+    optionalDependencies:
+      '@types/react': 18.3.1
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
