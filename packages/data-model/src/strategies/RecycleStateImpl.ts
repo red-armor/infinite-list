@@ -42,7 +42,7 @@ class RecycleStateImpl<
       listContainer: props.listContainer,
     });
     const {
-      recyclerTypes,
+      recyclerTypes = [DEFAULT_RECYCLER_TYPE],
       recyclerBufferSize,
       recyclerReservedBufferPerBatch,
 
