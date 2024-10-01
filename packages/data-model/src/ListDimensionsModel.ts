@@ -18,9 +18,9 @@ import {
   KeysChangedType,
   ListDimensionsModelProps,
   ListDimensionsModelContainer,
-  FillingMode,
   GenericItemT,
 } from './types';
+import * as log from './utils/logger';
 
 class ListDimensionsModel<
   ItemT extends GenericItemT = GenericItemT
@@ -228,10 +228,10 @@ class ListDimensionsModel<
     if (this._container) this._container.onItemLayoutChanged();
   }
 
-  _recycleEnabled() {
-    if (this.fillingMode !== FillingMode.RECYCLE) return false;
-    return this.getReflowItemsLength() >= this.initialNumToRender;
-  }
+  // _recycleEnabled() {
+  //   if (this.fillingMode !== FillingMode.RECYCLE) return false;
+  //   return this.getReflowItemsLength() >= this.initialNumToRender;
+  // }
 
   // 一旦当前的length 发生了变化，判断一下自己总的高度是否变化，如果
   // 变了，那么就去更新
@@ -418,7 +418,7 @@ class ListDimensionsModel<
   computeIndexRange(minOffset: number, maxOffset: number) {
     const result = this.intervalTree.computeRange(minOffset, maxOffset);
 
-    console.log(
+    log.info(
       'computeIndexRange result ',
       this.intervalTree.getHeap()[1],
       result

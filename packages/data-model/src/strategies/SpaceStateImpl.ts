@@ -2,32 +2,30 @@ import memoizeOne from 'memoize-one';
 
 import { buildStateTokenIndexKey } from '../common';
 import {
-  ListBaseDimensionsProps,
   ListState,
   GenericItemT,
   SpaceStateResult,
   StateListener,
+  SpaceStateImplProps,
 } from '../types';
-
-import BaseImpl from './BaseImpl';
+import BaseState from './BaseState';
 
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
-class SpaceImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
+class SpaceStateImpl<
+  ItemT extends GenericItemT = GenericItemT
+> extends BaseState<ItemT> {
   private _stateResult?: SpaceStateResult<ItemT>;
 
   private memoizedResolveSpaceState: (
     state: ListState
   ) => SpaceStateResult<ItemT>;
 
-  constructor(props: ListBaseDimensionsProps) {
-    super({
-      ...props,
-      recycleEnabled: true,
-    });
+  constructor(props: SpaceStateImplProps<ItemT>) {
+    super(props);
 
     this.memoizedResolveSpaceState = memoizeOne(
       this.resolveSpaceState.bind(this)
@@ -52,6 +50,10 @@ class SpaceImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
       ...stateResult,
       rangeState: stateResult.rangeState,
     };
+  }
+
+  getStateResult() {
+    return this._stateResult;
   }
 
   setState(state: ListState, force = false) {
@@ -196,4 +198,4 @@ class SpaceImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
   }
 }
 
-export default SpaceImpl;
+export default SpaceStateImpl;

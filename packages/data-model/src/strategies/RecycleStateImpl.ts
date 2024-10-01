@@ -2,32 +2,30 @@ import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import memoizeOne from 'memoize-one';
 import { buildStateTokenIndexKey, DEFAULT_RECYCLER_TYPE } from '../common';
 import {
-  ListBaseDimensionsProps,
   ListState,
-  FillingMode,
   RecycleStateResult,
   RecycleRecycleState,
   GenericItemT,
   StateListener,
   SpaceStateResult,
+  RecycleStateImplProps,
 } from '../types';
 import ItemMeta from '../ItemMeta';
-import BaseImpl from './BaseImpl';
 import { resolveToken } from './utils';
+import BaseState from './BaseState';
 
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
-abstract class RecycleImpl<
+class RecycleStateImpl<
   ItemT extends GenericItemT = GenericItemT
-> extends BaseImpl<ItemT> {
+> extends BaseState<ItemT> {
   private _onRecyclerProcess?: OnRecyclerProcess;
+  public stateListener?: StateListener<ItemT>;
 
   private _recycler: Recycler<ItemMeta<ItemT>>;
-
-  private _releaseSpaceStateItem: boolean;
 
   private _stateResult: RecycleStateResult<ItemT> = {
     recycleState: [],
@@ -39,10 +37,9 @@ abstract class RecycleImpl<
     state: ListState
   ) => RecycleStateResult<ItemT>;
 
-  constructor(props: ListBaseDimensionsProps) {
+  constructor(props: RecycleStateImplProps) {
     super({
-      ...props,
-      recycleEnabled: true,
+      listContainer: props.listContainer,
     });
     const {
       recyclerTypes,
@@ -50,12 +47,10 @@ abstract class RecycleImpl<
       recyclerReservedBufferPerBatch,
 
       onRecyclerProcess,
-
-      releaseSpaceStateItem = false,
     } = props;
 
     this._onRecyclerProcess = onRecyclerProcess;
-    this._releaseSpaceStateItem = releaseSpaceStateItem;
+    // this._releaseSpaceStateItem = releaseSpaceStateItem;
 
     this._recycler = new Recycler<ItemMeta<ItemT>>({
       // the following is appended with setting default recyclerType
@@ -64,16 +59,16 @@ abstract class RecycleImpl<
       /**
        * set recycle start item
        */
-      thresholdIndexValue: this.initialNumToRender,
+      thresholdIndexValue: this.listContainer.initialNumToRender,
       recyclerReservedBufferPerBatch,
-      metaExtractor: (index) => this.getFinalIndexItemMeta(index),
+      metaExtractor: (index) => this.listContainer.getFinalIndexItemMeta(index),
       indexExtractor: (meta) => {
         const indexInfo = meta.getIndexInfo();
         return indexInfo?.indexInGroup || indexInfo.index;
       },
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) =>
-        this.getFinalIndexItemMeta(index)?.recyclerType ||
+        this.listContainer.getFinalIndexItemMeta(index)?.recyclerType ||
         DEFAULT_RECYCLER_TYPE,
     });
     // default recyclerTypes should be set immediately
@@ -92,10 +87,10 @@ abstract class RecycleImpl<
     this._recycler.addBuffer(recyclerType);
   }
 
-  _recycleEnabled() {
-    if (this.fillingMode !== FillingMode.RECYCLE) return false;
-    return this.getReflowItemsLength() >= this.initialNumToRender;
-  }
+  // _recycleEnabled() {
+  //   if (this.fillingMode !== FillingMode.RECYCLE) return false;
+  //   return this.getReflowItemsLength() >= this.initialNumToRender;
+  // }
 
   addStateListener(listener: StateListener<ItemT>) {
     if (typeof listener === 'function') this.stateListener = listener;
@@ -175,6 +170,10 @@ abstract class RecycleImpl<
     this.applyStateResult(stateResult);
   }
 
+  getStateResult() {
+    return this._stateResult;
+  }
+
   resolveSafeRange(props: {
     visibleStartIndex: number;
     visibleEndIndex: number;
@@ -187,43 +186,43 @@ abstract class RecycleImpl<
     };
   }
 
-  resolveSiblingOffset(props: {
-    startIndex: number;
-    step: number;
-    max: number;
-    itemLength: number;
-    offsetMap: {
-      [key: number]: number;
-    };
-  }) {
-    const { startIndex, step = -1, max = 1, offsetMap, itemLength } = props;
-    let siblingLength = 0;
-    for (let idx = 0; idx < max; idx++) {
-      const index = startIndex + step * idx;
-      const meta = this.getFinalIndexItemMeta(index);
-      const length = meta?.getFinalItemLength() || 0;
-      if (meta && !meta?.isApproximateLayout) {
-        const offset =
-          offsetMap[index] != null
-            ? offsetMap[index]
-            : this.getFinalIndexKeyOffset(index) || 0;
-        return (
-          offset +
-          siblingLength * (step > 0 ? -1 : 1) +
-          length * (step > 0 ? 0 : 1) -
-          itemLength * (step > 0 ? 1 : 0)
-        );
-      }
+  // resolveSiblingOffset(props: {
+  //   startIndex: number;
+  //   step: number;
+  //   max: number;
+  //   itemLength: number;
+  //   offsetMap: {
+  //     [key: number]: number;
+  //   };
+  // }) {
+  //   const { startIndex, step = -1, max = 1, offsetMap, itemLength } = props;
+  //   let siblingLength = 0;
+  //   for (let idx = 0; idx < max; idx++) {
+  //     const index = startIndex + step * idx;
+  //     const meta = this.getFinalIndexItemMeta(index);
+  //     const length = meta?.getFinalItemLength() || 0;
+  //     if (meta && !meta?.isApproximateLayout) {
+  //       const offset =
+  //         offsetMap[index] != null
+  //           ? offsetMap[index]
+  //           : this.getFinalIndexKeyOffset(index) || 0;
+  //       return (
+  //         offset +
+  //         siblingLength * (step > 0 ? -1 : 1) +
+  //         length * (step > 0 ? 0 : 1) -
+  //         itemLength * (step > 0 ? 1 : 0)
+  //       );
+  //     }
 
-      siblingLength += length;
-    }
-    return this.itemOffsetBeforeLayoutReady;
-  }
+  //     siblingLength += length;
+  //   }
+  //   return this.itemOffsetBeforeLayoutReady;
+  // }
 
   resolveRecycleRecycleState(state: ListState) {
     const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
     const recycleRecycleStateResult: RecycleRecycleState<ItemT> = [];
-    const velocity = this._scrollMetrics?.velocity || 0;
+    const velocity = this.listContainer._scrollMetrics?.velocity || 0;
 
     const visibleStartIndex = Math.max(
       _visibleStartIndex,
@@ -279,7 +278,7 @@ abstract class RecycleImpl<
     const maxValue = this._recycler.getMaxValue();
 
     // maybe should split by recyclerType
-    const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
+    const indexToOffsetMap = this.listContainer.getFinalIndexRangeOffsetMap(
       minValue,
       maxValue,
       true
@@ -290,14 +289,15 @@ abstract class RecycleImpl<
       .filter((v) => v)
       .forEach((info) => {
         const { meta: itemMeta, targetIndex, recyclerKey } = info;
-        const item = this.getData()[targetIndex];
+        const item = this.listContainer.getData()[targetIndex];
 
         if (indexToOffsetMap[targetIndex] != null) {
-          const itemMetaState = this._configTuple.resolveItemMetaState(
-            itemMeta,
-            this._scrollMetrics,
-            () => indexToOffsetMap[targetIndex]
-          );
+          const itemMetaState =
+            this.listContainer._configTuple.resolveItemMetaState(
+              itemMeta,
+              this.listContainer._scrollMetrics,
+              () => indexToOffsetMap[targetIndex]
+            );
 
           itemMeta?.setItemMetaState(itemMetaState);
         }
@@ -325,17 +325,19 @@ abstract class RecycleImpl<
   }
 
   resolveRecycleSpaceState() {
-    const nextData = this._data.slice(0, this.initialNumToRender);
+    const nextData = this.listContainer
+      .getData()
+      .slice(0, this.listContainer.initialNumToRender);
     const spaceState: SpaceStateResult<ItemT> = [];
-    const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
+    const indexToOffsetMap = this.listContainer.getFinalIndexRangeOffsetMap(
       0,
-      this.initialNumToRender - 1,
+      this.listContainer.initialNumToRender - 1,
       true
     );
 
     for (let targetIndex = 0; targetIndex < nextData.length; targetIndex++) {
-      const item = this._data[targetIndex];
-      const itemMeta = this.getFinalItemMeta(item);
+      const item = this.listContainer.getData()[targetIndex];
+      const itemMeta = this.listContainer.getFinalItemMeta(item);
       if (itemMeta) {
         spaceState.push({
           item,
@@ -344,31 +346,32 @@ abstract class RecycleImpl<
           key: itemMeta.getKey(),
           isSticky: false,
           isReserved: true,
-          length: this.getFinalIndexItemLength(targetIndex),
+          length: this.listContainer.getFinalIndexItemLength(targetIndex),
         });
         if (indexToOffsetMap[targetIndex] != null) {
-          const itemMetaState = this._configTuple.resolveItemMetaState(
-            itemMeta,
-            this._scrollMetrics,
-            () => indexToOffsetMap[targetIndex]
-          );
+          const itemMetaState =
+            this.listContainer._configTuple.resolveItemMetaState(
+              itemMeta,
+              this.listContainer._scrollMetrics,
+              () => indexToOffsetMap[targetIndex]
+            );
           itemMeta?.setItemMetaState(itemMetaState);
         }
       }
     }
     const afterTokens = resolveToken({
-      startIndex: this.initialNumToRender,
-      endIndex: this._data.length - 1,
-      reservedIndices: this.reservedIndices,
-      stickyHeaderIndices: this.stickyHeaderIndices,
-      persistanceIndices: this.persistanceIndices,
+      startIndex: this.listContainer.initialNumToRender,
+      endIndex: this.listContainer.getData().length - 1,
+      reservedIndices: this.listContainer.reservedIndices,
+      stickyHeaderIndices: this.listContainer.stickyHeaderIndices,
+      persistanceIndices: this.listContainer.persistanceIndices,
     });
 
     afterTokens.forEach((token) => {
       const { isSticky, isReserved, startIndex, endIndex } = token;
       if (isSticky || isReserved) {
-        const item = this._data[startIndex];
-        const itemMeta = this.getFinalItemMeta(item);
+        const item = this.listContainer.getData()[startIndex];
+        const itemMeta = this.listContainer.getFinalItemMeta(item);
         spaceState.push({
           item,
           isSpace: false,
@@ -376,12 +379,14 @@ abstract class RecycleImpl<
           itemMeta,
           isSticky,
           isReserved,
-          length: this.getFinalIndexItemLength(startIndex),
+          length: this.listContainer.getFinalIndexItemLength(startIndex),
         });
       } else {
-        const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
+        const startIndexOffset =
+          this.listContainer.getFinalIndexKeyOffset(startIndex);
         // should plus 1, use list total length
-        const endIndexOffset = this.getFinalIndexKeyBottomOffset(endIndex);
+        const endIndexOffset =
+          this.listContainer.getFinalIndexKeyBottomOffset(endIndex);
         spaceState.push({
           item: null,
           isSpace: true,
@@ -398,4 +403,4 @@ abstract class RecycleImpl<
   }
 }
 
-export default RecycleImpl;
+export default RecycleStateImpl;

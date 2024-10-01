@@ -9,12 +9,10 @@ import {
 } from '../common';
 import {
   ListBaseDimensionsProps,
-  ListState,
   OnEndReached,
   ScrollMetrics,
-  StateListener,
-  ListStateResult,
   ItemLayout,
+  StateListener,
   ListBaseDimensionsStore,
   GenericItemT,
   IndexInfo,
@@ -27,6 +25,7 @@ import StillnessHelper from '../utils/StillnessHelper';
 import ViewabilityConfigTuples from '../viewable/ViewabilityConfigTuples';
 import ItemMeta from '../ItemMeta';
 import BaseLayout from '../BaseLayout';
+import StateHub from './StateHub';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -35,15 +34,12 @@ import BaseLayout from '../BaseLayout';
  */
 abstract class BaseImpl<
   ItemT extends GenericItemT = GenericItemT
-  // StateResultT extends ListStateResult = ListStateResult
 > extends BaseLayout {
-  public stateListener?: StateListener<ItemT>;
-
-  // private _stateResult?: ListStateResult<ItemT>;
-
   private _dispatchMetricsBatchinator: Batchinator;
 
   private _onEndReachedThreshold: number;
+
+  private _stateHub: StateHub<ItemT>;
 
   private _store: ListBaseDimensionsStore;
 
@@ -81,6 +77,14 @@ abstract class BaseImpl<
       maxCountOfHandleOnEndReachedAfterStillness,
     } = props;
     this._store = store;
+    this._stateHub = new StateHub<ItemT>({
+      listContainer: this,
+      recyclerTypes: props.recyclerTypes,
+      // recycleEnabled,
+      onRecyclerProcess: props.onRecyclerProcess,
+      recyclerBufferSize: props.recyclerBufferSize,
+      recyclerReservedBufferPerBatch: props.recyclerReservedBufferPerBatch,
+    });
 
     this._onEndReachedThreshold = onEndReachedThreshold;
     this.stillnessHandler = this.stillnessHandler.bind(this);
@@ -149,6 +153,10 @@ abstract class BaseImpl<
     this.onEndReachedHelper?.removeHandler(onEndReached);
   }
 
+  addBuffer(type: string) {
+    this._stateHub.addBuffer(type);
+  }
+
   getOnEndReachedHelper() {
     return this.onEndReachedHelper;
   }
@@ -213,28 +221,6 @@ abstract class BaseImpl<
   abstract onDataSourceChanged(): void;
   abstract onItemLayoutChanged(): void;
 
-  /**
-   *
-   * @param state
-   * @param force
-   *
-   * Pay attention if you want to compare state first, then decide setState or not..
-   * There is a condition the old and new stat are same, but item meta info changed
-   * such as approximateLayout props change, then the list should rerun
-   *
-   */
-  abstract setState(state: ListState, force?: boolean): void;
-
-  /**
-   *
-   * @param stateResult
-   *
-   * callback function to passing to resolved state to UI Component
-   */
-  abstract applyStateResult(stateResult: ListStateResult<ItemT>): void;
-
-  abstract getStateResult(): ListStateResult<ItemT>;
-
   hasUnLayoutItems() {
     return this.getReflowItemsLength() < this._data.length;
   }
@@ -256,12 +242,14 @@ abstract class BaseImpl<
     return this._configTuple.getDefaultState(defaultValue);
   }
 
-  // addStateListener(listener: StateListener<ItemT>) {
-  //   if (typeof listener === 'function') this.stateListener = listener;
-  //   return () => {
-  //     if (typeof listener === 'function') this.stateListener = undefined;
-  //   };
-  // }
+  addStateListener(listener: StateListener<ItemT>) {
+    this._stateHub.addStateListener(listener);
+
+    // if (typeof listener === 'function') this.stateListener = listener;
+    // return () => {
+    //   if (typeof listener === 'function') this.stateListener = undefined;
+    // };
+  }
 
   dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
@@ -270,7 +258,7 @@ abstract class BaseImpl<
       scrollMetrics,
     });
     if (isEmpty(state)) return state;
-    this.setState({ ...state });
+    this._stateHub.setState({ ...state });
 
     return state;
   }

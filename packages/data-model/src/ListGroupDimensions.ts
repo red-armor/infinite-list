@@ -21,7 +21,7 @@ import {
   ListGroupChildDimensions,
   IndexToOffsetMap,
 } from './types';
-import ListBaseDimensions from './ListBaseDimensions';
+import BaseImpl from './strategies/BaseImpl';
 import Inspector from './Inspector';
 import { info } from './utils/logger';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
@@ -37,7 +37,7 @@ import createStore from './state/createStore';
  */
 class ListGroupDimensions<
   ItemT extends GenericItemT = GenericItemT
-> extends ListBaseDimensions<ItemT> {
+> extends BaseImpl<ItemT> {
   private keyToListDimensionsMap = new Map<
     string,
     ListGroupChildDimensions<ItemT>
@@ -473,7 +473,7 @@ class ListGroupDimensions<
 
     dimensions.applyInitialData();
 
-    let onEndReachedCleaner = null;
+    let onEndReachedCleaner;
 
     if (listDimensionsProps.onEndReached) {
       onEndReachedCleaner = this.addOnEndReached(
@@ -892,10 +892,10 @@ class ListGroupDimensions<
     const endDimensionIndex = this.indexKeys.findIndex(
       (key) => key === endPosition.dimensionKey
     );
-    const result = [];
+    const result: ListRangeResult<ItemT> = [];
 
     for (let index = startDimensionIndex; index <= endDimensionIndex; index++) {
-      const currentValues = [];
+      const currentValues: ItemMeta<ItemT>[] = [];
       const range = {
         startIndex: -1,
         endIndex: -1,

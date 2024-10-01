@@ -1,4 +1,4 @@
-import ListBaseDimensions from './ListBaseDimensions';
+import BaseImpl from './strategies/BaseImpl';
 import ListDimensionsModel from './ListDimensionsModel';
 import createStore from './state/createStore';
 import {
@@ -12,7 +12,7 @@ import {
 
 class ListDimensions<
   ItemT extends GenericItemT = GenericItemT
-> extends ListBaseDimensions<ItemT> {
+> extends BaseImpl<ItemT> {
   private _dataModel: ListDimensionsModel<ItemT>;
 
   constructor(
