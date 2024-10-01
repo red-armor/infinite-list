@@ -180,6 +180,20 @@ abstract class BaseImpl<
     info: ItemLayout | number,
     updateIntervalTree?: boolean
   ): boolean;
+  /**
+   *
+   * @param startIndex
+   * @param endIndex
+   * @param exclusive
+   *
+   * on calculate offset, the startIndex offset is get directly from intervalTree.
+   * However its consecutive item's offset should make by its itemMeta.isApproximateLayout
+   *
+   * if itemMeta.isApproximateLayout is true, then its offset should be
+   * `itemOffsetBeforeLayoutReady` and its length should not be included in
+   * consecutive item's offset sum value
+   *
+   */
   abstract getFinalIndexRangeOffsetMap(
     startIndex: number,
     endIndex: number,

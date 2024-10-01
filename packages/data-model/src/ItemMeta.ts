@@ -209,11 +209,19 @@ class ItemMeta<
     return this._layout ? selectValue.selectOffset(this._layout) : 0;
   }
 
+  /**
+   *
+   * @param state
+   * @returns
+   *
+   * trigger state change listener, such as viewable / impression
+   */
   setItemMetaState(
     state: {
       [key: string]: boolean;
     } = {}
   ) {
+    if (state === this._state) return;
     Object.keys({ ...state }).forEach((key) => {
       const helper = this._stateEventSubscriptions.get(key);
       const currentValue = state[key];

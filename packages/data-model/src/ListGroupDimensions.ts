@@ -239,14 +239,16 @@ class ListGroupDimensions<
     const indexToOffsetMap: IndexToOffsetMap = {};
     let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
     for (let index = startIndex; index <= endIndex; index++) {
-      indexToOffsetMap[index] = startOffset;
       const itemMeta = this.getFinalIndexItemMeta(index);
-      if (itemMeta) {
+      if (!itemMeta) continue;
+
+      indexToOffsetMap[index] = startOffset;
+
+      if (itemMeta?.isApproximateLayout) {
+        indexToOffsetMap[index] = this.itemOffsetBeforeLayoutReady;
+      } else {
+        indexToOffsetMap[index] = startOffset;
         startOffset += itemMeta?.getFinalItemLength();
-        // // @ts-ignore
-        // startOffset +=
-        //   (itemMeta?.getLayout()?.height || 0) +
-        //   (itemMeta?.getSeparatorLength() || 0);
       }
     }
     return indexToOffsetMap;

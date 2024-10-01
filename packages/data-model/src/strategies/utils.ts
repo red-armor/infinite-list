@@ -1,7 +1,13 @@
-import { SpaceStateTokenPosition, SpaceStateToken } from '../types';
+import {
+  SpaceStateTokenPosition,
+  SpaceStateToken,
+  GenericItemT,
+} from '../types';
 import isClamped from '@x-oasis/is-clamped';
 
-export const createSpaceStateToken = <ItemT>(
+export const createSpaceStateToken = <
+  ItemT extends GenericItemT = GenericItemT
+>(
   options?: Partial<SpaceStateToken<ItemT>>
 ) => {
   return {

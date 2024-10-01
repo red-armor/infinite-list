@@ -108,11 +108,12 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
 
   resolveItemMetaState(
     itemMeta: ItemMeta<ItemT>,
-    viewabilityScrollMetrics: ViewabilityScrollMetrics,
+    viewabilityScrollMetrics?: ViewabilityScrollMetrics,
     getItemOffset?: (itemMeta: ItemMeta<ItemT> | ViewabilityItemMeta) => number
   ) {
-    if (!viewabilityScrollMetrics || !itemMeta) return {};
-    if (!itemMeta.getLayout()) return {};
+    if (!viewabilityScrollMetrics || !itemMeta)
+      return itemMeta.getState() || {};
+    if (!itemMeta.getLayout()) return itemMeta?.getState() || {};
     return this.viewabilityHelpers.reduce<{
       [key: string]: boolean;
     }>((value, helper) => {

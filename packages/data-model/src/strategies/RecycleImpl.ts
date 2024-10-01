@@ -1,4 +1,4 @@
-import Recycler, { OnRecyclerProcess, IndicesItem } from '@x-oasis/recycler';
+import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import memoizeOne from 'memoize-one';
 import { buildStateTokenIndexKey, DEFAULT_RECYCLER_TYPE } from '../common';
 import {
@@ -8,8 +8,8 @@ import {
   RecycleStateResult,
   RecycleRecycleState,
   GenericItemT,
-  IndexToOffsetMap,
   StateListener,
+  SpaceStateResult,
 } from '../types';
 import ItemMeta from '../ItemMeta';
 import BaseImpl from './BaseImpl';
@@ -146,7 +146,7 @@ abstract class RecycleImpl<
     // const recycleEnabled = this._recycleEnabled();
     // 只有当recycleEnabled为true的时候，才进行位置替换
     const recycleStateResult = this.resolveRecycleRecycleState(state);
-    const spaceStateResult = this.resolveRecycleSpaceState(state);
+    const spaceStateResult = this.resolveRecycleSpaceState();
 
     const stateResult = {
       recycleState: recycleStateResult.filter((v) => v),
@@ -218,45 +218,6 @@ abstract class RecycleImpl<
       siblingLength += length;
     }
     return this.itemOffsetBeforeLayoutReady;
-  }
-
-  resolveRecycleItemLayout(
-    info: IndicesItem<ItemMeta<ItemT>>,
-    indexToOffsetMap: IndexToOffsetMap
-  ) {
-    const { meta: itemMeta, targetIndex } = info;
-
-    const itemLength = itemMeta.getFinalItemLength();
-
-    if (
-      !itemMeta.isApproximateLayout &&
-      indexToOffsetMap[targetIndex] != null
-    ) {
-      return {
-        offset: indexToOffsetMap[targetIndex],
-        length: itemLength,
-      };
-    }
-
-    let offset = this.resolveSiblingOffset({
-      itemLength,
-      offsetMap: indexToOffsetMap,
-      startIndex: targetIndex - 1,
-      step: -1,
-      max: 3,
-    });
-
-    if (offset === this.itemOffsetBeforeLayoutReady) {
-      offset = this.resolveSiblingOffset({
-        itemLength,
-        offsetMap: indexToOffsetMap,
-        startIndex: targetIndex + 1,
-        step: 1,
-        max: 3,
-      });
-    }
-
-    return { offset, length: itemLength };
   }
 
   resolveRecycleRecycleState(state: ListState) {
@@ -332,22 +293,11 @@ abstract class RecycleImpl<
         const item = this.getData()[targetIndex];
 
         if (indexToOffsetMap[targetIndex] != null) {
-          const itemMetaState =
-            !this._scrollMetrics || !itemMeta?.getLayout()
-              ? itemMeta
-                ? itemMeta.getState()
-                : {}
-              : this._configTuple.resolveItemMetaState(
-                  itemMeta,
-                  this._scrollMetrics,
-                  // should add container offset, because indexToOffsetMap containerOffset is
-                  // exclusive.
-                  () =>
-                    indexToOffsetMap[targetIndex] == null
-                      ? this.itemOffsetBeforeLayoutReady
-                      : indexToOffsetMap[targetIndex] +
-                        this.getContainerOffset()
-                );
+          const itemMetaState = this._configTuple.resolveItemMetaState(
+            itemMeta,
+            this._scrollMetrics,
+            () => indexToOffsetMap[targetIndex]
+          );
 
           itemMeta?.setItemMetaState(itemMetaState);
         }
@@ -366,110 +316,85 @@ abstract class RecycleImpl<
            */
           viewable: !!itemMeta.getState()['viewable'],
           // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-          position: 'buffered',
-          ...this.resolveRecycleItemLayout(info, indexToOffsetMap),
+          // position: 'buffered',
+          offset: indexToOffsetMap[targetIndex],
+          length: itemMeta.getFinalItemLength(),
         });
       });
     return recycleRecycleStateResult;
   }
 
-  resolveRecycleSpaceState(state: ListState) {
-    if (!this._releaseSpaceStateItem) {
-      const nextData = this._data.slice(0, this.initialNumToRender);
-      const spaceState = [];
-      const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
-        0,
-        this.initialNumToRender - 1,
-        true
-      );
+  resolveRecycleSpaceState() {
+    const nextData = this._data.slice(0, this.initialNumToRender);
+    const spaceState: SpaceStateResult<ItemT> = [];
+    const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
+      0,
+      this.initialNumToRender - 1,
+      true
+    );
 
-      for (let targetIndex = 0; targetIndex < nextData.length; targetIndex++) {
-        const item = this._data[targetIndex];
-        const itemMeta = this.getFinalItemMeta(item);
-        if (itemMeta) {
-          spaceState.push({
-            item,
-            isSpace: false,
+    for (let targetIndex = 0; targetIndex < nextData.length; targetIndex++) {
+      const item = this._data[targetIndex];
+      const itemMeta = this.getFinalItemMeta(item);
+      if (itemMeta) {
+        spaceState.push({
+          item,
+          isSpace: false,
+          itemMeta,
+          key: itemMeta.getKey(),
+          isSticky: false,
+          isReserved: true,
+          length: this.getFinalIndexItemLength(targetIndex),
+        });
+        if (indexToOffsetMap[targetIndex] != null) {
+          const itemMetaState = this._configTuple.resolveItemMetaState(
             itemMeta,
-            key: itemMeta.getKey(),
-            isSticky: false,
-            isReserved: true,
-            length: this.getFinalIndexItemLength(targetIndex),
-          });
-          if (indexToOffsetMap[targetIndex] != null) {
-            const itemMetaState =
-              !this._scrollMetrics || !itemMeta?.getLayout()
-                ? itemMeta
-                  ? itemMeta.getState()
-                  : {}
-                : this._configTuple.resolveItemMetaState(
-                    itemMeta,
-                    this._scrollMetrics,
-                    // should add container offset, because indexToOffsetMap
-                    // containerOffset is exclusive.
-                    () =>
-                      indexToOffsetMap[targetIndex] == null
-                        ? this.itemOffsetBeforeLayoutReady
-                        : indexToOffsetMap[targetIndex] +
-                          this.getContainerOffset()
-                  );
-
-            // 触发打点
-            itemMeta?.setItemMetaState(itemMetaState);
-          }
+            this._scrollMetrics,
+            () => indexToOffsetMap[targetIndex]
+          );
+          itemMeta?.setItemMetaState(itemMetaState);
         }
       }
-      const afterTokens = resolveToken({
-        startIndex: this.initialNumToRender,
-        endIndex: this._data.length - 1,
-        reservedIndices: this.reservedIndices,
-        stickyHeaderIndices: this.stickyHeaderIndices,
-        persistanceIndices: this.persistanceIndices,
-      });
-
-      afterTokens.forEach((token) => {
-        const { isSticky, isReserved, startIndex, endIndex } = token;
-        if (isSticky || isReserved) {
-          const item = this._data[startIndex];
-          const itemMeta = this.getFinalItemMeta(item);
-          spaceState.push({
-            item,
-            isSpace: false,
-            key: itemMeta?.getKey(),
-            itemMeta,
-            isSticky,
-            isReserved,
-            length: this.getFinalIndexItemLength(startIndex),
-          });
-        } else {
-          const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
-          // should plus 1, use list total length
-          const endIndexOffset = this.getFinalIndexKeyBottomOffset(endIndex);
-          spaceState.push({
-            item: null,
-            isSpace: true,
-            isSticky: false,
-            isReserved: false,
-            length: endIndexOffset - startIndexOffset,
-            // endIndex is not included
-            itemMeta: null,
-            key: buildStateTokenIndexKey(startIndex, endIndex - 1),
-          });
-        }
-      });
-      return spaceState;
     }
-
-    return this.resolveSpaceState(state, {
-      bufferedStartIndex: (state) =>
-        state.bufferedStartIndex >= this.initialNumToRender
-          ? this.initialNumToRender
-          : state.bufferedStartIndex,
-      bufferedEndIndex: (state) =>
-        state.bufferedEndIndex >= this.initialNumToRender
-          ? this.initialNumToRender - 1
-          : state.bufferedEndIndex,
+    const afterTokens = resolveToken({
+      startIndex: this.initialNumToRender,
+      endIndex: this._data.length - 1,
+      reservedIndices: this.reservedIndices,
+      stickyHeaderIndices: this.stickyHeaderIndices,
+      persistanceIndices: this.persistanceIndices,
     });
+
+    afterTokens.forEach((token) => {
+      const { isSticky, isReserved, startIndex, endIndex } = token;
+      if (isSticky || isReserved) {
+        const item = this._data[startIndex];
+        const itemMeta = this.getFinalItemMeta(item);
+        spaceState.push({
+          item,
+          isSpace: false,
+          key: itemMeta?.getKey() || '',
+          itemMeta,
+          isSticky,
+          isReserved,
+          length: this.getFinalIndexItemLength(startIndex),
+        });
+      } else {
+        const startIndexOffset = this.getFinalIndexKeyOffset(startIndex);
+        // should plus 1, use list total length
+        const endIndexOffset = this.getFinalIndexKeyBottomOffset(endIndex);
+        spaceState.push({
+          item: null,
+          isSpace: true,
+          isSticky: false,
+          isReserved: false,
+          length: endIndexOffset - startIndexOffset,
+          // endIndex is not included
+          itemMeta: null,
+          key: buildStateTokenIndexKey(startIndex, endIndex - 1),
+        });
+      }
+    });
+    return spaceState;
   }
 }
 
