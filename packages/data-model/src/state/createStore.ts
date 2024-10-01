@@ -1,4 +1,5 @@
 import ListDimensions from '../ListDimensions';
+import ListGroupDimensions from '../ListGroupDimensions';
 import { ScrollMetrics } from '../types';
 import { resolveAction } from './actions';
 import reducer from './reducer';
@@ -31,7 +32,7 @@ function createStore<State extends ReducerResult = ReducerResult>(
   };
 
   const dispatchMetrics = (props: {
-    dimension: ListDimensions;
+    dimension: ListDimensions | ListGroupDimensions;
     scrollMetrics: ScrollMetrics;
   }) => {
     const action = resolveAction(currentState, props, storeContext);

@@ -50,7 +50,9 @@ export type StateListener<ItemT extends GenericItemT = GenericItemT> = (
 ) => void;
 
 // export type ListBaseDimensionsProvider = ListGroupDimensions | ListDimensions;
-export type ListBaseDimensionsStore = Store<ReducerResult>;
+export type ListBaseDimensionsStore<
+  ReducerResultT extends ReducerResult = ReducerResult
+> = Store<ReducerResultT>;
 
 export interface ListBaseDimensionsProps
   extends BaseLayoutProps,
@@ -58,7 +60,7 @@ export interface ListBaseDimensionsProps
     OnEndReachedHelperProps,
     ViewabilityConfigTuplesProps {
   releaseSpaceStateItem?: boolean;
-  store: ListBaseDimensionsStore;
+  store: ListBaseDimensionsStore<ReducerResult>;
   dispatchMetricsThreshold?: number;
   useItemApproximateLength?: boolean;
   itemApproximateLength?: number;

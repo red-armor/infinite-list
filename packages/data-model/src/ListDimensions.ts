@@ -9,6 +9,7 @@ import {
   IndexToOffsetMap,
   GenericItemT,
 } from './types';
+import { ReducerResult } from './state/types';
 
 class ListDimensions<
   ItemT extends GenericItemT = GenericItemT
@@ -20,7 +21,7 @@ class ListDimensions<
   ) {
     super({
       ...props,
-      store: createStore(),
+      store: createStore<ReducerResult>(),
     });
     this._dataModel = new ListDimensionsModel<ItemT>({
       recycleEnabled: true,

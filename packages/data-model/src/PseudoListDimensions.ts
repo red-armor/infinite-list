@@ -69,7 +69,7 @@ class PseudoListDimensions extends BaseDimensions {
       const currentIndex = index + baseIndex;
       const itemKey = keys[index];
       const meta = this.getKeyMeta(itemKey) || this.createItemMeta(itemKey);
-      const itemLength = this._selectValue.selectLength(meta.getLayout());
+      const itemLength = this._selectValue.selectLength(meta.getLayout()!);
 
       keyToIndexMap.set(itemKey, currentIndex);
       keyToIndexArray[currentIndex] = itemKey;
@@ -141,8 +141,11 @@ class PseudoListDimensions extends BaseDimensions {
 
     if (typeof info === 'number') {
       const length = this.normalizeLengthNumber(info);
-      if (meta && this._selectValue.selectLength(meta.getLayout()) !== length) {
-        this._selectValue.setLength(meta.getLayout(), length);
+      if (
+        meta &&
+        this._selectValue.selectLength(meta.getLayout()!) !== length
+      ) {
+        this._selectValue.setLength(meta.getLayout()!, length);
         if (_update) {
           this.setIntervalTreeValue(index, length);
           return true;
@@ -153,7 +156,7 @@ class PseudoListDimensions extends BaseDimensions {
 
     const _info = this.normalizeLengthInfo(info);
 
-    if (!layoutEqual(meta.getLayout(), _info as ItemLayout)) {
+    if (!layoutEqual(meta.getLayout()!, _info as ItemLayout)) {
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );

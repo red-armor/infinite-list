@@ -1,9 +1,8 @@
 import { BaseDimensionsProps } from './BaseDimensions.types';
 import { GenericItemT } from './generic.types';
 import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
-// import { ListGroupDimensionsModelContainer } from './ListGroupDimensions.types';
 import ListGroupDimensions from '../ListGroupDimensions';
-import ListDimensions from '../ListBaseDimensions';
+import ListDimensions from '../ListDimensions';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,

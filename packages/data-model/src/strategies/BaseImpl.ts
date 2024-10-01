@@ -26,6 +26,7 @@ import ViewabilityConfigTuples from '../viewable/ViewabilityConfigTuples';
 import ItemMeta from '../ItemMeta';
 import BaseLayout from '../BaseLayout';
 import StateHub from './StateHub';
+import { ReducerResult } from '../state/types';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -41,7 +42,7 @@ abstract class BaseImpl<
 
   private _stateHub: StateHub<ItemT>;
 
-  private _store: ListBaseDimensionsStore;
+  private _store: ListBaseDimensionsStore<ReducerResult>;
 
   readonly onEndReachedHelper: OnEndReachedHelper;
 

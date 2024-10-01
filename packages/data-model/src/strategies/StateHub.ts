@@ -20,7 +20,7 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
       recyclerReservedBufferPerBatch,
     } = props;
 
-    this._handler = new RecycleStateImpl({
+    this._handler = new RecycleStateImpl<ItemT>({
       listContainer,
       recyclerTypes,
       onRecyclerProcess,

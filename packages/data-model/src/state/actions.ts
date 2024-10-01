@@ -4,12 +4,13 @@ import { INVALID_LENGTH } from '../common';
 import { ScrollMetrics } from '../types';
 import { Action, ActionType, ReducerResult } from './types';
 import defaultValue from '@x-oasis/default-value';
+import ListGroupDimensions from '../ListGroupDimensions';
 
 export const resolveAction = <State extends ReducerResult = ReducerResult>(
   state: State,
   props: {
     scrollMetrics: ScrollMetrics;
-    dimension: ListDimensions;
+    dimension: ListDimensions | ListGroupDimensions;
   },
   ctx: {
     dataLength: number;

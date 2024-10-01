@@ -1,8 +1,9 @@
-import { ListDimensionsModelContainer } from './ListDimensionsModel.types';
+// import { ListDimensionsModelContainer } from './ListDimensionsModel.types';
 import { GenericItemT } from './generic.types';
+import BaseImpl from '../strategies/BaseImpl';
 
 export type BaseStateImplProps<ItemT extends GenericItemT = GenericItemT> = {
-  listContainer: ListDimensionsModelContainer<ItemT>;
+  listContainer: BaseImpl<ItemT>;
 };
 
 export type SpaceStateImplProps<ItemT extends GenericItemT = GenericItemT> =

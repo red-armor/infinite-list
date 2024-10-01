@@ -522,8 +522,6 @@ class ListDimensionsModel<
 
     if (!meta) return false;
 
-    console.log('set ======', key, index);
-
     if (typeof info === 'number') {
       let length = this.normalizeLengthNumber(info);
       meta.isApproximateLayout = false;

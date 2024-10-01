@@ -37,7 +37,7 @@ class RecycleStateImpl<
     state: ListState
   ) => RecycleStateResult<ItemT>;
 
-  constructor(props: RecycleStateImplProps) {
+  constructor(props: RecycleStateImplProps<ItemT>) {
     super({
       listContainer: props.listContainer,
     });

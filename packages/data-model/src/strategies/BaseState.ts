@@ -1,13 +1,13 @@
 import {
   GenericItemT,
   ListState,
-  ListDimensionsModelContainer,
   BaseStateImplProps,
   ListStateResult,
 } from '../types';
+import BaseImpl from './BaseImpl';
 
 abstract class BaseState<ItemT extends GenericItemT = GenericItemT> {
-  public listContainer: ListDimensionsModelContainer<ItemT>;
+  public listContainer: BaseImpl<ItemT>;
 
   constructor(props: BaseStateImplProps<ItemT>) {
     this.listContainer = props.listContainer;
