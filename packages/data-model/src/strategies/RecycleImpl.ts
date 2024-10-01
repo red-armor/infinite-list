@@ -1,4 +1,4 @@
-import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
+import Recycler, { OnRecyclerProcess, IndicesItem } from '@x-oasis/recycler';
 import memoizeOne from 'memoize-one';
 import { buildStateTokenIndexKey, DEFAULT_RECYCLER_TYPE } from '../common';
 import {
@@ -9,21 +9,31 @@ import {
   RecycleRecycleState,
   GenericItemT,
   IndexToOffsetMap,
+  StateListener,
 } from '../types';
 import ItemMeta from '../ItemMeta';
 import BaseImpl from './BaseImpl';
+import { resolveToken } from './utils';
 
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
-class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
+abstract class RecycleImpl<
+  ItemT extends GenericItemT = GenericItemT
+> extends BaseImpl<ItemT> {
   private _onRecyclerProcess?: OnRecyclerProcess;
 
-  private _recycler: Recycler<ItemMeta>;
+  private _recycler: Recycler<ItemMeta<ItemT>>;
 
   private _releaseSpaceStateItem: boolean;
+
+  private _stateResult: RecycleStateResult<ItemT> = {
+    recycleState: [],
+    spaceState: [],
+    rangeState: {} as any,
+  };
 
   private memoizedResolveRecycleState: (
     state: ListState
@@ -47,7 +57,7 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
     this._onRecyclerProcess = onRecyclerProcess;
     this._releaseSpaceStateItem = releaseSpaceStateItem;
 
-    this._recycler = new Recycler<ItemMeta>({
+    this._recycler = new Recycler<ItemMeta<ItemT>>({
       // the following is appended with setting default recyclerType
       recyclerTypes,
       recyclerBufferSize,
@@ -87,22 +97,31 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
     return this.getReflowItemsLength() >= this.initialNumToRender;
   }
 
+  addStateListener(listener: StateListener<ItemT>) {
+    if (typeof listener === 'function') this.stateListener = listener;
+    return () => {
+      if (typeof listener === 'function') this.stateListener = undefined;
+    };
+  }
+
   applyStateResult(stateResult: RecycleStateResult<ItemT>) {
     const shouldStateUpdate = true;
 
-    if (shouldStateUpdate && typeof this._stateListener === 'function') {
-      const { recycleState: _recycleState, spaceState } =
-        stateResult as RecycleStateResult<ItemT>;
-      // @ts-ignore
-      const recycleState = _recycleState.map((state) => {
-        if (!state) return null;
-        const copy = { ...state };
-        // @ts-expect-error
-        delete copy.viewable;
+    if (shouldStateUpdate && typeof this.stateListener === 'function') {
+      const { recycleState: _recycleState, spaceState } = stateResult;
 
-        return copy;
-      });
+      const recycleState = _recycleState
+        .map((state) => {
+          if (!state) return null;
+          const copy = { ...state };
+          // @ts-expect-error
+          delete copy.viewable;
 
+          return copy;
+        })
+        .filter((v) => v != null);
+
+      // TODO: when to reset
       if (
         (this._stateResult as RecycleStateResult<ItemT>).recycleState.length &&
         !recycleState.length
@@ -110,7 +129,7 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
         this._recycler.reset();
       }
 
-      this._stateListener(
+      this.stateListener(
         {
           recycleState,
           spaceState,
@@ -120,10 +139,22 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
       );
     }
 
-    this._stateResult = {
-      ...stateResult,
-      rangeState: stateResult.rangeState,
+    this._stateResult = { ...stateResult };
+  }
+
+  resolveRecycleState(state: ListState) {
+    // const recycleEnabled = this._recycleEnabled();
+    // 只有当recycleEnabled为true的时候，才进行位置替换
+    const recycleStateResult = this.resolveRecycleRecycleState(state);
+    const spaceStateResult = this.resolveRecycleSpaceState(state);
+
+    const stateResult = {
+      recycleState: recycleStateResult.filter((v) => v),
+      spaceState: spaceStateResult.filter((v) => v),
+      rangeState: state,
     };
+
+    return stateResult;
   }
 
   /**
@@ -170,9 +201,7 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
     for (let idx = 0; idx < max; idx++) {
       const index = startIndex + step * idx;
       const meta = this.getFinalIndexItemMeta(index);
-      // const layout = meta?.getLayout();
-      // const length = (layout?.height || 0) + (meta?.getSeparatorLength() || 0);
-      const length = meta.getFinalItemLength();
+      const length = meta?.getFinalItemLength() || 0;
       if (meta && !meta?.isApproximateLayout) {
         const offset =
           offsetMap[index] != null
@@ -191,7 +220,10 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
     return this.itemOffsetBeforeLayoutReady;
   }
 
-  resolveRecycleItemLayout(info, indexToOffsetMap: IndexToOffsetMap) {
+  resolveRecycleItemLayout(
+    info: IndicesItem<ItemMeta<ItemT>>,
+    indexToOffsetMap: IndexToOffsetMap
+  ) {
     const { meta: itemMeta, targetIndex } = info;
 
     const itemLength = itemMeta.getFinalItemLength();
@@ -229,7 +261,7 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
 
   resolveRecycleRecycleState(state: ListState) {
     const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
-    const recycleRecycleStateResult: RecycleRecycleState[] = [];
+    const recycleRecycleStateResult: RecycleRecycleState<ItemT> = [];
     const velocity = this._scrollMetrics?.velocity || 0;
 
     const visibleStartIndex = Math.max(
@@ -373,8 +405,8 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
                 : this._configTuple.resolveItemMetaState(
                     itemMeta,
                     this._scrollMetrics,
-                    // should add container offset, because indexToOffsetMap containerOffset is
-                    // exclusive.
+                    // should add container offset, because indexToOffsetMap
+                    // containerOffset is exclusive.
                     () =>
                       indexToOffsetMap[targetIndex] == null
                         ? this.itemOffsetBeforeLayoutReady
@@ -387,10 +419,13 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
           }
         }
       }
-      const afterTokens = this.resolveToken(
-        this.initialNumToRender,
-        this._data.length - 1
-      );
+      const afterTokens = resolveToken({
+        startIndex: this.initialNumToRender,
+        endIndex: this._data.length - 1,
+        reservedIndices: this.reservedIndices,
+        stickyHeaderIndices: this.stickyHeaderIndices,
+        persistanceIndices: this.persistanceIndices,
+      });
 
       afterTokens.forEach((token) => {
         const { isSticky, isReserved, startIndex, endIndex } = token;
@@ -400,7 +435,7 @@ class RecycleImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
           spaceState.push({
             item,
             isSpace: false,
-            key: itemMeta.getKey(),
+            key: itemMeta?.getKey(),
             itemMeta,
             isSticky,
             isReserved,

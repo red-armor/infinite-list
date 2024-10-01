@@ -6,6 +6,7 @@ import {
   ListState,
   GenericItemT,
   SpaceStateResult,
+  StateListener,
 } from '../types';
 
 import BaseImpl from './BaseImpl';
@@ -33,11 +34,18 @@ class SpaceImpl<ItemT extends GenericItemT = GenericItemT> extends BaseImpl {
     );
   }
 
+  addStateListener(listener: StateListener<ItemT>) {
+    if (typeof listener === 'function') this.stateListener = listener;
+    return () => {
+      if (typeof listener === 'function') this.stateListener = undefined;
+    };
+  }
+
   applyStateResult(stateResult: SpaceStateResult<ItemT>) {
     const shouldStateUpdate = true;
 
-    if (shouldStateUpdate && typeof this._stateListener === 'function') {
-      this._stateListener(stateResult, this._stateResult);
+    if (shouldStateUpdate && typeof this.stateListener === 'function') {
+      this.stateListener(stateResult, this._stateResult);
     }
 
     this._stateResult = {

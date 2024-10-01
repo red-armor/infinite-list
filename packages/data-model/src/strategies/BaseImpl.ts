@@ -35,8 +35,9 @@ import BaseLayout from '../BaseLayout';
  */
 abstract class BaseImpl<
   ItemT extends GenericItemT = GenericItemT
+  // StateResultT extends ListStateResult = ListStateResult
 > extends BaseLayout {
-  private _stateListener?: StateListener<ItemT>;
+  public stateListener?: StateListener<ItemT>;
 
   // private _stateResult?: ListStateResult<ItemT>;
 
@@ -56,7 +57,7 @@ abstract class BaseImpl<
 
   private _stillnessHelper: StillnessHelper;
 
-  _configTuple: ViewabilityConfigTuples;
+  _configTuple: ViewabilityConfigTuples<ItemT>;
 
   constructor(props: ListBaseDimensionsProps) {
     super(props);
@@ -94,7 +95,7 @@ abstract class BaseImpl<
       maxCountOfHandleOnEndReachedAfterStillness,
     });
 
-    this._configTuple = new ViewabilityConfigTuples({
+    this._configTuple = new ViewabilityConfigTuples<ItemT>({
       viewabilityConfig,
       onViewableItemsChanged,
       viewabilityConfigCallbackPairs,
@@ -241,12 +242,12 @@ abstract class BaseImpl<
     return this._configTuple.getDefaultState(defaultValue);
   }
 
-  addStateListener(listener: StateListener<ItemT>) {
-    if (typeof listener === 'function') this._stateListener = listener;
-    return () => {
-      if (typeof listener === 'function') this._stateListener = undefined;
-    };
-  }
+  // addStateListener(listener: StateListener<ItemT>) {
+  //   if (typeof listener === 'function') this.stateListener = listener;
+  //   return () => {
+  //     if (typeof listener === 'function') this.stateListener = undefined;
+  //   };
+  // }
 
   dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({

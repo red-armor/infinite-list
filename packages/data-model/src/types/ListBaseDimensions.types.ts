@@ -8,18 +8,17 @@ import { GenericItemT } from './generic.types';
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
-export type SpaceStateToken<ItemT> = {
+export type SpaceStateToken<ItemT extends GenericItemT = GenericItemT> = {
   item: ItemT;
   key: string;
   length: number;
   isSpace: boolean;
   isSticky: boolean;
-  isReserved: boolean;
-  itemMeta: ItemMeta;
+  itemMeta: ItemMeta<ItemT>;
   position: SpaceStateTokenPosition;
 };
 
-export type RecycleStateToken<ItemT> = {
+export type RecycleStateToken<ItemT extends GenericItemT = GenericItemT> = {
   targetKey: string;
   targetIndex: number;
   offset: number;
@@ -27,10 +26,12 @@ export type RecycleStateToken<ItemT> = {
   viewable: boolean;
 } & SpaceStateToken<ItemT>;
 
-export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
+export type SpaceStateResult<ItemT extends GenericItemT = GenericItemT> = Array<
+  SpaceStateToken<ItemT>
+>;
 
 export type RecycleRecycleState<ItemT extends GenericItemT = GenericItemT> =
-  Array<RecycleStateToken<ItemT>>;
+  RecycleStateToken<ItemT>[];
 
 export type RecycleStateResult<ItemT extends GenericItemT = GenericItemT> = {
   rangeState: ListState;

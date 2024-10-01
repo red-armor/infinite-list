@@ -1,5 +1,6 @@
 import uniqueArrayObject from '@x-oasis/unique-array-object';
 import {
+  GenericItemT,
   ViewabilityConfig,
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
@@ -10,7 +11,7 @@ import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 import ItemMeta from '../ItemMeta';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
 
-class ViewabilityConfigTuples {
+class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   private _tuple: ViewabilityConfigCallbackPairs = [];
   public viewabilityHelpers: Array<ViewablityHelper> = [];
 
@@ -106,9 +107,9 @@ class ViewabilityConfigTuples {
   }
 
   resolveItemMetaState(
-    itemMeta: ItemMeta,
+    itemMeta: ItemMeta<ItemT>,
     viewabilityScrollMetrics: ViewabilityScrollMetrics,
-    getItemOffset?: (itemMeta: ItemMeta | ViewabilityItemMeta) => number
+    getItemOffset?: (itemMeta: ItemMeta<ItemT> | ViewabilityItemMeta) => number
   ) {
     if (!viewabilityScrollMetrics || !itemMeta) return {};
     if (!itemMeta.getLayout()) return {};
