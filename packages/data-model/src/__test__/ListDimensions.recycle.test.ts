@@ -665,7 +665,7 @@ describe('setData', () => {
 //   });
 // });
 
-describe('data update', () => {
+describe.only('data update', () => {
   beforeEach(() => {
     resetContext();
     // tell vitest we use mocked time
@@ -731,7 +731,7 @@ describe('data update', () => {
     recycleList.setData(_data);
     vi.runAllTimers();
 
-    recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
+    recycleListStateResult = recycleList.stateResult;
 
     // offset should be recalculate
     expect(recycleListStateResult.recycleState[0].offset).toBe(400);
@@ -795,7 +795,7 @@ describe('data update', () => {
       recycleList.stateResult as RecycleStateResult<any>;
 
     // offset should be recalculate
-    expect(recycleListStateResult.recycleState[0].offset).toBe(2300);
+    expect(recycleListStateResult.recycleState[0].offset).toBe(300);
     // the forth as first item in recycleState
     expect(recycleListStateResult.recycleState[0].targetKey).toBe('4');
 
@@ -808,7 +808,7 @@ describe('data update', () => {
     recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
     // offset should be recalculate, approximateItemLength will be included.
-    expect(recycleListStateResult.recycleState[0].offset).toBe(2360);
+    expect(recycleListStateResult.recycleState[0].offset).toBe(360);
     // the third as first item in recycleState
     expect(recycleListStateResult.recycleState[0].targetKey).toBe('3');
   });

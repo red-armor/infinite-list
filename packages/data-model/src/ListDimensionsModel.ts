@@ -522,8 +522,12 @@ class ListDimensionsModel<
 
     if (!meta) return false;
 
+    console.log('set ======', key, index);
+
     if (typeof info === 'number') {
       let length = this.normalizeLengthNumber(info);
+      meta.isApproximateLayout = false;
+
       if (
         Math.abs(
           length - (this._selectValue.selectLength(meta.getLayout() || {}) || 0)
@@ -549,7 +553,6 @@ class ListDimensionsModel<
         this.triggerOwnerRecalculateLayout();
       }
 
-      meta.isApproximateLayout = false;
       return false;
     }
     const _info = this.normalizeLengthInfo(info);

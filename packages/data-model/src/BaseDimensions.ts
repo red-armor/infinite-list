@@ -67,7 +67,14 @@ abstract class BaseDimensions<
 
   getIndexKeyOffset(index: number, exclusive?: boolean) {
     const listOffset = exclusive ? 0 : this.getContainerOffset();
-
+    console.log(
+      'list ======',
+      index,
+      listOffset,
+      this.getContainerOffset(),
+      this.intervalTree.getHeap()[1],
+      this._intervalTree.sumUntil(index)
+    );
     if (typeof index === 'number') {
       return (
         listOffset +

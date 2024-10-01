@@ -100,16 +100,25 @@ class ListDimensions<
     exclusive?: boolean
   ) {
     const indexToOffsetMap: IndexToOffsetMap = {};
-    let startOffset = this.getIndexKeyOffset(startIndex, exclusive);
-    for (let index = startIndex; index <= endIndex; index++) {
-      indexToOffsetMap[index] = startOffset;
-      const item = this._data[index];
-      const itemMeta = this.getItemMeta(item, index);
+    let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
 
-      startOffset += itemMeta?.getFinalItemLength() || 0;
+    for (let index = startIndex; index <= endIndex; index++) {
+      const itemMeta = this.getFinalIndexItemMeta(index);
+
+      if (!itemMeta) continue;
+
+      indexToOffsetMap[index] = startOffset;
+
+      if (itemMeta?.isApproximateLayout) {
+        indexToOffsetMap[index] = this.itemOffsetBeforeLayoutReady;
+      } else {
+        indexToOffsetMap[index] = startOffset;
+        startOffset += itemMeta?.getFinalItemLength();
+      }
     }
     return indexToOffsetMap;
   }
+
   computeIndexRange(minOffset: number, maxOffset: number) {
     return this._dataModel.computeIndexRange(minOffset, maxOffset);
   }

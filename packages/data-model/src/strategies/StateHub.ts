@@ -40,6 +40,10 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
   addBuffer(type: string) {
     this._handler.addBuffer(type);
   }
+
+  get stateResult() {
+    return this._handler.getStateResult();
+  }
 }
 
 export default StateHub;

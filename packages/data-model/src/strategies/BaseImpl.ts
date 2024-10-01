@@ -294,6 +294,10 @@ abstract class BaseImpl<
     return this._stillnessHelper.isStill;
   }
 
+  get stateResult() {
+    return this._stateHub.stateResult;
+  }
+
   _updateScrollMetrics(
     _scrollMetrics?: ScrollMetrics,
     _options?: {
