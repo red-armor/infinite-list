@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.0.0
+
+### Major Changes
+
+- c386538: trigger major version
+
 ## 1.0.0
 
 ### Major Changes
