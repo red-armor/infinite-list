@@ -14,7 +14,7 @@ defaults:
 
 jobs:
   # Build primes out Turbo build cache and pnpm cache
-  build:
+  main:
     name: "Build: ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 3
