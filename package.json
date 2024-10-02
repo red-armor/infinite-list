@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "pnpm run -r clean",
     "build": "pnpm run -r build",
-    "test": "CI=true nx run-many -t test",
+    "test": "nx run-many -t test",
     "version": "bump",
     "alpha": "bump --branch",
     "lint": "eslint --ext js,ts,tsx .",
