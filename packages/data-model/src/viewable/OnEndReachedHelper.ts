@@ -149,6 +149,7 @@ class OnEndReachedHelper {
 
   attemptToHandleOnEndReached() {
     const info = this.perform(this._scrollMetrics);
+
     if (info) {
       const { isEndReached, distanceFromEnd } = info;
       this.performEndReached({ isEndReached, distanceFromEnd });

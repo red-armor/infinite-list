@@ -134,8 +134,11 @@ abstract class BaseImpl<
     return this.onEndReachedHelper?.onEndReachedThreshold;
   }
 
-  set scrollMetrics(scrollMetrics: ScrollMetrics) {
+  setScrollMetrics(scrollMetrics: ScrollMetrics) {
     this._scrollMetrics = scrollMetrics;
+    if (!this._scrollMetrics && scrollMetrics) {
+      this.attemptToHandleEndReached();
+    }
   }
 
   get state() {
@@ -226,9 +229,11 @@ abstract class BaseImpl<
     return this.getReflowItemsLength() < this._data.length;
   }
 
+  /**
+   * trigger on set scrollMetics with valid value
+   */
   attemptToHandleEndReached() {
-    if (this.initialNumToRender)
-      this.onEndReachedHelper?.attemptToHandleOnEndReachedBatchinator.schedule();
+    this.onEndReachedHelper?.attemptToHandleOnEndReachedBatchinator.schedule();
   }
 
   resetViewableItems() {
@@ -258,6 +263,7 @@ abstract class BaseImpl<
       dimension: this,
       scrollMetrics,
     });
+
     if (isEmpty(state)) return state;
     this._stateHub.setState({ ...state });
 
@@ -315,11 +321,11 @@ abstract class BaseImpl<
 
     if (!scrollMetrics) return;
     if (!this.dispatchScrollMetricsEnabled()) {
-      this._scrollMetrics = scrollMetrics;
+      this.setScrollMetrics(scrollMetrics);
       return;
     }
 
-    this._scrollMetrics = scrollMetrics;
+    this.setScrollMetrics(scrollMetrics);
 
     if (flush) {
       this._dispatchMetricsBatchinator.flush(scrollMetrics);

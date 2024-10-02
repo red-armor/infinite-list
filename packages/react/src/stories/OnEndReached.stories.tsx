@@ -11,7 +11,7 @@ const buildData = (count: number, startIndex = 0) =>
 const fetchData = (startIndex: number) => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(buildData(10, startIndex));
+      resolve(buildData(10, startIndex * 10));
     }, 200);
   });
 };

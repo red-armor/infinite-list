@@ -44,7 +44,6 @@ class ListDimensionsModel<
   private _isFixedLength: boolean;
 
   constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'store'>) {
-    // constructor(props: ListDimensionsModelProps<ItemT>) {
     super({
       ...props,
       isIntervalTreeItems: true,
@@ -459,11 +458,6 @@ class ListDimensionsModel<
         }
 
         const length = meta.getFinalItemLength();
-
-        // const separatorLength = meta.getSeparatorLength();
-
-        // const length =
-        //   index === len - 1 ? itemLength : itemLength + separatorLength;
         intervalTree.drySet(currentIndex, length);
       }
 
@@ -510,7 +504,6 @@ class ListDimensionsModel<
     info: ItemLayout | number,
     updateIntervalTree?: boolean
   ) {
-    // const falsy = this.performKeyOperationGuard(key);
     const _update =
       typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
 

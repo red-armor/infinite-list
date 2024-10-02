@@ -6,10 +6,17 @@ import SpaceItem from './SpaceItem';
 import ScrollTracker from './events/ScrollTracker';
 
 const List = (props: ListProps) => {
-  const { renderItem, id } = props;
+  const { renderItem, id, data } = props;
   const listModel = useMemo(() => new ListDimensions(props), []);
   const [state, setState] = useState(listModel.getStateResult());
   const scrollHandlerRef = useRef<ScrollTracker>();
+
+  const dataRef = useRef(data);
+
+  if (dataRef.current !== data) {
+    dataRef.current = data;
+    listModel.setData(dataRef.current);
+  }
 
   const listRef = useRef<HTMLDivElement>(null);
   const style = useMemo(

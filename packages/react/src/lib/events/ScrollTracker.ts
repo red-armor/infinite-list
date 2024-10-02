@@ -43,7 +43,7 @@ class ScrollTracker {
     this.onScrollEnd = this.onScrollEnd.bind(this);
     this._scrollMetrics = {
       offset: 0,
-      visibleLength: this._domNode.height || 0,
+      visibleLength: this._domNode.clientHeight || 0,
       contentLength: 0,
     };
 

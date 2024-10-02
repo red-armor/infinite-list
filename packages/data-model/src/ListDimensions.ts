@@ -28,8 +28,6 @@ class ListDimensions<
       ...props,
       container: this,
     });
-    // this.initializeStateResult();
-    this.attemptToHandleEndReached();
   }
 
   getKeyIndex(key: string) {

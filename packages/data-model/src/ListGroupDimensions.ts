@@ -103,9 +103,6 @@ class ListGroupDimensions<
       this.recalculateDimensionsIntervalTree.bind(this),
       50
     );
-
-    // this.initializeStateResult();
-    this.attemptToHandleEndReached();
   }
 
   get inspector() {
