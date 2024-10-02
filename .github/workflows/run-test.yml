@@ -1,17 +1,19 @@
 name: run-test
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - setup-*
-      - main
-  merge_group:
-  pull_request:
-    paths-ignore:
-      - ".vscode/**"
-      - "**/*.md"
-      - ".github/ISSUE_TEMPLATE/**"
+  - push
+  - pull_request
+  # workflow_dispatch:
+  # push:
+  #   branches:
+  #     - setup-*
+  #     - main
+  # merge_group:
+  # pull_request:
+  #   paths-ignore:
+  #     - ".vscode/**"
+  #     - "**/*.md"
+  #     - ".github/ISSUE_TEMPLATE/**"
 
 # Automatically cancel older in-progress jobs on the same branch
 concurrency:
