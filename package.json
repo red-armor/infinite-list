@@ -10,10 +10,9 @@
     "clean": "pnpm run -r clean",
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
-    "version": "bump",
-    "alpha": "bump --branch",
     "lint": "eslint --ext js,ts,tsx .",
     "prepare": "husky install",
+    "version": "changeset version && pnpm install --no-frozen-lockfile",
     "publish": "pnpm publish -r --access public"
   },
   "private": true,

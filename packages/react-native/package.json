@@ -8,10 +8,6 @@
   },
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsdx build --tsconfig tsconfig.build.json",
-    "clean": "rimraf ./dist"
-  },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
