@@ -1,8 +1,16 @@
 name: CI
 
-on: 
-  - push
-  - pull_request
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  merge_group:
+  pull_request:
+    paths-ignore:
+      - ".vscode/**"
+      - "**/*.md"
+      - ".github/ISSUE_TEMPLATE/**"
 
 # Automatically cancel older in-progress jobs on the same branch
 concurrency:
@@ -14,7 +22,7 @@ defaults:
 
 jobs:
   # Build primes out Turbo build cache and pnpm cache
-  main:
+  build:
     name: "Build: ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 3
@@ -25,26 +33,22 @@ jobs:
       fail-fast: true
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
       - name: Setup PNPM
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        uses: pnpm/action-setup@v3
 
-      # Cache node_modules
-     - name: Setup node@${{ matrix.NODE_VERSION }}
+      - name: Setup node@${{ matrix.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.NODE_VERSION }}
-          cache: "pnpm" 
+          cache: "pnpm"
 
-      - run: pnpm install --frozen-lockfile
-      - uses: nrwl/nx-set-shas@v4
+      - name: Install dependencies
+        run: pnpm install
 
-      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-      # - run: pnpm exec nx-cloud record -- echo Hello World
-      # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
-      - run: pnpm exec nx affected -t lint test build
+      # Only build in ubuntu as windows can share the build cache.
+      # Also only build in core repo as forks don't have access to the Turbo cache.
+      - name: Build Packages
+        if: ${{ matrix.os == 'ubuntu-latest' && github.repository_owner == 'withastro' }}
+        run: pnpm run build
