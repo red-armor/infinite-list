@@ -21,9 +21,10 @@ const meta: Meta<typeof List> = {
     const [data, setData] = useState([]);
     const pageRef = useRef(0);
 
-    const onEndReached = useCallback(() => {
+    const onEndReached = useCallback(({ cb }) => {
       fetchData(pageRef.current).then((data) => {
         setData((current) => [].concat(current, data));
+        cb();
         pageRef.current += 1;
       });
     }, []);
