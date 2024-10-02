@@ -8,6 +8,7 @@ on:
       - "2-legacy"
       - "3-legacy"
       - next
+      - feat-build
 
 defaults:
   run:
