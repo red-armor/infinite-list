@@ -4,11 +4,16 @@ on:
   - push
   - pull_request
 
-permissions:
-  actions: read
-  contents: read
+# Automatically cancel older in-progress jobs on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 
 jobs:
+  # Build primes out Turbo build cache and pnpm cache
   build:
     name: "Build: ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
@@ -18,7 +23,6 @@ jobs:
         OS: [ubuntu-latest, windows-latest]
         NODE_VERSION: [18]
       fail-fast: true
-
     steps:
       - name: Checkout
       - uses: actions/checkout@v4
