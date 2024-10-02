@@ -19,14 +19,13 @@ const RecycleItem = (props: RecycleItemProps) => {
     const rect = itemRef.current?.getBoundingClientRect();
     if (rect) {
       const { height } = rect;
-      console.log('======', itemMeta, itemMeta?.getKey(), rect?.height);
 
       if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), height);
     }
   }, [itemMeta]);
 
   return (
-    <div ref={itemRef} key={key} style={style}>
+    <div ref={itemRef} key={key} style={style} data_id={key}>
       <RenderItem item={item!} itemMeta={itemMeta!} />
     </div>
   );

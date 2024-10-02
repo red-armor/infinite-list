@@ -13,7 +13,7 @@ const meta: Meta<typeof List> = {
     return (
       <div
         style={{
-          height: '800px',
+          height: '400px',
           width: '600px',
           backgroundColor: '#efefef',
         }}
@@ -21,8 +21,9 @@ const meta: Meta<typeof List> = {
         <List
           id="basic"
           initialNumToRender={4}
-          data={buildData(100)}
-          recyclerBufferSize={20}
+          data={buildData(10000)}
+          recyclerBufferSize={100}
+          recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
             const { item } = props;
             return (

@@ -11,6 +11,7 @@ import {
   KeysChangedType,
   ScrollMetrics,
 } from './types';
+import * as log from './utils/logger';
 
 abstract class BaseDimensions<
   ItemT extends GenericItemT = GenericItemT
@@ -67,7 +68,7 @@ abstract class BaseDimensions<
 
   getIndexKeyOffset(index: number, exclusive?: boolean) {
     const listOffset = exclusive ? 0 : this.getContainerOffset();
-    console.log(
+    log.info(
       'list ======',
       index,
       listOffset,

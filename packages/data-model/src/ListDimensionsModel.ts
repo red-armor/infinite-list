@@ -421,7 +421,11 @@ class ListDimensionsModel<
     log.info(
       'computeIndexRange result ',
       this.intervalTree.getHeap()[1],
-      result
+      this.intervalTree.getActualSize(),
+      result,
+      minOffset,
+      this.intervalTree.getHeap().slice(this.intervalTree.getSize()),
+      maxOffset
     );
 
     return result;

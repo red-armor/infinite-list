@@ -13,7 +13,7 @@ import {
 import ItemMeta from '../ItemMeta';
 import { resolveToken } from './utils';
 import BaseState from './BaseState';
-
+import * as log from '../utils/logger';
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
@@ -186,39 +186,6 @@ class RecycleStateImpl<
     };
   }
 
-  // resolveSiblingOffset(props: {
-  //   startIndex: number;
-  //   step: number;
-  //   max: number;
-  //   itemLength: number;
-  //   offsetMap: {
-  //     [key: number]: number;
-  //   };
-  // }) {
-  //   const { startIndex, step = -1, max = 1, offsetMap, itemLength } = props;
-  //   let siblingLength = 0;
-  //   for (let idx = 0; idx < max; idx++) {
-  //     const index = startIndex + step * idx;
-  //     const meta = this.getFinalIndexItemMeta(index);
-  //     const length = meta?.getFinalItemLength() || 0;
-  //     if (meta && !meta?.isApproximateLayout) {
-  //       const offset =
-  //         offsetMap[index] != null
-  //           ? offsetMap[index]
-  //           : this.getFinalIndexKeyOffset(index) || 0;
-  //       return (
-  //         offset +
-  //         siblingLength * (step > 0 ? -1 : 1) +
-  //         length * (step > 0 ? 0 : 1) -
-  //         itemLength * (step > 0 ? 1 : 0)
-  //       );
-  //     }
-
-  //     siblingLength += length;
-  //   }
-  //   return this.itemOffsetBeforeLayoutReady;
-  // }
-
   resolveRecycleRecycleState(state: ListState) {
     const { visibleEndIndex, visibleStartIndex: _visibleStartIndex } = state;
     const recycleRecycleStateResult: RecycleRecycleState<ItemT> = [];
@@ -245,7 +212,7 @@ class RecycleStateImpl<
       this._recycler.updateIndices({
         safeRange,
         startIndex,
-        maxCount: 10,
+        maxCount: recycleBufferedCount,
         step: 1,
         onProcess: this._onRecyclerProcess,
         /** TODO !!!!!! */
@@ -256,7 +223,7 @@ class RecycleStateImpl<
       this._recycler.updateIndices({
         safeRange,
         startIndex: visibleStartIndex,
-        maxCount: 10,
+        maxCount: recycleBufferedCount,
         step: 1,
         onProcess: this._onRecyclerProcess,
         /** TODO */
@@ -266,13 +233,16 @@ class RecycleStateImpl<
       this._recycler.updateIndices({
         safeRange,
         startIndex: visibleEndIndex,
-        maxCount: 10,
+        maxCount: recycleBufferedCount,
         step: -1,
         onProcess: this._onRecyclerProcess,
         /** TODO */
         // maxIndex: this.getData().length,
       });
     }
+
+    // should getIndices first, then resolve minValue or maxValue
+    const targetIndices = this._recycler.getIndices();
 
     const minValue = this._recycler.getMinValue();
     const maxValue = this._recycler.getMaxValue();
@@ -283,7 +253,8 @@ class RecycleStateImpl<
       maxValue,
       true
     );
-    const targetIndices = this._recycler.getIndices();
+
+    log.info('target indices ', { ...state }, targetIndices.slice());
 
     targetIndices
       .filter((v) => v)

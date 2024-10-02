@@ -320,6 +320,7 @@ abstract class BaseImpl<
     }
 
     this._scrollMetrics = scrollMetrics;
+
     if (flush) {
       this._dispatchMetricsBatchinator.flush(scrollMetrics);
     } else {

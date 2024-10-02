@@ -13,18 +13,15 @@ export default <State extends ReducerResult = ReducerResult>(
 ) => {
   const { dimension } = payload;
   const { visibleIndexRange } = ctx;
-  const { startIndex, endIndex } = visibleIndexRange
-  let nextStartIndex = startIndex
+  const { startIndex, endIndex } = visibleIndexRange;
+  let nextStartIndex = startIndex;
 
   if (dimension instanceof ListGroupDimensions) {
-    for (nextStartIndex; nextStartIndex < endIndex; nextStartIndex++ ) {
+    for (nextStartIndex; nextStartIndex < endIndex; nextStartIndex++) {
       const dimensionsInfo = dimension.getFinalIndexIndexInfo(nextStartIndex);
       if (!dimensionsInfo) continue;
 
-      const { 
-        dimensions: currentDimensions, 
-        index: currentIndex 
-      } =
+      const { dimensions: currentDimensions, index: currentIndex } =
         dimensionsInfo;
 
       if (currentDimensions instanceof Dimension) {
@@ -43,21 +40,31 @@ export default <State extends ReducerResult = ReducerResult>(
       }
     }
     if (ctx.visibleIndexRange.endIndex !== nextStartIndex) {
-      info('middleware fixVisibleRange endIndex set from ', endIndex, ' to ', nextStartIndex)
-      ctx.visibleIndexRange.endIndex = nextStartIndex
+      info(
+        'middleware fixVisibleRange endIndex set from ',
+        endIndex,
+        ' to ',
+        nextStartIndex
+      );
+      ctx.visibleIndexRange.endIndex = nextStartIndex;
     }
   }
 
   if (dimension instanceof ListDimensions) {
     for (nextStartIndex; nextStartIndex < endIndex; nextStartIndex++) {
-      const meta = dimension.getIndexItemMeta(nextStartIndex);
-      if (!meta) continue;
-      if (!isValidMetaLayout(meta)) break;
+      // const meta = dimension.getIndexItemMeta(nextStartIndex);
+      // if (!meta) continue;
+      // if (!isValidMetaLayout(meta)) break;
     }
 
     if (ctx.visibleIndexRange.endIndex !== nextStartIndex) {
-      info('middleware fixVisibleRange endIndex set from ', endIndex, ' to ', nextStartIndex)
-      ctx.visibleIndexRange.endIndex = nextStartIndex
+      info(
+        'middleware fixVisibleRange endIndex set from ',
+        endIndex,
+        ' to ',
+        nextStartIndex
+      );
+      ctx.visibleIndexRange.endIndex = nextStartIndex;
     }
   }
 };
