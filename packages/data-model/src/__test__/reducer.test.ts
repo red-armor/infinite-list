@@ -227,7 +227,7 @@ function testSuite(isFixedLength: boolean) {
       expect(listGroupDimensions.store.getState()).toEqual({
         actionType: ActionType.HydrationWithBatchUpdate,
         visibleStartIndex: 0,
-        visibleEndIndex: 1,
+        visibleEndIndex: 13,
         bufferedStartIndex: 0,
         bufferedEndIndex: 10,
         isEndReached: false,
@@ -277,7 +277,7 @@ function testSuite(isFixedLength: boolean) {
       expect(listGroupDimensions.store.getState()).toEqual({
         actionType: ActionType.HydrationWithBatchUpdate,
         visibleStartIndex: 0,
-        visibleEndIndex: 0,
+        visibleEndIndex: 13,
         bufferedStartIndex: 0,
         bufferedEndIndex: 9,
         isEndReached: false,
@@ -288,7 +288,6 @@ function testSuite(isFixedLength: boolean) {
     it('with ignoredToPerBatch - with layout', () => {
       const listGroupDimensions = new ListGroupDimensions({
         id: 'list_group',
-        isFixedLength,
         maxToRenderPerBatch: 10,
         isFixedLength: false,
         getContainerLayout: () => ({
@@ -336,7 +335,7 @@ function testSuite(isFixedLength: boolean) {
       expect(listGroupDimensions.store.getState()).toEqual({
         actionType: ActionType.HydrationWithBatchUpdate,
         visibleStartIndex: 0,
-        visibleEndIndex: 1,
+        visibleEndIndex: 20,
         bufferedStartIndex: 0,
         bufferedEndIndex: 10,
         isEndReached: false,
@@ -458,7 +457,7 @@ function testSuite(isFixedLength: boolean) {
       expect(listGroupDimensions.store.getState()).toEqual({
         actionType: ActionType.HydrationWithBatchUpdate,
         visibleStartIndex: 0,
-        visibleEndIndex: 1,
+        visibleEndIndex: 23,
         bufferedStartIndex: 0,
         bufferedEndIndex: 20,
         isEndReached: false,
@@ -544,7 +543,7 @@ function testSuite(isFixedLength: boolean) {
       expect(listGroupDimensions.store.getState()).toEqual({
         actionType: ActionType.HydrationWithBatchUpdate,
         visibleStartIndex: 0,
-        visibleEndIndex: 0,
+        visibleEndIndex: 23,
         bufferedStartIndex: 0,
         bufferedEndIndex: 9,
       });
@@ -561,7 +560,6 @@ function testSuite(isFixedLength: boolean) {
         windowSize: 2,
         recycleEnabled: true,
         initialNumToRender: 4,
-        // onEndReachedThreshold: 2,
         getContainerLayout: () => ({
           x: 0,
           y: 0,
@@ -607,7 +605,7 @@ function testSuite(isFixedLength: boolean) {
 
       expect(list.state).toEqual({
         visibleStartIndex: 0,
-        visibleEndIndex: 0,
+        visibleEndIndex: 12,
         bufferedStartIndex: 0,
         bufferedEndIndex: 7,
         isEndReached: true,
@@ -625,7 +623,7 @@ function testSuite(isFixedLength: boolean) {
 
       expect(listState).toEqual({
         visibleStartIndex: 0,
-        visibleEndIndex: 0,
+        visibleEndIndex: 12,
         bufferedStartIndex: 0,
         bufferedEndIndex: 7,
         isEndReached: true,
@@ -641,7 +639,7 @@ function testSuite(isFixedLength: boolean) {
 
       expect(list.state).toEqual({
         visibleStartIndex: 0,
-        visibleEndIndex: 0,
+        visibleEndIndex: 12,
         bufferedStartIndex: 0,
         bufferedEndIndex: 7,
         isEndReached: true,

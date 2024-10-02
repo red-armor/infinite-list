@@ -138,7 +138,7 @@ describe('setData', () => {
   });
   it('initial', () => {
     const data = buildData(20);
-    const recycleList = new ListDimensions({
+    const recycleList = new ListDimensions<{ key: number }>({
       data: [],
       id: 'list_group',
       recycleEnabled: true,
@@ -167,7 +167,7 @@ describe('setData', () => {
 
   it('append', () => {
     const data = buildData(20);
-    const recycleList = new ListDimensions({
+    const recycleList = new ListDimensions<{ key: number }>({
       data,
       id: 'list_group',
       recycleEnabled: true,
@@ -677,7 +677,9 @@ describe.only('data update', () => {
   });
   it('insert a data item', () => {
     const data = buildData(20);
-    const recycleList = new ListDimensions({
+    const recycleList = new ListDimensions<{
+      key: number;
+    }>({
       data: [],
       id: 'list_group',
       recycleEnabled: true,
@@ -686,6 +688,8 @@ describe.only('data update', () => {
       windowSize: 5,
       initialNumToRender: 4,
       onEndReachedThreshold: 2,
+
+      recyclerReservedBufferPerBatch: 4,
 
       onRecyclerProcess: () => true,
       getContainerLayout: () => ({
@@ -725,6 +729,51 @@ describe.only('data update', () => {
     // the forth as first item in recycleState
     expect(recycleListStateResult.recycleState[0].targetKey).toBe('4');
 
+    expect(
+      recycleListStateResult.recycleState.map((item) => ({
+        key: item.targetKey,
+        offset: item.offset,
+      }))
+    ).toEqual([
+      {
+        key: '4',
+        offset: 400,
+      },
+      {
+        key: '5',
+        offset: 500,
+      },
+      {
+        key: '6',
+        offset: 600,
+      },
+      {
+        key: '7',
+        offset: 700,
+      },
+    ]);
+    expect(
+      recycleListStateResult.spaceState.map((item) => ({
+        key: item.key,
+      }))
+    ).toEqual([
+      {
+        key: '0',
+      },
+      {
+        key: '1',
+      },
+      {
+        key: '2',
+      },
+      {
+        key: '3',
+      },
+      {
+        key: 'space_4_18',
+      },
+    ]);
+
     const _data = data.slice();
     const newData = buildData(1, 20);
     _data.splice(1, 0, newData[0]);
@@ -734,14 +783,70 @@ describe.only('data update', () => {
     recycleListStateResult = recycleList.stateResult;
 
     // offset should be recalculate
-    expect(recycleListStateResult.recycleState[0].offset).toBe(400);
+    expect(recycleListStateResult.recycleState[0].offset).toBe(500);
     // the third as first item in recycleState
-    expect(recycleListStateResult.recycleState[0].targetKey).toBe('3');
+    expect(recycleListStateResult.recycleState[0].targetKey).toBe('4');
+
+    // the new item should be placed on new position
+    expect(recycleListStateResult.recycleState[4].offset).toBe(400);
+    expect(recycleListStateResult.recycleState[4].targetKey).toBe('3');
+
+    expect(
+      recycleListStateResult.recycleState.map((item) => ({
+        key: item.targetKey,
+        offset: item.offset,
+      }))
+    ).toEqual([
+      {
+        key: '4',
+        offset: 500,
+      },
+      {
+        key: '5',
+        offset: 600,
+      },
+      {
+        key: '6',
+        offset: 700,
+      },
+      {
+        key: '7',
+        offset: 800,
+      },
+      {
+        key: '3',
+        offset: 400,
+      },
+    ]);
+
+    expect(
+      recycleListStateResult.spaceState.map((item) => ({
+        key: item.key,
+      }))
+    ).toEqual([
+      {
+        key: '0',
+      },
+      {
+        key: '20',
+      },
+      {
+        key: '1',
+      },
+      {
+        key: '2',
+      },
+      {
+        key: 'space_4_19',
+      },
+    ]);
   });
 
   it('insert a data item with dynamic layout', () => {
     const data = buildData(20);
-    const recycleList = new ListDimensions({
+    const recycleList = new ListDimensions<{
+      key: number;
+    }>({
       data: [],
       id: 'list_group',
       recycleEnabled: true,
@@ -749,6 +854,7 @@ describe.only('data update', () => {
       maxToRenderPerBatch: 10,
       windowSize: 5,
       initialNumToRender: 4,
+      itemApproximateLength: 80,
       onEndReachedThreshold: 2,
       getContainerLayout: () => ({
         x: 0,
@@ -767,9 +873,9 @@ describe.only('data update', () => {
 
     expect(recycleList.state).toEqual({
       visibleStartIndex: 0,
-      visibleEndIndex: 0,
+      visibleEndIndex: 12,
       bufferedStartIndex: 0,
-      bufferedEndIndex: 19,
+      bufferedEndIndex: 12,
       isEndReached: true,
       distanceFromEnd: 574,
       actionType: 'initial',
@@ -808,8 +914,8 @@ describe.only('data update', () => {
     recycleListStateResult = recycleList.stateResult as RecycleStateResult<any>;
 
     // offset should be recalculate, approximateItemLength will be included.
-    expect(recycleListStateResult.recycleState[0].offset).toBe(360);
+    expect(recycleListStateResult.recycleState[0].offset).toBe(380);
     // the third as first item in recycleState
-    expect(recycleListStateResult.recycleState[0].targetKey).toBe('3');
+    expect(recycleListStateResult.recycleState[0].targetKey).toBe('4');
   });
 });

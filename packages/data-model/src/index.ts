@@ -13,9 +13,3 @@ export * from './viewable/viewabilityUtils';
 export * from './exportedUtils';
 // export { default as ListSpy } from './utils/ListSpy';
 export * from './types';
-
-const sum = (index: number) => {
-  console.log('index ,', index + 35);
-};
-
-export { sum };

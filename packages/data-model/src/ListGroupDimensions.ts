@@ -598,7 +598,7 @@ class ListGroupDimensions<
 
   registerItem(
     key: string,
-    dimensionProps: RegisteredDimensionProps<ItemT>
+    dimensionProps: RegisteredDimensionProps<ItemT> = {}
   ): {
     dimensions: Dimension<ItemT>;
     remover: () => void;

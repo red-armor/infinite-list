@@ -41,11 +41,11 @@ export interface ListGroupDimensionsProps
 export type RegisteredListProps<ItemT extends GenericItemT = GenericItemT> =
   Omit<
     ListDimensionsModelProps<ItemT> & OnEndReachedHelperProps,
-    'container' | 'id'
+    'container' | 'id' | 'store'
   >;
 export type RegisteredDimensionProps<
   ItemT extends GenericItemT = GenericItemT
-> = Omit<DimensionProps<ItemT>, 'container' | 'id'>;
+> = Omit<DimensionProps<ItemT>, 'container' | 'id' | 'store'>;
 
 export type KeyToOnEndReachedMap = Map<string, OnEndReached>;
 

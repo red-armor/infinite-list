@@ -1,5 +1,4 @@
-// export const info = (...args: any[]) => {
-export const info = () => {
-  return;
-  // console.info(...args);
+export const info = (...args: any[]) => {
+  // @ts-expect-error
+  if (process.env.NODE_ENV === 'verbose') console.info(...args);
 };
