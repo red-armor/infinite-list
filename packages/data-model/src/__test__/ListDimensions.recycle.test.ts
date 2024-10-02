@@ -665,7 +665,7 @@ describe('setData', () => {
 //   });
 // });
 
-describe.only('data update', () => {
+describe('data update', () => {
   beforeEach(() => {
     resetContext();
     // tell vitest we use mocked time
