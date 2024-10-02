@@ -1,6 +1,6 @@
 import type { Meta } from '@storybook/react';
 import { defaultKeyExtractor } from '@infinite-list/data-model';
-import { List } from './List';
+import { List } from '../';
 
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({

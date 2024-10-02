@@ -69,4 +69,4 @@ const List = (props: ListProps) => {
   );
 };
 
-export { List };
+export default List;

@@ -1,1 +1,3 @@
-export * from './lib/react';
+import List from './lib/List';
+
+export { List };
