@@ -8,8 +8,8 @@
   },
   "scripts": {
     "clean": "pnpm run -r clean",
-    "build": "pnpm run -r build",
-    "test": "CI=true pnpm run -r test",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
     "version": "bump",
     "alpha": "bump --branch",
     "lint": "eslint --ext js,ts,tsx .",
@@ -29,11 +29,13 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
+  "packageManager": "pnpm@9.3.0",
   "author": "youchao liu",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
+    "@changesets/cli": "^2.27.8",
     "@eslint/js": "^9.8.0",
     "@nx/eslint": "19.8.0",
     "@nx/eslint-plugin": "19.8.0",

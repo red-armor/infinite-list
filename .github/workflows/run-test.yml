@@ -1,0 +1,54 @@
+name: run-test
+
+on:
+  - push
+  - pull_request
+  # workflow_dispatch:
+  # push:
+  #   branches:
+  #     - setup-*
+  #     - main
+  # merge_group:
+  # pull_request:
+  #   paths-ignore:
+  #     - ".vscode/**"
+  #     - "**/*.md"
+  #     - ".github/ISSUE_TEMPLATE/**"
+
+# Automatically cancel older in-progress jobs on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Build primes out Turbo build cache and pnpm cache
+  build:
+    name: "Build: ${{ matrix.os }}"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 3
+    strategy:
+      matrix:
+        OS: [ubuntu-latest, windows-latest]
+        NODE_VERSION: [18]
+      fail-fast: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+
+      - name: Setup node@${{ matrix.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.NODE_VERSION }}
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: test 
+        run: pnpm run test
