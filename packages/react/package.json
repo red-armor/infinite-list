@@ -11,5 +11,8 @@
   },
   "dependencies": {
     "@infinite-list/data-model": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

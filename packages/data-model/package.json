@@ -5,6 +5,9 @@
     "dist",
     "src"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@x-oasis/batchinate-last": "^0.1.14",
     "@x-oasis/batchinator": "^0.1.14",
