@@ -1,5 +1,16 @@
 # @infinite-list/react-native
 
+## 2.0.0
+
+### Major Changes
+
+- c386538: trigger major version
+
+### Patch Changes
+
+- Updated dependencies [c386538]
+  - @infinite-list/data-model@2.0.0
+
 ## 1.0.0
 
 ### Major Changes
