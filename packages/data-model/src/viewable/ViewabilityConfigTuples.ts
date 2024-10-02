@@ -1,5 +1,6 @@
 import uniqueArrayObject from '@x-oasis/unique-array-object';
 import {
+  GenericItemT,
   ViewabilityConfig,
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
@@ -8,8 +9,9 @@ import {
 import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 import ItemMeta from '../ItemMeta';
+import ViewabilityItemMeta from './ViewabilityItemMeta';
 
-class ViewabilityConfigTuples {
+class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   private _tuple: ViewabilityConfigCallbackPairs = [];
   public viewabilityHelpers: Array<ViewablityHelper> = [];
 
@@ -54,6 +56,7 @@ class ViewabilityConfigTuples {
       this._tuple.push({
         onViewableItemsChanged,
         viewabilityConfig: {
+          // @ts-expect-error
           name: 'viewable',
           ...viewabilityConfig,
         },
@@ -61,12 +64,14 @@ class ViewabilityConfigTuples {
     } else if (viewabilityConfig) {
       this.tuple.push({
         viewabilityConfig: {
+          // @ts-expect-error
           name: 'viewable',
           ...viewabilityConfig,
         },
       });
     }
 
+    // @ts-expect-error
     this._tuple = uniqueArrayObject(
       this._tuple,
       (config) => config.viewabilityConfig.name
@@ -91,7 +96,7 @@ class ViewabilityConfigTuples {
       [key: string]: boolean;
     }>((acc, pair) => {
       const { viewabilityConfig } = pair;
-      const { name } = viewabilityConfig;
+      const { name } = viewabilityConfig || {};
       if (name) acc[name] = !!defaultValue;
       return acc;
     }, {});
@@ -102,13 +107,16 @@ class ViewabilityConfigTuples {
   }
 
   resolveItemMetaState(
-    itemMeta: ItemMeta,
-    viewabilityScrollMetrics: ViewabilityScrollMetrics,
-    getItemOffset?: (itemMeta: ItemMeta) => number
+    itemMeta: ItemMeta<ItemT>,
+    viewabilityScrollMetrics?: ViewabilityScrollMetrics,
+    getItemOffset?: (itemMeta: ItemMeta<ItemT> | ViewabilityItemMeta) => number
   ) {
-    if (!viewabilityScrollMetrics || !itemMeta) return {};
-    if (!itemMeta.getLayout()) return {};
-    return this.viewabilityHelpers.reduce((value, helper) => {
+    if (!viewabilityScrollMetrics || !itemMeta)
+      return itemMeta.getState() || {};
+    if (!itemMeta.getLayout()) return itemMeta?.getState() || {};
+    return this.viewabilityHelpers.reduce<{
+      [key: string]: boolean;
+    }>((value, helper) => {
       const falsy = helper.checkItemViewability(
         itemMeta,
         viewabilityScrollMetrics,

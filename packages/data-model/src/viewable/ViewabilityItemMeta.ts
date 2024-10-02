@@ -1,7 +1,7 @@
 abstract class ViewabilityItemMeta {
   readonly _key: string;
 
-  constructor(props) {
+  constructor(props: { key: string }) {
     const { key } = props;
     this._key = key;
   }
@@ -13,6 +13,8 @@ abstract class ViewabilityItemMeta {
   get key() {
     return this._key;
   }
+
+  abstract getIndex(): number;
 
   // getMetaOnViewableItemsChanged() {
   //   return {}

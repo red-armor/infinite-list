@@ -5,27 +5,28 @@ import {
   InspectingAPI,
   InspectingListener,
   OnIndexKeysChanged,
+  GenericItemT,
 } from './types';
 import findLastIndex from '@x-oasis/find-last-index';
 import ListGroupDimensions from './ListGroupDimensions';
 
-class Inspector {
-  private _indexKeys: Array<string> = [];
+class Inspector<ItemT extends GenericItemT = GenericItemT> {
+  private _indexKeys: string[] = [];
   // private _anchorRange: AnchorRange = {};
-  private _owner: ListGroupDimensions;
+  private _owner: ListGroupDimensions<ItemT>;
   private _inspectingTime: number = Date.now();
   private _inspectingTimes = 0;
   private _heartBeatingIndexKeys: Array<string> = [];
-  private _inspectingListener: InspectingListener;
+  private _inspectingListener?: InspectingListener;
   private _startInspectBatchinator: Batchinator;
   private _handleChangeBatchinator: Batchinator;
   private _updateAnchorKeysBatchinator: Batchinator;
   private _isCollecting = false;
-  private _onChange: OnIndexKeysChanged;
+  private _onChange?: OnIndexKeysChanged;
   private _anchorKeys: Array<string> = [];
 
-  constructor(props?: InspectorProps) {
-    const { onChange, owner } = props;
+  constructor(props: InspectorProps<ItemT>) {
+    const { onChange, owner } = props || {};
     // 主要用来巡检
     this._startInspectBatchinator = new Batchinator(
       this.startInspection.bind(this),
@@ -57,8 +58,8 @@ class Inspector {
 
   push(key: string) {
     const anchorKey = this.owner.getFinalAnchorKey(key);
-    // @ts-ignore
     const index = findLastIndex(this._anchorKeys, (v) => v === anchorKey);
+
     if (index !== -1) {
       this._indexKeys.splice(index + 1, 0, key);
       this._handleChangeBatchinator.schedule();
@@ -71,22 +72,6 @@ class Inspector {
     return () => {
       this.remove(key);
     };
-
-    // const location = this._anchorRange[anchorKey];
-    // // in the middle
-    // if (location && location.endIndex < this._indexKeys.length) {
-    //   this._indexKeys = this._indexKeys
-    //     .slice()
-    //     .splice(location.endIndex, 1, key);
-    //   this.updateAnchorRange();
-    //   this.handleChange();
-    // } else {
-    //   this._indexKeys.push(key);
-    // }
-    // this._startInspectBatchinator.schedule();
-    // return () => {
-    //   this.remove(key);
-    // };
   }
 
   handleChange() {
@@ -144,9 +129,9 @@ class Inspector {
   }
 
   updateAnchorKeys() {
-    this._anchorKeys = this._indexKeys.map((key) =>
-      this.owner.getFinalAnchorKey(key)
-    );
+    this._anchorKeys = this._indexKeys
+      .map((key) => this.owner.getFinalAnchorKey(key))
+      .filter((v) => v != null);
 
     // this._anchorRange = this._indexKeys.reduce<AnchorRange>(
     //   (acc, cur, index) => {

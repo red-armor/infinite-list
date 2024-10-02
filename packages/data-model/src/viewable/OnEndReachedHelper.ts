@@ -21,12 +21,12 @@ class OnEndReachedHelper {
   readonly _consecutiveDistanceTimeoutThresholdValue = 800;
   readonly sendOnEndReachedDistanceFromEndStack: SendOnEndReachedDistanceFromBottomStack;
 
-  private onEndReached: OnEndReached | Array<OnEndReached>;
-  private _scrollMetrics: ScrollMetrics;
+  private onEndReached?: OnEndReached | Array<OnEndReached>;
+  private _scrollMetrics?: ScrollMetrics;
   private _maxCountOfHandleOnEndReachedAfterStillness: number;
   private _distanceFromEndThresholdValue: number;
   private _waitingForDataChangedSinceEndReached = false;
-  private _onEndReachedTimeoutHandler: NodeJS.Timeout;
+  private _onEndReachedTimeoutHandler?: NodeJS.Timeout;
   private _currentMutexMS = 0;
 
   public attemptToHandleOnEndReachedBatchinator: Batchinator;
@@ -89,7 +89,7 @@ class OnEndReachedHelper {
   }
 
   removeHandler(onEndReached: OnEndReached) {
-    const next = [].concat(this.onEndReached);
+    const next = ([] as OnEndReached[]).concat(this.onEndReached || []);
     const index = next.findIndex((handler) => handler === onEndReached);
     if (index !== -1) {
       next.splice(index, 1);
@@ -124,10 +124,12 @@ class OnEndReachedHelper {
    * @returns
    */
   perform(
-    scrollMetrics: ScrollMetrics = this._scrollMetrics,
+    scrollMetrics: ScrollMetrics | undefined = this._scrollMetrics,
     positive = false
   ) {
+    if (!scrollMetrics) return;
     const { contentLength, offset, visibleLength } = scrollMetrics;
+    if (!visibleLength) return;
     const distanceFromEnd = contentLength - visibleLength - offset;
     const threshold = this.onEndReachedThreshold * visibleLength;
     this._scrollMetrics = scrollMetrics;
@@ -146,20 +148,19 @@ class OnEndReachedHelper {
   }
 
   attemptToHandleOnEndReached() {
-    const { isEndReached, distanceFromEnd } = this._scrollMetrics
-      ? this.perform(this._scrollMetrics)
-      : {
-          distanceFromEnd: 0,
-          isEndReached: true,
-        };
-    this.performEndReached({ isEndReached, distanceFromEnd });
+    const info = this.perform(this._scrollMetrics);
+
+    if (info) {
+      const { isEndReached, distanceFromEnd } = info;
+      this.performEndReached({ isEndReached, distanceFromEnd });
+    }
   }
 
   clearTimer() {
     if (this._onEndReachedTimeoutHandler) {
       clearTimeout(this._onEndReachedTimeoutHandler);
     }
-    this._onEndReachedTimeoutHandler = null;
+    this._onEndReachedTimeoutHandler = undefined;
   }
 
   releaseHandlerMutex(mutexMS: number) {
@@ -170,7 +171,7 @@ class OnEndReachedHelper {
     }).bind(this);
   }
 
-  timeoutReleaseHandlerMutex(now) {
+  timeoutReleaseHandlerMutex(now: number) {
     console.warn(
       'OnEndReachedHelper ',
       this.id,
@@ -287,7 +288,7 @@ class OnEndReachedHelper {
   timeoutTrailingHandler() {
     if (this._scrollMetrics) {
       const info = this.perform(this._scrollMetrics);
-      this.performEndReached(info);
+      if (info) this.performEndReached(info);
     }
   }
 
@@ -315,7 +316,7 @@ class OnEndReachedHelper {
         });
       });
     } else {
-      this.onEndReached({
+      this.onEndReached?.({
         distanceFromEnd,
         cb: this.releaseHandlerMutex(this._currentMutexMS),
         releaseHandlerMutex: this.releaseHandlerMutex(this._currentMutexMS),

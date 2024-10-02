@@ -40,15 +40,15 @@ export default class SortedItems {
     const { selectOffset, selectLength } = this.selectValue;
 
     this._headValues.sort((a, b) => {
-      const a1 = selectOffset(a.getLayout());
-      const b1 = selectOffset(b.getLayout());
+      const a1 = selectOffset(a.getLayout()!);
+      const b1 = selectOffset(b.getLayout()!);
       // 由小到大
       return a1 - b1;
     });
 
     this._tailValues.sort((a, b) => {
-      const a1 = selectOffset(a.getLayout()) + selectLength(a.getLayout());
-      const b1 = selectOffset(b.getLayout()) + selectLength(b.getLayout());
+      const a1 = selectOffset(a.getLayout()!) + selectLength(a.getLayout()!);
+      const b1 = selectOffset(b.getLayout()!) + selectLength(b.getLayout()!);
       // 由小到大
       return a1 - b1;
     });
@@ -91,9 +91,9 @@ export default class SortedItems {
       minOffset,
       maxOffset,
     });
-    const values = [];
+    const values: ItemMeta[] = [];
 
-    const mergedValues = [].concat(headValues, tailValues);
+    const mergedValues = ([] as ItemMeta[]).concat(headValues, tailValues);
     mergedValues.forEach((value) => {
       const index = values.indexOf(value);
       if (index === -1) values.push(value);
@@ -107,7 +107,7 @@ export default class SortedItems {
   }): Array<ItemMeta> {
     const { selectOffset, selectLength } = this.selectValue;
     const { minOffset, maxOffset } = props;
-    const getValue = (item: ItemMeta) => selectOffset(item.getLayout());
+    const getValue = (item: ItemMeta) => selectOffset(item.getLayout()!);
     const data = this._headValues;
     if (!data.length) return [];
 
@@ -133,9 +133,10 @@ export default class SortedItems {
     if (startIndex > 0) {
       const prev = data[startIndex - 1];
       const layout = prev.getLayout();
-      // 这里要严格`<`；
-      if (minOffset < selectLength(layout) + selectOffset(layout)) {
-        startIndex = startIndex - 1;
+      if (layout) {
+        if (minOffset < selectLength(layout) + selectOffset(layout)) {
+          startIndex = startIndex - 1;
+        }
       }
     }
 
@@ -148,8 +149,8 @@ export default class SortedItems {
   }): Array<ItemMeta> {
     const { selectOffset, selectLength } = this.selectValue;
     const { minOffset, maxOffset } = props;
-    const getValue = (item) =>
-      selectOffset(item.getLayout()) + selectLength(item.getLayout());
+    const getValue = (item: ItemMeta) =>
+      selectOffset(item.getLayout()!) + selectLength(item.getLayout()!);
     const data = this._headValues;
     const len = data.length;
     if (!len) return [];
@@ -175,8 +176,9 @@ export default class SortedItems {
 
     if (endIndex < len) {
       const item = data[endIndex];
+      const layout = item?.getLayout();
       // 即使相等也要将最后一个包含进去
-      if (maxOffset >= selectOffset(item.getLayout())) {
+      if (layout && maxOffset >= selectOffset(layout)) {
         endIndex = endIndex + 1;
       }
     }

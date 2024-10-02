@@ -6,15 +6,19 @@ import {
   BaseDimensionsProps,
   BoundInfo,
   BoundInfoType,
+  GenericItemT,
   ItemLayout,
   KeysChangedType,
   ScrollMetrics,
 } from './types';
+import * as log from './utils/logger';
 
-abstract class BaseDimensions extends BaseLayout {
+abstract class BaseDimensions<
+  ItemT extends GenericItemT = GenericItemT
+> extends BaseLayout {
   _keyToIndexMap: Map<string, number> = new Map();
   _indexKeys: Array<string> = [];
-  _keyToMetaMap: Map<string, ItemMeta> = new Map();
+  _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
   _configTuple: ViewabilityConfigTuples;
 
   _onUpdateItemLayout?: Function;
@@ -54,7 +58,7 @@ abstract class BaseDimensions extends BaseLayout {
 
   getKeyIndex(key: string) {
     const index = this._keyToIndexMap.get(key);
-    if (index >= 0) return index;
+    if (typeof index === 'number') return index;
     return -1;
   }
 
@@ -64,7 +68,14 @@ abstract class BaseDimensions extends BaseLayout {
 
   getIndexKeyOffset(index: number, exclusive?: boolean) {
     const listOffset = exclusive ? 0 : this.getContainerOffset();
-
+    log.info(
+      'list ======',
+      index,
+      listOffset,
+      this.getContainerOffset(),
+      this.intervalTree.getHeap()[1],
+      this._intervalTree.sumUntil(index)
+    );
     if (typeof index === 'number') {
       return (
         listOffset +
@@ -121,11 +132,11 @@ abstract class BaseDimensions extends BaseLayout {
     return this._getKeyMeta(key);
   }
 
-  _setKeyMeta(key: string, meta: ItemMeta) {
+  _setKeyMeta(key: string, meta: ItemMeta<ItemT>) {
     return this._keyToMetaMap.set(key, meta);
   }
 
-  setKeyMeta(key: string, meta: ItemMeta) {
+  setKeyMeta(key: string, meta: ItemMeta<ItemT>) {
     return this._setKeyMeta(key, meta);
   }
 
@@ -143,7 +154,7 @@ abstract class BaseDimensions extends BaseLayout {
       const currentKey = this._indexKeys[index];
       const nextKey = keys[index];
 
-      if (currentKey !== nextKey || !equal(index)) {
+      if (currentKey !== nextKey || !equal?.(index)) {
         if (oldLen === newLen) return KeysChangedType.Reorder;
         return KeysChangedType.Add;
       }
@@ -153,7 +164,7 @@ abstract class BaseDimensions extends BaseLayout {
     return KeysChangedType.Append;
   }
 
-  getKeyItemLayout(key: string): ItemLayout {
+  getKeyItemLayout(key: string): ItemLayout | null | undefined {
     const meta = this.getKeyMeta(key);
     if (meta) {
       return meta.getLayout();
@@ -168,7 +179,7 @@ abstract class BaseDimensions extends BaseLayout {
 
   getKeyItemLength(key: string) {
     const layout = this.getKeyItemLayout(key);
-    return this._selectValue.selectLength(layout);
+    return layout ? this._selectValue.selectLength(layout) : 0;
   }
 
   getIndexItemLength(index: number) {
@@ -201,7 +212,7 @@ abstract class BaseDimensions extends BaseLayout {
     return this._setKeyItemLayout(key, layout, updateIntervalTree);
   }
 
-  setKeyItemLength(key: string, length, updateIntervalTree?: boolean) {
+  setKeyItemLength(key: string, length: number, updateIntervalTree?: boolean) {
     this._setKeyItemLayout(key, length, updateIntervalTree);
   }
 
@@ -237,9 +248,11 @@ abstract class BaseDimensions extends BaseLayout {
       type: BoundInfoType.OutOfBoundary,
       index: -1,
     };
-    const listOffset = exclusive
-      ? 0
-      : this._selectValue.selectOffset(this.getContainerLayout());
+    const containerLayout = this.getContainerLayout();
+    const listOffset =
+      exclusive || !containerLayout
+        ? 0
+        : this._selectValue.selectOffset(containerLayout);
     if (offset < listOffset) return info;
     const maxValue = this._intervalTree.getMaxValue();
     if (offset > listOffset + maxValue) {

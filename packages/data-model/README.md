@@ -1,13 +1,11 @@
-# @infinite-list/data-model
+# data-model
 
-## Installation
+This library was generated with [Nx](https://nx.dev).
 
-```bash
-$ npm i @infinite-list/data-model
-```
+## Building
 
-## How to use
+Run `nx build data-model` to build the library.
 
-```typescript
-import { ListDimensions } from '@infinite-list/data-model'
-```
+## Running unit tests
+
+Run `nx test data-model` to execute the unit tests via [Vitest](https://vitest.dev/).

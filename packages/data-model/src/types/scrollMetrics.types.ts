@@ -35,13 +35,13 @@ export type ScrollEventMetrics = {
 export type ScrollMetrics = {
   contentLength: number;
   offset: number;
-  visibleLength: number | undefined;
+  visibleLength: number;
 
   // not used
-  dOffset: number;
-  dt: number;
-  timestamp: number;
-  velocity: number;
+  dOffset?: number;
+  dt?: number;
+  timestamp?: number;
+  velocity?: number;
 };
 
 export type ContentSize = {

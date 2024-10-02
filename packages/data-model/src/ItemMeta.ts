@@ -9,37 +9,53 @@ import {
   ItemMetaProps,
   StateEventListener,
   ItemMetaStateEventHelperProps,
+  GenericItemT,
 } from './types';
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
 
+export const isValidMetaLayout = (meta: ItemMeta | null | undefined) =>
+  !!(meta && !meta.isApproximateLayout && meta.getLayout());
+
+type ItemMetaContext<T extends GenericItemT = GenericItemT> = {
+  [key: string]: ItemMeta<T>;
+};
+
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
-const context: {
-  [key: string]: ItemMeta;
-} = {};
+export let context: ItemMetaContext = {};
 
 let count = 0;
-class ItemMeta extends ViewabilityItemMeta {
+
+export const resetContext = () => {
+  context = {};
+};
+
+/**
+ * _layout should always exist. `_isApproximateLayout` should make the difference.
+ */
+class ItemMeta<
+  ItemT extends GenericItemT = GenericItemT
+> extends ViewabilityItemMeta {
   private _isListItem: boolean;
   private _id: string;
   private _layout?: ItemLayout;
   private _separatorLength?: number;
   private _recyclerType: string;
-  private _owner?: ItemMetaOwner;
+  private _owner: ItemMetaOwner<ItemT>;
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
   readonly getMetaOnViewableItemsChanged?: any;
-  readonly _ownerId: string;
   readonly _canIUseRIC?: boolean;
   private _isApproximateLayout: boolean;
   private _ignoredToPerBatch: boolean;
+  private _useSeparatorLength: boolean;
   private _spawnProps: {
     [key: string]: ItemMetaStateEventHelperProps;
   };
 
-  constructor(props: ItemMetaProps) {
+  constructor(props: ItemMetaProps<ItemT>) {
     super(props);
     const {
       owner,
@@ -48,11 +64,14 @@ class ItemMeta extends ViewabilityItemMeta {
       state,
       isListItem,
       canIUseRIC,
-      recyclerType = DEFAULT_RECYCLER_TYPE,
-      isInitialItem = false,
-      ignoredToPerBatch,
-      isApproximateLayout = true,
       spawnProps = {},
+      ignoredToPerBatch,
+      isInitialItem = false,
+      isApproximateLayout = true,
+
+      useSeparatorLength = true,
+
+      recyclerType = DEFAULT_RECYCLER_TYPE,
     } = props;
     this._owner = owner;
     this._id = `item_meta_${count++}`;
@@ -61,6 +80,7 @@ class ItemMeta extends ViewabilityItemMeta {
     this._isListItem = isListItem || false;
     this._stateEventSubscriptions = new Map();
     this._ignoredToPerBatch = !!ignoredToPerBatch;
+    this._useSeparatorLength = useSeparatorLength;
     this._state =
       state || this._owner?.resolveConfigTuplesDefaultState
         ? this._owner?.resolveConfigTuplesDefaultState(!!isInitialItem)
@@ -72,14 +92,16 @@ class ItemMeta extends ViewabilityItemMeta {
     this._spawnProps = spawnProps;
 
     this.addStateEventListener = this.addStateEventListener.bind(this);
-    context[this.key] = this;
+    (context as any)[this.key] = this;
   }
 
-  static spawn(props: ItemMetaProps) {
+  static spawn<T extends GenericItemT = GenericItemT>(props: ItemMetaProps<T>) {
     const ancestor = context[props.key];
     if (ancestor) {
       const layout = ancestor.getLayout();
-      const spawnProps = {};
+      const spawnProps: {
+        [key: string]: any;
+      } = {};
       for (const [key, value] of ancestor._stateEventSubscriptions) {
         const _props = ItemMetaStateEventHelper.spawn(value);
         if (_props) spawnProps[key] = _props;
@@ -144,14 +166,11 @@ class ItemMeta extends ViewabilityItemMeta {
   }
 
   getSeparatorLength() {
-    return this._separatorLength;
+    return this._separatorLength || 0;
   }
 
   getContainerOffset() {
     return this._owner.getContainerOffset();
-    // if (this._isListItem)
-    //   return (this._owner as BaseDimensions).getContainerOffset();
-    // return 0;
   }
 
   getItemLength() {
@@ -159,9 +178,21 @@ class ItemMeta extends ViewabilityItemMeta {
     return this._layout ? selectValue.selectLength(this._layout) : 0;
   }
 
+  setUseSeparatorLength(value: boolean) {
+    this._useSeparatorLength = value;
+  }
+
+  getFinalItemLength() {
+    if (this._useSeparatorLength) {
+      return this.getItemLength() + this.getSeparatorLength();
+    }
+
+    return this.getItemLength();
+  }
+
   getItemOffset(exclusive?: boolean) {
     if (this._isListItem) {
-      const offset = (this._owner as BaseDimensions).getKeyItemOffset(
+      const offset = (this._owner as BaseDimensions<ItemT>).getKeyItemOffset(
         this._key,
         exclusive
       );
@@ -178,11 +209,19 @@ class ItemMeta extends ViewabilityItemMeta {
     return this._layout ? selectValue.selectOffset(this._layout) : 0;
   }
 
+  /**
+   *
+   * @param state
+   * @returns
+   *
+   * trigger state change listener, such as viewable / impression
+   */
   setItemMetaState(
     state: {
       [key: string]: boolean;
     } = {}
   ) {
+    if (state === this._state) return;
     Object.keys({ ...state }).forEach((key) => {
       const helper = this._stateEventSubscriptions.get(key);
       const currentValue = state[key];
@@ -201,11 +240,14 @@ class ItemMeta extends ViewabilityItemMeta {
     this._state = { ...state };
   }
 
-  getKey() {
+  override getKey() {
     return this._key;
   }
 
-  ensureStateHelper(eventName: string, value: boolean) {
+  ensureStateHelper(
+    eventName: string,
+    value: boolean
+  ): ItemMetaStateEventHelper {
     if (!this._stateEventSubscriptions.get(eventName)) {
       const helper = new ItemMetaStateEventHelper({
         ...(this._spawnProps[eventName] || {}),
@@ -217,11 +259,16 @@ class ItemMeta extends ViewabilityItemMeta {
       this._stateEventSubscriptions.set(eventName, helper);
     }
 
-    return this._stateEventSubscriptions.get(eventName);
+    return this._stateEventSubscriptions.get(eventName)!;
   }
 
   getIndexInfo() {
     return this._owner.getIndexInfo(this._key);
+  }
+
+  override getIndex() {
+    const info = this.getIndexInfo();
+    return info?.index || -1;
   }
 
   /**
@@ -316,7 +363,7 @@ class ItemMeta extends ViewabilityItemMeta {
       // get initial value
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
-    return stateEventHelper.addStrictReusableListener(
+    return stateEventHelper?.addStrictReusableListener(
       callback,
       key,
       defaultBooleanValue(triggerOnceIfTrue, true)
@@ -334,7 +381,7 @@ class ItemMeta extends ViewabilityItemMeta {
       // get initial value
       event === 'impression' ? this._state['viewable'] : this._state[event]
     );
-    return stateEventHelper.addListener(
+    return stateEventHelper?.addListener(
       callback,
       defaultBooleanValue(triggerOnceIfTrue, true)
     );

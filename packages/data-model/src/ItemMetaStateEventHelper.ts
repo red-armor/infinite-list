@@ -13,10 +13,30 @@ setTimeout(() => {
   finished = true;
 });
 
-requestIdleCallback(() => {
-  canIUseRIC = true;
-  finished = true;
-});
+// interface IdleRequestCallback {
+//   (deadline: IdleDeadline): void;
+// }
+/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline) */
+// interface IdleDeadline {
+//   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/didTimeout) */
+//   readonly didTimeout: boolean;
+//   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/timeRemaining) */
+//   timeRemaining(): DOMHighResTimeStamp;
+// }
+// interface IdleRequestOptions {
+//   timeout?: number;
+// }
+
+// declare function requestIdleCallback(
+//   callback: IdleRequestCallback,
+//   options?: IdleRequestOptions
+// ): number;
+
+// if (requestIdleCallback)
+//   requestIdleCallback(() => {
+//     canIUseRIC = true;
+//     finished = true;
+//   });
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;
@@ -33,8 +53,8 @@ class ItemMetaStateEventHelper {
   readonly _key: string;
   private _reusableEventListenerMap: Map<string, StateEventListener>;
   private _reusableStrictEventListenerMap: Map<string, StateEventListener>;
-  private _callbackId: number;
-  private _callbackStartMinMs: number;
+  private _callbackId?: number | void;
+  private _callbackStartMinMs?: number;
   readonly _canIUseRIC: boolean;
   private _strictListenerKeyToHandleCountMap: {
     [key: string]: number;
@@ -248,14 +268,12 @@ class ItemMetaStateEventHelper {
 
   cancelIdleCallbackPolyfill(callbackId: number) {
     if (this._canIUseRIC) {
-      // @ts-ignore
       if (typeof cancelIdleCallback === 'function') {
-        // @ts-ignore
         cancelIdleCallback(callbackId);
       }
     }
 
-    this._callbackId = null;
+    this._callbackId = undefined;
   }
 
   trigger(value: boolean) {
@@ -273,7 +291,10 @@ class ItemMetaStateEventHelper {
   }
 
   get listeners() {
-    const arr = [];
+    const arr: {
+      type: 'normal' | 'strict';
+      listener: StateEventListener;
+    }[] = [];
     this._listeners.forEach((listener) =>
       arr.push({ type: 'normal', listener })
     );
@@ -309,7 +330,7 @@ class ItemMetaStateEventHelper {
       this._callbackStartMinMs = now;
 
       const handler = (() => {
-        if (now < this._callbackStartMinMs) return;
+        if (now < this._callbackStartMinMs!) return;
         if (this._value !== value) {
           this.listeners.forEach(({ listener, type }) => {
             if (this.listenerGuard(listener)) {
@@ -324,8 +345,7 @@ class ItemMetaStateEventHelper {
       }).bind(this);
 
       this._callbackId = this._canIUseRIC
-        ? // @ts-ignore
-          requestIdleCallback(handler)
+        ? requestIdleCallback(handler)
         : handler();
     }
   }

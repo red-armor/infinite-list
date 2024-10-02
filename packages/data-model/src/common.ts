@@ -17,12 +17,15 @@ export const RECYCLER_RESERVED_BUFFER_SIZE_RATIO = 1.5;
 
 export const LENGTH_PRECISION = 4;
 export const DEFAULT_ITEM_APPROXIMATE_LENGTH = 80;
+export const DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH = 1;
 
 export const DEFAULT_RECYCLER_TYPE = '__default_recycler_buffer__';
 
 // 建议 ON_END_REACHED_THRESHOLD * VisibleLength > MAX_TO_RENDER_PER_BATCH * itemLength
 // 这样可以在滚动停止的时候，自动获取一屏幕
 export const ON_END_REACHED_THRESHOLD = 2;
+
+export const STILLNESS_THRESHOLD = 50;
 
 export const WINDOW_SIZE = 5;
 export const INITIAL_NUM_TO_RENDER = 10;
@@ -32,12 +35,19 @@ export const INVALID_LENGTH = 'invalid_length';
 export const ITEM_OFFSET_BEFORE_LAYOUT_READY = -4000;
 export const LAYOUT_EQUAL_CORRECTION_VALUE = 0.5;
 
-export const removeItemsKeyword = (configKey) =>
+export const removeItemsKeyword = (configKey: string) =>
   (configKey.match(/(.*)[iI]tems/) || [])[1] || configKey;
 
 // Pulled from react-compat
 // https://github.com/developit/preact-compat/blob/7c5de00e7c85e2ffd011bf3af02899b63f699d3a/src/index.js#L349
-export function shallowDiffers(prev: Object, next: Object): boolean {
+export function shallowDiffers(
+  prev: {
+    [key: string]: any;
+  },
+  next: {
+    [key: string]: any;
+  }
+): boolean {
   for (const attribute in prev) {
     if (!(attribute in next)) {
       return true;

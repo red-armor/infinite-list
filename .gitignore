@@ -23,3 +23,10 @@ build
 .expo/*
 dist.zip
 .eslintcache
+
+
+
+.nx/cache
+.nx/workspace-data
+
+storybook-static

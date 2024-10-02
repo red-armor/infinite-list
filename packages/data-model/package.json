@@ -5,41 +5,30 @@
     "dist",
     "src"
   ],
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "module": "dist/batchinator.esm.js",
-  "publishConfig": {
-    "access": "public",
-    "main": "dist/index.js"
-  },
-  "scripts": {
-    "build": "tsdx build --tsconfig tsconfig.build.json",
-    "watch": "tsdx watch --tsconfig tsconfig.build.json",
-    "clean": "rimraf ./dist",
-    "test": "vitest"
-  },
-  "devDependencies": {
-    "rimraf": "^5.0.1",
-    "tsdx": "^0.14.1"
-  },
   "dependencies": {
     "@x-oasis/batchinate-last": "^0.1.14",
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/capitalize": "^0.1.14",
     "@x-oasis/default-boolean-value": "^0.1.14",
+    "@x-oasis/default-value": "^0.1.35",
     "@x-oasis/find-last-index": "^0.1.34",
     "@x-oasis/get-map-key-by-value": "^0.1.34",
     "@x-oasis/is-clamped": "^0.1.14",
+    "@x-oasis/is-object": "^0.1.35",
     "@x-oasis/layout-equal": "^0.1.16",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/omit": "^0.1.14",
-    "@x-oasis/prefix-interval-tree": "^0.1.18",
-    "@x-oasis/recycler": "^0.1.33",
+    "@x-oasis/prefix-interval-tree": "^0.2.4",
+    "@x-oasis/recycler": "^0.1.37",
     "@x-oasis/resolve-changed": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14",
     "@x-oasis/shallow-array-equal": "^0.1.14",
     "@x-oasis/shallow-equal": "^0.1.14",
     "@x-oasis/unique-array-object": "^0.1.14",
-    "memoize-one": "^6.0.0"
-  }
+    "memoize-one": "^6.0.0",
+    "tslib": "^2.3.0"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
 }

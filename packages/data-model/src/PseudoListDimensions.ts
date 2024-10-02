@@ -69,7 +69,7 @@ class PseudoListDimensions extends BaseDimensions {
       const currentIndex = index + baseIndex;
       const itemKey = keys[index];
       const meta = this.getKeyMeta(itemKey) || this.createItemMeta(itemKey);
-      const itemLength = this._selectValue.selectLength(meta.getLayout());
+      const itemLength = this._selectValue.selectLength(meta.getLayout()!);
 
       keyToIndexMap.set(itemKey, currentIndex);
       keyToIndexArray[currentIndex] = itemKey;
@@ -93,7 +93,7 @@ class PseudoListDimensions extends BaseDimensions {
   shuffle(keys: Array<string>) {
     const itemIntervalTree = this.createIntervalTree();
     const keyToIndexMap = new Map();
-    const keyToIndexArray = [];
+    const keyToIndexArray: string[] = [];
     const keyToMetaMap = new Map();
     this.pump(
       keys,
@@ -109,7 +109,7 @@ class PseudoListDimensions extends BaseDimensions {
     this.intervalTree = itemIntervalTree;
   }
 
-  resolveKeysChangedType(keys: Array<string>) {
+  override resolveKeysChangedType(keys: Array<string>) {
     const oldLen = this._indexKeys.length;
     const newLen = keys.length;
 
@@ -141,8 +141,11 @@ class PseudoListDimensions extends BaseDimensions {
 
     if (typeof info === 'number') {
       const length = this.normalizeLengthNumber(info);
-      if (meta && this._selectValue.selectLength(meta.getLayout()) !== length) {
-        this._selectValue.setLength(meta.getLayout(), length);
+      if (
+        meta &&
+        this._selectValue.selectLength(meta.getLayout()!) !== length
+      ) {
+        this._selectValue.setLength(meta.getLayout()!, length);
         if (_update) {
           this.setIntervalTreeValue(index, length);
           return true;
@@ -153,7 +156,7 @@ class PseudoListDimensions extends BaseDimensions {
 
     const _info = this.normalizeLengthInfo(info);
 
-    if (!layoutEqual(meta.getLayout(), _info as ItemLayout)) {
+    if (!layoutEqual(meta.getLayout()!, _info as ItemLayout)) {
       const currentLength = this._selectValue.selectLength(
         meta.getLayout() || {}
       );
@@ -171,7 +174,7 @@ class PseudoListDimensions extends BaseDimensions {
     return false;
   }
 
-  computeIndexRangeMeta(minOffset: number, maxOffset: number) {
+  computeIndexRangeMeta() {
     return [];
   }
 }

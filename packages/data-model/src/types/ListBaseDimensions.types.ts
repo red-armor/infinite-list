@@ -1,50 +1,58 @@
 import ItemMeta from '../ItemMeta';
-// import ListDimensions from '../ListDimensions';
-// import ListGroupDimensions from '../ListGroupDimensions';
 import { BaseLayoutProps } from './BaseLayout.types';
 import { OnEndReachedHelperProps } from './onEndReachedHelper.types';
 import { ViewabilityConfigTuplesProps } from './viewable.types';
 import { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
 import { ReducerResult, Store, ActionType } from '../state/types';
+import { GenericItemT } from './generic.types';
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
-export type SpaceStateToken<ItemT> = {
-  item: ItemT;
+export type SpaceStateToken<ItemT extends GenericItemT = GenericItemT> = {
+  item: ItemT | null;
   key: string;
   length: number;
   isSpace: boolean;
   isSticky: boolean;
   isReserved: boolean;
-  itemMeta: ItemMeta;
-  position: SpaceStateTokenPosition;
+  itemMeta: ItemMeta<ItemT> | null | undefined;
+  position?: SpaceStateTokenPosition;
 };
 
-export type RecycleStateToken<ItemT> = {
+export type RecycleStateToken<ItemT extends GenericItemT = GenericItemT> = {
   targetKey: string;
   targetIndex: number;
   offset: number;
-} & SpaceStateToken<ItemT>;
 
-export type SpaceStateResult<ItemT> = Array<SpaceStateToken<ItemT>>;
-export type RecycleState<ItemT> = Array<RecycleStateToken<ItemT>>;
+  viewable: boolean;
+} & Omit<SpaceStateToken<ItemT>, 'isReserved' | 'position'>;
 
-export type RecycleStateResult<ItemT> = {
+export type SpaceStateResult<ItemT extends GenericItemT = GenericItemT> = Array<
+  SpaceStateToken<ItemT>
+>;
+
+export type RecycleRecycleState<ItemT extends GenericItemT = GenericItemT> =
+  RecycleStateToken<ItemT>[];
+
+export type RecycleStateResult<ItemT extends GenericItemT = GenericItemT> = {
+  rangeState: ListState;
   spaceState: SpaceStateResult<ItemT>;
-  recycleState: RecycleState<ItemT>;
+  recycleState: RecycleRecycleState<ItemT>;
 };
 
-export type ListStateResult<ItemT> =
+export type ListStateResult<ItemT extends GenericItemT = GenericItemT> =
   | SpaceStateResult<ItemT>
   | RecycleStateResult<ItemT>;
 
-export type StateListener<ItemT = {}> = (
+export type StateListener<ItemT extends GenericItemT = GenericItemT> = (
   newState: ListStateResult<ItemT>,
   oldState: ListStateResult<ItemT>
 ) => void;
 
 // export type ListBaseDimensionsProvider = ListGroupDimensions | ListDimensions;
-export type ListBaseDimensionsStore = Store<ReducerResult>;
+export type ListBaseDimensionsStore<
+  ReducerResultT extends ReducerResult = ReducerResult
+> = Store<ReducerResultT>;
 
 export interface ListBaseDimensionsProps
   extends BaseLayoutProps,
@@ -52,7 +60,7 @@ export interface ListBaseDimensionsProps
     OnEndReachedHelperProps,
     ViewabilityConfigTuplesProps {
   releaseSpaceStateItem?: boolean;
-  store?: ListBaseDimensionsStore;
+  store: ListBaseDimensionsStore<ReducerResult>;
   dispatchMetricsThreshold?: number;
   useItemApproximateLength?: boolean;
   itemApproximateLength?: number;
@@ -70,6 +78,10 @@ export type PreStateResult = {
   actionType: ActionType;
 };
 
-export type ListState<ItemT extends {} = {}> = {
-  data: Array<ItemT>;
+export type ListState = {
+  // data: Array<ItemT>;
 } & PreStateResult;
+
+export type IndexToOffsetMap = {
+  [key: number]: number;
+};

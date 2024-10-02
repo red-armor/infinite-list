@@ -1,8 +1,10 @@
 import { ItemLayout } from './BaseLayout.types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import Dimension from '../Dimension';
-import ItemsDimensions from '../ItemsDimensions';
+import { GenericItemT } from './generic.types';
+import { ListGroupIndexInfo } from './ListGroupDimensions.types';
 import PseudoListDimensions from '../PseudoListDimensions';
+import ItemsDimensions from '../ItemsDimensions';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 
@@ -26,19 +28,23 @@ export type ItemMetaState = {
   [key: string]: boolean;
 };
 
-export type ItemMetaOwner =
-  | ListDimensionsModel
-  | Dimension
-  | ItemsDimensions
-  | PseudoListDimensions;
+export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
+  | ListDimensionsModel<ItemT>
+  | Dimension<ItemT>
+  | PseudoListDimensions
+  | ItemsDimensions;
 
-export type ItemMetaProps = {
+export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
+  /**
+   * indicate including separatorLength on return item length
+   */
+  useSeparatorLength?: boolean;
   onViewable?: StateEventListener;
   onImpression?: StateEventListener;
   key: string;
   separatorLength?: number;
   layout?: ItemLayout;
-  owner?: ItemMetaOwner;
+  owner: ItemMetaOwner<ItemT>;
   isListItem?: boolean;
   setState?: Function;
   state?: ItemMetaState;
@@ -53,3 +59,12 @@ export type ItemMetaProps = {
 
   isApproximateLayout?: boolean;
 };
+
+export type ListIndexInfo<ItemT extends GenericItemT = GenericItemT> = {
+  dimensions: ListDimensionsModel<ItemT>;
+  index: number;
+};
+
+export type IndexInfo<ItemT extends GenericItemT = GenericItemT> =
+  | ListGroupIndexInfo<ItemT>
+  | ListIndexInfo<ItemT>;

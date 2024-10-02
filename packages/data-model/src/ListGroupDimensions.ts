@@ -5,10 +5,8 @@ import Dimension from './Dimension';
 import ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import { isEmpty } from './common';
 import {
-  IndexInfo,
-  FillingMode,
+  ListGroupIndexInfo,
   ItemLayout,
   KeysChangedType,
   ListGroupDimensionsProps,
@@ -16,14 +14,18 @@ import {
   OnEndReached,
   ScrollMetrics,
   KeyToOnEndReachedMap,
-  KeyToListDimensionsMap,
   RegisteredListProps,
   RegisteredDimensionProps,
+  DimensionsIndexRange,
+  GenericItemT,
+  ListGroupChildDimensions,
+  IndexToOffsetMap,
 } from './types';
-import createStore from './state/createStore';
-import { ReducerResult } from './state/types';
-import ListBaseDimensions from './ListBaseDimensions';
+import BaseImpl from './strategies/BaseImpl';
 import Inspector from './Inspector';
+import { info } from './utils/logger';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import createStore from './state/createStore';
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -33,10 +35,13 @@ import Inspector from './Inspector';
  *
  * ListGroup is just like a router.
  */
-class ListGroupDimensionsExperimental<
-  ItemT extends {} = {}
-> extends ListBaseDimensions<ItemT> {
-  private keyToListDimensionsMap: KeyToListDimensionsMap = new Map();
+class ListGroupDimensions<
+  ItemT extends GenericItemT = GenericItemT
+> extends BaseImpl<ItemT> {
+  private keyToListDimensionsMap = new Map<
+    string,
+    ListGroupChildDimensions<ItemT>
+  >();
   private _keyToOnEndReachedMap: KeyToOnEndReachedMap = new Map();
   private _itemsDimensions: ItemsDimensions;
   private _onUpdateItemLayout?: Function;
@@ -50,39 +55,44 @@ class ListGroupDimensionsExperimental<
    */
   private _flattenData: Array<ItemT> = [];
 
+  private _recycleEnable: boolean;
+
   private _dimensionsIntervalTree: PrefixIntervalTree = new PrefixIntervalTree(
     100
   );
 
   private _reflowItemsLength = 0;
-  private _dimensionsIndexRange: Array<{
-    dimensions: Dimension | ListDimensionsModel;
-    startIndex: number;
-    endIndex: number;
+  private _dimensionsIndexRange: DimensionsIndexRange<ItemT>[] = [];
 
-    startIndexInRecycler: number;
-    endIndexInRecycler: number;
-  }> = [];
+  private _inspector: Inspector<ItemT>;
 
-  private _inspector: Inspector;
+  /**
+   * used with `getItemLayout`, on default if `getItemLayout` is provided, itemMeta's
+   * isApproximateLayout should be false if item layout is resolve from `getItemLayout`.
+   *
+   */
+  private _isFixedLength: boolean;
 
   constructor(props: ListGroupDimensionsProps) {
     super({
       recycleEnabled: true,
+      store: createStore(),
       ...props,
-      store: createStore<ReducerResult>(),
     });
     const { id, onUpdateItemLayout, onUpdateIntervalTree } = props;
 
     this._itemsDimensions = new ItemsDimensions({
       id,
     });
+    this._recycleEnable = defaultBooleanValue(props.recycleEnabled, true);
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
     this._onItemsCountChangedBatchinator = new Batchinator(
       this.onItemsCountChanged.bind(this),
       50
     );
+
+    this._isFixedLength = defaultBooleanValue(props.isFixedLength, true);
 
     this._inspector = new Inspector({
       owner: this,
@@ -93,9 +103,6 @@ class ListGroupDimensionsExperimental<
       this.recalculateDimensionsIntervalTree.bind(this),
       50
     );
-
-    this.initializeState();
-    this.attemptToHandleEndReached();
   }
 
   get inspector() {
@@ -106,13 +113,11 @@ class ListGroupDimensionsExperimental<
     return this._inspector.indexKeys;
   }
 
-  ensureDimension() {}
-
   getDimension(key: string) {
     return this.keyToListDimensionsMap.get(key);
   }
 
-  setDimension(key: string, dimension: ListDimensionsModel | Dimension) {
+  setDimension(key: string, dimension: ListGroupChildDimensions<ItemT>) {
     return this.keyToListDimensionsMap.set(key, dimension);
   }
 
@@ -154,7 +159,7 @@ class ListGroupDimensionsExperimental<
     for (let index = 0; index < this.indexKeys.length; index++) {
       const key = this.indexKeys[index];
       const dimensions = this.getDimension(key);
-      len += dimensions.length;
+      len += dimensions?.length || 0;
     }
     return len;
   }
@@ -173,10 +178,10 @@ class ListGroupDimensionsExperimental<
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemKey = dimension.getFinalItemKey(item);
+      const itemKey = dimension?.getFinalItemKey(item);
       if (itemKey) return itemKey;
     }
-    return null;
+    return '';
   }
 
   getFinalItemMeta(item: any) {
@@ -184,7 +189,7 @@ class ListGroupDimensionsExperimental<
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      const itemMeta = dimension.getFinalItemMeta(item);
+      const itemMeta = dimension?.getFinalItemMeta(item);
       if (itemMeta) return itemMeta;
     }
     return null;
@@ -210,7 +215,7 @@ class ListGroupDimensionsExperimental<
     if (typeof index === 'number') {
       const indexInfo = this.getFinalIndexIndexInfo(index);
       if (indexInfo) {
-        const { dimensions, index: _index } = indexInfo;
+        const { dimensions } = indexInfo;
         const height = dimensions.getTotalLength();
         // _offsetInListGroup should be included. so exclusive should be false on default.
         return (
@@ -228,16 +233,19 @@ class ListGroupDimensionsExperimental<
     endIndex: number,
     exclusive?: boolean
   ) {
-    const indexToOffsetMap = {};
+    const indexToOffsetMap: IndexToOffsetMap = {};
     let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
     for (let index = startIndex; index <= endIndex; index++) {
-      indexToOffsetMap[index] = startOffset;
       const itemMeta = this.getFinalIndexItemMeta(index);
-      if (itemMeta) {
-        // @ts-ignore
-        startOffset +=
-          (itemMeta?.getLayout()?.height || 0) +
-          (itemMeta?.getSeparatorLength() || 0);
+      if (!itemMeta) continue;
+
+      indexToOffsetMap[index] = startOffset;
+
+      if (itemMeta?.isApproximateLayout) {
+        indexToOffsetMap[index] = this.itemOffsetBeforeLayoutReady;
+      } else {
+        indexToOffsetMap[index] = startOffset;
+        startOffset += itemMeta?.getFinalItemLength();
       }
     }
     return indexToOffsetMap;
@@ -253,7 +261,7 @@ class ListGroupDimensionsExperimental<
     return this._reflowItemsLength;
   }
 
-  hasUnLayoutItems() {
+  override hasUnLayoutItems() {
     const len = this.indexKeys.length;
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
@@ -308,7 +316,7 @@ class ListGroupDimensionsExperimental<
     return null;
   }
 
-  getFinalIndexIndexInfo(idx: number): IndexInfo {
+  getFinalIndexIndexInfo(idx: number): ListGroupIndexInfo<ItemT> | null {
     const len = this._dimensionsIndexRange.length;
     for (let index = 0; index < len; index++) {
       const info = this._dimensionsIndexRange[index];
@@ -326,7 +334,10 @@ class ListGroupDimensionsExperimental<
     return null;
   }
 
-  getFinalKeyIndexInfo(itemKey: string, listKey: string): IndexInfo {
+  getFinalKeyIndexInfo(
+    itemKey: string,
+    listKey: string
+  ): ListGroupIndexInfo<ItemT> | null {
     const dimensions = this.getDimension(listKey);
     if (dimensions) {
       const info = this.dimensionsIndexRange.find(
@@ -400,7 +411,7 @@ class ListGroupDimensionsExperimental<
       const info = this._dimensionsIndexRange.find(
         ({ dimensions }) => dimensions === _dimensions
       );
-      return info.startIndex;
+      return info?.startIndex;
     }
 
     return 0;
@@ -430,31 +441,36 @@ class ListGroupDimensionsExperimental<
    */
   registerList(
     listKey: string,
-    listDimensionsProps: RegisteredListProps
+    listDimensionsProps: RegisteredListProps<ItemT>
   ): {
-    dimensions: ListDimensionsModel;
+    dimensions: ListDimensionsModel<ItemT>;
     remover: () => void;
   } {
     if (this.getDimension(listKey))
       return {
-        dimensions: this.getDimension(listKey) as ListDimensionsModel,
+        dimensions: this.getDimension(listKey) as ListDimensionsModel<ItemT>,
         remover: () => {
           this.removeListDimensions(listKey);
         },
       };
     // should update indexKeys first !!!
-    const { recyclerType } = listDimensionsProps;
     const dimensions = new ListDimensionsModel({
-      ...listDimensionsProps,
       id: listKey,
       container: this,
       horizontal: this.getHorizontal(),
+      isFixedLength: this._isFixedLength,
+      manuallyApplyInitialData: true,
+      ...listDimensionsProps,
+      recycleEnabled: this._recycleEnable,
     });
-    this.addBuffer(recyclerType);
+    this.addBuffer(dimensions.recyclerType);
+
     this.setDimension(listKey, dimensions);
     this._inspector.push(listKey);
 
-    let onEndReachedCleaner = null;
+    dimensions.applyInitialData();
+
+    let onEndReachedCleaner;
 
     if (listDimensionsProps.onEndReached) {
       onEndReachedCleaner = this.addOnEndReached(
@@ -494,8 +510,11 @@ class ListGroupDimensionsExperimental<
     const rangeMap: {
       [key: string]: number;
     } = {};
-    this._dimensionsIndexRange = this.indexKeys.reduce((acc, key) => {
+    this._dimensionsIndexRange = this.indexKeys.reduce<
+      DimensionsIndexRange<ItemT>[]
+    >((acc, key) => {
       const dimensions = this.getDimension(key);
+      if (!dimensions) return acc;
       const recyclerType = dimensions.recyclerType;
       if (rangeMap[recyclerType] == null) rangeMap[recyclerType] = 0;
 
@@ -515,8 +534,8 @@ class ListGroupDimensionsExperimental<
   }
 
   /**
-   * Important!!! : data change should be reflect immediately. but resolve state could be deferred.
-   * So this.updateScrollMetrics actually is a batch operation ..
+   * Important!!! : data change should be reflect immediately. but resolve state could
+   * be deferred. So this.updateScrollMetrics actually is a batch operation ..
    */
   onItemsCountChanged() {
     this.reflowFlattenData();
@@ -571,34 +590,34 @@ class ListGroupDimensionsExperimental<
       this.deleteDimension(key);
       this._inspector.remove(key);
       this.onItemsCountChanged();
-      // this._onItemsCountChangedBatchinator.schedule();
     }
   }
 
   registerItem(
     key: string,
-    dimensionProps: RegisteredDimensionProps
+    dimensionProps: RegisteredDimensionProps<ItemT> = {}
   ): {
-    dimensions: Dimension;
+    dimensions: Dimension<ItemT>;
     remover: () => void;
   } {
     if (this.getDimension(key))
       return {
-        dimensions: this.getDimension(key) as Dimension,
+        dimensions: this.getDimension(key) as Dimension<ItemT>,
         remover: () => {
           this.removeItem(key);
         },
       };
-    const { recyclerType } = dimensionProps;
     const dimensions = new Dimension({
       id: key,
-      ...dimensionProps,
       container: this,
       horizontal: this.horizontal,
       canIUseRIC: this.canIUseRIC,
+      isFixedLength: this._isFixedLength,
+      ...dimensionProps,
+      recycleEnabled: this._recycleEnable,
     });
     this.setDimension(key, dimensions);
-    this.addBuffer(recyclerType);
+    this.addBuffer(dimensions.recyclerType);
     this._inspector.push(key);
     // for performance boost. only reflow data when less than initial number;
     if (this.getData().length < this.initialNumToRender) {
@@ -619,29 +638,30 @@ class ListGroupDimensionsExperimental<
   }
 
   reflowFlattenData() {
-    this._flattenData = this.indexKeys.reduce((acc, key) => {
+    this._flattenData = this.indexKeys.reduce<ItemT[]>((acc, key) => {
       const dimension = this.getDimension(key);
       if (dimension) {
-        acc = [].concat(acc, dimension.getData());
+        acc = ([] as ItemT[]).concat(acc, dimension.getData());
       }
       return acc;
     }, []);
     return this._flattenData;
   }
 
-  getItemKey() {}
-
-  getKeyItem() {}
-
-  getItemDimension() {}
-
-  getKeyDimension() {}
-
+  /**
+   *
+   * @param listKey
+   * @param data
+   *
+   * for child list, the corresponding setData method will not trigger onItemsCountChanged
+   * So setListData comes
+   */
   setListData(listKey: string, data: Array<any>) {
     const listDimensions = this.getDimension(listKey);
-
     if (listDimensions) {
-      const changedType = (listDimensions as ListDimensionsModel).setData(data);
+      const changedType = (
+        listDimensions as ListDimensionsModel<ItemT>
+      ).setData(data);
 
       if (
         [
@@ -678,7 +698,7 @@ class ListGroupDimensionsExperimental<
   getListData(listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions)
-      return (listDimensions as ListDimensionsModel).getData();
+      return (listDimensions as ListDimensionsModel<ItemT>).getData();
     return [];
   }
 
@@ -700,7 +720,7 @@ class ListGroupDimensionsExperimental<
     if (dimension) {
       const containerOffset = exclusive ? 0 : this.getContainerOffset();
       return (
-        (dimension as ListDimensionsModel).getKeyItemOffset(itemKey) +
+        (dimension as ListDimensionsModel<ItemT>).getKeyItemOffset(itemKey) +
         containerOffset
       );
     }
@@ -712,7 +732,7 @@ class ListGroupDimensionsExperimental<
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
       return (
-        (listDimensions as ListDimensionsModel).getKeyItemOffset(key) +
+        (listDimensions as ListDimensionsModel<ItemT>).getKeyItemOffset(key) +
         containerOffset
       );
     }
@@ -735,7 +755,7 @@ class ListGroupDimensionsExperimental<
     return null;
   }
 
-  setFinalKeyMeta(itemKey: string, itemMeta: ItemMeta) {
+  setFinalKeyMeta(itemKey: string, itemMeta: ItemMeta<ItemT>) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions instanceof ListDimensionsModel)
       return dimensions.setKeyMeta(itemKey, itemMeta);
@@ -744,7 +764,7 @@ class ListGroupDimensionsExperimental<
     return null;
   }
 
-  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta) {
+  setKeyMeta(key: string, listKey: string, itemMeta: ItemMeta<ItemT>) {
     const dimensions = this.getDimension(listKey);
     if (dimensions instanceof ListDimensionsModel)
       return dimensions.setKeyMeta(key, itemMeta);
@@ -764,7 +784,9 @@ class ListGroupDimensionsExperimental<
   getKeyItemLayout(key: string, listKey: string) {
     const listDimensions = this.getDimension(listKey);
     if (listDimensions) {
-      return (listDimensions as ListDimensionsModel).getKeyItemLayout(key);
+      return (listDimensions as ListDimensionsModel<ItemT>).getKeyItemLayout(
+        key
+      );
     }
 
     return null;
@@ -773,30 +795,34 @@ class ListGroupDimensionsExperimental<
   getFinalKeyItemLayout(itemKey: string) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions) {
-      return (dimensions as ListDimensionsModel).getKeyItemLayout(itemKey);
+      return (dimensions as ListDimensionsModel<ItemT>).getKeyItemLayout(
+        itemKey
+      );
     }
     return null;
   }
 
   getIndexItemLayout(index: number, listKey: string) {
     const key = this.getIndexKey(index, listKey);
-    return this.getKeyItemLayout(key, listKey);
+    if (key) return this.getKeyItemLayout(key, listKey);
+    return null;
   }
 
   setIndexItemLayout(index: number, listKey: string, layout: ItemLayout) {
     const key = this.getIndexKey(index, listKey);
-    this.setKeyItemLayout(key, listKey, layout);
+    if (key) this.setKeyItemLayout(key, listKey, layout);
   }
 
   setFinalKeyItemLayout(itemKey: string, layout: ItemLayout | number) {
     const dimensions = this.getItemKeyDimension(itemKey);
     if (dimensions) {
       if (dimensions instanceof ListDimensionsModel) {
-        dimensions.setKeyItemLayout(itemKey, layout);
+        return dimensions.setKeyItemLayout(itemKey, layout);
       } else if (dimensions instanceof Dimension) {
-        dimensions.setItemLayout(layout);
+        return dimensions.setItemLayout(layout);
       }
     }
+    return false;
   }
 
   setKeyItemLayout(key: string, listKey: string, layout: ItemLayout | number) {
@@ -813,14 +839,14 @@ class ListGroupDimensionsExperimental<
   static createPositionToken() {
     return {
       dimensionKey: '',
-      index: null,
+      index: -1,
     };
   }
 
   findPosition(finalIndex: number) {
     const len = this.indexKeys.length;
     let startIndex = 0;
-    const positionToken = ListGroupDimensionsExperimental.createPositionToken();
+    const positionToken = ListGroupDimensions.createPositionToken();
 
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
@@ -831,7 +857,7 @@ class ListGroupDimensionsExperimental<
         startIndex +
         (dimension instanceof Dimension
           ? 0
-          : Math.max((dimension as ListDimensionsModel).length - 1, 0));
+          : Math.max((dimension as ListDimensionsModel<ItemT>).length - 1, 0));
 
       if (isClamped(min, finalIndex, max)) {
         positionToken.dimensionKey = key;
@@ -863,10 +889,10 @@ class ListGroupDimensionsExperimental<
     const endDimensionIndex = this.indexKeys.findIndex(
       (key) => key === endPosition.dimensionKey
     );
-    const result = [];
+    const result: ListRangeResult<ItemT> = [];
 
     for (let index = startDimensionIndex; index <= endDimensionIndex; index++) {
-      const currentValues = [];
+      const currentValues: ItemMeta<ItemT>[] = [];
       const range = {
         startIndex: -1,
         endIndex: -1,
@@ -885,6 +911,7 @@ class ListGroupDimensionsExperimental<
         continue;
       }
 
+      if (!dimension) continue;
       const len = dimension.length;
 
       // the same list
@@ -908,7 +935,7 @@ class ListGroupDimensionsExperimental<
       }
 
       for (let idx = range.startIndex; idx < range.endIndex + 1; idx++) {
-        const meta = dimension.getIndexItemMeta(idx);
+        const meta = dimension?.getIndexItemMeta(idx);
         if (meta) currentValues.push(meta);
       }
 
@@ -939,7 +966,19 @@ class ListGroupDimensionsExperimental<
       maxOffset
     );
 
-    const { startIndex, endIndex } = dimensionResult;
+    const { startIndex, endIndex: _endIndex } = dimensionResult;
+
+    info(
+      'computeIndexRange ',
+      startIndex,
+      _endIndex,
+      minOffset,
+      maxOffset,
+      this._dimensionsIntervalTree.getHeap()[1],
+      this._dimensionsIntervalTree.getMaxUsefulLength()
+    );
+
+    const endIndex = _endIndex - 1;
 
     if (startIndex === endIndex) {
       const dimensionKey = this.indexKeys[startIndex];
@@ -949,7 +988,7 @@ class ListGroupDimensionsExperimental<
       if (dimensions instanceof Dimension) {
         return {
           startIndex: dimensionsStartIndex,
-          endIndex: dimensionsStartIndex,
+          endIndex: dimensionsStartIndex + 1,
         };
       } else if (dimensions instanceof ListDimensionsModel) {
         const startOffset = this._dimensionsIntervalTree.sumUntil(startIndex);
@@ -976,15 +1015,21 @@ class ListGroupDimensionsExperimental<
 
     let nextStartIndex = startIndex;
 
+    // if it is a item...
     if (startDimensions instanceof Dimension) {
       nextStartIndex = this.getDimensionStartIndex(startDimensionsKey);
-    } else if (startDimensions instanceof ListDimensionsModel) {
+    } else if (
+      /**
+       * if it is a List...
+       */
+      startDimensions instanceof ListDimensionsModel
+    ) {
       const startOffset =
         this._dimensionsIntervalTree.sumUntil(_nextStartIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(startDimensionsKey);
 
-      const index = startDimensions.intervalTree.greatestStrictLowerBound(
+      const index = startDimensions.intervalTree.greatestLowerBound(
         minOffset - startOffset
       );
       nextStartIndex = dimensionsStartIndex + index;
@@ -997,16 +1042,18 @@ class ListGroupDimensionsExperimental<
     let nextEndIndex = startIndex;
 
     if (endDimensions instanceof Dimension) {
-      nextEndIndex = this.getDimensionStartIndex(endDimensionsKey);
+      nextEndIndex = this.getDimensionStartIndex(endDimensionsKey) + 1;
     } else if (endDimensions instanceof ListDimensionsModel) {
       const startOffset = this._dimensionsIntervalTree.sumUntil(_nextEndIndex);
       const dimensionsStartIndex =
         this.getDimensionStartIndex(endDimensionsKey);
-      const index = endDimensions.intervalTree.greatestStrictLowerBound(
+      const index = endDimensions.intervalTree.leastStrictUpperBound(
         maxOffset - startOffset
       );
       nextEndIndex = dimensionsStartIndex + index;
     }
+
+    info('computedIndexRange ', nextStartIndex, nextEndIndex);
 
     return {
       startIndex: nextStartIndex,
@@ -1017,36 +1064,9 @@ class ListGroupDimensionsExperimental<
   computeIndexRangeMeta(props: {
     startIndex: number;
     endIndex: number;
-  }): ListRangeResult {
+  }): ListRangeResult<ItemT> {
     const { startIndex, endIndex } = props;
     return this.findListRange(startIndex, endIndex);
-  }
-
-  // addStateListener(listener: StateListener) {
-  //   return this._listBaseDimension.addStateListener(listener);
-  // }
-
-  dispatchMetrics(scrollMetrics: ScrollMetrics) {
-    const state = this.store.dispatchMetrics({
-      dimension: this,
-      scrollMetrics,
-    });
-
-    if (isEmpty(state)) return;
-    if (this.fillingMode === FillingMode.RECYCLE) {
-      this.setState({
-        ...state,
-        data: this.getData(),
-      });
-
-      const { isEndReached, distanceFromEnd } = state;
-
-      this.onEndReachedHelper.performEndReached({
-        isEndReached,
-        distanceFromEnd,
-      });
-      return;
-    }
   }
 
   onUpdateDimensionItemsMetaChange(
@@ -1070,4 +1090,4 @@ class ListGroupDimensionsExperimental<
   }
 }
 
-export default ListGroupDimensionsExperimental;
+export default ListGroupDimensions;

@@ -1,7 +1,7 @@
 import ViewabilityItemMeta from '../viewable/ViewabilityItemMeta';
 
 export type CommonViewabilityConfig = {
-  name?: string;
+  name: string;
   viewport?: number;
   minimumViewTime?: number;
   waitForInteraction?: boolean;
@@ -72,7 +72,7 @@ export type OnViewableItemsChanged =
   | null;
 
 export type ViewabilityConfigCallbackPair = {
-  viewabilityConfig?: ViewabilityConfig;
+  viewabilityConfig: ViewabilityConfig;
   onViewableItemsChanged?: OnViewableItemsChanged;
 };
 
@@ -84,4 +84,11 @@ export type ViewabilityConfigTuplesProps = {
   viewabilityConfig?: ViewabilityConfig;
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
   onViewableItemsChanged?: OnViewableItemsChanged;
+};
+
+export type ViewabilityHelperChangedToken = {
+  item: any;
+  key: string;
+  isViewable: boolean;
+  index: number;
 };
