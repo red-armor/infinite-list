@@ -29,6 +29,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
+  "packageManager": "pnpm@9.3.0",
   "author": "youchao liu",
   "license": "ISC",
   "devDependencies": {
