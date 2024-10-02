@@ -54,6 +54,14 @@ const List = (props: ListProps) => {
     return () => scrollHandlerRef.current?.dispose();
   }, []);
 
+  // useEffect(() => {
+  //   const s = state.recycleState.filter(data => {
+  //     return data.itemMeta.getState().viewable
+  //   }).map(data => data.itemMeta?.getKey()).join(', ')
+
+  //   console.log('state =======', s)
+  // }, [state.recycleState])
+
   return (
     <div id={id} ref={listRef} style={style.container}>
       {state.recycleState.map((data) => (

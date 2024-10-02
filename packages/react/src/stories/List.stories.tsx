@@ -26,6 +26,7 @@ const meta: Meta<typeof List> = {
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
             const { item } = props;
+
             return (
               <div
                 style={{

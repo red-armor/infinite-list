@@ -26,7 +26,7 @@ const RecycleItem = (props: RecycleItemProps) => {
 
   return (
     <div ref={itemRef} key={key} style={style} data_id={key}>
-      <RenderItem item={item!} itemMeta={itemMeta!} />
+      <RenderItem item={item!} itemMeta={itemMeta!} key={key} />
     </div>
   );
 };

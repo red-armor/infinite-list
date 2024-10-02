@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import type { Meta } from '@storybook/react';
 import { defaultKeyExtractor } from '@infinite-list/data-model';
 import { List } from '..';
@@ -45,7 +45,22 @@ const meta: Meta<typeof List> = {
           onEndReached={onEndReached}
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
-            const { item } = props;
+            const { item, itemMeta } = props;
+            const initRef = useRef(true);
+
+            useEffect(() => {
+              if (initRef.current) console.log('mount ', itemMeta.getKey());
+              else {
+                console.log('update to ', itemMeta.getKey());
+              }
+
+              initRef.current = false;
+
+              return () => {
+                console.log('unmount ', itemMeta.getKey());
+              };
+            }, [itemMeta]);
+
             return (
               <div
                 style={{
