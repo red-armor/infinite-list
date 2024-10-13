@@ -5,6 +5,15 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+import { List } from '@infinite-list/react-native'
+
+import React from 'react'
+
+window.React1 = React
+
+console.log('vi ', window.React1, window.React2, window.React1 == window.React2)
+
+
 export default function HomeScreen() {
   return (
     <ParallaxScrollView
@@ -44,6 +53,7 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+          <List />
         </ThemedText>
       </ThemedView>
     </ParallaxScrollView>

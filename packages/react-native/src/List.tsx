@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 window.React2 = React
 
@@ -10,8 +10,12 @@ console.log('vi ', window.React1, window.React2, window.React1 === window.React2
 export default () => {
   console.log('in list')
 
+  useEffect(() => {
+    console.log('hello ')
+  }, [])
+
   return (
-    <View></View>
+    <View><Text>hello</Text></View>
   )
 
   // return (
