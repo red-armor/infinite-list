@@ -1,22 +1,9 @@
-import { Image, StyleSheet, Platform, Text } from 'react-native';
+import { Image, StyleSheet, Platform } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { List } from '@infinite-list/react-native'
-
-console.log('list ', List.toString())
-import React from 'react'
-
-window.React1 = React
-
-console.log('window ', window.React1)
-
-console.log('HelloWave ', HelloWave.toString())
-
-console.log('v2 ', window.React1, window.React2, window.React1 === window.React2)
-
 
 export default function HomeScreen() {
   return (
@@ -57,12 +44,8 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-          <Text>3333</Text>
-          <List />
-
         </ThemedText>
       </ThemedView>
-
     </ParallaxScrollView>
   );
 }

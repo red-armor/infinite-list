@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ListPlayground",
-    "slug": "ListPlayground",
+    "name": "ReactNativeListPlayground",
+    "slug": "ReactNativeListPlayground",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
