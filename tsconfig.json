@@ -1,5 +1,4 @@
 {
-  "include": ["**/packages/**/src", "**/packages/**/types", "index.d.ts", "packages/react/stories/RecycleItem.tsx"],
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
@@ -17,7 +16,6 @@
     "resolveJsonModule": true,
     "allowJs": true
   },
-  "extends": "./tsconfig.base.json",
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

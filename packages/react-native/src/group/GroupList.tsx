@@ -40,6 +40,7 @@ const GroupListWrapper: FC<PropsWithChildren<GroupListProps<any>>> = (
   ) {
     contextValuesRef.current.heartBeat({
       inspectingTime: contextValues.inspectingTime,
+      // @ts-ignore
       listKey: props.id,
     });
     contextValuesRef.current = contextValues;

@@ -5,7 +5,8 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "@infinite-list/react-native": ["../../packages/react-native"]
     }
   },
   "include": [
@@ -14,8 +15,4 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ],
-
-  "path": {
-    "@infinite-list/react-native": "../../packages/react-native"
-  }
 }
