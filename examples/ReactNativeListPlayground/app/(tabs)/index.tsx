@@ -102,7 +102,7 @@ const buildData = (count: number, startIndex = 0) =>
 
 export default () => {
   const data = useMemo(() => buildData(10000), []);
-  const scrollViewRef = useRef<ScrollView>();
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const renderItem = useCallback((props: { item }) => {
     const { item } = props;
@@ -157,12 +157,9 @@ export default () => {
         data={data}
         events={events}
         renderItem={renderItem}
+        test="3"
         keyExtractor={keyExtractor}
-        id="basic"
-        initialNumToRender={4}
         containerRef={scrollViewRef}
-        // recyclerBufferSize={40}
-        // recyclerReservedBufferPerBatch={20}
       />
     </ScrollView>
   );

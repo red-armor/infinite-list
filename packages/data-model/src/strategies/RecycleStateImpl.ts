@@ -77,8 +77,6 @@ class RecycleStateImpl<
         DEFAULT_RECYCLER_TYPE,
     });
 
-    console.log('recycleer ', this._recycler);
-
     // default recyclerTypes should be set immediately
     this.initializeDefaultRecycleBuffer();
 

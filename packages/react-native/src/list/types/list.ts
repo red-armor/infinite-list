@@ -5,7 +5,7 @@ import {
   SpaceStateToken,
   ListDimensionsModelProps,
 } from '@infinite-list/data-model';
-import { MutableRefObject } from 'react';
+import { RefObject } from 'react';
 import { ItemMeta } from '@infinite-list/data-model';
 import { ScrollView, View } from 'react-native';
 
@@ -22,13 +22,14 @@ export type RenderItem<ItemT extends DefaultItemT> = (
   info: RenderItemInfo<ItemT>
 ) => React.ReactElement | null;
 
-export type ContainerRef = MutableRefObject<ScrollView | View>;
+export type ContainerRef = RefObject<ScrollView | View | any>;
 
 export type ListProps<ItemT extends GenericItemT = GenericItemT> = Omit<
   ListDimensionsModelProps<ItemT>,
   'store' | 'container'
 > & {
   renderItem: RenderItem<ItemT>;
+  test: number | string | Function;
   containerRef: ContainerRef;
 };
 

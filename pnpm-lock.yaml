@@ -264,6 +264,9 @@ importers:
       '@x-oasis/shallow-equal':
         specifier: ^0.1.14
         version: 0.1.38
+      '@x-oasis/throttle':
+        specifier: ^0.1.35
+        version: 0.1.35
       react:
         specifier: '*'
         version: 18.3.1
@@ -3851,6 +3854,9 @@ packages:
 
   '@x-oasis/shallow-equal@0.1.38':
     resolution: {integrity: sha512-TXHqtJ7TXn/QORGH38sOmJ1bgvJKSUrRDKVvkcUyrjdJLd29P4szwYmPZ7E9HWMBj9FRBFTVWOJSagESgyO3Ew==}
+
+  '@x-oasis/throttle@0.1.35':
+    resolution: {integrity: sha512-L/uiT2TR4MLdP2ucEE6eh4Tan94ePJ6/fA2AGkEwFc4geV7+OWzVydl89JJtVsG3N7/OV/NYp/9vfyZqtbt4gA==}
 
   '@x-oasis/to-string@0.1.35':
     resolution: {integrity: sha512-v6pNsaZ7+UGz995stUEe7YrDRbVIAUcybD70NePXaZiEqhe0TErTWFQ55K8I9ii3UAGfxP4/7twT+1iSacaxNw==}
@@ -15510,6 +15516,8 @@ snapshots:
   '@x-oasis/shallow-equal@0.1.38':
     dependencies:
       '@x-oasis/is': 0.1.39
+
+  '@x-oasis/throttle@0.1.35': {}
 
   '@x-oasis/to-string@0.1.35': {}
 
