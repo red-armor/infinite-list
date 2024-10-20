@@ -1,11 +1,12 @@
-import { CSSProperties, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { View, ViewStyle } from 'react-native';
 import { RecycleItemProps } from './types';
 
 const RecycleItem = (props: RecycleItemProps) => {
-  const { data, dimensions, renderItem: RenderItem } = props;
-  const itemRef = useRef<HTMLDivElement>(null);
+  const { data, dimensions, renderItem: RenderItem, containerRef } = props;
+  const itemRef = useRef<View>(null);
   const { item, key, itemMeta, offset } = data;
-  const style: CSSProperties = useMemo(() => {
+  const style: ViewStyle = useMemo(() => {
     if (offset)
       return {
         position: 'absolute',
@@ -17,18 +18,34 @@ const RecycleItem = (props: RecycleItemProps) => {
   }, [offset]);
 
   useEffect(() => {
-    const rect = itemRef.current?.getBoundingClientRect();
-    if (rect) {
-      const { height } = rect;
+    const onMeasureSuccess = (left, top, width, height) => {
+      if (itemMeta) {
+        dimensions.setFinalKeyItemLayout(itemMeta.getKey(), {
+          x: left,
+          y: top,
+          height,
+          width,
+        });
+      }
+    };
 
-      if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), height);
-    }
+    const onMeasureFailed = () => {
+      console.error('[measureLayout error] ', itemMeta?.getKey());
+    };
+
+    setTimeout(() => {
+      itemRef.current.measureLayout(
+        containerRef.current,
+        onMeasureSuccess,
+        onMeasureFailed
+      );
+    });
   }, [itemMeta]);
 
   return (
-    <div ref={itemRef} key={key} style={style} data-id={key}>
+    <View ref={itemRef} key={key} style={style} data-id={key}>
       <RenderItem item={item!} itemMeta={itemMeta!} key={key} />
-    </div>
+    </View>
   );
 };
 

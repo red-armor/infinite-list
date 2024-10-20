@@ -1,15 +1,21 @@
-import { useEffect, useMemo, useState, useRef, CSSProperties } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
+import {
+  View,
+  ViewStyle,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from 'react-native';
 import { ListProps } from './types';
 import { ListDimensions } from '@infinite-list/data-model';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-import ScrollTracker from './events/ScrollTracker';
+// import ScrollTracker from './events/ScrollTracker';
 
 const List = (props: ListProps) => {
-  const { renderItem, id, data } = props;
+  const { renderItem, id, data, containerRef } = props;
   const listModel = useMemo(() => new ListDimensions(props), []);
   const [state, setState] = useState(listModel.getStateResult());
-  const scrollHandlerRef = useRef<ScrollTracker>();
+  // const scrollHandlerRef = useRef<ScrollTracker>();
 
   const dataRef = useRef(data);
 
@@ -18,9 +24,9 @@ const List = (props: ListProps) => {
     listModel.setData(dataRef.current);
   }
 
-  const listRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<View>(null);
   const style: {
-    [key: string]: CSSProperties;
+    [key: string]: ViewStyle;
   } = useMemo(
     () => ({
       container: {
@@ -39,29 +45,67 @@ const List = (props: ListProps) => {
     });
   }, []);
 
+  const offsetRef = useRef(0);
+  const tsRef = useRef(Date.now());
+
   useEffect(() => {
-    scrollHandlerRef.current = new ScrollTracker({
-      domNode: listRef.current!,
-      onScroll: () => {
-        listModel.updateScrollMetrics(
-          scrollHandlerRef.current?.getScrollMetrics()
-        );
-      },
-    });
+    // scrollHandlerRef.current = new ScrollTracker({
+    //   domNode: listRef.current!,
+    //   onScroll: () => {
+    //     listModel.updateScrollMetrics(
+    //       scrollHandlerRef.current?.getScrollMetrics()
+    //     );
+    //   },
+    // });
 
-    scrollHandlerRef.current.addEventListeners();
+    // scrollHandlerRef.current.addEventListeners();
 
-    listModel.updateScrollMetrics(scrollHandlerRef.current.getScrollMetrics());
+    props.events.addEventListener(
+      'onScroll',
+      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const scrollMetrics = event.nativeEvent;
 
-    return () => scrollHandlerRef.current?.dispose();
+        // console.log('update =-====', {
+        //   offset: scrollMetrics.contentOffset.y,
+        //   visibleLength: scrollMetrics.layoutMeasurement.height,
+        //   contentLength: scrollMetrics.contentSize.height
+        // })
+
+        const timestamp = Date.now();
+        const offset = scrollMetrics.contentOffset.y;
+
+        const dOffset = offset - offsetRef.current;
+        const dt = timestamp - tsRef.current;
+        const velocity = dOffset / dt;
+
+        offsetRef.current = offset;
+        tsRef.current = timestamp;
+
+        listModel.updateScrollMetrics({
+          offset,
+          visibleLength: scrollMetrics.layoutMeasurement.height,
+          contentLength: scrollMetrics.contentSize.height,
+          velocity,
+        });
+      }
+    );
+
+    // listModel.updateScrollMetrics({
+    //   offset: 0,
+    //   visibleLength: 900,
+    //   contentLength: 0,
+    // });
+
+    // return () => scrollHandlerRef.current?.dispose();
   }, []);
 
   return (
-    <div id={id} ref={listRef} style={style.container}>
+    <View id={id} ref={listRef} style={style.container}>
       {state.recycleState.map((data) => (
         <RecycleItem
           key={data.key}
           data={data}
+          containerRef={containerRef}
           renderItem={renderItem}
           dimensions={listModel}
         />
@@ -70,11 +114,12 @@ const List = (props: ListProps) => {
         <SpaceItem
           key={data.key}
           data={data}
+          containerRef={containerRef}
           renderItem={renderItem}
           dimensions={listModel}
         />
       ))}
-    </div>
+    </View>
   );
 };
 

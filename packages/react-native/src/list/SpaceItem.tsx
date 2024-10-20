@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { View } from 'react-native';
 import { SpaceItemProps } from './types';
 
 const Item = (props: SpaceItemProps) => {
-  const { data, dimensions, renderItem: RenderItem } = props;
-  const itemRef = useRef<HTMLDivElement>(null);
+  const { data, dimensions, renderItem: RenderItem, containerRef } = props;
+  const itemRef = useRef<View>(null);
   const { item, key, itemMeta, length, isSpace } = data;
   const style = useMemo(
     () => ({
@@ -13,22 +14,38 @@ const Item = (props: SpaceItemProps) => {
   );
 
   useEffect(() => {
-    const rect = itemRef.current?.getBoundingClientRect();
+    const onMeasureSuccess = (left, top, width, height) => {
+      if (itemMeta) {
+        dimensions.setFinalKeyItemLayout(itemMeta.getKey(), {
+          x: left,
+          y: top,
+          height,
+          width,
+        });
+      }
+    };
 
-    if (rect) {
-      const { height } = rect;
-      if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), height);
-    }
+    const onMeasureFailed = () => {
+      console.error('[measureLayout error] ', itemMeta?.getKey());
+    };
+
+    setTimeout(() => {
+      itemRef.current.measureLayout(
+        containerRef.current,
+        onMeasureSuccess,
+        onMeasureFailed
+      );
+    });
   }, [itemMeta]);
 
   if (isSpace) {
-    return <div style={style} />;
+    return <View style={style} ref={itemRef} />;
   }
 
   return (
-    <div ref={itemRef} key={key}>
+    <View ref={itemRef} key={key}>
       <RenderItem item={item!} itemMeta={itemMeta!} />
-    </div>
+    </View>
   );
 };
 
