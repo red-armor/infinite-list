@@ -41,6 +41,7 @@ const List = (props: ListProps) => {
 
   useEffect(() => {
     listModel.addStateListener((newState) => {
+      // @ts-ignore
       setState(newState);
     });
   }, []);
@@ -60,17 +61,11 @@ const List = (props: ListProps) => {
 
     // scrollHandlerRef.current.addEventListeners();
 
+    // @ts-ignore
     props.events.addEventListener(
       'onScroll',
       (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const scrollMetrics = event.nativeEvent;
-
-        // console.log('update =-====', {
-        //   offset: scrollMetrics.contentOffset.y,
-        //   visibleLength: scrollMetrics.layoutMeasurement.height,
-        //   contentLength: scrollMetrics.contentSize.height
-        // })
-
         const timestamp = Date.now();
         const offset = scrollMetrics.contentOffset.y;
 

@@ -31,6 +31,7 @@ const Item = (props: SpaceItemProps) => {
 
     setTimeout(() => {
       itemRef.current.measureLayout(
+        // @ts-ignore
         containerRef.current,
         onMeasureSuccess,
         onMeasureFailed

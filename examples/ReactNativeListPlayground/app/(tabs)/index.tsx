@@ -146,7 +146,13 @@ export default () => {
   );
 
   return (
-    <ScrollView ref={scrollViewRef} onScroll={onScroll}>
+    <ScrollView
+      ref={scrollViewRef}
+      onScroll={onScroll}
+      contentContainerStyle={{
+        backgroundColor: '#fff',
+      }}
+    >
       <List
         data={data}
         events={events}
@@ -155,8 +161,8 @@ export default () => {
         id="basic"
         initialNumToRender={4}
         containerRef={scrollViewRef}
-        recyclerBufferSize={40}
-        recyclerReservedBufferPerBatch={20}
+        // recyclerBufferSize={40}
+        // recyclerReservedBufferPerBatch={20}
       />
     </ScrollView>
   );

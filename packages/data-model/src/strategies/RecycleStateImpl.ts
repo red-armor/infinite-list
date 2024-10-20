@@ -1,6 +1,11 @@
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import memoizeOne from 'memoize-one';
-import { buildStateTokenIndexKey, DEFAULT_RECYCLER_TYPE } from '../common';
+import {
+  buildStateTokenIndexKey,
+  DEFAULT_RECYCLER_TYPE,
+  RECYCLER_BUFFER_SIZE,
+  RECYCLER_RESERVED_BUFFER_PER_BATCH,
+} from '../common';
 import {
   ListState,
   RecycleStateResult,
@@ -43,8 +48,8 @@ class RecycleStateImpl<
     });
     const {
       recyclerTypes = [DEFAULT_RECYCLER_TYPE],
-      recyclerBufferSize,
-      recyclerReservedBufferPerBatch,
+      recyclerBufferSize = RECYCLER_BUFFER_SIZE,
+      recyclerReservedBufferPerBatch = RECYCLER_RESERVED_BUFFER_PER_BATCH,
 
       onRecyclerProcess,
     } = props;
@@ -56,11 +61,11 @@ class RecycleStateImpl<
       // the following is appended with setting default recyclerType
       recyclerTypes,
       recyclerBufferSize,
+      recyclerReservedBufferPerBatch,
       /**
        * set recycle start item
        */
       thresholdIndexValue: this.listContainer.initialNumToRender,
-      recyclerReservedBufferPerBatch,
       metaExtractor: (index) => this.listContainer.getFinalIndexItemMeta(index),
       indexExtractor: (meta) => {
         const indexInfo = meta.getIndexInfo();

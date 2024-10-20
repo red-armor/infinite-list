@@ -35,6 +35,7 @@ const RecycleItem = (props: RecycleItemProps) => {
 
     setTimeout(() => {
       itemRef.current.measureLayout(
+        // @ts-ignore
         containerRef.current,
         onMeasureSuccess,
         onMeasureFailed
