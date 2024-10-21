@@ -66,6 +66,8 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
         if (typeof _onMeasureLayout === 'function') {
           _onMeasureLayout(x, y, width, height);
         }
+        // TODO
+        // @ts-ignore
         const meta = dimensions.ensureKeyMeta(
           viewableItemHelperKeyRef.current,
           ownerId

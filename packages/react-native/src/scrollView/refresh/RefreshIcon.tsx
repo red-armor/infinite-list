@@ -1,5 +1,5 @@
 // @ts-ignore
-import LottieView from '@xhs/lottie-react-native';
+// import LottieView from '@xhs/lottie-react-native';
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -31,7 +31,7 @@ const LoadingIcon = props => {
 
   return (
     <View style={[styles.image, style]}>
-      <LottieView ref={animation} source={source} progress={progress} />
+      {/* <LottieView ref={animation} source={source} progress={progress} /> */}
     </View>
   );
 };

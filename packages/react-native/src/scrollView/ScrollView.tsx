@@ -26,7 +26,7 @@ import ScrollHelper from './ScrollHelper';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
 import AnimatedRenderer from './component/AnimatedRenderer';
-import AnimatedViewPagerRenderer from './component/AnimatedViewPagerRenderer';
+// import AnimatedViewPagerRenderer from './component/AnimatedViewPagerRenderer';
 import BasicRenderer from './component/BasicRenderer';
 import ViewRenderer from './component/ViewRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';
@@ -554,25 +554,25 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = props => {
       </>
     );
 
-  if (enableViewPager)
-    return (
-      <>
-        <PortalHeader />
+  // if (enableViewPager)
+  //   return (
+  //     <>
+  //       <PortalHeader />
 
-        <AnimatedViewPagerRenderer
-          ref={scrollViewRef as MutableRefObject<RNScrollView>}
-          {...rest}
-          {...commonProps}
-          {...commonScrollViewProps}
-          {...refreshControlProps}
-          pagerOffsetRef={pagerOffsetRef}
-          pagerPositionRef={pagerPositionRef}
-        >
-          {nextChildren}
-        </AnimatedViewPagerRenderer>
-        <PortalFooter />
-      </>
-    );
+  //       <AnimatedViewPagerRenderer
+  //         ref={scrollViewRef as MutableRefObject<RNScrollView>}
+  //         {...rest}
+  //         {...commonProps}
+  //         {...commonScrollViewProps}
+  //         {...refreshControlProps}
+  //         pagerOffsetRef={pagerOffsetRef}
+  //         pagerPositionRef={pagerPositionRef}
+  //       >
+  //         {nextChildren}
+  //       </AnimatedViewPagerRenderer>
+  //       <PortalFooter />
+  //     </>
+  //   );
 
   if (!enableViewPager && !shouldBeView && !!animated)
     return (

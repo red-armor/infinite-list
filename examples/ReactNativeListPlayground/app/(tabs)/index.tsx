@@ -87,8 +87,8 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { List, ScrollView } from '@infinite-list/react-native';
 import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
+  // NativeScrollEvent,
+  // NativeSyntheticEvent,
   Text,
   View,
 } from 'react-native';
@@ -116,47 +116,47 @@ export default () => {
     return item.key;
   }, []);
 
-  const subscriptions = useMemo<{
-    [key: string]: Function[];
-  }>(() => {
-    return {};
-  }, []);
+  // const subscriptions = useMemo<{
+  //   [key: string]: Function[];
+  // }>(() => {
+  //   return {};
+  // }, []);
 
-  const events = useMemo(() => {
-    return {
-      addEventListener: (eventName: string, fn: Function) => {
-        if (!subscriptions[eventName]) subscriptions[eventName] = [];
-        subscriptions[eventName] = ([] as Function[]).concat(
-          subscriptions[eventName],
-          fn
-        );
-      },
-    };
-  }, []);
+  // const events = useMemo(() => {
+  //   return {
+  //     addEventListener: (eventName: string, fn: Function) => {
+  //       if (!subscriptions[eventName]) subscriptions[eventName] = [];
+  //       subscriptions[eventName] = ([] as Function[]).concat(
+  //         subscriptions[eventName],
+  //         fn
+  //       );
+  //     },
+  //   };
+  // }, []);
 
-  const onScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      const cbs = subscriptions['onScroll'];
-      if (cbs?.length) {
-        cbs.forEach((cb) => cb(event));
-      }
-    },
-    []
-  );
+  // const onScroll = useCallback(
+  //   (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //     const cbs = subscriptions['onScroll'];
+  //     if (cbs?.length) {
+  //       cbs.forEach((cb) => cb(event));
+  //     }
+  //   },
+  //   []
+  // );
 
   return (
     <ScrollView
       ref={scrollViewRef}
-      onScroll={onScroll}
+      // onScroll={onScroll}
       contentContainerStyle={{
         backgroundColor: '#fff',
       }}
     >
       <List
         data={data}
-        events={events}
         renderItem={renderItem}
         test="3"
+        id="basic"
         keyExtractor={keyExtractor}
         containerRef={scrollViewRef}
       />

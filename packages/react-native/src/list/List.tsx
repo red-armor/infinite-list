@@ -17,7 +17,7 @@ const List = (props: ListProps) => {
   const [state, setState] = useState(listModel.getStateResult());
   const contextValues = useContext(ScrollViewContext);
 
-  console.log('context values ', contextValues);
+  // console.log('context values ', contextValues);
 
   const dataRef = useRef(data);
 
@@ -63,29 +63,49 @@ const List = (props: ListProps) => {
 
     // scrollHandlerRef.current.addEventListeners();
 
+    return contextValues.getScrollHelper().addListener('onScroll', (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const scrollMetrics = event.nativeEvent;
+      const timestamp = Date.now();
+      const offset = scrollMetrics.contentOffset.y;
+
+      const dOffset = offset - offsetRef.current;
+      const dt = timestamp - tsRef.current;
+      const velocity = dOffset / dt;
+
+      offsetRef.current = offset;
+      tsRef.current = timestamp;
+
+      listModel.updateScrollMetrics({
+        offset,
+        visibleLength: scrollMetrics.layoutMeasurement.height,
+        contentLength: scrollMetrics.contentSize.height,
+        velocity,
+      });
+    })
+
     // @ts-ignore
-    props.events.addEventListener(
-      'onScroll',
-      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const scrollMetrics = event.nativeEvent;
-        const timestamp = Date.now();
-        const offset = scrollMetrics.contentOffset.y;
+    // props.events.addEventListener(
+    //   'onScroll',
+    //   (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    //     const scrollMetrics = event.nativeEvent;
+    //     const timestamp = Date.now();
+    //     const offset = scrollMetrics.contentOffset.y;
 
-        const dOffset = offset - offsetRef.current;
-        const dt = timestamp - tsRef.current;
-        const velocity = dOffset / dt;
+    //     const dOffset = offset - offsetRef.current;
+    //     const dt = timestamp - tsRef.current;
+    //     const velocity = dOffset / dt;
 
-        offsetRef.current = offset;
-        tsRef.current = timestamp;
+    //     offsetRef.current = offset;
+    //     tsRef.current = timestamp;
 
-        listModel.updateScrollMetrics({
-          offset,
-          visibleLength: scrollMetrics.layoutMeasurement.height,
-          contentLength: scrollMetrics.contentSize.height,
-          velocity,
-        });
-      }
-    );
+    //     listModel.updateScrollMetrics({
+    //       offset,
+    //       visibleLength: scrollMetrics.layoutMeasurement.height,
+    //       contentLength: scrollMetrics.contentSize.height,
+    //       velocity,
+    //     });
+    //   }
+    // );
 
     // listModel.updateScrollMetrics({
     //   offset: 0,

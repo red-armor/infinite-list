@@ -286,6 +286,8 @@ class ScrollHelper {
   prepareNested() {
     const dimensions = this.getItemsDimensions();
     if (!dimensions) return null;
+    // TODO
+    // @ts-ignore
     const meta = dimensions.ensureKeyMeta(this.id, this.id);
     meta.addStateEventListener('viewable', this.onViewableHandler);
     return meta;
