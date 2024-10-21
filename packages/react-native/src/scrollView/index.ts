@@ -27,9 +27,8 @@ export const Viewable = {
 
 export const ViewableComponent = Viewable;
 
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(
-  TouchableOpacity
-);
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
 
 export const StickyComponent = {
   View: createStickyComponent(Animated.View),

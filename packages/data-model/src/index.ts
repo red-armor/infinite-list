@@ -1,10 +1,10 @@
 export { default as ItemMeta } from './ItemMeta';
-export { default as DimensionExperimental } from './Dimension';
+export { default as Dimension } from './Dimension';
 export { default as ListDimensions } from './ListDimensions';
-export { default as ItemsDimensionsExperimental } from './ItemsDimensions';
-export { default as ListGroupDimensionsExperimental } from './ListGroupDimensions';
+export { default as ListGroupDimensions } from './ListGroupDimensions';
 export { default as PseudoListDimensions } from './PseudoListDimensions';
 export { default as ItemMetaExperimental } from './ItemMeta';
+export { default as ItemsDimensions } from './ItemsDimensions';
 
 export { default as ListSpyUtils } from './utils/ListSpyUtils';
 export * from './exportedUtils';

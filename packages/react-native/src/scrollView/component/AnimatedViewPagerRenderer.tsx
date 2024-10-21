@@ -20,7 +20,9 @@ import {
 // https://reactnative.dev/docs/0.60/viewpagerandroid
 import { PagerView } from './PagerViewAdapter';
 
-const AnimatedViewPagerRenderer: FC<AnimatedViewPagerRenderPropsWithForwardRef> = props => {
+const AnimatedViewPagerRenderer: FC<
+  AnimatedViewPagerRenderPropsWithForwardRef
+> = (props) => {
   const {
     style = {},
     children,
@@ -38,7 +40,7 @@ const AnimatedViewPagerRenderer: FC<AnimatedViewPagerRenderPropsWithForwardRef> 
     []
   );
 
-  const onPageSelectedHandler = useCallback(e => {
+  const onPageSelectedHandler = useCallback((e) => {
     if (typeof onPageSelected === 'function') {
       onPageSelected(e);
     }
