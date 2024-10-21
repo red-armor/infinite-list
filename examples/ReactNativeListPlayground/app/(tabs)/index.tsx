@@ -85,11 +85,10 @@
 // });
 
 import { useCallback, useMemo, useRef } from 'react';
-import { List } from '@infinite-list/react-native';
+import { List, ScrollView } from '@infinite-list/react-native';
 import {
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
   Text,
   View,
 } from 'react-native';
