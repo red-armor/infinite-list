@@ -19,7 +19,6 @@ import {
   View as RNView,
   Platform,
 } from 'react-native';
-import { invoke } from '@xhs/ozone-schema';
 
 import Marshal from './Marshal';
 import ScrollEventHelper from './ScrollEventHelper';
@@ -46,36 +45,10 @@ import {
 let count = 0;
 
 let deviceLevel = Platform.OS === 'ios' ? 0 : 3;
-let isProcessing = false;
-let finished = false;
-
-const initDeviceLevel = function() {
-  try {
-    if (isProcessing || finished) return;
-    isProcessing = true;
-    invoke('getHardWareLevel')
-      .then(res => {
-        if (res.result === 0) {
-          deviceLevel = res.value;
-          finished = true;
-        }
-      })
-      .catch(() => {})
-      .finally(() => (isProcessing = false));
-  } catch (err) {
-    // ...
-  }
-};
 
 export const getDeviceLevel = () => deviceLevel;
 
 const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = props => {
-  const initialRef = useRef(true);
-  if (initialRef.current) {
-    initDeviceLevel();
-    initialRef.current = false;
-  }
-
   const {
     id,
     onScroll,

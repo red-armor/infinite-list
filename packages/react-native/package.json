@@ -31,7 +31,10 @@
   },
   "dependencies": {
     "@infinite-list/data-model": "workspace:*",
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/is-ref": "^0.1.35",
     "@x-oasis/noop": "^0.1.14",
+    "@x-oasis/select-value": "^0.1.14",
     "@x-oasis/shallow-equal": "^0.1.14",
     "@x-oasis/throttle": "^0.1.35"
   }
