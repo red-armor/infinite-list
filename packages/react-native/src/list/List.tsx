@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef, useContext } from 'react';
 import {
   View,
   ViewStyle,
@@ -9,13 +9,15 @@ import { ListProps } from './types';
 import { ListDimensions } from '@infinite-list/data-model';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-// import ScrollTracker from './events/ScrollTracker';
+import { ScrollViewContext } from '../scrollView';
 
 const List = (props: ListProps) => {
   const { renderItem, id, data, containerRef } = props;
   const listModel = useMemo(() => new ListDimensions(props), []);
   const [state, setState] = useState(listModel.getStateResult());
-  // const scrollHandlerRef = useRef<ScrollTracker>();
+  const contextValues = useContext(ScrollViewContext);
+
+  console.log('context values ', contextValues);
 
   const dataRef = useRef(data);
 
