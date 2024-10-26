@@ -1,3 +1,3 @@
-import List from './lib/List';
+import List from './lib/list/List';
 
 export { List };

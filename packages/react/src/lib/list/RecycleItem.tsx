@@ -6,7 +6,7 @@ const RecycleItem = (props: RecycleItemProps) => {
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, offset } = data;
   const style: CSSProperties = useMemo(() => {
-    if (offset)
+    if (typeof offset === 'number')
       return {
         position: 'absolute',
         top: offset,

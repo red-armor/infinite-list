@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, useRef, CSSProperties } from 'react';
-import { ListProps } from './types';
+import { ListProps } from '../types';
 import { ListDimensions } from '@infinite-list/data-model';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-import ScrollTracker from './events/ScrollTracker';
+import ScrollTracker from '../events/ScrollTracker';
 
 const List = (props: ListProps) => {
   const { renderItem, id, data } = props;
@@ -56,16 +56,12 @@ const List = (props: ListProps) => {
     return () => scrollHandlerRef.current?.dispose();
   }, []);
 
+  // console.log('state ', state)
+
   return (
-    <div id={id} ref={listRef} style={style.container}>
-      {state.recycleState.map((data) => (
-        <RecycleItem
-          key={data.key}
-          data={data}
-          renderItem={renderItem}
-          dimensions={listModel}
-        />
-      ))}
+    <>
+      <div id={id} ref={listRef} style={style.container}>
+  
       {state.spaceState.map((data) => (
         <SpaceItem
           key={data.key}
@@ -74,7 +70,17 @@ const List = (props: ListProps) => {
           dimensions={listModel}
         />
       ))}
-    </div>
+          {state.recycleState.map((data) => (
+        <RecycleItem
+          key={data.key}
+          data={data}
+          renderItem={renderItem}
+          dimensions={listModel}
+        />
+      ))}
+      </div>
+
+    </>
   );
 };
 

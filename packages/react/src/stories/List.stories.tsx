@@ -16,11 +16,12 @@ const meta: Meta<typeof List> = {
           height: '400px',
           width: '600px',
           backgroundColor: '#efefef',
+          position: 'relative'
         }}
       >
         <List
           id="basic"
-          initialNumToRender={4}
+          initialNumToRender={0}
           data={buildData(10000)}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
