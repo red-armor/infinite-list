@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { SpaceItemProps } from './types';
+import { SpaceItemProps } from '../types';
+import { GenericItemT } from '@infinite-list/data-model';
 
-const Item = (props: SpaceItemProps) => {
+const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   const { data, dimensions, renderItem: RenderItem } = props;
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, length, isSpace } = data;

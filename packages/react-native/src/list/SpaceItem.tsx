@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
+import { GenericItemT } from '@infinite-list/data-model';
 import { SpaceItemProps } from './types';
 
-const Item = (props: SpaceItemProps) => {
+const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   const { data, dimensions, renderItem: RenderItem, containerRef } = props;
   const itemRef = useRef<View>(null);
   const { item, key, itemMeta, length, isSpace } = data;

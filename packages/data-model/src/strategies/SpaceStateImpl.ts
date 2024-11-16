@@ -200,4 +200,44 @@
 
 // export default SpaceStateImpl;
 
-export default class SpaceStateImpl {}
+import BaseState from './BaseState';
+import {
+  ListState,
+  GenericItemT,
+  StateListener,
+  SpaceStateResult,
+} from '../types';
+
+export default class SpaceStateImpl<
+  ItemT extends GenericItemT = GenericItemT
+> extends BaseState<ItemT> {
+  private _stateResult: SpaceStateResult<ItemT> = [];
+  public stateListener?: StateListener<ItemT>;
+
+  getStateResult() {
+    return this._stateResult;
+  }
+
+  setState(state: ListState) {
+    const stateResult = this.resolveSpaceState(state);
+    this.applyStateResult(stateResult);
+  }
+
+  // resolveSpaceState(state: ListState) {
+  resolveSpaceState() {
+    return [];
+  }
+
+  addStateListener(listener: StateListener<ItemT>) {
+    if (typeof listener === 'function') this.stateListener = listener;
+    return () => {
+      if (typeof listener === 'function') this.stateListener = undefined;
+    };
+  }
+
+  applyStateResult(stateResult: SpaceStateResult<ItemT>) {
+    if (typeof this.stateListener === 'function') {
+      this.stateListener(stateResult, this._stateResult);
+    }
+  }
+}

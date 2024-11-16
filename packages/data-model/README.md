@@ -9,3 +9,29 @@ Run `nx build data-model` to build the library.
 ## Running unit tests
 
 Run `nx test data-model` to execute the unit tests via [Vitest](https://vitest.dev/).
+
+## Domain
+
+### Masonry
+
+### Section
+
+- https://reactnative.dev/docs/sectionlist
+
+### Table
+
+- xxxx
+
+### Impression 
+
+- xxx
+
+### Dnd
+
+- xxx
+
+### Carousel
+
+
+### SnapList
+

@@ -8,9 +8,9 @@ import {
 
 import { ItemMeta } from '@infinite-list/data-model';
 
-export type RenderItemInfo<ItemT> = {
+export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   item: ItemT;
-  itemMeta: ItemMeta;
+  itemMeta: ItemMeta<ItemT>;
 };
 
 export type DefaultItemT = {

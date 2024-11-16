@@ -5,28 +5,33 @@ import {
   StateHubProps,
 } from '../types';
 import RecycleStateImpl from './RecycleStateImpl';
+import SpaceStateImpl from './SpaceStateImpl';
 
 class StateHub<ItemT extends GenericItemT = GenericItemT> {
-  private _handler: RecycleStateImpl<ItemT>;
+  private _handler: RecycleStateImpl<ItemT> | SpaceStateImpl<ItemT>;
 
   constructor(props: StateHubProps<ItemT>) {
     const {
       listContainer,
 
       recyclerTypes,
-      // recycleEnabled,
       onRecyclerProcess,
       recyclerBufferSize,
+      recycleEnabled = true,
       recyclerReservedBufferPerBatch,
     } = props;
 
-    this._handler = new RecycleStateImpl<ItemT>({
-      listContainer,
-      recyclerTypes,
-      onRecyclerProcess,
-      recyclerBufferSize,
-      recyclerReservedBufferPerBatch,
-    });
+    this._handler = recycleEnabled
+      ? new RecycleStateImpl<ItemT>({
+          listContainer,
+          recyclerTypes,
+          onRecyclerProcess,
+          recyclerBufferSize,
+          recyclerReservedBufferPerBatch,
+        })
+      : new SpaceStateImpl<ItemT>({
+          listContainer,
+        });
   }
 
   setState(state: ListState) {
@@ -38,7 +43,7 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
   }
 
   addBuffer(type: string) {
-    this._handler.addBuffer(type);
+    (this._handler as RecycleStateImpl<ItemT>).addBuffer(type);
   }
 
   get stateResult() {

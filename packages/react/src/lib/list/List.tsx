@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState, useRef, CSSProperties } from 'react';
 import { ListProps } from '../types';
-import { ListDimensions } from '@infinite-list/data-model';
+import {
+  GenericItemT,
+  ListDimensions,
+  RecycleStateResult,
+} from '@infinite-list/data-model';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
 import ScrollTracker from '../events/ScrollTracker';
 
-const List = (props: ListProps) => {
-  const { renderItem, id, data } = props;
-  const listModel = useMemo(() => new ListDimensions(props), []);
+const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
+  const { renderItem, id, data, recycleEnabled = true } = props;
+  const listModel = useMemo(() => new ListDimensions<ItemT>(props), []);
   const [state, setState] = useState(listModel.getStateResult());
   const scrollHandlerRef = useRef<ScrollTracker>();
 
@@ -56,32 +60,30 @@ const List = (props: ListProps) => {
     return () => scrollHandlerRef.current?.dispose();
   }, []);
 
-  // console.log('state ', state)
-
-  return (
-    <>
-      <div id={id} ref={listRef} style={style.container}>
-  
-      {state.spaceState.map((data) => (
-        <SpaceItem
-          key={data.key}
-          data={data}
-          renderItem={renderItem}
-          dimensions={listModel}
-        />
-      ))}
-          {state.recycleState.map((data) => (
-        <RecycleItem
-          key={data.key}
-          data={data}
-          renderItem={renderItem}
-          dimensions={listModel}
-        />
-      ))}
-      </div>
-
-    </>
-  );
+  if (recycleEnabled) {
+    return (
+      <>
+        <div id={id} ref={listRef} style={style.container}>
+          {(state as RecycleStateResult<ItemT>).spaceState.map((data) => (
+            <SpaceItem
+              key={data.key}
+              data={data}
+              renderItem={renderItem}
+              dimensions={listModel}
+            />
+          ))}
+          {(state as RecycleStateResult<ItemT>).recycleState.map((data) => (
+            <RecycleItem
+              key={data.key}
+              data={data}
+              renderItem={renderItem}
+              dimensions={listModel}
+            />
+          ))}
+        </div>
+      </>
+    );
+  }
 };
 
 export default List;

@@ -11,7 +11,7 @@ import { ScrollView, View } from 'react-native';
 
 export type RenderItemInfo<ItemT> = {
   item: ItemT;
-  itemMeta: ItemMeta;
+  itemMeta: ItemMeta<ItemT>;
 };
 
 export type DefaultItemT = {

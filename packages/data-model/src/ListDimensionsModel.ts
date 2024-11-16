@@ -301,11 +301,11 @@ class ListDimensionsModel<
   }
 
   hasKey(key: string) {
-    return this._indexKeys.indexOf(key) !== -1;
+    return this.keyIndexManager.hasKey(key);
   }
 
   performKeyOperationGuard(key: string) {
-    if (this._indexKeys.indexOf(key) !== -1) return true;
+    if (this.keyIndexManager.hasKey(key)) return true;
     return false;
   }
 
@@ -325,6 +325,25 @@ class ListDimensionsModel<
     this._container.onDataSourceChanged();
 
     return changedType;
+  }
+
+  handleDataChange(dataChangedType: KeysChangedType, data: ItemT[]) {
+    switch (dataChangedType) {
+      case KeysChangedType.Equal:
+        break;
+      case KeysChangedType.Append:
+        this.updateTheLastItemIntervalValue();
+        this.append(data);
+        break;
+      case KeysChangedType.Initial:
+        this.append(data);
+        break;
+      case KeysChangedType.Add:
+      case KeysChangedType.Remove:
+      case KeysChangedType.Reorder:
+        this.shuffle(data);
+        break;
+    }
   }
 
   _setData(_data: Array<ItemT>) {
@@ -358,27 +377,12 @@ class ListDimensionsModel<
       (index: number) => this._data[index] === data[index]
     );
 
-    switch (dataChangedType) {
-      case KeysChangedType.Equal:
-        break;
-      case KeysChangedType.Append:
-        this.updateTheLastItemIntervalValue();
-        this.append(data);
-        break;
-      case KeysChangedType.Initial:
-        this.append(data);
-        break;
-      case KeysChangedType.Add:
-      case KeysChangedType.Remove:
-      case KeysChangedType.Reorder:
-        this.shuffle(data);
-        break;
-    }
+    this.handleDataChange(dataChangedType, data);
 
     this._data = data;
 
-    this._keyToIndexMap = keyToIndexMap;
-    this._indexKeys = keyToIndexArray;
+    this.keyIndexManager.setKeyToIndexMap(keyToIndexMap);
+    this.keyIndexManager.setIndexKeys(keyToIndexArray);
     this._itemToKeyMap = itemToKeyMap;
     return dataChangedType;
   }
@@ -408,9 +412,6 @@ class ListDimensionsModel<
   }
 
   getIndexInfo(key: string): IndexInfo<ItemT> | null {
-    const info = {} as IndexInfo;
-    info.index = this._indexKeys.indexOf(key);
-
     return this._container.getFinalKeyIndexInfo(key, this.id);
   }
 
@@ -470,7 +471,7 @@ class ListDimensionsModel<
   }
 
   append(data: Array<ItemT>) {
-    const baseIndex = this._indexKeys.length;
+    const baseIndex = this.keyIndexManager.getIndexKeysLength();
     this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);
 
     // after set interval tree. should then trigger a update..
@@ -480,10 +481,8 @@ class ListDimensionsModel<
   shuffle(data: Array<ItemT>) {
     const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree = this.createIntervalTree();
-    // const itemIntervalTree = this.createIntervalTree();
     const keyToMetaMap = new Map();
     this.pump(data, 0, keyToMetaMap, this.intervalTree);
-    // this.replaceIntervalTree(itemIntervalTree);
     this._keyToMetaMap = keyToMetaMap;
     const nextLength = this.intervalTree.getHeap()[1];
 
