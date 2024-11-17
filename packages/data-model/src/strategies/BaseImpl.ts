@@ -17,6 +17,7 @@ import {
   GenericItemT,
   IndexInfo,
   IndexToOffsetMap,
+  ListStateResult,
 } from '../types';
 import ListSpyUtils from '../utils/ListSpyUtils';
 import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
@@ -36,7 +37,7 @@ import { ReducerResult } from '../state/types';
 abstract class BaseImpl<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseLayout {
-  private _dispatchMetricsBatchinator: Batchinator;
+  private _setMetricsBatchinator: Batchinator;
 
   private _onEndReachedThreshold: number;
 
@@ -112,8 +113,8 @@ abstract class BaseImpl<
       handler: this.stillnessHandler,
     });
 
-    this._dispatchMetricsBatchinator = new Batchinator(
-      this.dispatchMetrics.bind(this),
+    this._setMetricsBatchinator = new Batchinator(
+      this.setMetrics.bind(this),
       dispatchMetricsThreshold
     );
   }
@@ -237,7 +238,7 @@ abstract class BaseImpl<
   }
 
   resetViewableItems() {
-    if (this._scrollMetrics) this.dispatchMetrics(this._scrollMetrics);
+    if (this._scrollMetrics) this.setMetrics(this._scrollMetrics);
   }
 
   getConfigTuple() {
@@ -257,24 +258,37 @@ abstract class BaseImpl<
     // };
   }
 
-  dispatchStoreMetrics(scrollMetrics: ScrollMetrics) {
+  setStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
       // @ts-ignore
       dimension: this,
       scrollMetrics,
     });
 
-    if (isEmpty(state)) return state;
-    this._stateHub.setState({ ...state });
-
-    return state;
+    if (!isEmpty(state)) {
+      this._stateHub.setState({ ...state });
+    }
   }
 
-  dispatchMetrics(scrollMetrics: ScrollMetrics | undefined) {
-    if (!scrollMetrics) return;
-    const state = this.dispatchStoreMetrics(scrollMetrics);
+  dispatchMetrics(
+    scrollMetrics: ScrollMetrics | undefined = this._scrollMetrics
+  ): [ListStateResult<ItemT>, ListStateResult<ItemT>] {
+    if (!scrollMetrics)
+      return [this._stateHub.getStateResult(), this._stateHub.getStateResult()];
 
-    const { isEndReached, distanceFromEnd } = state;
+    const state = this._store.dispatchMetrics({
+      // @ts-ignore
+      dimension: this,
+      scrollMetrics,
+    });
+    return this._stateHub.dispatchState(state);
+  }
+
+  setMetrics(scrollMetrics: ScrollMetrics | undefined = this._scrollMetrics) {
+    if (!scrollMetrics) return;
+    this.setStoreMetrics(scrollMetrics);
+
+    const { isEndReached, distanceFromEnd } = this._store.getState();
 
     this.onEndReachedHelper?.performEndReached({
       isEndReached,
@@ -290,11 +304,11 @@ abstract class BaseImpl<
   }
 
   onEnableDispatchScrollMetrics() {
-    this.dispatchMetrics(this._scrollMetrics);
+    this.setMetrics(this._scrollMetrics);
   }
 
   stillnessHandler() {
-    this.dispatchMetrics(this._scrollMetrics);
+    this.setMetrics(this._scrollMetrics);
   }
 
   isStill() {
@@ -328,9 +342,9 @@ abstract class BaseImpl<
     this.setScrollMetrics(scrollMetrics);
 
     if (flush) {
-      this._dispatchMetricsBatchinator.flush(scrollMetrics);
+      this._setMetricsBatchinator.flush(scrollMetrics);
     } else {
-      this._dispatchMetricsBatchinator.schedule(scrollMetrics);
+      this._setMetricsBatchinator.schedule(scrollMetrics);
     }
 
     return;

@@ -3,6 +3,7 @@ import {
   ListState,
   StateListener,
   StateHubProps,
+  ListStateResult,
 } from '../types';
 import RecycleStateImpl from './RecycleStateImpl';
 import SpaceStateImpl from './SpaceStateImpl';
@@ -34,8 +35,31 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
         });
   }
 
+  /**
+   *
+   * @param state
+   *
+   * return nothing
+   */
   setState(state: ListState) {
     this._handler.setState(state);
+  }
+
+  /**
+   *
+   * @param state
+   * @returns StateResult
+   *
+   * comparing with setState, it should return StateResult after state hub handler
+   */
+  dispatchState(
+    state: ListState
+  ): [ListStateResult<ItemT>, ListStateResult<ItemT>] {
+    return this._handler.dispatchState(state);
+  }
+
+  getStateResult() {
+    return this._handler.getStateResult();
   }
 
   addStateListener(listener: StateListener<ItemT>) {

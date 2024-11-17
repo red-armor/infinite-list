@@ -106,9 +106,7 @@ class RecycleStateImpl<
   }
 
   applyStateResult(stateResult: RecycleStateResult<ItemT>) {
-    const shouldStateUpdate = true;
-
-    if (shouldStateUpdate && typeof this.stateListener === 'function') {
+    if (typeof this.stateListener === 'function') {
       const { recycleState: _recycleState, spaceState } = stateResult;
 
       const recycleState = _recycleState
@@ -174,6 +172,19 @@ class RecycleStateImpl<
       ? this.resolveRecycleState(state)
       : this.memoizedResolveRecycleState(state);
     this.applyStateResult(stateResult);
+  }
+
+  dispatchState(
+    state: ListState,
+    force = false
+  ): [RecycleStateResult<ItemT>, RecycleStateResult<ItemT>] {
+    const oldStateResult = { ...this._stateResult };
+    const stateResult = force
+      ? this.resolveRecycleState(state)
+      : this.memoizedResolveRecycleState(state);
+    this._stateResult = stateResult;
+
+    return [stateResult, oldStateResult];
   }
 
   getStateResult() {

@@ -219,13 +219,24 @@ export default class SpaceStateImpl<
   }
 
   setState(state: ListState) {
+    // @ts-ignore
     const stateResult = this.resolveSpaceState(state);
     this.applyStateResult(stateResult);
   }
 
+  dispatchState(
+    state: ListState
+  ): [SpaceStateResult<ItemT>, SpaceStateResult<ItemT>] {
+    // return [] as any
+    const oldStateResult = [...this._stateResult];
+    // @ts-ignore
+    const stateResult = this.resolveSpaceState(state);
+    return [stateResult, oldStateResult];
+  }
+
   // resolveSpaceState(state: ListState) {
   resolveSpaceState() {
-    return [];
+    return [] as SpaceStateResult<ItemT>;
   }
 
   addStateListener(listener: StateListener<ItemT>) {
