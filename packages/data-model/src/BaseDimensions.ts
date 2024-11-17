@@ -79,14 +79,14 @@ abstract class BaseDimensions<
       index,
       listOffset,
       this.getContainerOffset(),
-      this.intervalTree.getHeap()[1],
+      this._intervalTree.getHeap()[1],
       this._intervalTree.sumUntil(index)
     );
     if (typeof index === 'number') {
       return (
         listOffset +
         (index >= this._intervalTree.getMaxUsefulLength()
-          ? this.intervalTree.getHeap()[1]
+          ? this._intervalTree.getHeap()[1]
           : this._intervalTree.sumUntil(index))
       );
     }

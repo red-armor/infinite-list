@@ -45,7 +45,8 @@ class MasonryDimensionStrategy<
   }
 
   getFinalIndexItemMeta(index: number) {
-    return this._dataModel.getIndexItemMeta(index);
+    return this._dataModel.getColumnIndexItemMeta(this.columnIndex, index);
+    // return this._dataModel.getIndexItemMeta(index);
   }
 
   getFinalItemMeta(item: ItemT) {
@@ -58,17 +59,35 @@ class MasonryDimensionStrategy<
     return 0;
   }
 
-  getIndexKeyOffset(index: number, exclusive?: boolean) {
-    return this._dataModel.getIndexKeyOffset(index, exclusive);
+  /**
+   *
+   * @param index
+   * @param exclusive
+   * @returns
+   */
+  getIndexKeyOffset(indexInColumn: number, exclusive?: boolean) {
+    return this._dataModel.getColumnIndexKeyOffset(
+      this.columnIndex,
+      indexInColumn,
+      exclusive
+    );
   }
 
-  getFinalIndexKeyOffset(index: number, exclusive?: boolean) {
-    return this.getIndexKeyOffset(index, exclusive);
+  getFinalIndexKeyOffset(indexInColumn: number, exclusive?: boolean) {
+    return this.getIndexKeyOffset(indexInColumn, exclusive);
   }
 
+  /**
+   *
+   * @param index
+   * @param exclusive
+   * @returns
+   *
+   * include the last item height
+   */
   getFinalIndexKeyBottomOffset(index: number, exclusive?: boolean) {
     const containerOffset = exclusive ? 0 : this.getContainerOffset();
-    const height = this.getTotalLength();
+    const height = this._dataModel.getColumnTotalLength(this.columnIndex);
     return containerOffset + (typeof height === 'number' ? height : 0);
   }
 
@@ -87,7 +106,9 @@ class MasonryDimensionStrategy<
   getFinalKeyIndexInfo(key: string): MasonryIndexInfo<ItemT> {
     return {
       dimensions: this._dataModel,
-      index: 0,
+      index: this._dataModel
+        .getKeyIndexManager(this.columnIndex)
+        .getKeyIndex(key),
       columnIndex: this.columnIndex,
       indexInTotal: this._dataModel.getKeyIndex(key) || 0,
     };
@@ -99,14 +120,21 @@ class MasonryDimensionStrategy<
   }
 
   getFinalIndexRangeOffsetMap(
-    startIndex: number,
-    endIndex: number,
+    /**
+     * startIndex is index in column
+     */
+    startIndexInColumn: number,
+    endIndexInColumn: number,
     exclusive?: boolean
   ) {
     const indexToOffsetMap: IndexToOffsetMap = {};
-    let startOffset = this.getFinalIndexKeyOffset(startIndex, exclusive);
 
-    for (let index = startIndex; index <= endIndex; index++) {
+    let startOffset = this.getFinalIndexKeyOffset(
+      startIndexInColumn,
+      exclusive
+    );
+
+    for (let index = startIndexInColumn; index <= endIndexInColumn; index++) {
       const itemMeta = this.getFinalIndexItemMeta(index);
 
       if (!itemMeta) continue;
