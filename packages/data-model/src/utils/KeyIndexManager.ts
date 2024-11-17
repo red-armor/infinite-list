@@ -5,6 +5,14 @@ class KeyIndexManager {
   _keyToIndexMap: Map<string, number> = new Map();
   _indexKeys: Array<string> = [];
 
+  get keyToIndexMap() {
+    return this._keyToIndexMap;
+  }
+
+  get indexKeys() {
+    return this._indexKeys;
+  }
+
   getIndexKey(index: number) {
     return this._indexKeys[index];
   }

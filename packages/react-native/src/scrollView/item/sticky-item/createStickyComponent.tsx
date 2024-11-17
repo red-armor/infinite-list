@@ -25,7 +25,7 @@ const createStickyComponent = <
 >(
   Component: T
 ) => {
-  const AnimatedViewableComponent: FC<StickyItemProps> = props => {
+  const AnimatedViewableComponent: FC<StickyItemProps> = (props) => {
     const {
       style = {},
       zIndex = 2,
@@ -40,7 +40,7 @@ const createStickyComponent = <
       viewableItemHelperKey,
       setMeasureLayoutHandler,
       isIntervalTreeItem = false,
-      getMetaOnViewableItemsChanged,
+      // getMetaOnViewableItemsChanged,
       viewAbilityPropsSensitive = true,
       onMeasureLayout: _onMeasureLayout,
       ...rest
@@ -67,7 +67,7 @@ const createStickyComponent = <
     }>();
 
     const nextSetConfig = useCallback((_config = {}) => {
-      setConfig(config => ({
+      setConfig((config) => ({
         ...config,
         ..._config,
       }));
@@ -105,9 +105,8 @@ const createStickyComponent = <
     useEffect(() => {
       if (config?.animatedValueConfig) {
         // @ts-ignore
-        stickyAnimatedValueRef.current = selectedAnimatedValue.current.interpolate(
-          config.animatedValueConfig
-        );
+        stickyAnimatedValueRef.current =
+          selectedAnimatedValue.current.interpolate(config.animatedValueConfig);
       }
     }, [config]);
 
@@ -232,29 +231,31 @@ const createStickyComponent = <
         positionStyle.right = 0;
       }
 
-      return ([
-        {
-          ...positionStyle,
-          ...platformStyle,
-          transform: [
-            {
-              [selectedTranslate]: config?.interpolationConfig
-                ? selectedAnimatedValue.current.interpolate(
-                    config?.interpolationConfig
-                  )
-                : 0,
-            } as {
-              [key in 'translateX' | 'translateY']: any;
-            },
-          ],
-        },
-      ] as ViewStyle[]).concat(style);
+      return (
+        [
+          {
+            ...positionStyle,
+            ...platformStyle,
+            transform: [
+              {
+                [selectedTranslate]: config?.interpolationConfig
+                  ? selectedAnimatedValue.current.interpolate(
+                      config?.interpolationConfig
+                    )
+                  : 0,
+              } as {
+                [key in 'translateX' | 'translateY']: any;
+              },
+            ],
+          },
+        ] as any as ViewStyle[]
+      ).concat(style);
     }, [config, viewableItemHelperKey]);
 
-    const RenderComponent = useMemo(() => CellRendererComponent || Component, [
-      Component,
-      CellRendererComponent,
-    ]);
+    const RenderComponent = useMemo(
+      () => CellRendererComponent || Component,
+      [Component, CellRendererComponent]
+    );
 
     const refProps = useMemo(() => {
       if (CellRendererComponent) return {};
@@ -294,14 +295,14 @@ const createStickyComponent = <
     );
   };
 
-  return (React.forwardRef(
+  return React.forwardRef(
     (
       props: StickyItemProps & React.ComponentProps<T>,
       ref: ForwardedRef<T>
     ) => {
       return <AnimatedViewableComponent {...props} forwardRef={ref} />;
     }
-  ) as any) as FC<StickyItemProps & React.ComponentProps<T>>;
+  ) as any as FC<StickyItemProps & React.ComponentProps<T>>;
 };
 
 export default createStickyComponent;
