@@ -1,4 +1,4 @@
-import { BaseDimensionsProps } from './BaseDimensions.types';
+import { BaseDimensionsProps, KeysChangedType } from './BaseDimensions.types';
 import { GenericItemT } from './generic.types';
 import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 import ListGroupDimensions from '../ListGroupDimensions';
@@ -13,6 +13,11 @@ export type GetItemLayout<ItemT> = (
   index: number
 ) => { length: number; index: number };
 export type KeyExtractor<ItemT> = (item: ItemT, index: number) => string;
+export type OnListDimensionsModelDataChanged<ItemT> = (props: {
+  dataChangedType: KeysChangedType;
+  data: ItemT[];
+  oldData: ItemT[];
+}) => void;
 
 export interface ListDimensionsModelProps<
   ItemT extends GenericItemT = GenericItemT
@@ -42,6 +47,8 @@ export interface ListDimensionsModelProps<
   manuallyApplyInitialData?: boolean;
 
   recyclerTypes?: Array<string>;
+
+  onListDimensionsModelDataChanged?: OnListDimensionsModelDataChanged<ItemT>;
 }
 
 export type ListDimensionsModelContainer<

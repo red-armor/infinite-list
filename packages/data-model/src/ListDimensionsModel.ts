@@ -19,6 +19,7 @@ import {
   ListDimensionsModelProps,
   ListDimensionsModelContainer,
   GenericItemT,
+  OnListDimensionsModelDataChanged,
 } from './types';
 import * as log from './utils/logger';
 
@@ -27,6 +28,7 @@ class ListDimensionsModel<
 > extends BaseDimensions<ItemT> {
   private _data: Array<ItemT> = [];
   private _initialData: Array<ItemT> = [];
+  private _onDataChanged: OnListDimensionsModelDataChanged<ItemT>;
 
   private _keyExtractor: KeyExtractor<ItemT>;
   private _getItemLayout?: GetItemLayout<ItemT>;
@@ -60,6 +62,7 @@ class ListDimensionsModel<
       getItemSeparatorLength,
       useItemApproximateLength,
       manuallyApplyInitialData = false,
+      onListDimensionsModelDataChanged,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
     } = props;
 
@@ -69,6 +72,7 @@ class ListDimensionsModel<
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._isFixedLength = isFixedLength;
+    this._onDataChanged = onListDimensionsModelDataChanged;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -317,7 +321,9 @@ class ListDimensionsModel<
 
     if (changedType === KeysChangedType.Equal) return KeysChangedType.Equal;
 
-    // 如果没有值，这个时候要触发一次触底
+    // If data is empty, then trigger onEndReached one time..
+    // TODO: maybe there is a bug... if the list the beneath viewport, the trigger
+    // may not required...
     if (!data.length && this.initialNumToRender) {
       this._container.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
@@ -327,6 +333,11 @@ class ListDimensionsModel<
     return changedType;
   }
 
+  /**
+   *
+   * @param dataChangedType
+   * @param data
+   */
   handleDataChange(dataChangedType: KeysChangedType, data: ItemT[]) {
     switch (dataChangedType) {
       case KeysChangedType.Equal:
@@ -378,6 +389,14 @@ class ListDimensionsModel<
     );
 
     this.handleDataChange(dataChangedType, data);
+
+    // _onDataChanged should be placed after handleDataChange.
+    // Because the itemMeta may required...
+    this._onDataChanged?.({
+      data,
+      oldData: this._data.slice(),
+      dataChangedType,
+    });
 
     this._data = data;
 

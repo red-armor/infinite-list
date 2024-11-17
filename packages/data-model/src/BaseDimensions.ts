@@ -17,9 +17,6 @@ import KeyIndexManager from './utils/KeyIndexManager';
 abstract class BaseDimensions<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseLayout {
-  // _keyToIndexMap: Map<string, number> = new Map();
-  // _indexKeys: Array<string> = [];
-
   _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
   _configTuple: ViewabilityConfigTuples;
 

@@ -176,15 +176,15 @@ abstract class BaseImpl<
     return this.getData();
   }
 
-  abstract getData(): any[];
+  abstract getData(): ItemT[];
   abstract getDataLength(): number;
   abstract getTotalLength(): number | string;
   abstract getReflowItemsLength(): number;
-  abstract getFinalItemKey(item: any): string;
+  abstract getFinalItemKey(item: ItemT): string;
   abstract getFinalIndexItemMeta(
     index: number
   ): ItemMeta<ItemT> | null | undefined;
-  abstract getFinalItemMeta(item: any): ItemMeta<ItemT> | null | undefined;
+  abstract getFinalItemMeta(item: ItemT): ItemMeta<ItemT> | null | undefined;
   abstract getFinalIndexItemLength(index: number): number;
   abstract getFinalIndexKeyOffset(index: number, exclusive?: boolean): number;
   abstract getFinalIndexKeyBottomOffset(index: number): number;

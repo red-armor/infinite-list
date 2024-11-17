@@ -1,9 +1,5 @@
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import {
-  GenericItemT,
-  KeysChangedType,
-  MasonryDimensionsProps,
-} from '../types';
+import { GenericItemT, MasonryDimensionsProps } from '../types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import KeyIndexManager from '../utils/KeyIndexManager';
 
@@ -24,6 +20,7 @@ class MasonryDimensionsModel<
     this._columnDataSource = dataSource;
     this._columnIntervalTree = intervalTrees;
     this._columnKeyIndexManager = keyIndexManagers;
+    this.setData(props.data);
   }
 
   getColumn() {
@@ -42,6 +39,12 @@ class MasonryDimensionsModel<
       keyIndexManagers.push(new KeyIndexManager());
     }
     return [dataSource, intervalTrees, keyIndexManagers];
+  }
+
+  setDataSource(dataSource: ItemT[][]) {
+    dataSource.forEach((data, index) => {
+      this._columnDataSource[index] = data;
+    });
   }
 
   getDataSource(columnIndex: number) {
@@ -86,27 +89,27 @@ class MasonryDimensionsModel<
     return intervalTree.getMaxUsefulLength() ? intervalTree.getHeap()[1] : 0;
   }
 
-  override handleDataChange(
-    dataChangedType: KeysChangedType,
-    data: ItemT[]
-  ): void {
-    switch (dataChangedType) {
-      case KeysChangedType.Equal:
-        break;
-      case KeysChangedType.Append:
-        this.updateTheLastItemIntervalValue();
-        this.append(data);
-        break;
-      case KeysChangedType.Initial:
-        this.append(data);
-        break;
-      case KeysChangedType.Add:
-      case KeysChangedType.Remove:
-      case KeysChangedType.Reorder:
-        this.shuffle(data);
-        break;
-    }
-  }
+  // override handleDataChange(
+  //   dataChangedType: KeysChangedType,
+  //   data: ItemT[]
+  // ): void {
+  //   switch (dataChangedType) {
+  //     case KeysChangedType.Equal:
+  //       break;
+  //     case KeysChangedType.Append:
+  //       this.updateTheLastItemIntervalValue();
+  //       this.append(data);
+  //       break;
+  //     case KeysChangedType.Initial:
+  //       this.append(data);
+  //       break;
+  //     case KeysChangedType.Add:
+  //     case KeysChangedType.Remove:
+  //     case KeysChangedType.Reorder:
+  //       this.shuffle(data);
+  //       break;
+  //   }
+  // }
 }
 
 export default MasonryDimensionsModel;

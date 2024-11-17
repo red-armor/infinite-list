@@ -1,14 +1,16 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import Batchinator from '@x-oasis/batchinator';
 import {
   GenericItemT,
+  KeysChangedType,
   MasonryDimensionsProps,
   MasonryStateListener,
   ScrollMetrics,
 } from '../types';
 import MasonryDimensionsModel from './MasonryDimensionsModel';
 import MasonryDimensionStrategy from './MasonryDimensionStrategy';
-import Batchinator from '@x-oasis/batchinator';
 import { DISPATCH_METRICS_THRESHOLD } from '../common';
+import { chunkifyDataSource } from './utils';
 
 const DEFAULT_MASONRY_COLUMN = 2;
 
@@ -22,6 +24,7 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
   constructor(props: MasonryDimensionsProps<ItemT>) {
     this._dataModel = new MasonryDimensionsModel({
       column: DEFAULT_MASONRY_COLUMN,
+      onListDimensionsModelDataChanged: this.onColumnDataChange.bind(this),
       ...props,
     });
 
@@ -43,6 +46,25 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
       this.dispatchMetrics.bind(this),
       dispatchMetricsThreshold
     );
+  }
+
+  onColumnDataChange(props: {
+    dataChangedType: KeysChangedType;
+    data: ItemT[];
+    oldData: ItemT[];
+  }) {
+    const { dataChangedType, data, oldData } = props;
+
+    const chunks = chunkifyDataSource<ItemT>({
+      data,
+      oldData,
+      dataChangedType,
+      masonryDataModel: this._dataModel,
+      columnDataModels: this._strategies,
+    });
+
+    this._dataModel.setDataSource(chunks);
+    this._dispatchMetricsBatchinator.schedule();
   }
 
   dispatchMetrics(scrollMetrics: ScrollMetrics | undefined) {

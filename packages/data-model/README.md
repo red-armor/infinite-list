@@ -35,3 +35,5 @@ Run `nx test data-model` to execute the unit tests via [Vitest](https://vitest.d
 
 ### SnapList
 
+
+### ChatList
