@@ -28,7 +28,7 @@ class ListDimensionsModel<
 > extends BaseDimensions<ItemT> {
   private _data: Array<ItemT> = [];
   private _initialData: Array<ItemT> = [];
-  private _onDataChanged: OnListDimensionsModelDataChanged<ItemT>;
+  private _onDataChanged?: OnListDimensionsModelDataChanged<ItemT>;
 
   private _keyExtractor: KeyExtractor<ItemT>;
   private _getItemLayout?: GetItemLayout<ItemT>;
@@ -392,17 +392,21 @@ class ListDimensionsModel<
 
     // _onDataChanged should be placed after handleDataChange.
     // Because the itemMeta may required...
-    this._onDataChanged?.({
-      data,
-      oldData: this._data.slice(),
-      dataChangedType,
-    });
+
+    const oldData = this._data.slice();
 
     this._data = data;
-
     this.keyIndexManager.setKeyToIndexMap(keyToIndexMap);
     this.keyIndexManager.setIndexKeys(keyToIndexArray);
     this._itemToKeyMap = itemToKeyMap;
+
+    this._onDataChanged?.({
+      dataModel: this,
+      data,
+      oldData,
+      dataChangedType,
+    });
+
     return dataChangedType;
   }
 

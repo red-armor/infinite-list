@@ -10,6 +10,11 @@ Run `nx build data-model` to build the library.
 
 Run `nx test data-model` to execute the unit tests via [Vitest](https://vitest.dev/).
 
+```bash
+# watch test running
+$ nx test data-model --watch
+```
+
 ## Domain
 
 ### Masonry

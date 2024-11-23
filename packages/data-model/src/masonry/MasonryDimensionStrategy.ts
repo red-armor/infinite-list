@@ -8,6 +8,8 @@ import {
   MasonryDimensionStrategyProps,
 } from '../types';
 import MasonryDimensionsModel from './MasonryDimensionsModel';
+import { ReducerResult } from '../state/types';
+import createStore from '../state/createStore';
 
 class MasonryDimensionStrategy<
   ItemT extends GenericItemT = GenericItemT
@@ -16,7 +18,10 @@ class MasonryDimensionStrategy<
   readonly _dataModel: MasonryDimensionsModel<ItemT>;
 
   constructor(props: MasonryDimensionStrategyProps<ItemT>) {
-    super(props);
+    super({
+      ...props,
+      store: createStore<ReducerResult>(),
+    });
     const { columnIndex, dataModel } = props;
     this.columnIndex = columnIndex;
     this._dataModel = dataModel;

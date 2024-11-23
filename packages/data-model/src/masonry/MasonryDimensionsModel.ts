@@ -1,7 +1,8 @@
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import { GenericItemT, MasonryDimensionsProps } from '../types';
+import { GenericItemT, MasonryDimensionsModelProps } from '../types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import KeyIndexManager from '../utils/KeyIndexManager';
+import MasonryDimensionStrategy from './MasonryDimensionStrategy';
 
 class MasonryDimensionsModel<
   ItemT extends GenericItemT = GenericItemT
@@ -10,13 +11,15 @@ class MasonryDimensionsModel<
   private _columnDataSource: ItemT[][];
   private _columnIntervalTree: PrefixIntervalTree[];
   private _columnKeyIndexManager: KeyIndexManager[];
+  private _strategies: MasonryDimensionStrategy<ItemT>[];
 
-  constructor(props: MasonryDimensionsProps<ItemT>) {
+  constructor(props: MasonryDimensionsModelProps<ItemT>) {
     super(props);
     const { column = 2 } = props;
-    const [dataSource, intervalTrees, keyIndexManagers] =
-      this.initColumnValues(column);
+    const [strategies, dataSource, intervalTrees, keyIndexManagers] =
+      this.initColumnValues(column, props);
     this.column = column;
+    this._strategies = strategies;
     this._columnDataSource = dataSource;
     this._columnIntervalTree = intervalTrees;
     this._columnKeyIndexManager = keyIndexManagers;
@@ -27,18 +30,40 @@ class MasonryDimensionsModel<
     return this.column;
   }
 
+  getColumnDataSource() {
+    return this._columnDataSource;
+  }
+
+  getStrategies() {
+    return this._strategies;
+  }
+
   initColumnValues(
-    column: number
-  ): [ItemT[][], PrefixIntervalTree[], KeyIndexManager[]] {
+    column: number,
+    props: MasonryDimensionsModelProps<ItemT>
+  ): [
+    MasonryDimensionStrategy<ItemT>[],
+    ItemT[][],
+    PrefixIntervalTree[],
+    KeyIndexManager[]
+  ] {
     const dataSource: ItemT[][] = [];
     const intervalTrees: PrefixIntervalTree[] = [];
     const keyIndexManagers: KeyIndexManager[] = [];
+    const strategies: MasonryDimensionStrategy<ItemT>[] = [];
     for (let idx = 0; idx < column; idx++) {
       dataSource.push([]);
       intervalTrees.push(new PrefixIntervalTree(100));
       keyIndexManagers.push(new KeyIndexManager());
+      strategies.push(
+        new MasonryDimensionStrategy({
+          columnIndex: idx,
+          dataModel: this,
+          ...props,
+        })
+      );
     }
-    return [dataSource, intervalTrees, keyIndexManagers];
+    return [strategies, dataSource, intervalTrees, keyIndexManagers];
   }
 
   setDataSource(dataSource: ItemT[][]) {

@@ -3,6 +3,9 @@ import { GenericItemT } from './generic.types';
 import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 import ListGroupDimensions from '../ListGroupDimensions';
 import ListDimensions from '../ListDimensions';
+import MasonryDimensions from '../masonry/MasonryDimensions';
+import ListDimensionsModel from '../ListDimensionsModel';
+import MasonryDimensionsModel from '../masonry/MasonryDimensionsModel';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,
@@ -13,7 +16,10 @@ export type GetItemLayout<ItemT> = (
   index: number
 ) => { length: number; index: number };
 export type KeyExtractor<ItemT> = (item: ItemT, index: number) => string;
-export type OnListDimensionsModelDataChanged<ItemT> = (props: {
+export type OnListDimensionsModelDataChanged<
+  ItemT extends GenericItemT = GenericItemT
+> = (props: {
+  dataModel: ListDimensionsModel<ItemT> | MasonryDimensionsModel<ItemT>;
   dataChangedType: KeysChangedType;
   data: ItemT[];
   oldData: ItemT[];
@@ -25,6 +31,9 @@ export interface ListDimensionsModelProps<
     BaseDimensionsProps {
   data: Array<ItemT>;
   itemApproximateLength?: number;
+  /**
+   * only if in recycleEnabled mode, `useItemApproximateLength` is meaningful
+   */
   useItemApproximateLength?: boolean;
   recyclerType?: string;
   anchorKey?: string;
@@ -53,4 +62,7 @@ export interface ListDimensionsModelProps<
 
 export type ListDimensionsModelContainer<
   ItemT extends GenericItemT = GenericItemT
-> = ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
+> =
+  | ListGroupDimensions<ItemT>
+  | ListDimensions<ItemT>
+  | MasonryDimensions<ItemT>;

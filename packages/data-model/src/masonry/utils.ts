@@ -1,4 +1,3 @@
-import BaseImpl from '../strategies/BaseImpl';
 import { GenericItemT, KeysChangedType } from '../types';
 import MasonryDimensionsModel from './MasonryDimensionsModel';
 
@@ -9,13 +8,13 @@ export const chunkifyDataSource = <
   oldData: ItemT[];
   masonryDataModel: MasonryDimensionsModel<ItemT>;
   dataChangedType: KeysChangedType;
-  columnDataModels: BaseImpl<ItemT>[];
 }) => {
-  const { data, oldData, masonryDataModel, dataChangedType, columnDataModels } =
-    props;
+  const { data, oldData, masonryDataModel, dataChangedType } = props;
+
+  const columnDataModels = masonryDataModel.getStrategies();
 
   if (dataChangedType === KeysChangedType.Equal) {
-    return columnDataModels.map((model) => model.getData());
+    return columnDataModels.map((dataModel) => dataModel.getData());
   }
 
   let startIndex = 0;
@@ -61,9 +60,11 @@ export const chunkifyDataSource = <
     const itemMeta = masonryDataModel.getItemMeta(item, idx);
     // separatorLength should be included
     const itemLength = itemMeta?.getFinalItemLength() || 0;
+
     lengthList[minIndex] = currentListLength + itemLength;
+
     const nextInfo = findMinLengthColumnIndex();
-    minIndex = nextInfo[1];
+    minIndex = nextInfo;
   }
 
   return dataSource;
