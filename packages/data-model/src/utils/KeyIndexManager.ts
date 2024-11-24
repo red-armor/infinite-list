@@ -13,6 +13,14 @@ class KeyIndexManager {
     return this._indexKeys;
   }
 
+  setIndexKey(index: number, key: string) {
+    this._indexKeys[index] = key;
+  }
+
+  setKeyIndex(key: string, index: number) {
+    this._keyToIndexMap.set(key, index);
+  }
+
   getIndexKey(index: number) {
     return this._indexKeys[index];
   }

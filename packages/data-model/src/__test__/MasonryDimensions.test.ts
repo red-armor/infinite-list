@@ -83,7 +83,7 @@ describe('basic', () => {
     ]);
   });
 
-  it.only('updateScrollMetrics', () => {
+  it('updateScrollMetrics', () => {
     const initialData = buildData(6);
     const masonryDimensions = new MasonryDimensions({
       data: initialData,

@@ -39,12 +39,16 @@ class MasonryDimensionStrategy<
   }
 
   getTotalLength() {
-    const intervalTree = this._dataModel.getIntervalTree(this.columnIndex);
+    const intervalTree = this._dataModel.getColumnIntervalTree(
+      this.columnIndex
+    );
     return intervalTree?.getMaxUsefulLength() ? intervalTree?.getHeap()[1] : 0;
   }
 
   getReflowItemsLength() {
-    const intervalTree = this._dataModel.getIntervalTree(this.columnIndex);
+    const intervalTree = this._dataModel.getColumnIntervalTree(
+      this.columnIndex
+    );
     return intervalTree?.getMaxUsefulLength() || 0;
   }
 
@@ -115,7 +119,7 @@ class MasonryDimensionStrategy<
     return {
       dimensions: this._dataModel,
       index: this._dataModel
-        .getKeyIndexManager(this.columnIndex)
+        .getColumnKeyIndexManager(this.columnIndex)
         .getKeyIndex(key),
       columnIndex: this.columnIndex,
       indexInTotal: this._dataModel.getKeyIndex(key) || 0,
@@ -123,7 +127,9 @@ class MasonryDimensionStrategy<
   }
 
   computeIndexRange(minOffset: number, maxOffset: number) {
-    const intervalTree = this._dataModel.getIntervalTree(this.columnIndex);
+    const intervalTree = this._dataModel.getColumnIntervalTree(
+      this.columnIndex
+    );
     return intervalTree.computeRange(minOffset, maxOffset);
   }
 

@@ -275,7 +275,6 @@ abstract class BaseImpl<
   ): [ListStateResult<ItemT>, ListStateResult<ItemT>] {
     if (!scrollMetrics)
       return [this._stateHub.getStateResult(), this._stateHub.getStateResult()];
-
     console.log('testing =======');
     const state = this._store.dispatchMetrics({
       // @ts-ignore

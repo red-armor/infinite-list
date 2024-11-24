@@ -1,5 +1,7 @@
 import { GenericItemT, KeysChangedType } from '../types';
 import MasonryDimensionsModel from './MasonryDimensionsModel';
+import KeyIndexManager from '../utils/KeyIndexManager';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 
 /**
  *
@@ -31,19 +33,22 @@ export const chunkifyDataSource = <
   }
 
   let startIndex = 0;
+  // as temp values
   let lengthList: number[] = [];
+  // as temp values
   const dataSource: ItemT[][] = [];
-  if (
+
+  const shouldShuffle =
     [KeysChangedType.Append, KeysChangedType.Initial].indexOf(
       dataChangedType
-    ) !== -1
-  ) {
-    startIndex = oldData.length;
-    lengthList = columnDataModels.map((dataModel, index) => {
-      const length = dataModel.getTotalLength();
-      const oldDataSource = columnDataModels[index].getData().slice();
+    ) === -1;
 
-      dataSource.push(oldDataSource);
+  if (!shouldShuffle) {
+    startIndex = oldData.length;
+    lengthList = columnDataModels.map((dataModel) => {
+      dataSource.push([]);
+      const length = dataModel.getTotalLength();
+
       if (typeof length === 'number') return length;
       if (typeof length === 'string') return parseFloat(length);
       return 0;
@@ -83,5 +88,70 @@ export const chunkifyDataSource = <
     minIndex = nextInfo;
   }
 
+  dataSource.forEach((data, columnIndex) => {
+    const len = data.length;
+
+    if (!shouldShuffle) {
+      const keyIndexManager =
+        masonryDataModel.getColumnKeyIndexManager(columnIndex);
+      const intervalTree = masonryDataModel.getColumnIntervalTree(columnIndex);
+      data.forEach((item, index) => {
+        // TODO: index is not the correct value
+        const itemMeta = masonryDataModel.getItemMeta(item, index);
+        const key = itemMeta?.getKey();
+        if (key) {
+          keyIndexManager.setKeyIndex(key, index);
+          keyIndexManager.setIndexKey(index, key);
+        }
+        if (itemMeta?.getLayout()) {
+          // const itemLength = this._selectValue.selectLength(meta.getLayout());
+          // 最后一个不包含separatorLength
+          if (index === len - 1) {
+            itemMeta.setUseSeparatorLength(false);
+          } else {
+            itemMeta.setUseSeparatorLength(true);
+          }
+
+          const length = itemMeta.getFinalItemLength();
+
+          intervalTree.drySet(index, length);
+        }
+      });
+
+      intervalTree.applyUpdate();
+
+      const oldData = columnDataModels[columnIndex].getData();
+      dataSource[columnIndex] = ([] as ItemT[]).concat(oldData, data);
+    } else {
+      // `keyIndexManager` and `intervalTree` are lately created...
+      const keyIndexManager = new KeyIndexManager();
+      const intervalTree = new PrefixIntervalTree(100);
+
+      data.forEach((item, index) => {
+        // TODO: index is not the correct value
+        const itemMeta = masonryDataModel.getItemMeta(item, index);
+        const key = itemMeta?.getKey();
+        if (key) {
+          keyIndexManager.setKeyIndex(key, index);
+          keyIndexManager.setIndexKey(index, key);
+        }
+        if (itemMeta?.getLayout()) {
+          // const itemLength = this._selectValue.selectLength(meta.getLayout());
+          // 最后一个不包含separatorLength
+          if (index === len - 1) {
+            itemMeta.setUseSeparatorLength(false);
+          } else {
+            itemMeta.setUseSeparatorLength(true);
+          }
+
+          const length = itemMeta.getFinalItemLength();
+          intervalTree.drySet(index, length);
+        }
+      });
+      intervalTree.applyUpdate();
+      masonryDataModel.setColumnIntervalTree(columnIndex, intervalTree);
+      masonryDataModel.setColumnKeyIndexManager(columnIndex, keyIndexManager);
+    }
+  });
   return dataSource;
 };

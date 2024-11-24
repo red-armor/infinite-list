@@ -208,7 +208,7 @@ class ListDimensionsModel<
     }
   }
 
-  getItemKey(item: ItemT, index: number) {
+  getItemKey(item: ItemT, index?: number) {
     const cachedKey = this._itemToKeyMap.get(item);
     if (cachedKey) return cachedKey;
     if (!item) return null;

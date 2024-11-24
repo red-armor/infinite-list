@@ -15,6 +15,10 @@ export type GetItemLayout<ItemT> = (
   data: Array<ItemT>,
   index: number
 ) => { length: number; index: number };
+
+/**
+ * TODO: `index` may not be
+ */
 export type KeyExtractor<ItemT> = (item: ItemT, index: number) => string;
 export type OnListDimensionsModelDataChanged<
   ItemT extends GenericItemT = GenericItemT

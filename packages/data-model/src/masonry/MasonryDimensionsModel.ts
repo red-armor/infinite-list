@@ -4,6 +4,10 @@ import ListDimensionsModel from '../ListDimensionsModel';
 import KeyIndexManager from '../utils/KeyIndexManager';
 import MasonryDimensionStrategy from './MasonryDimensionStrategy';
 
+/**
+ * The key point is how to decorate `columnIntervalTree` and `columnKeyIndexManager`
+ * value.
+ */
 class MasonryDimensionsModel<
   ItemT extends GenericItemT = GenericItemT
 > extends ListDimensionsModel<ItemT> {
@@ -77,12 +81,23 @@ class MasonryDimensionsModel<
     return this._columnDataSource[columnIndex];
   }
 
-  getIntervalTree(columnIndex: number) {
+  getColumnIntervalTree(columnIndex: number) {
     return this._columnIntervalTree[columnIndex];
   }
 
-  getKeyIndexManager(columnIndex: number) {
+  setColumnIntervalTree(columnIndex: number, intervalTree: PrefixIntervalTree) {
+    this._columnIntervalTree[columnIndex] = intervalTree;
+  }
+
+  getColumnKeyIndexManager(columnIndex: number) {
     return this._columnKeyIndexManager[columnIndex];
+  }
+
+  setColumnKeyIndexManager(
+    columnIndex: number,
+    keyIndexManager: KeyIndexManager
+  ) {
+    this._columnKeyIndexManager[columnIndex] = keyIndexManager;
   }
 
   getColumnIndexItemMeta(columnIndex: number, indexInColumn: number) {
