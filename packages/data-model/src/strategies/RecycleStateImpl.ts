@@ -57,6 +57,8 @@ class RecycleStateImpl<
     this._onRecyclerProcess = onRecyclerProcess;
     // this._releaseSpaceStateItem = releaseSpaceStateItem;
 
+    // console.log('initialNumToRender ', this.listContainer.initialNumToRender)
+
     this._recycler = new Recycler<ItemMeta<ItemT>>({
       // the following is appended with setting default recyclerType
       recyclerTypes,
@@ -66,8 +68,11 @@ class RecycleStateImpl<
        * set recycle start item
        */
       thresholdIndexValue: this.listContainer.initialNumToRender,
-      metaExtractor: (index) => this.listContainer.getFinalIndexItemMeta(index),
-      indexExtractor: (meta) => {
+      metaExtractor: (index) => {
+        // console.log('met ---- ', index, this.listContainer.getFinalIndexItemMeta(index))
+        return this.listContainer.getFinalIndexItemMeta(index);
+      },
+      indexExtractor: (meta: ItemMeta<ItemT>) => {
         const indexInfo = meta.getIndexInfo();
         return indexInfo?.indexInGroup || indexInfo.index;
       },
@@ -225,6 +230,8 @@ class RecycleStateImpl<
         visibleStartIndex - Math.ceil(recycleBufferedCount / 2),
         this._recycler.thresholdIndexValue
       );
+
+      console.log('start index ====', startIndex, recycleBufferedCount);
 
       this._recycler.updateIndices({
         safeRange,

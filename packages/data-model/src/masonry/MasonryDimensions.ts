@@ -131,11 +131,35 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
     this._dispatchMetricsBatchinator.schedule();
   }
 
-  getFinalKeyIndexInfo(): MasonryIndexInfo<ItemT> {
+  /**
+   *
+   * @param key
+   * @returns
+   *
+   * TODO: should return valid info, or will cause recycler return empty
+   */
+  getFinalKeyIndexInfo(key: string): MasonryIndexInfo<ItemT> {
+    const indexInTotal = this._dataModel.getKeyIndex(key);
+    let index = 0;
+
+    for (
+      let columnIndex = 0;
+      columnIndex < this._dataModel.getColumn();
+      columnIndex++
+    ) {
+      const strategy = this._dataModel.getColumnKeyIndexManager(columnIndex);
+      const indexInColumn = strategy.getKeyIndex(key);
+      if (typeof indexInColumn === 'number') {
+        index = indexInColumn;
+        break;
+      }
+    }
+
     return {
       dimensions: this as any,
       columnIndex: 0,
-      indexInTotal: 0,
+      indexInTotal,
+      index,
     };
   }
 
@@ -147,11 +171,7 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
     if (!scrollMetrics) return;
     if (typeof this.stateListener === 'function') {
       const stateResults = this._dataModel.getStrategies().map((strategy) => {
-        const stateResult = strategy.dispatchMetrics({
-          // @ts-ignore
-          dimension: this,
-          scrollMetrics,
-        });
+        const stateResult = strategy.dispatchMetrics(scrollMetrics);
         return stateResult;
       });
       this.stateListener(stateResults);

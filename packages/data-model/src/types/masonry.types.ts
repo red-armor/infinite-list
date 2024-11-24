@@ -18,8 +18,13 @@ export interface MasonryDimensionsModelProps<
   // container: MasonryDimensions<ItemT>
 }
 
+export type MasonryStateResults<ItemT extends GenericItemT = GenericItemT> = [
+  ListStateResult<ItemT>,
+  ListStateResult<ItemT>
+][];
+
 export type MasonryStateListener<ItemT extends GenericItemT = GenericItemT> = (
-  stateResults: [ListStateResult<ItemT>, ListStateResult<ItemT>][]
+  stateResults: MasonryStateResults<ItemT>
 ) => void;
 
 export interface MasonryDimensionStrategyProps<

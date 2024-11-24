@@ -2,6 +2,7 @@ import MasonryDimensions from '../masonry/MasonryDimensions';
 import Batchinator from '@x-oasis/batchinator';
 import { resetContext } from '../ItemMeta';
 import { vi, describe, it, beforeEach, expect } from 'vitest';
+import { MasonryStateResults } from '../types';
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index + startIndex,
@@ -84,7 +85,7 @@ describe('basic', () => {
   });
 
   it('updateScrollMetrics', () => {
-    const initialData = buildData(6);
+    const initialData = buildData(40);
     const masonryDimensions = new MasonryDimensions({
       data: initialData,
       id: 'masonry',
@@ -100,9 +101,12 @@ describe('basic', () => {
     // expect(masonryDimensions.getDataModel().getColumnDataSource()[0].length).toBe(100)
     // expect(masonryDimensions.getDataModel().getColumnDataSource()[1].length).toBe(100)
 
-    masonryDimensions.addStateListener((stateResults) => {
-      console.log('state result - ', stateResults);
-    });
+    masonryDimensions.addStateListener(
+      (stateResults: MasonryStateResults<DataItem>) => {
+        const first = stateResults[0][0];
+        console.log('state result - ', first);
+      }
+    );
     // const dataModel = masonryDimensions.getDataModel();
     masonryDimensions.updateScrollMetrics({
       offset: 0,

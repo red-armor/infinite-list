@@ -138,6 +138,9 @@ abstract class BaseLayout extends BaseContainer {
     exclusive?: boolean
   ) {
     const containerOffset = this.getContainerOffset();
+
+    console.log('resolve offset range ', minOffset, maxOffset, containerOffset);
+
     if (exclusive) return { minOffset, maxOffset };
     if (containerOffset > maxOffset) {
       return {

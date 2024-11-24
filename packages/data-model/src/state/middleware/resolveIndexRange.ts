@@ -8,6 +8,9 @@ export default <State extends ReducerResult = ReducerResult>(
 ) => {
   const { dimension, scrollMetrics } = payload;
   const { contentLength, offset, visibleLength = 0 } = scrollMetrics;
+
+  console.log('scrolll me ', scrollMetrics);
+
   const bufferSize = dimension.getBufferSize();
   const { minOffset, maxOffset } = dimension.resolveOffsetRange(
     Math.max(offset - visibleLength * bufferSize, 0),

@@ -102,7 +102,10 @@ class MasonryDimensionsModel<
 
   getColumnIndexItemMeta(columnIndex: number, indexInColumn: number) {
     const keyIndexManager = this._columnKeyIndexManager[columnIndex];
+    console.log('key ----', keyIndexManager, indexInColumn);
     const itemKey = keyIndexManager.getIndexKey(indexInColumn);
+
+    console.log('item ==== ', itemKey);
     return this.getKeyMeta(itemKey);
   }
 
