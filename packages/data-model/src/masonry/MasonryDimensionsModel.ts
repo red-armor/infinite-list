@@ -102,10 +102,7 @@ class MasonryDimensionsModel<
 
   getColumnIndexItemMeta(columnIndex: number, indexInColumn: number) {
     const keyIndexManager = this._columnKeyIndexManager[columnIndex];
-    console.log('key ----', keyIndexManager, indexInColumn);
     const itemKey = keyIndexManager.getIndexKey(indexInColumn);
-
-    console.log('item ==== ', itemKey);
     return this.getKeyMeta(itemKey);
   }
 
@@ -128,32 +125,37 @@ class MasonryDimensionsModel<
     return 0;
   }
 
+  /**
+   *
+   */
+  getKeyColumnIndex(key: string) {
+    for (let columnIndex = 0; columnIndex < this.column; columnIndex++) {
+      const indexManager = this.getColumnKeyIndexManager(columnIndex);
+      if (indexManager.hasKey(key)) {
+        return columnIndex;
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * return index in column
+   */
+  getKeyIndexInColumn(key: string) {
+    for (let columnIndex = 0; columnIndex < this.column; columnIndex++) {
+      const indexManager = this.getColumnKeyIndexManager(columnIndex);
+      const indexInColumn = indexManager.getKeyIndex(key);
+      if (typeof indexInColumn === 'number') {
+        return indexInColumn;
+      }
+    }
+    return 0;
+  }
+
   getColumnTotalLength(columnIndex: number) {
     const intervalTree = this._columnIntervalTree[columnIndex];
     return intervalTree.getMaxUsefulLength() ? intervalTree.getHeap()[1] : 0;
   }
-
-  // override handleDataChange(
-  //   dataChangedType: KeysChangedType,
-  //   data: ItemT[]
-  // ): void {
-  //   switch (dataChangedType) {
-  //     case KeysChangedType.Equal:
-  //       break;
-  //     case KeysChangedType.Append:
-  //       this.updateTheLastItemIntervalValue();
-  //       this.append(data);
-  //       break;
-  //     case KeysChangedType.Initial:
-  //       this.append(data);
-  //       break;
-  //     case KeysChangedType.Add:
-  //     case KeysChangedType.Remove:
-  //     case KeysChangedType.Reorder:
-  //       this.shuffle(data);
-  //       break;
-  //   }
-  // }
 }
 
 export default MasonryDimensionsModel;

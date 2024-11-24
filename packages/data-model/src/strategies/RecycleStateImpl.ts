@@ -57,8 +57,6 @@ class RecycleStateImpl<
     this._onRecyclerProcess = onRecyclerProcess;
     // this._releaseSpaceStateItem = releaseSpaceStateItem;
 
-    // console.log('initialNumToRender ', this.listContainer.initialNumToRender)
-
     this._recycler = new Recycler<ItemMeta<ItemT>>({
       // the following is appended with setting default recyclerType
       recyclerTypes,
@@ -74,7 +72,14 @@ class RecycleStateImpl<
       },
       indexExtractor: (meta: ItemMeta<ItemT>) => {
         const indexInfo = meta.getIndexInfo();
-        return indexInfo?.indexInGroup || indexInfo.index;
+        const index = indexInfo?.indexInGroup || indexInfo?.index;
+        if (typeof index !== 'number') {
+          console.error(
+            '[RecycleStateImpl error]: index should has a valid number ' +
+              'or will cause recycler not work correctly'
+          );
+        }
+        return index;
       },
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) =>
@@ -230,8 +235,6 @@ class RecycleStateImpl<
         visibleStartIndex - Math.ceil(recycleBufferedCount / 2),
         this._recycler.thresholdIndexValue
       );
-
-      console.log('start index ====', startIndex, recycleBufferedCount);
 
       this._recycler.updateIndices({
         safeRange,

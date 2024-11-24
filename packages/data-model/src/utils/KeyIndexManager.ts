@@ -46,7 +46,8 @@ class KeyIndexManager {
   }
 
   hasKey(key: string) {
-    return this._indexKeys.indexOf(key) !== -1;
+    // return this._indexKeys.indexOf(key) !== -1;
+    return typeof this._keyToIndexMap.get(key) === 'number';
   }
 }
 

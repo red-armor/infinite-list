@@ -85,7 +85,7 @@ describe('basic', () => {
   });
 
   it('updateScrollMetrics', () => {
-    const initialData = buildData(40);
+    const initialData = buildData(60);
     const masonryDimensions = new MasonryDimensions({
       data: initialData,
       id: 'masonry',
@@ -96,15 +96,23 @@ describe('basic', () => {
         width: 375,
         height: 500,
       }),
+      initialNumToRender: 4,
     });
 
-    // expect(masonryDimensions.getDataModel().getColumnDataSource()[0].length).toBe(100)
-    // expect(masonryDimensions.getDataModel().getColumnDataSource()[1].length).toBe(100)
+    expect(
+      masonryDimensions.getDataModel().getColumnDataSource()[0].length
+    ).toBe(30);
+    expect(
+      masonryDimensions.getDataModel().getColumnDataSource()[1].length
+    ).toBe(30);
+
+    let stateResult: MasonryStateResults<DataItem> = [];
 
     masonryDimensions.addStateListener(
       (stateResults: MasonryStateResults<DataItem>) => {
-        const first = stateResults[0][0];
-        console.log('state result - ', first);
+        stateResult = stateResults;
+        // const first = stateResults[0][0];
+        // console.log('state result - ', stateResult[1][0].recycleState.map(state => state.targetKey));
       }
     );
     // const dataModel = masonryDimensions.getDataModel();
@@ -113,5 +121,100 @@ describe('basic', () => {
       visibleLength: 926,
       contentLength: 3500,
     });
+
+    expect(
+      stateResult[0][0].recycleState.map((state) => state.targetKey)
+    ).toEqual([
+      '8',
+      '10',
+      '12',
+      '14',
+      '16',
+      '18',
+      '20',
+      '22',
+      '24',
+      '26',
+      '28',
+      '30',
+      '32',
+      '34',
+      '36',
+      '38',
+      '40',
+      '42',
+      '44',
+      '46',
+    ]);
+    expect(stateResult[0][0].spaceState.map((state) => state.key)).toEqual([
+      '0',
+      '2',
+      '4',
+      '6',
+      'space_4_28',
+    ]);
+
+    expect(
+      stateResult[1][0].recycleState.map((state) => state.targetKey)
+    ).toEqual([
+      '9',
+      '11',
+      '13',
+      '15',
+      '17',
+      '19',
+      '21',
+      '23',
+      '25',
+      '27',
+      '29',
+      '31',
+      '33',
+      '35',
+      '37',
+      '39',
+      '41',
+      '43',
+      '45',
+      '47',
+    ]);
+    expect(stateResult[1][0].spaceState.map((state) => state.key)).toEqual([
+      '1',
+      '3',
+      '5',
+      '7',
+      'space_4_28',
+    ]);
+
+    masonryDimensions.updateScrollMetrics({
+      offset: 400,
+      visibleLength: 926,
+      contentLength: 3500,
+    });
+
+    expect(
+      stateResult[0][1].recycleState.map((state) => state.targetKey)
+    ).toEqual([
+      '8',
+      '10',
+      '12',
+      '14',
+      '16',
+      '18',
+      '20',
+      '22',
+      '24',
+      '26',
+      '28',
+      '30',
+      '32',
+      '34',
+      '36',
+      '38',
+      '40',
+      '42',
+      '44',
+      '46',
+    ]);
   });
 });
