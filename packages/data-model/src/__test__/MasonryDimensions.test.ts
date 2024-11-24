@@ -7,6 +7,10 @@ const buildData = (count: number, startIndex = 0) =>
     key: index + startIndex,
   }));
 
+type DataItem = {
+  key: number;
+};
+
 vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
   ...args
 ) {
@@ -20,12 +24,62 @@ describe('basic', () => {
   });
 
   it('constructor', () => {
+    const initialData = buildData(4);
     const masonryDimensions = new MasonryDimensions({
-      data: buildData(4),
+      data: initialData,
       id: 'masonry',
       keyExtractor: (item) => `${item.key}`,
     });
+    const dataModel = masonryDimensions.getDataModel();
+    expect(dataModel.getColumn()).toBe(2);
+    expect(dataModel.getColumnDataSource()).toEqual([
+      [{ key: 0 }, { key: 2 }],
+      [{ key: 1 }, { key: 3 }],
+    ]);
+  });
 
-    expect(masonryDimensions.getDataModel().getColumn()).toBe(2);
+  it('constructor -- append data', () => {
+    const initialData = buildData(4);
+    const masonryDimensions = new MasonryDimensions({
+      data: initialData,
+      id: 'masonry',
+      keyExtractor: (item) => `${item.key}`,
+    });
+    const dataModel = masonryDimensions.getDataModel();
+    expect(dataModel.getColumn()).toBe(2);
+    expect(dataModel.getColumnDataSource()).toEqual([
+      [{ key: 0 }, { key: 2 }],
+      [{ key: 1 }, { key: 3 }],
+    ]);
+    const nextData = buildData(6, 4);
+    masonryDimensions.setData(([] as DataItem[]).concat(initialData, nextData));
+
+    expect(dataModel.getColumnDataSource()).toEqual([
+      [{ key: 0 }, { key: 2 }, { key: 4 }, { key: 6 }, { key: 8 }],
+      [{ key: 1 }, { key: 3 }, { key: 5 }, { key: 7 }, { key: 9 }],
+    ]);
+  });
+
+  it('constructor -- set new data', () => {
+    const initialData = buildData(4);
+    const masonryDimensions = new MasonryDimensions({
+      data: initialData,
+      id: 'masonry',
+      keyExtractor: (item) => `${item.key}`,
+    });
+    const dataModel = masonryDimensions.getDataModel();
+    expect(dataModel.getColumn()).toBe(2);
+    expect(dataModel.getColumnDataSource()).toEqual([
+      [{ key: 0 }, { key: 2 }],
+      [{ key: 1 }, { key: 3 }],
+    ]);
+    const nextData = buildData(6, 4);
+
+    masonryDimensions.setData(nextData);
+
+    expect(dataModel.getColumnDataSource()).toEqual([
+      [{ key: 4 }, { key: 6 }, { key: 8 }],
+      [{ key: 5 }, { key: 7 }, { key: 9 }],
+    ]);
   });
 });

@@ -28,7 +28,9 @@ export const chunkifyDataSource = <
     startIndex = oldData.length;
     lengthList = columnDataModels.map((dataModel, index) => {
       const length = dataModel.getTotalLength();
-      dataSource.push(columnDataModels[index].getData().slice());
+      const oldDataSource = columnDataModels[index].getData().slice();
+
+      dataSource.push(oldDataSource);
       if (typeof length === 'number') return length;
       if (typeof length === 'string') return parseFloat(length);
       return 0;
@@ -36,6 +38,7 @@ export const chunkifyDataSource = <
   } else {
     for (let index = 0; index < columnDataModels.length; index++) {
       dataSource.push([]);
+      lengthList.push(0);
     }
   }
 

@@ -18,6 +18,15 @@ import ListDimensionsModel from '../ListDimensionsModel';
 const DEFAULT_MASONRY_COLUMN = 2;
 let count = 0;
 
+/**
+ * MasonryDimensions ->  MasonryDimensionsModel -> init data -> get changedType
+ *                                                                   ↓
+ * chunkify data source <- onListDimensionsModelDataChanged  <- MasonryDimensions
+ *           ↓
+ * MasonryDimensionsModel -> patch chunk data -> MasonryDimensions -> dispatchMetrics
+ *                                                                         ↓
+ *                                                                   render view
+ */
 class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
   implements DimensionsModelContainer<ItemT>
 {
@@ -70,6 +79,14 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
 
   getDataModel() {
     return this._dataModel;
+  }
+
+  /**
+   *
+   * @param data revoked on source data changed
+   */
+  setData(data: ItemT[]) {
+    this._dataModel.setData(data);
   }
 
   onListDimensionsModelDataChanged(props: {
