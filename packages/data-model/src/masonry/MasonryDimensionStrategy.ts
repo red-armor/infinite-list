@@ -11,6 +11,9 @@ import MasonryDimensionsModel from './MasonryDimensionsModel';
 import { ReducerResult } from '../state/types';
 import createStore from '../state/createStore';
 
+/**
+ * a lite ListDimensionsModel version
+ */
 class MasonryDimensionStrategy<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseImpl<ItemT> {

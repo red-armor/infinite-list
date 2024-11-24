@@ -1,6 +1,19 @@
 import { GenericItemT, KeysChangedType } from '../types';
 import MasonryDimensionsModel from './MasonryDimensionsModel';
 
+/**
+ *
+ * @param props
+ * @returns
+ *
+ * when to cause chunkifyDataSource:
+ * 1: init data
+ * 2: update data
+ * 3: update item layout
+ *
+ * pay attention, on this step, the child strategy related `intervalTree` and
+ * `keyIndexManagers` should be shuffled...
+ */
 export const chunkifyDataSource = <
   ItemT extends GenericItemT = GenericItemT
 >(props: {

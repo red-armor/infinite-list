@@ -2,6 +2,7 @@ import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import Batchinator from '@x-oasis/batchinator';
 import {
   GenericItemT,
+  ItemLayout,
   KeysChangedType,
   MasonryDimensionsProps,
   MasonryIndexInfo,
@@ -82,6 +83,21 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
   }
 
   /**
+   * required, to receive item layout from rendering
+   */
+  setFinalKeyItemLayout(
+    itemKey: string,
+    layout: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ) {
+    return this._dataModel.setKeyItemLayout(
+      itemKey,
+      layout,
+      updateIntervalTree
+    );
+  }
+
+  /**
    *
    * @param data revoked on source data changed
    */
@@ -130,13 +146,14 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
   dispatchMetrics(scrollMetrics: ScrollMetrics | undefined) {
     if (!scrollMetrics) return;
     if (typeof this.stateListener === 'function') {
-      const stateResults = this._dataModel.getStrategies().map((strategy) =>
-        strategy.dispatchMetrics({
+      const stateResults = this._dataModel.getStrategies().map((strategy) => {
+        const stateResult = strategy.dispatchMetrics({
           // @ts-ignore
           dimension: this,
           scrollMetrics,
-        })
-      );
+        });
+        return stateResult;
+      });
       this.stateListener(stateResults);
     }
   }

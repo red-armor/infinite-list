@@ -59,6 +59,7 @@ class MasonryDimensionsModel<
         new MasonryDimensionStrategy({
           columnIndex: idx,
           dataModel: this,
+          recycleEnabled: true,
           ...props,
         })
       );

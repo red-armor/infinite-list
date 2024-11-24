@@ -82,4 +82,32 @@ describe('basic', () => {
       [{ key: 5 }, { key: 7 }, { key: 9 }],
     ]);
   });
+
+  it.only('updateScrollMetrics', () => {
+    const initialData = buildData(6);
+    const masonryDimensions = new MasonryDimensions({
+      data: initialData,
+      id: 'masonry',
+      keyExtractor: (item) => `${item.key}`,
+      getContainerLayout: () => ({
+        x: 0,
+        y: 0,
+        width: 375,
+        height: 500,
+      }),
+    });
+
+    // expect(masonryDimensions.getDataModel().getColumnDataSource()[0].length).toBe(100)
+    // expect(masonryDimensions.getDataModel().getColumnDataSource()[1].length).toBe(100)
+
+    masonryDimensions.addStateListener((stateResults) => {
+      console.log('state result - ', stateResults);
+    });
+    // const dataModel = masonryDimensions.getDataModel();
+    masonryDimensions.updateScrollMetrics({
+      offset: 0,
+      visibleLength: 926,
+      contentLength: 3500,
+    });
+  });
 });

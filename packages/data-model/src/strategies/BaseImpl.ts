@@ -276,11 +276,13 @@ abstract class BaseImpl<
     if (!scrollMetrics)
       return [this._stateHub.getStateResult(), this._stateHub.getStateResult()];
 
+    console.log('testing =======');
     const state = this._store.dispatchMetrics({
       // @ts-ignore
       dimension: this,
       scrollMetrics,
     });
+    console.log('state ========', state);
     return this._stateHub.dispatchState(state);
   }
 
