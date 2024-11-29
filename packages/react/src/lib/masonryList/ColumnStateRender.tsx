@@ -9,15 +9,27 @@ import SpaceItem from './SpaceItem';
 const ColumnStateRenderer = <ItemT extends GenericItemT>(
   props: ColumnStateRendererProps<ItemT>
 ) => {
-  const { state, columnIndex, ...rest } = props;
+  const { state, columnIndex, columnDimensions, ...rest } = props;
   const current = state[0] as RecycleStateResult<ItemT>;
   return (
     <Fragment>
       {current.spaceState.map((data) => (
-        <SpaceItem {...rest} data={data} columnIndex={columnIndex} />
+        <SpaceItem
+          {...rest}
+          data={data}
+          key={data.key}
+          columnIndex={columnIndex}
+          columnDimension={columnDimensions[columnIndex]}
+        />
       ))}
       {current.recycleState.map((data) => (
-        <RecycleItem {...rest} data={data} columnIndex={columnIndex} />
+        <RecycleItem
+          {...rest}
+          data={data}
+          key={data.key}
+          columnIndex={columnIndex}
+          columnDimension={columnDimensions[columnIndex]}
+        />
       ))}
     </Fragment>
   );

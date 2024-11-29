@@ -1,17 +1,61 @@
-import { useCallback, useState, useRef, useMemo } from 'react';
+import {
+  useCallback,
+  useState,
+  useRef,
+  useMemo,
+  useEffect,
+  forwardRef as ReactForwardRef,
+  ForwardedRef,
+} from 'react';
 import {
   GenericItemT,
   MasonryDimension,
   MasonryStateResults,
 } from '@infinite-list/data-model';
-import { MasonryListProps } from './types';
+import { ColumnDimensionInfo, MasonryListProps } from './types';
 import ColumnStateRenderer from './ColumnStateRender';
+
+let count = 0;
 
 const MasonryList = <ItemT extends GenericItemT>(
   props: MasonryListProps<ItemT>
 ) => {
   const [state, setState] = useState<MasonryStateResults<ItemT>>();
-  const { data, column, ...rest } = props;
+  const { id, data, column = 2, getColumnWidth, forwardRef, ...rest } = props;
+
+  const listId = useMemo(() => id || `__masonry_list${count++}__`, []);
+
+  const resolveColumnInfo = useCallback((width?: number) => {
+    const sequence = Array.from({ length: column }, (_, i) => i + 1);
+    const nextWidth = width || 0;
+    return sequence.reduce<ColumnDimensionInfo[]>((acc, cur, index) => {
+      const current = {
+        width: getColumnWidth?.(index) || nextWidth / column,
+        left: 0,
+      };
+      if (!index) acc.push(current);
+      const last = acc[acc.length - 2];
+      if (last) {
+        current.left = last.left + last.width;
+      }
+      acc.push(current);
+      return acc;
+    }, []);
+  }, []);
+
+  const [columnDimensions, setColumnDimensions] = useState(resolveColumnInfo());
+
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!getColumnWidth) {
+      const boundingRect = listRef.current?.getBoundingClientRect();
+      if (boundingRect) {
+        const { width } = boundingRect;
+        setColumnDimensions(resolveColumnInfo(width));
+      }
+    }
+  }, []);
 
   const stateListener = useCallback(
     (stateResult: MasonryStateResults<ItemT>) => {
@@ -22,7 +66,8 @@ const MasonryList = <ItemT extends GenericItemT>(
 
   const dimensionsModel = useMemo(
     () =>
-      new MasonryDimension({
+      new MasonryDimension<ItemT>({
+        id: listId,
         data,
         column,
         ...rest,
@@ -39,7 +84,11 @@ const MasonryList = <ItemT extends GenericItemT>(
   }
 
   return (
-    <div className="masonry-list-container">
+    <div
+      id={listId}
+      ref={forwardRef || listRef}
+      className="masonry-list-container"
+    >
       {state?.map((columnState, index) => (
         <ColumnStateRenderer
           {...rest}
@@ -47,10 +96,18 @@ const MasonryList = <ItemT extends GenericItemT>(
           state={columnState}
           columnIndex={index}
           dimensions={dimensionsModel}
+          columnDimensions={columnDimensions}
         />
       ))}
     </div>
   );
 };
 
-export default MasonryList;
+export default ReactForwardRef(
+  <ItemT extends GenericItemT>(
+    props: MasonryListProps<ItemT>,
+    ref: ForwardedRef<HTMLDivElement>
+  ) => {
+    return <MasonryList {...props} forwardRef={ref} />;
+  }
+);

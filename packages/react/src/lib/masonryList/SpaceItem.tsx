@@ -3,15 +3,16 @@ import { GenericItemT } from '@infinite-list/data-model';
 import { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
-  const { data, dimensions, renderItem: RenderItem } = props;
+  const { data, dimensions, renderItem: RenderItem, columnDimension } = props;
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, length, isSpace } = data;
-  const style = useMemo(
-    () => ({
-      height: length,
-    }),
-    [length]
-  );
+  const style = useMemo(() => {
+    if (isSpace) return { height: length };
+    return {
+      width: columnDimension.width,
+      left: columnDimension.left,
+    };
+  }, [length]);
 
   useEffect(() => {
     const rect = itemRef.current?.getBoundingClientRect();

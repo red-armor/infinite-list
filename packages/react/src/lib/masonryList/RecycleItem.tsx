@@ -5,7 +5,7 @@ import { RecycleItemProps } from './types';
 const RecycleItem = <ItemT extends GenericItemT>(
   props: RecycleItemProps<ItemT>
 ) => {
-  const { data, dimensions, renderItem: RenderItem } = props;
+  const { data, dimensions, renderItem: RenderItem, columnDimension } = props;
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, offset } = data;
   const style: CSSProperties = useMemo(() => {
@@ -13,11 +13,13 @@ const RecycleItem = <ItemT extends GenericItemT>(
       return {
         position: 'absolute',
         top: offset,
-        left: 0,
+        // left: 0,
+        with: columnDimension.width,
+        left: columnDimension.left,
         right: 0,
       };
     return {};
-  }, [offset]);
+  }, [offset, columnDimension]);
 
   useEffect(() => {
     const rect = itemRef.current?.getBoundingClientRect();

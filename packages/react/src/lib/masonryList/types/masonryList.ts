@@ -1,43 +1,3 @@
-// import { GetItemLayout, TeleportItemProps, ListProps } from '@infinite-list/data-model'
-
-// export interface MasonryListProps<ItemT> extends ListProps<ItemT> {
-//   id: string;
-//   /** 每个 item 的高度	 */
-//   getItemLayout: GetItemLayout<ItemT>;
-
-//   /** 容器样式 */
-//   contentContainerStyle?: ViewStyle;
-//   /** list 样式 */
-//   listContentContainerStyle?: ViewStyle;
-//   getTeleportItemProps?: (column: number) => TeleportItemProps;
-
-//   /** loading 态 */
-//   loading?: boolean;
-//   /** loading 容器样式	 */
-//   loadingContainerStyle?: ViewStyle;
-//   /** loading Lottie 样式	 */
-//   loadingStyle?: ViewStyle;
-
-//   /** 操作 MasonryList */
-//   setHelper?: (helper: {
-//     prepareRemoveItem: (itemKey: string) => void;
-//     cancelRemoveItem: () => void;
-//     confirmRemoveItem: (onItemRemoved: (newState: Array<any>) => void) => void;
-//   }) => void;
-//   removeItemSize?: number;
-//   removeItemDuration?: number;
-
-//   ghostOffsetY?: number;
-
-//   dispatchMetricsThreshold?: number;
-
-//   shouldSubListUseStaticLayout?: boolean;
-// }
-
-// export interface MasonryListState {
-//   [key: string]: any;
-// }
-
 import {
   GenericItemT,
   RecycleStateToken,
@@ -47,18 +7,25 @@ import {
   MasonryDimensionsModelProps,
 } from '@infinite-list/data-model';
 import { RenderItem } from '../../types';
+import { ForwardedRef } from 'react';
+
+export type GetColumnWidth = (columnIndex: number) => number;
 
 export type MasonryListProps<ItemT extends GenericItemT = GenericItemT> =
   MasonryDimensionsModelProps<ItemT> & {
+    id?: string;
     renderItem: RenderItem<ItemT>;
+    getColumnWidth?: GetColumnWidth;
+    forwardRef: ForwardedRef<HTMLDivElement>;
   };
 
 export type ColumnStateRendererProps<
   ItemT extends GenericItemT = GenericItemT
-> = Omit<MasonryListProps<ItemT>, 'column' | 'data'> & {
+> = Omit<MasonryListProps<ItemT>, 'id' | 'column' | 'data' | 'forwardRef'> & {
   columnIndex: number;
   dimensions: MasonryDimension<ItemT>;
   state: MasonryColumnStateResults<ItemT>;
+  columnDimensions: ColumnDimensionInfo[];
 };
 
 export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> = {
@@ -66,6 +33,7 @@ export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> = {
   data: RecycleStateToken<ItemT>;
   renderItem: RenderItem<ItemT>;
   dimensions: MasonryDimension<ItemT>;
+  columnDimension: ColumnDimensionInfo;
 };
 
 export type SpaceItemProps<ItemT extends GenericItemT = GenericItemT> = {
@@ -73,4 +41,10 @@ export type SpaceItemProps<ItemT extends GenericItemT = GenericItemT> = {
   data: SpaceStateToken<ItemT>;
   renderItem: RenderItem<ItemT>;
   dimensions: MasonryDimension<ItemT>;
+  columnDimension: ColumnDimensionInfo;
+};
+
+export type ColumnDimensionInfo = {
+  width: number;
+  left: number;
 };
