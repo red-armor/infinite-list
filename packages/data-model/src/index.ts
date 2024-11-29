@@ -6,6 +6,8 @@ export { default as PseudoListDimensions } from './PseudoListDimensions';
 export { default as ItemMetaExperimental } from './ItemMeta';
 export { default as ItemsDimensions } from './ItemsDimensions';
 
+export { default as MasonryDimension } from './masonry/MasonryDimensions';
+
 export { default as ListSpyUtils } from './utils/ListSpyUtils';
 export * from './exportedUtils';
 

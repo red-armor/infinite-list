@@ -9,6 +9,7 @@ export interface MasonryDimensionsProps<
   ItemT extends GenericItemT = GenericItemT
 > extends Omit<ListDimensionsModelProps<ItemT>, 'store' | 'container'> {
   column?: number;
+  stateListener?: MasonryStateListener<ItemT>;
 }
 
 export interface MasonryDimensionsModelProps<
@@ -18,10 +19,11 @@ export interface MasonryDimensionsModelProps<
   // container: MasonryDimensions<ItemT>
 }
 
-export type MasonryStateResults<ItemT extends GenericItemT = GenericItemT> = [
-  ListStateResult<ItemT>,
-  ListStateResult<ItemT>
-][];
+export type MasonryColumnStateResults<
+  ItemT extends GenericItemT = GenericItemT
+> = [ListStateResult<ItemT>, ListStateResult<ItemT>];
+export type MasonryStateResults<ItemT extends GenericItemT = GenericItemT> =
+  MasonryColumnStateResults<ItemT>[];
 
 export type MasonryStateListener<ItemT extends GenericItemT = GenericItemT> = (
   stateResults: MasonryStateResults<ItemT>

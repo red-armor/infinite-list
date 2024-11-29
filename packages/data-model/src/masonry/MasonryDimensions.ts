@@ -41,6 +41,7 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
   constructor(props: MasonryDimensionsProps<ItemT>) {
     const {
       onEndReached,
+      stateListener,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
@@ -49,6 +50,7 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
     } = props;
 
     this.id = `__masonry_${count++}__`;
+    this.stateListener = stateListener;
 
     this.onEndReachedHelper = new OnEndReachedHelper({
       id: this.id,

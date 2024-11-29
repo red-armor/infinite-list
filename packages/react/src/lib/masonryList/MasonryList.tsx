@@ -1,103 +1,56 @@
-import React, {
-  forwardRef,
-  ForwardRefRenderFunction,
-  memo,
-  useMemo,
-} from 'react';
-import { defaultKeyExtractor } from '@infinite-list/data-model';
-import List from '../list/List';
-import createStyles from './styles';
-import { MasonryListProps } from './types'
-import { shuffleData, defaultViewabilityConfigCallbackPairs } from './utils'
+import { useCallback, useState, useRef, useMemo } from 'react';
+import {
+  GenericItemT,
+  MasonryDimension,
+  MasonryStateResults,
+} from '@infinite-list/data-model';
+import { MasonryListProps } from './types';
+import ColumnStateRenderer from './ColumnStateRender';
 
-const styles = createStyles();
-
-function defaultGetItemSeparatorLength() {
-  return { length: 0 };
-}
-
-const MasonryList: ForwardRefRenderFunction<HTMLDivElement, MasonryListProps<any>> = (
-  props,
-  ref
+const MasonryList = <ItemT extends GenericItemT>(
+  props: MasonryListProps<ItemT>
 ) => {
-  const {
-    id,
-    contentContainerStyle,
-    listContentContainerStyle = styles.list,
-    loadingContainerStyle,
-    loadingStyle,
-    loading = false,
-    data,
-    keyExtractor = defaultKeyExtractor,
-    getItemLayout,
-    getTeleportItemProps,
-    teleportItemProps,
-    getItemSeparatorLength = defaultGetItemSeparatorLength,
-    renderItem: RenderItem,
-    onEndReached,
-    shouldSubListUseStaticLayout = true,
-    viewabilityConfigCallbackPairs = defaultViewabilityConfigCallbackPairs,
-    ...rest
-  } = props;
+  const [state, setState] = useState<MasonryStateResults<ItemT>>();
+  const { data, column, ...rest } = props;
 
-  const masonryListContainerStyle = useMemo(() => {
-    return [styles.container, contentContainerStyle];
-  }, [contentContainerStyle]);
-
-  const listContainerStyle = useMemo(() => {
-    return listContentContainerStyle || styles.list;
-  }, [listContentContainerStyle]);
-
-  const { dataLeft, dataRight } = useMemo(() => {
-    return shuffleData(data, getItemLayout);
-  }, [data, getItemLayout]);
-
-  const layoutProps = useMemo(
-    () =>
-      shouldSubListUseStaticLayout
-        ? {
-            getItemLayout,
-            getItemSeparatorLength,
-          }
-        : {},
+  const stateListener = useCallback(
+    (stateResult: MasonryStateResults<ItemT>) => {
+      setState(stateResult);
+    },
     []
   );
 
+  const dimensionsModel = useMemo(
+    () =>
+      new MasonryDimension({
+        data,
+        column,
+        ...rest,
+        stateListener,
+      }),
+    []
+  );
+
+  const dataRef = useRef(data);
+
+  if (dataRef.current !== data) {
+    dimensionsModel.setData(data);
+    dataRef.current = data;
+  }
+
   return (
-    <>
-      <div style={masonryListContainerStyle} ref={ref}>
-        {React.createElement(List, {
-          ...rest,
-          id: `${id}_left`,
-          onEndReached,
-          data: dataLeft,
-          keyExtractor,
-          ...layoutProps,
-          teleportItemProps,
-          renderItem: RenderItem,
-          viewabilityConfigCallbackPairs,
-          contentContainerStyle: listContainerStyle,
-        })}
-        {React.createElement(List, {
-          ...rest,
-          id: `${id}_right`,
-          data: dataRight,
-          keyExtractor,
-          ...layoutProps,
-          teleportItemProps,
-          renderItem: RenderItem,
-          viewabilityConfigCallbackPairs,
-          contentContainerStyle: listContainerStyle,
-        })}
-      </div>
-    </>
+    <div className="masonry-list-container">
+      {state?.map((columnState, index) => (
+        <ColumnStateRenderer
+          {...rest}
+          key={index}
+          state={columnState}
+          columnIndex={index}
+          dimensions={dimensionsModel}
+        />
+      ))}
+    </div>
   );
 };
 
-/**
- * 瀑布流列表
- * @see https://fe-docs.devops.xiaohongshu.com/reds-spectrum/components/MasonryList
- * @param props `MasonryListProps`
- * @returns `React.ForwardRefRenderFunction<View, MasonryListProps>`
- */
-export default memo(forwardRef(MasonryList));
+export default MasonryList;
