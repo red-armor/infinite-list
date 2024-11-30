@@ -318,6 +318,9 @@ importers:
 
   packages/react-native:
     dependencies:
+      '@infinite-list/data-model':
+        specifier: workspace:*
+        version: link:../data-model
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -13424,7 +13427,10 @@ snapshots:
       jest-runner: 25.5.4
       jest-runtime: 25.5.4
     transitivePeerDependencies:
+      - bufferutil
+      - canvas
       - supports-color
+      - utf-8-validate
 
   '@jest/test-sequencer@28.1.3':
     dependencies:

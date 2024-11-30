@@ -1,3 +1,1 @@
-export default () => {
-  // do nothing
-};
+export { default as Content } from './Content';

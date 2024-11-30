@@ -1,6 +1,9 @@
 {
   "name": "@infinite-list/react-native",
   "version": "0.0.1",
+  "dependencies": {
+    "@infinite-list/data-model": "workspace:*"
+  },
   "peerDependencies": {
     "react": "18.2.0",
     "react-native": "0.74.1"
