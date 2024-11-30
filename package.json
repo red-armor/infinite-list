@@ -40,6 +40,7 @@
     "@nx/eslint-plugin": "19.8.0",
     "@nx/js": "19.8.0",
     "@nx/react": "19.8.0",
+    "@nx/react-native": "19.8.0",
     "@nx/storybook": "19.8.0",
     "@nx/vite": "19.8.0",
     "@nx/web": "19.8.0",
@@ -92,7 +93,8 @@
   "dependencies": {
     "@babel/runtime": "^7.25.7",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "react-native": "0.74.1"
   },
   "nx": {
     "includedScripts": []
