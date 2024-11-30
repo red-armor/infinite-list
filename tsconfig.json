@@ -14,7 +14,10 @@
     "noImplicitUseStrict": false,
     "noStrictGenericChecks": false,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "paths": {
+      "@infinite-list/react-native": ["packages/react-native/src/index.ts"]
+    }
   },
   "ts-node": {
     "compilerOptions": {
