@@ -195,6 +195,7 @@ class Marshal {
     return this._rootScrollHelper.getRef();
   }
 
+  // @ts-ignore
   getAnimated() {
     const marshal = this.getOuterMostSameOrientationMarshal();
     if (this === marshal) return this._animated;

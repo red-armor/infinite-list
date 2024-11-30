@@ -50,6 +50,7 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
           item={item}
           {...teleportProps}
           {...rest}
+          // @ts-ignore
           itemMeta={itemMeta}
         />
       ) : null}

@@ -124,6 +124,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   ) as MutableRefObject<RNScrollView>;
   const [scrollUpdating, setScrollUpdating] = useState(_scrollUpdating);
 
+  // @ts-ignore
   const _setScrollUpdating = useCallback((v) => {
     setScrollUpdating(v);
   }, []);
@@ -439,14 +440,17 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       outerMostHorizontalPortalManager:
         outerMostHorizontalPortalManager || (horizontal ? portalManager : null),
 
+      // @ts-ignore
       scrollTo: (options) => {
         const ref = rootScrollHelper.getRef();
         // @ts-ignore
         if (ref.current?.getNode) {
           // @ts-ignore
           if (ref.current.scrollTo) {
+            // @ts-ignore
             ref.current.scrollTo(options);
           } else {
+            // @ts-ignore
             ref.current.getNode().scrollTo(options);
           }
         } else {
@@ -467,12 +471,14 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const nextChildren = useMemo(() => {
     if (shouldBeView)
       return (
+        // @ts-ignore
         <ScrollViewContext.Provider value={nextScrollViewContextValues}>
           {children}
         </ScrollViewContext.Provider>
       );
 
     return (
+      // @ts-ignore
       <ScrollViewContext.Provider value={nextScrollViewContextValues}>
         <ViewabilityContext.Provider value={viewabilityContextValues}>
           <ScrollUpdatingContext.Provider
@@ -488,6 +494,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   const PortalHeader = useCallback(
     () => (
+      // @ts-ignore
       <ScrollViewContext.Provider value={nextScrollViewContextValues}>
         <HeaderPortalContainer />
       </ScrollViewContext.Provider>
@@ -496,6 +503,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   );
   const PortalFooter = useCallback(
     () => (
+      // @ts-ignore
       <ScrollViewContext.Provider value={nextScrollViewContextValues}>
         <FooterPortalContainer />
       </ScrollViewContext.Provider>

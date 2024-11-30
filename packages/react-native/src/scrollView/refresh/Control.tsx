@@ -68,6 +68,7 @@ const Control: FC<ControlProps> = (props) => {
   }, []);
 
   useEffect(() => {
+    // @ts-ignore
     return scrollEventHelper.subscribeEventHandler('onScroll', (e) => {
       if (!onRefreshEnabledRef.current || refreshingRef.current) return;
       const { nativeEvent } = e;

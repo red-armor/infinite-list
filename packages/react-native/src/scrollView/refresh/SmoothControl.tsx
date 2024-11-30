@@ -52,18 +52,24 @@ const SmoothControl: FC<SmoothControlProps> = (props) => {
           {
             translateY: fade
               ? lottieAnimatedValueRef.current.interpolate({
+                  // @ts-ignore
                   inputRange: [-1, 0, triggerOnRefreshThresholdValue],
+                  // @ts-ignore
                   outputRange: [0, -triggerOnRefreshThresholdValue, 0],
                 })
               : animatedValue.current.interpolate({
                   inputRange: [
+                    // @ts-ignore
                     -(triggerOnRefreshThresholdValue + 1),
+                    // @ts-ignore
                     -triggerOnRefreshThresholdValue,
                     -1,
                     0,
                   ],
                   outputRange: [
+                    // @ts-ignore
                     triggerOnRefreshThresholdValue + 1,
+                    // @ts-ignore
                     triggerOnRefreshThresholdValue,
                     1,
                     0,

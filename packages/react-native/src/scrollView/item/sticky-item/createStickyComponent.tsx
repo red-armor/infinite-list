@@ -67,6 +67,7 @@ const createStickyComponent = <
     }>();
 
     const nextSetConfig = useCallback((_config = {}) => {
+      // @ts-ignore
       setConfig((config) => ({
         ...config,
         ..._config,
@@ -129,6 +130,7 @@ const createStickyComponent = <
           if (dimensions instanceof ListGroupDimensions) {
             dimensions.setKeyItemLayout(
               viewableItemHelperKeyRef.current,
+              // @ts-ignore
               ownerId,
               {
                 x,

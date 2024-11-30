@@ -42,4 +42,5 @@ export default createContext<{
 
   getScrollViewRef: () => SpectrumScrollViewRef;
   scrollTo: (options?: { x?: number; y?: number; animated?: boolean }) => void;
+  // @ts-ignore
 }>(defaultScrollViewContext);

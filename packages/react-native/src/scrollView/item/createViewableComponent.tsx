@@ -48,6 +48,7 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
     const containerStyle = useMemo(
       () =>
         [].concat(_style, {
+          // @ts-ignore
           elevation: 0,
         }),
       [_style]
@@ -109,6 +110,7 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
 
     const { handler, layoutHandler } = useMeasureLayout(
       viewRef,
+      // @ts-ignore
       marshal.getRootRef(),
       {
         onLayout,

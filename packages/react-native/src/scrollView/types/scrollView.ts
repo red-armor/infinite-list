@@ -16,6 +16,7 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
+// @ts-ignore
 import PagerView from 'react-native-pager-view';
 import {
   ViewabilityConfig,

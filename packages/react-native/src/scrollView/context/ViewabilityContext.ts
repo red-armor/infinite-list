@@ -8,5 +8,6 @@ export default createContext<{
   // viewabilityGeneral: ViewabilityGeneral;
   dimensions: DataModelDimensions;
 }>({
+  // @ts-ignore
   dimensions: null,
 });

@@ -4,5 +4,6 @@ import { createContext } from 'react';
 export default createContext<{
   itemMeta: ItemMeta;
 }>({
+  // @ts-ignore
   itemMeta: null,
 });

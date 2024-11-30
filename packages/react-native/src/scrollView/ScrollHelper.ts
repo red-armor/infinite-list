@@ -57,8 +57,10 @@ class ScrollHelper {
 
   private _animatedValue: MutableRefObject<Animated.Value>;
 
+  // @ts-ignore
   private _stickyMarshal: StickyMarshal;
 
+  // @ts-ignore
   private _scrollMetrics: ScrollMetrics;
 
   private _contentSize: ContentSize;
@@ -76,20 +78,25 @@ class ScrollHelper {
 
   private _scrollEventHelpers: ScrollEventHelper[] = [];
 
+  // @ts-ignore
   private _scrollEventHelper: ScrollEventHelper;
 
   private _ref: SpectrumScrollViewRef;
 
   readonly _horizontal: boolean;
 
+  // @ts-ignore
   readonly _onEndReachedThreshold: number;
 
+  // @ts-ignore
   readonly _onEndReachedTimeoutThreshold: number;
 
   public viewable: boolean;
 
+  // @ts-ignore
   private _marshal: Marshal;
 
+  // @ts-ignore
   private _scrollEnabledHandler: { (falsy: boolean): void };
 
   public hasInteraction: boolean;
@@ -234,6 +241,7 @@ class ScrollHelper {
     return this._contentSize;
   }
 
+  // @ts-ignore
   addScrollEnabledHandler(handler) {
     this._scrollEnabledHandler = handler;
   }
@@ -281,6 +289,7 @@ class ScrollHelper {
   }
 
   onViewableHandler() {
+    // @ts-ignore
     this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
@@ -329,9 +338,11 @@ class ScrollHelper {
     return this.selectValue;
   }
 
+  // @ts-ignore
   triggerScrollEventHelpers(handlerName: string, ...rest) {
     this._scrollEventHelpers.forEach((helper) => {
       if (helper.marshal.scrollUpdateEnabled) {
+        // @ts-ignore
         helper[handlerName](...rest);
       }
     });
@@ -401,6 +412,7 @@ class ScrollHelper {
       },
     });
     // this._throttledMaybeCallOnEndReached();
+    // @ts-ignore
     this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
@@ -432,6 +444,7 @@ class ScrollHelper {
     this.setScrollEventMetrics(e.nativeEvent);
     this.resolveScrollMetrics();
     this.triggerScrollEventHelpers('onMomentumScrollEnd', e);
+    // @ts-ignore
     this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
@@ -442,6 +455,7 @@ class ScrollHelper {
     this.triggerScrollEventHelpers('onContentSizeChange', width, height);
 
     if (!this._horizontal)
+      // @ts-ignore
       this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 

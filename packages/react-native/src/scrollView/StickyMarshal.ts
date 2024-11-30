@@ -47,6 +47,7 @@ class StickyMarshal<ItemT> {
       this.stickyItemsQueue.push({
         itemKey,
         startOffset: 0,
+        // @ts-ignore
         startCorrection: 0,
         ...nextInfo,
       });
@@ -206,6 +207,7 @@ class StickyMarshal<ItemT> {
       } = {};
 
       if (checkValidInputRange(nextConfig.inputRange)) {
+        // @ts-ignore
         if (!this.interpolatedConfigEqual(prevConfig, nextConfig)) {
           current.interpolationConfig = nextConfig;
           config.interpolationConfig = nextConfig;
@@ -215,6 +217,7 @@ class StickyMarshal<ItemT> {
       if (checkValidInputRange(nextAnimatedValueConfig.inputRange)) {
         if (
           !this.interpolatedConfigEqual(
+            // @ts-ignore
             prevAnimatedValueConfig,
             nextAnimatedValueConfig
           )

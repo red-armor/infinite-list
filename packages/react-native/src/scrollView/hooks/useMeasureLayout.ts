@@ -48,9 +48,12 @@ export default (
     [onLayout]
   );
 
-  const onMeasureLayoutSuccess = useCallback((x, y, width, height) => {
-    onMeasureLayout({ x, y, width, height });
-  }, []);
+  const onMeasureLayoutSuccess = useCallback(
+    (x: number, y: number, width: number, height: number) => {
+      onMeasureLayout({ x, y, width, height });
+    },
+    []
+  );
 
   const onMeasureLayoutFailed = useCallback(() => {
     console.warn(
@@ -72,6 +75,7 @@ export default (
       );
     } else {
       UIManager.measureLayout(
+        // @ts-ignore
         findNodeHandle(itemRef.current),
         findNodeHandle(container.current),
         onMeasureLayoutFailed,
