@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { View } from 'react-native';
 import { GenericItemT } from '@infinite-list/data-model';
 import { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   const { data, dimensions, renderItem: RenderItem, columnDimension } = props;
-  const itemRef = useRef<HTMLDivElement>(null);
+  const itemRef = useRef<View>(null);
   const { item, key, itemMeta, length, isSpace } = data;
   const style = useMemo(() => {
     if (isSpace) return { height: length };
@@ -15,22 +16,39 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   }, [length]);
 
   useEffect(() => {
-    const rect = itemRef.current?.getBoundingClientRect();
+    const onMeasureSuccess = (left, top, width, height) => {
+      if (itemMeta) {
+        dimensions.setFinalKeyItemLayout(itemMeta.getKey(), {
+          x: left,
+          y: top,
+          height,
+          width,
+        });
+      }
+    };
 
-    if (rect) {
-      const { height } = rect;
-      if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), height);
-    }
+    const onMeasureFailed = () => {
+      console.error('[measureLayout error] ', itemMeta?.getKey());
+    };
+
+    setTimeout(() => {
+      itemRef.current.measureLayout(
+        // @ts-ignore
+        containerRef.current,
+        onMeasureSuccess,
+        onMeasureFailed
+      );
+    });
   }, [itemMeta]);
 
   if (isSpace) {
-    return <div style={style} />;
+    return <View style={style} ref={itemRef} />;
   }
 
   return (
-    <div ref={itemRef} key={key}>
+    <View ref={itemRef} key={key}>
       <RenderItem item={item!} itemMeta={itemMeta!} />
-    </div>
+    </View>
   );
 };
 

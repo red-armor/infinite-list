@@ -1,6 +1,6 @@
 import {
   ItemMeta,
-  ListGroupDimensionsExperimental,
+  ListGroupDimensions,
   ListDimensions,
 } from '@infinite-list/data-model';
 import React, { ForwardedRef } from 'react';
@@ -35,7 +35,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   itemMeta: ItemMeta;
 
-  dimensions: ListGroupDimensionsExperimental | ListDimensions;
+  dimensions: ListGroupDimensions | ListDimensions;
 
   withWrapper?: boolean;
   onLayout?: OnLayout;

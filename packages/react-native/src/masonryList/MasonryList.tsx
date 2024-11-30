@@ -6,8 +6,15 @@ import {
   useEffect,
   forwardRef as ReactForwardRef,
   ForwardedRef,
-  CSSProperties,
+  useContext,
 } from 'react';
+import {
+  View,
+  ViewStyle,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  LayoutChangeEvent,
+} from 'react-native';
 import {
   GenericItemT,
   MasonryDimension,
@@ -15,7 +22,7 @@ import {
 } from '@infinite-list/data-model';
 import { ColumnDimensionInfo, MasonryListProps } from './types';
 import ColumnStateRenderer from './ColumnStateRender';
-import ScrollTracker from '../events/ScrollTracker';
+import { ScrollViewContext } from '../scrollView';
 
 let count = 0;
 
@@ -24,8 +31,7 @@ const MasonryList = <ItemT extends GenericItemT>(
 ) => {
   const [state, setState] = useState<MasonryStateResults<ItemT>>();
   const { id, data, column = 2, getColumnWidth, forwardRef, ...rest } = props;
-
-  const scrollHandlerRef = useRef<ScrollTracker>();
+  const contextValues = useContext(ScrollViewContext);
 
   const listId = useMemo(() => id || `__masonry_list${count++}__`, []);
 
@@ -52,10 +58,10 @@ const MasonryList = <ItemT extends GenericItemT>(
 
   const [columnDimensions, setColumnDimensions] = useState(resolveColumnInfo());
 
-  const listRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<View>(null);
 
   const style: {
-    [key: string]: CSSProperties;
+    [key: string]: ViewStyle;
   } = useMemo(
     () => ({
       container: {
@@ -68,13 +74,10 @@ const MasonryList = <ItemT extends GenericItemT>(
     []
   );
 
-  useEffect(() => {
+  const onLayoutHandler = useCallback((event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
     if (!getColumnWidth) {
-      const boundingRect = listRef.current?.getBoundingClientRect();
-      if (boundingRect) {
-        const { width } = boundingRect;
-        setColumnDimensions(resolveColumnInfo(width));
-      }
+      setColumnDimensions(resolveColumnInfo(width));
     }
   }, []);
 
@@ -84,24 +87,6 @@ const MasonryList = <ItemT extends GenericItemT>(
     },
     []
   );
-
-  useEffect(() => {
-    scrollHandlerRef.current = new ScrollTracker({
-      domNode: listRef.current!,
-      onScroll: () => {
-        dimensionsModel.updateScrollMetrics(
-          scrollHandlerRef.current?.getScrollMetrics()
-        );
-      },
-    });
-
-    scrollHandlerRef.current.addEventListeners();
-    dimensionsModel.updateScrollMetrics(
-      scrollHandlerRef.current.getScrollMetrics()
-    );
-
-    return () => scrollHandlerRef.current?.dispose();
-  }, []);
 
   const dimensionsModel = useMemo(
     () =>
@@ -122,12 +107,44 @@ const MasonryList = <ItemT extends GenericItemT>(
     dataRef.current = data;
   }
 
+  const offsetRef = useRef(0);
+  const tsRef = useRef(Date.now());
+
+  useEffect(
+    () =>
+      contextValues
+        .getScrollHelper()
+        .addListener(
+          'onScroll',
+          (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            const scrollMetrics = event.nativeEvent;
+            const timestamp = Date.now();
+            const offset = scrollMetrics.contentOffset.y;
+
+            const dOffset = offset - offsetRef.current;
+            const dt = timestamp - tsRef.current;
+            const velocity = dOffset / dt;
+
+            offsetRef.current = offset;
+            tsRef.current = timestamp;
+
+            dimensionsModel.updateScrollMetrics({
+              offset,
+              visibleLength: scrollMetrics.layoutMeasurement.height,
+              contentLength: scrollMetrics.contentSize.height,
+              velocity,
+            });
+          }
+        ),
+    []
+  );
+
   return (
-    <div
+    <View
       id={listId}
+      onLayout={onLayoutHandler}
       style={style.container}
       ref={forwardRef || listRef}
-      className="masonry-list-container"
     >
       {state?.map((columnState, index) => (
         <ColumnStateRenderer
@@ -139,14 +156,14 @@ const MasonryList = <ItemT extends GenericItemT>(
           columnDimensions={columnDimensions}
         />
       ))}
-    </div>
+    </View>
   );
 };
 
 export default ReactForwardRef(
   <ItemT extends GenericItemT>(
     props: MasonryListProps<ItemT>,
-    ref?: ForwardedRef<HTMLDivElement>
+    ref?: ForwardedRef<View>
   ) => {
     return <MasonryList {...props} forwardRef={ref} />;
   }

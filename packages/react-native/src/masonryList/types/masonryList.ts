@@ -6,6 +6,7 @@ import {
   MasonryColumnStateResults,
   MasonryDimensionsModelProps,
 } from '@infinite-list/data-model';
+import { View } from 'react-native';
 import { RenderItem } from '../../types';
 import { ForwardedRef } from 'react';
 
@@ -18,7 +19,7 @@ export type MasonryListProps<ItemT extends GenericItemT = GenericItemT> = Omit<
   id?: string;
   renderItem: RenderItem<ItemT>;
   getColumnWidth?: GetColumnWidth;
-  forwardRef?: ForwardedRef<HTMLDivElement>;
+  forwardRef?: ForwardedRef<View>;
 };
 
 export type ColumnStateRendererProps<

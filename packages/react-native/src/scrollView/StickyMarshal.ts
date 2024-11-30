@@ -22,7 +22,7 @@ export function checkValidInputRange(arr: Array<number>) {
   return true;
 }
 
-class StickyMarshal<ItemT = {}> {
+class StickyMarshal<ItemT> {
   private stickyItemsQueue: Array<StickyItemInfo<ItemT>> = [];
   private mode?: StickyMode;
   private _calculateRangeValuesBatchinator: Batchinator;
@@ -58,7 +58,7 @@ class StickyMarshal<ItemT = {}> {
   }
 
   findIndex(itemKey: string) {
-    return this.stickyItemsQueue.findIndex(item => item.itemKey === itemKey);
+    return this.stickyItemsQueue.findIndex((item) => item.itemKey === itemKey);
   }
 
   calculateRangeValues(ownerId?: string) {
@@ -157,6 +157,7 @@ class StickyMarshal<ItemT = {}> {
               const { itemKey } = cur;
               // @ts-ignore
               const layout = dimensions
+                // @ts-ignore
                 .getKeyMeta(itemKey, ownerId)
                 ?.getLayout();
               const itemLength = layout ? selectValue.selectLength(layout) : 0;

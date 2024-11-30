@@ -14,6 +14,7 @@ export default (props: {
   const { dimensions } = useContext(ViewabilityContext);
 
   const meta = useMemo(
+    // @ts-ignore
     () => dimensions.ensureKeyMeta(viewableItemHelperKey, ownerId),
     [viewableItemHelperKey, ownerId]
   );
