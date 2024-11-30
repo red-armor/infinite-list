@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { ListItemProps, DefaultItemT } from './types';
+import { ListItemProps, DefaultItemT } from '../types';
 
 /**
  *

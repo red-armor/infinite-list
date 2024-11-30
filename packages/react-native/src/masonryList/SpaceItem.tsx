@@ -16,7 +16,12 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   }, [length]);
 
   useEffect(() => {
-    const onMeasureSuccess = (left, top, width, height) => {
+    const onMeasureSuccess = (
+      left: number,
+      top: number,
+      width: number,
+      height: number
+    ) => {
       if (itemMeta) {
         dimensions.setFinalKeyItemLayout(itemMeta.getKey(), {
           x: left,
@@ -32,7 +37,7 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
     };
 
     setTimeout(() => {
-      itemRef.current.measureLayout(
+      itemRef.current?.measureLayout(
         // @ts-ignore
         containerRef.current,
         onMeasureSuccess,

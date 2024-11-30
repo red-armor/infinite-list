@@ -3,7 +3,7 @@ import { GenericItemT } from '@infinite-list/data-model';
 import { RecycleItemProps } from './types';
 import { View, ViewStyle } from 'react-native';
 
-const RecycleItem = <ItemT extends GenericItemT>(
+const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
   props: RecycleItemProps<ItemT>
 ) => {
   const { data, dimensions, renderItem: RenderItem, columnDimension } = props;
@@ -23,7 +23,12 @@ const RecycleItem = <ItemT extends GenericItemT>(
   }, [offset, columnDimension]);
 
   useEffect(() => {
-    const onMeasureSuccess = (left, top, width, height) => {
+    const onMeasureSuccess = (
+      left: number,
+      top: number,
+      width: number,
+      height: number
+    ) => {
       if (itemMeta) {
         dimensions.setFinalKeyItemLayout(itemMeta.getKey(), {
           x: left,
@@ -39,7 +44,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
     };
 
     setTimeout(() => {
-      itemRef.current.measureLayout(
+      itemRef.current?.measureLayout(
         // @ts-ignore
         containerRef.current,
         onMeasureSuccess,
