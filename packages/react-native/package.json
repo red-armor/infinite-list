@@ -2,7 +2,9 @@
   "name": "@infinite-list/react-native",
   "version": "0.0.1",
   "dependencies": {
-    "@infinite-list/data-model": "workspace:*"
+    "@infinite-list/data-model": "workspace:*",
+    "@x-oasis/noop": "^0.1.14",
+    "@x-oasis/shallow-equal": "^0.1.14"
   },
   "peerDependencies": {
     "react": "18.2.0",
