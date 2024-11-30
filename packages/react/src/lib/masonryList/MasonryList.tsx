@@ -96,7 +96,6 @@ const MasonryList = <ItemT extends GenericItemT>(
     });
 
     scrollHandlerRef.current.addEventListeners();
-
     dimensionsModel.updateScrollMetrics(
       scrollHandlerRef.current.getScrollMetrics()
     );

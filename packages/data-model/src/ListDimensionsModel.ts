@@ -518,7 +518,8 @@ class ListDimensionsModel<
    *
    * @param key string, itemKey
    * @param info
-   * @param updateIntervalTree target IntervalTree
+   * @param updateIntervalTree target IntervalTree, now this property is used in
+   * MasonryList
    * @returns boolean value, true for updating intervalTree successfully.
    */
   _setKeyItemLayout(

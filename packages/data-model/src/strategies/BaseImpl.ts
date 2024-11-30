@@ -280,6 +280,7 @@ abstract class BaseImpl<
       dimension: this,
       scrollMetrics,
     });
+
     return this._stateHub.dispatchState(state);
   }
 

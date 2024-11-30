@@ -23,6 +23,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
 
   useEffect(() => {
     const rect = itemRef.current?.getBoundingClientRect();
+
     if (rect) {
       const { height } = rect;
 

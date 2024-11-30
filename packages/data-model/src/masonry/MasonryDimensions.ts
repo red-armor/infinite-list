@@ -86,17 +86,24 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
 
   /**
    * required, to receive item layout from rendering
+   * TODO: pay attention !!! on update item layout, the columnInterval tree
+   * layout should be updated as well
    */
   setFinalKeyItemLayout(
     itemKey: string,
     layout: ItemLayout | number,
     updateIntervalTree?: boolean
   ) {
-    return this._dataModel.setKeyItemLayout(
+    return this._dataModel.setMasonryKeyItemLayout(
       itemKey,
       layout,
       updateIntervalTree
     );
+    // return this._dataModel.setKeyItemLayout(
+    //   itemKey,
+    //   layout,
+    //   updateIntervalTree
+    // );
   }
 
   /**
@@ -125,6 +132,7 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
     nextDataModel.setDataSource(chunks);
   }
 
+  // triggered due to item layout change...
   onItemLayoutChanged() {
     this._dispatchMetricsBatchinator.schedule();
   }
@@ -155,8 +163,12 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
     this._dispatchMetricsBatchinator.schedule();
   }
 
-  dispatchMetrics(scrollMetrics: ScrollMetrics | undefined) {
+  // TODO:
+  dispatchMetrics(
+    scrollMetrics: ScrollMetrics | undefined = this._scrollMetrics
+  ) {
     if (!scrollMetrics) return;
+
     if (typeof this.stateListener === 'function') {
       const stateResults = this._dataModel.getStrategies().map((strategy) => {
         const stateResult = strategy.dispatchMetrics(scrollMetrics);

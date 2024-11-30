@@ -1,8 +1,15 @@
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import { GenericItemT, MasonryDimensionsModelProps } from '../types';
+import layoutEqual from '@x-oasis/layout-equal';
+
+import {
+  GenericItemT,
+  ItemLayout,
+  MasonryDimensionsModelProps,
+} from '../types';
 import ListDimensionsModel from '../ListDimensionsModel';
 import KeyIndexManager from '../utils/KeyIndexManager';
 import MasonryDimensionStrategy from './MasonryDimensionStrategy';
+import { LAYOUT_EQUAL_CORRECTION_VALUE } from '../common';
 
 /**
  * The key point is how to decorate `columnIntervalTree` and `columnKeyIndexManager`
@@ -106,6 +113,26 @@ class MasonryDimensionsModel<
     return this.getKeyMeta(itemKey);
   }
 
+  getColumnStrategy(index: number) {
+    return this._strategies[index];
+  }
+
+  setMasonryKeyItemLayout(
+    itemKey: string,
+    layout: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ) {
+    // masonry list interval is no need to update..
+    // this.setKeyItemLayout(
+    //   itemKey,
+    //   layout,
+    //   false
+    // );
+
+    this.setColumnKeyItemLayout(itemKey, layout, updateIntervalTree);
+    return true;
+  }
+
   getColumnIndexKeyOffset(
     columnIndex: number,
     indexInColumn: number,
@@ -144,7 +171,9 @@ class MasonryDimensionsModel<
   getKeyIndexInColumn(key: string) {
     for (let columnIndex = 0; columnIndex < this.column; columnIndex++) {
       const indexManager = this.getColumnKeyIndexManager(columnIndex);
+
       const indexInColumn = indexManager.getKeyIndex(key);
+
       if (typeof indexInColumn === 'number') {
         return indexInColumn;
       }
@@ -155,6 +184,124 @@ class MasonryDimensionsModel<
   getColumnTotalLength(columnIndex: number) {
     const intervalTree = this._columnIntervalTree[columnIndex];
     return intervalTree.getMaxUsefulLength() ? intervalTree.getHeap()[1] : 0;
+  }
+
+  /**
+   *
+   * @param key string, itemKey
+   * @param info
+   * @param updateIntervalTree target IntervalTree, now this property is used in
+   * MasonryList
+   * @returns boolean value, true for updating intervalTree successfully.
+   */
+  setColumnKeyItemLayout(
+    key: string,
+    info: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ) {
+    const columnIndex = this.getKeyColumnIndex(key);
+
+    if (columnIndex === -1) {
+      return;
+    }
+
+    const data = this.getColumnDataSource()[columnIndex];
+    const intervalTree = this.getColumnIntervalTree(columnIndex);
+
+    const _update =
+      typeof updateIntervalTree === 'boolean' ? updateIntervalTree : true;
+
+    // if (!falsy) {
+    //   if (this._parentItemsDimensions)
+    //     return this._parentItemsDimensions.setKeyItemLayout(key, info, _update);
+    //   return false;
+    // }
+    const index = this.getKeyIndexInColumn(key);
+    // const item = this._data[index];
+    const meta = this.getKeyMeta(key);
+    // const meta = this.getItemMeta(item, index);
+
+    if (!meta) return false;
+
+    if (typeof info === 'number') {
+      let length = this.normalizeLengthNumber(info);
+      meta.isApproximateLayout = false;
+
+      if (
+        Math.abs(
+          length - (this._selectValue.selectLength(meta.getLayout() || {}) || 0)
+        ) > LAYOUT_EQUAL_CORRECTION_VALUE
+      ) {
+        this._selectValue.setLength(meta.ensureLayout(), length);
+
+        // if (index !== this._data.length - 1) {
+        if (index !== data.length - 1) {
+          meta.setUseSeparatorLength(true);
+          // length = meta.getSeparatorLength() + length;
+        } else {
+          meta.setUseSeparatorLength(false);
+        }
+
+        length = meta.getFinalItemLength();
+
+        if (_update) {
+          intervalTree.set(index, length);
+          // this.setIntervalTreeValue(index, length);
+
+          // TODO: the following is specific logic in MasonryList
+          this.triggerOwnerRecalculateLayout();
+
+          return true;
+        }
+      } else if (meta.isApproximateLayout) {
+        // 比如换了一个item的话，不会触发更新
+        this.triggerOwnerRecalculateLayout();
+      }
+
+      return false;
+    }
+    const _info = this.normalizeLengthInfo(info);
+    const metaLayout = meta.getLayout();
+
+    if (
+      !metaLayout ||
+      !layoutEqual(metaLayout, _info as ItemLayout, {
+        keysToCheck: this.horizontal ? ['width'] : ['height'],
+        correctionValue: LAYOUT_EQUAL_CORRECTION_VALUE,
+      })
+    ) {
+      meta.isApproximateLayout = false;
+      const currentLength = this._selectValue.selectLength(
+        meta.getLayout() || {}
+      );
+      let length = this._selectValue.selectLength((_info as ItemLayout) || {});
+      meta.setLayout(_info as ItemLayout);
+      // 只有关心的值发生变化时，才会再次触发setIntervalTreeValue
+      if (currentLength !== length && _update) {
+        if (index !== data.length - 1) {
+          // if (index !== this._data.length - 1) {
+          meta.setUseSeparatorLength(true);
+          // length = meta.getSeparatorLength() + length;
+        } else {
+          meta.setUseSeparatorLength(false);
+        }
+
+        length = meta.getFinalItemLength();
+
+        intervalTree.set(index, length);
+
+        // TODO: the following is specific logic in MasonryList
+        this.triggerOwnerRecalculateLayout();
+        // this.setIntervalTreeValue(index, length);
+        return true;
+      }
+    } else if (meta.isApproximateLayout) {
+      meta.isApproximateLayout = false;
+      // 比如换了一个item的话，不会触发更新
+      this.triggerOwnerRecalculateLayout();
+    }
+
+    return false;
   }
 }
 

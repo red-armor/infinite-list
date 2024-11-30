@@ -26,12 +26,15 @@ const meta: Meta<typeof MasonryList> = {
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
-            const { item } = props;
+            const { item, itemMeta } = props;
+
+            const indexInfo = itemMeta.getIndexInfo();
+            const index = indexInfo?.index || 0;
 
             return (
               <div
                 style={{
-                  height: '50px',
+                  height: index % 2 ? '50px' : '75px',
                   width: '100%',
                   backgroundColor: '#efdbff',
                   paddingBottom: '5px',

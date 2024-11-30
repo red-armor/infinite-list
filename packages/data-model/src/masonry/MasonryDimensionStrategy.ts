@@ -103,12 +103,20 @@ class MasonryDimensionStrategy<
     return containerOffset + (typeof height === 'number' ? height : 0);
   }
 
+  /**
+   *
+   * @param itemKey
+   * @param layout
+   * @param updateIntervalTree
+   * @returns
+   *
+   */
   setFinalKeyItemLayout(
     itemKey: string,
     layout: ItemLayout | number,
     updateIntervalTree?: boolean
   ) {
-    return this._dataModel.setKeyItemLayout(
+    return this._dataModel.setMasonryKeyItemLayout(
       itemKey,
       layout,
       updateIntervalTree
