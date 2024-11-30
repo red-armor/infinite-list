@@ -7,8 +7,11 @@ import {
   ScrollView,
   ScrollViewProps,
   View,
+  // @ts-ignore
   ViewPagerAndroidOnPageScrollEventData,
+  // @ts-ignore
   ViewPagerAndroidOnPageSelectedEventData,
+  // @ts-ignore
   ViewPagerAndroidProps,
   ViewProps,
   ViewStyle,

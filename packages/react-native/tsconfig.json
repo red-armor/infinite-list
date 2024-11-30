@@ -14,7 +14,7 @@
     "noImplicitUseStrict": false,
     "noStrictGenericChecks": false,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
   },
   "include": ["src/**/*"]
 }

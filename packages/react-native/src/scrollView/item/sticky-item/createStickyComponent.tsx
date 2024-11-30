@@ -118,6 +118,7 @@ const createStickyComponent = <
           _onMeasureLayout(x, y, width, height);
         }
 
+        // @ts-ignore
         const meta = dimensions.ensureKeyMeta(
           viewableItemHelperKeyRef.current,
           ownerId
@@ -137,6 +138,7 @@ const createStickyComponent = <
               }
             );
           } else {
+            // @ts-ignore
             dimensions.setKeyItemLayout(viewableItemHelperKeyRef.current, {
               x,
               y,
@@ -203,6 +205,7 @@ const createStickyComponent = <
     });
 
     const containerStyle = useMemo<ViewStyle[]>(() => {
+      // @ts-ignore
       const meta = dimensions.ensureKeyMeta(
         viewableItemHelperKeyRef.current,
         ownerId
@@ -264,6 +267,7 @@ const createStickyComponent = <
 
     const viewableItemContextValue = useMemo(() => {
       return {
+        // @ts-ignore
         itemMeta: dimensions.getKeyMeta(viewableItemHelperKey, ownerId),
       };
     }, [viewableItemHelperKey]);

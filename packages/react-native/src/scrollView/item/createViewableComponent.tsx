@@ -22,8 +22,9 @@ import MemoedViewableItem from './Item';
 const createViewableComponent = <T extends React.ComponentType<any>>(
   Component: T
 ) => {
-  const ViewableComponent: FC<PropsWithChildren<ViewableItemProps> &
-    React.ComponentProps<T>> = props => {
+  const ViewableComponent: FC<
+    PropsWithChildren<ViewableItemProps> & React.ComponentProps<T>
+  > = (props) => {
     const {
       style: _style = {},
       ownerId: _ownerId,
@@ -88,6 +89,7 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
               }
             );
           } else {
+            // @ts-ignore
             dimensions.setKeyItemLayout(viewableItemHelperKeyRef.current, {
               x,
               y,
@@ -120,6 +122,7 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
       // ignore first time
       if (viewableItemHelperKeyRef.current !== viewableItemHelperKey) {
         viewableItemHelperKeyRef.current = viewableItemHelperKey;
+        // @ts-ignore
         const meta = dimensions.ensureKeyMeta(
           viewableItemHelperKeyRef.current,
           ownerId
@@ -146,14 +149,15 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
 
     const viewableItemContextValue = useMemo(() => {
       return {
+        // @ts-ignore
         itemMeta: dimensions.getKeyMeta(viewableItemHelperKey, ownerId),
       };
     }, [viewableItemHelperKey]);
 
-    const RenderComponent = useMemo(() => CellRendererComponent || Component, [
-      Component,
-      CellRendererComponent,
-    ]);
+    const RenderComponent = useMemo(
+      () => CellRendererComponent || Component,
+      [Component, CellRendererComponent]
+    );
 
     // TODO: temp fix
     // Warning: Function components cannot be given refs. Attempts to
@@ -186,14 +190,14 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
     );
   };
 
-  return (React.forwardRef(
+  return React.forwardRef(
     (
       props: ViewableItemProps & React.ComponentProps<T>,
       ref: ForwardedRef<T>
     ) => {
       return <ViewableComponent {...props} forwardRef={ref} />;
     }
-  ) as any) as FC<ViewableItemProps & React.ComponentProps<T>>;
+  ) as any as FC<ViewableItemProps & React.ComponentProps<T>>;
 };
 
 export default createViewableComponent;

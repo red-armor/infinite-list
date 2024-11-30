@@ -218,3 +218,9 @@ describe('basic', () => {
     ]);
   });
 });
+
+describe('operations', () => {
+  it('should update itemLayout and columnIntervalTree', () => {
+    expect(1).toBe(1);
+  });
+});

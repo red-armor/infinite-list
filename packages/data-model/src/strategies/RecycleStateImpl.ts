@@ -14,6 +14,7 @@ import {
   StateListener,
   SpaceStateResult,
   RecycleStateImplProps,
+  ListGroupIndexInfo,
 } from '../types';
 import ItemMeta from '../ItemMeta';
 import { resolveToken } from './utils';
@@ -72,14 +73,16 @@ class RecycleStateImpl<
       },
       indexExtractor: (meta: ItemMeta<ItemT>) => {
         const indexInfo = meta.getIndexInfo();
-        const index = indexInfo?.indexInGroup || indexInfo?.index;
+        const index =
+          (indexInfo as ListGroupIndexInfo<ItemT>)?.indexInGroup ||
+          indexInfo?.index;
         if (typeof index !== 'number') {
           console.error(
             '[RecycleStateImpl error]: index should has a valid number ' +
               'or will cause recycler not work correctly'
           );
         }
-        return index;
+        return index || -1;
       },
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) =>
