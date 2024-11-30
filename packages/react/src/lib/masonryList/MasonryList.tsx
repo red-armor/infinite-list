@@ -6,6 +6,7 @@ import {
   useEffect,
   forwardRef as ReactForwardRef,
   ForwardedRef,
+  CSSProperties,
 } from 'react';
 import {
   GenericItemT,
@@ -14,6 +15,7 @@ import {
 } from '@infinite-list/data-model';
 import { ColumnDimensionInfo, MasonryListProps } from './types';
 import ColumnStateRenderer from './ColumnStateRender';
+import ScrollTracker from '../events/ScrollTracker';
 
 let count = 0;
 
@@ -22,6 +24,8 @@ const MasonryList = <ItemT extends GenericItemT>(
 ) => {
   const [state, setState] = useState<MasonryStateResults<ItemT>>();
   const { id, data, column = 2, getColumnWidth, forwardRef, ...rest } = props;
+
+  const scrollHandlerRef = useRef<ScrollTracker>();
 
   const listId = useMemo(() => id || `__masonry_list${count++}__`, []);
 
@@ -33,8 +37,11 @@ const MasonryList = <ItemT extends GenericItemT>(
         width: getColumnWidth?.(index) || nextWidth / column,
         left: 0,
       };
-      if (!index) acc.push(current);
-      const last = acc[acc.length - 2];
+      if (!index) {
+        acc.push(current);
+        return acc;
+      }
+      const last = acc[acc.length - 1];
       if (last) {
         current.left = last.left + last.width;
       }
@@ -46,6 +53,20 @@ const MasonryList = <ItemT extends GenericItemT>(
   const [columnDimensions, setColumnDimensions] = useState(resolveColumnInfo());
 
   const listRef = useRef<HTMLDivElement>(null);
+
+  const style: {
+    [key: string]: CSSProperties;
+  } = useMemo(
+    () => ({
+      container: {
+        width: '100%',
+        height: '100%',
+        overflowY: 'auto',
+        position: 'relative',
+      },
+    }),
+    []
+  );
 
   useEffect(() => {
     if (!getColumnWidth) {
@@ -63,6 +84,25 @@ const MasonryList = <ItemT extends GenericItemT>(
     },
     []
   );
+
+  useEffect(() => {
+    scrollHandlerRef.current = new ScrollTracker({
+      domNode: listRef.current!,
+      onScroll: () => {
+        dimensionsModel.updateScrollMetrics(
+          scrollHandlerRef.current?.getScrollMetrics()
+        );
+      },
+    });
+
+    scrollHandlerRef.current.addEventListeners();
+
+    dimensionsModel.updateScrollMetrics(
+      scrollHandlerRef.current.getScrollMetrics()
+    );
+
+    return () => scrollHandlerRef.current?.dispose();
+  }, []);
 
   const dimensionsModel = useMemo(
     () =>
@@ -86,6 +126,7 @@ const MasonryList = <ItemT extends GenericItemT>(
   return (
     <div
       id={listId}
+      style={style.container}
       ref={forwardRef || listRef}
       className="masonry-list-container"
     >
@@ -106,7 +147,7 @@ const MasonryList = <ItemT extends GenericItemT>(
 export default ReactForwardRef(
   <ItemT extends GenericItemT>(
     props: MasonryListProps<ItemT>,
-    ref: ForwardedRef<HTMLDivElement>
+    ref?: ForwardedRef<HTMLDivElement>
   ) => {
     return <MasonryList {...props} forwardRef={ref} />;
   }

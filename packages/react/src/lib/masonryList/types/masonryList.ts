@@ -11,13 +11,15 @@ import { ForwardedRef } from 'react';
 
 export type GetColumnWidth = (columnIndex: number) => number;
 
-export type MasonryListProps<ItemT extends GenericItemT = GenericItemT> =
-  MasonryDimensionsModelProps<ItemT> & {
-    id?: string;
-    renderItem: RenderItem<ItemT>;
-    getColumnWidth?: GetColumnWidth;
-    forwardRef: ForwardedRef<HTMLDivElement>;
-  };
+export type MasonryListProps<ItemT extends GenericItemT = GenericItemT> = Omit<
+  MasonryDimensionsModelProps<ItemT>,
+  'store' | 'container'
+> & {
+  id?: string;
+  renderItem: RenderItem<ItemT>;
+  getColumnWidth?: GetColumnWidth;
+  forwardRef?: ForwardedRef<HTMLDivElement>;
+};
 
 export type ColumnStateRendererProps<
   ItemT extends GenericItemT = GenericItemT
