@@ -10,8 +10,8 @@
       "options": {
         "outputPath": "dist/packages/react-native",
         "tsConfig": "packages/react-native/tsconfig.lib.json",
-        "project": "packages/react-native/package.json",
         "entryFile": "packages/react-native/src/index.ts",
+        "rollupConfig": "packages/react-native/rollup.config.js",
         "external": ["react/jsx-runtime", "react-native", "react", "react-dom"],
         "assets": [
           {
