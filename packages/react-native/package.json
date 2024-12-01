@@ -1,33 +1,17 @@
 {
   "name": "@infinite-list/react-native",
-  "version": "2.0.0",
-  "main": "src/index.ts",
-  "publishConfig": {
-    "access": "public",
-    "main": "dist/index.js"
-  },
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.6",
-    "@testing-library/react-native": "^7.0.2",
-    "@types/dedent": "^0.7.0",
-    "@types/jest": "^27.4.0",
-    "@types/node": "^16",
-    "@types/react": "^17",
-    "@types/react-native": "*",
-    "@types/react-test-renderer": "^17.0.1",
-    "rimraf": "~4.4.0",
-    "tsdx": "^0.14.1"
-  },
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*",
-    "react-native-pager-view": "*"
-  },
+  "version": "0.0.1",
   "dependencies": {
     "@infinite-list/data-model": "workspace:*",
-    "@x-oasis/shallow-equal": "^0.1.14"
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/is-ref": "^0.1.35",
+    "@x-oasis/noop": "^0.1.14",
+    "@x-oasis/select-value": "^0.1.14",
+    "@x-oasis/shallow-equal": "^0.1.14",
+    "@x-oasis/throttle": "^0.1.35"
+  },
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-native": "0.74.1"
   }
 }

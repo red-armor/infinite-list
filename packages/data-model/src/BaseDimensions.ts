@@ -12,12 +12,11 @@ import {
   ScrollMetrics,
 } from './types';
 import * as log from './utils/logger';
+import KeyIndexManager from './utils/KeyIndexManager';
 
 abstract class BaseDimensions<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseLayout {
-  _keyToIndexMap: Map<string, number> = new Map();
-  _indexKeys: Array<string> = [];
   _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
   _configTuple: ViewabilityConfigTuples;
 
@@ -25,6 +24,7 @@ abstract class BaseDimensions<
   _onUpdateIntervalTree?: Function;
 
   private _intervalTree: PrefixIntervalTree;
+  public keyIndexManager: KeyIndexManager;
 
   constructor(props: BaseDimensionsProps) {
     super(props);
@@ -37,6 +37,7 @@ abstract class BaseDimensions<
       viewabilityConfigCallbackPairs,
     } = props;
 
+    this.keyIndexManager = new KeyIndexManager();
     this._onUpdateIntervalTree = onUpdateIntervalTree;
     this._onUpdateItemLayout = onUpdateItemLayout;
     this._intervalTree = this.createIntervalTree();
@@ -57,13 +58,15 @@ abstract class BaseDimensions<
   }
 
   getKeyIndex(key: string) {
-    const index = this._keyToIndexMap.get(key);
+    // const index = this._keyToIndexMap.get(key);
+    const index = this.keyIndexManager.getKeyIndex(key);
     if (typeof index === 'number') return index;
     return -1;
   }
 
   getIndexKey(index: number) {
-    return this._indexKeys[index];
+    return this.keyIndexManager.getIndexKey(index);
+    // return this._indexKeys[index];
   }
 
   getIndexKeyOffset(index: number, exclusive?: boolean) {
@@ -73,14 +76,14 @@ abstract class BaseDimensions<
       index,
       listOffset,
       this.getContainerOffset(),
-      this.intervalTree.getHeap()[1],
+      this._intervalTree.getHeap()[1],
       this._intervalTree.sumUntil(index)
     );
     if (typeof index === 'number') {
       return (
         listOffset +
         (index >= this._intervalTree.getMaxUsefulLength()
-          ? this.intervalTree.getHeap()[1]
+          ? this._intervalTree.getHeap()[1]
           : this._intervalTree.sumUntil(index))
       );
     }
@@ -144,14 +147,14 @@ abstract class BaseDimensions<
     keys: Array<string>,
     equal?: (index: number) => boolean
   ) {
-    const oldLen = this._indexKeys.length;
+    const oldLen = this.keyIndexManager.getIndexKeysLength();
     const newLen = keys.length;
 
     if (!oldLen && newLen) return KeysChangedType.Initial;
 
     if (oldLen > newLen) return KeysChangedType.Remove;
     for (let index = 0; index < oldLen; index++) {
-      const currentKey = this._indexKeys[index];
+      const currentKey = this.keyIndexManager.getIndexKey(index);
       const nextKey = keys[index];
 
       if (currentKey !== nextKey || !equal?.(index)) {

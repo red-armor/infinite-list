@@ -2,6 +2,7 @@ import { defaultKeyExtractor } from '@infinite-list/data-model';
 import { useContext, useEffect, useRef } from 'react';
 import context from '../context';
 
+// @ts-ignore
 export default (props) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);

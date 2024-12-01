@@ -182,8 +182,8 @@ class ItemMeta<
     this._useSeparatorLength = value;
   }
 
-  getFinalItemLength() {
-    if (this._useSeparatorLength) {
+  getFinalItemLength(useSeparatorLength = false) {
+    if (useSeparatorLength || this._useSeparatorLength) {
       return this.getItemLength() + this.getSeparatorLength();
     }
 

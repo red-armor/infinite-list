@@ -20,12 +20,16 @@ export type SpaceStateToken<ItemT extends GenericItemT = GenericItemT> = {
 };
 
 export type RecycleStateToken<ItemT extends GenericItemT = GenericItemT> = {
+  /**
+   * compare with `targetKey`, it's the key point of recycle compatibility.
+   */
+  key: string;
   targetKey: string;
   targetIndex: number;
   offset: number;
 
   viewable: boolean;
-} & Omit<SpaceStateToken<ItemT>, 'isReserved' | 'position'>;
+} & Omit<SpaceStateToken<ItemT>, 'key' | 'isReserved' | 'position'>;
 
 export type SpaceStateResult<ItemT extends GenericItemT = GenericItemT> = Array<
   SpaceStateToken<ItemT>

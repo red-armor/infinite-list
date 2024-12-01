@@ -35,12 +35,14 @@ class PseudoListDimensions extends BaseDimensions {
         this.shuffle(keys);
         break;
     }
-    this._indexKeys = keys;
+    this.keyIndexManager.setIndexKeys(keys);
+    // this._indexKeys = keys;
   }
 
   getIndexInfo(key: string): IndexInfo {
     const info = {} as IndexInfo;
-    info.index = this._indexKeys.indexOf(key);
+    // info.index = this._indexKeys.indexOf(key);
+    info.index = this.keyIndexManager.findIndex(key);
     return info;
   }
 
@@ -79,12 +81,15 @@ class PseudoListDimensions extends BaseDimensions {
   }
 
   append(keys: Array<string>) {
-    const baseIndex = this._indexKeys.length;
+    // const baseIndex = this._indexKeys.length;
+    const baseIndex = this.keyIndexManager.getIndexKeysLength();
     this.pump(
       keys,
       baseIndex,
-      this._keyToIndexMap,
-      this._indexKeys,
+      this.keyIndexManager.keyToIndexMap,
+      this.keyIndexManager.indexKeys,
+      // this._keyToIndexMap,
+      // this._indexKeys,
       this._keyToMetaMap,
       this.intervalTree
     );
@@ -103,19 +108,23 @@ class PseudoListDimensions extends BaseDimensions {
       keyToMetaMap,
       itemIntervalTree
     );
-    this._indexKeys = keyToIndexArray;
-    this._keyToIndexMap = keyToIndexMap;
+    this.keyIndexManager.setIndexKeys(keyToIndexArray);
+    this.keyIndexManager.setKeyToIndexMap(keyToIndexMap);
+    // this._indexKeys = keyToIndexArray;
+    // this._keyToIndexMap = keyToIndexMap;
     this._keyToMetaMap = keyToMetaMap;
     this.intervalTree = itemIntervalTree;
   }
 
   override resolveKeysChangedType(keys: Array<string>) {
-    const oldLen = this._indexKeys.length;
+    // const oldLen = this._indexKeys.length;
+    const oldLen = this.keyIndexManager.getIndexKeysLength();
     const newLen = keys.length;
 
     if (oldLen > newLen) return KeysChangedType.Remove;
     for (let index = 0; index < oldLen; index++) {
-      const currentKey = this._indexKeys[index];
+      // const currentKey = this._indexKeys[index];
+      const currentKey = this.keyIndexManager.getIndexKey(index);
       const nextKey = keys[index];
       if (currentKey !== nextKey) {
         if (oldLen === newLen) return KeysChangedType.Reorder;

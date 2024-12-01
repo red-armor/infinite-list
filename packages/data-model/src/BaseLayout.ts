@@ -9,7 +9,7 @@ import {
 import { ItemLayout, FillingMode, BaseLayoutProps } from './types';
 import BaseContainer from './BaseContainer';
 
-class BaseLayout extends BaseContainer {
+abstract class BaseLayout extends BaseContainer {
   readonly _windowSize: number;
   readonly _maxToRenderPerBatch: number;
   private _initialNumToRender: number;
@@ -138,6 +138,7 @@ class BaseLayout extends BaseContainer {
     exclusive?: boolean
   ) {
     const containerOffset = this.getContainerOffset();
+
     if (exclusive) return { minOffset, maxOffset };
     if (containerOffset > maxOffset) {
       return {

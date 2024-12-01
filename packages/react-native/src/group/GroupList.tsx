@@ -21,6 +21,7 @@ const MemoedGroupList = React.memo<PropsWithChildren<GroupListProps<any>>>(
 
     for (let index = 0; index < keys.length; index++) {
       const key = keys[index];
+      // @ts-ignore
       if (prev[key] !== cur[key]) {
         return false;
       }
@@ -40,6 +41,7 @@ const GroupListWrapper: FC<PropsWithChildren<GroupListProps<any>>> = (
   ) {
     contextValuesRef.current.heartBeat({
       inspectingTime: contextValues.inspectingTime,
+      // @ts-ignore
       listKey: props.id,
     });
     contextValuesRef.current = contextValues;

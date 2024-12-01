@@ -1,6 +1,6 @@
 {
-  "include": ["**/packages/**/src", "**/packages/**/types", "index.d.ts", "packages/react/stories/RecycleItem.tsx"],
   "compilerOptions": {
+    "baseUrl": "./",
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
@@ -15,9 +15,11 @@
     "noImplicitUseStrict": false,
     "noStrictGenericChecks": false,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    // "paths": {
+    //   "@infinite-list/react-native": ["packages/react-native/src/index.ts"]
+    // }
   },
-  "extends": "./tsconfig.base.json",
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

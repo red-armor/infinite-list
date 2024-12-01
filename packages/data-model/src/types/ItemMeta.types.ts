@@ -62,7 +62,7 @@ export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
 
 export type ListIndexInfo<ItemT extends GenericItemT = GenericItemT> = {
   dimensions: ListDimensionsModel<ItemT>;
-  index: number;
+  index?: number;
 };
 
 export type IndexInfo<ItemT extends GenericItemT = GenericItemT> =

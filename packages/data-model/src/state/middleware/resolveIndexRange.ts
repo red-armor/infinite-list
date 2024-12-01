@@ -8,11 +8,17 @@ export default <State extends ReducerResult = ReducerResult>(
 ) => {
   const { dimension, scrollMetrics } = payload;
   const { contentLength, offset, visibleLength = 0 } = scrollMetrics;
+
   const bufferSize = dimension.getBufferSize();
   const { minOffset, maxOffset } = dimension.resolveOffsetRange(
     Math.max(offset - visibleLength * bufferSize, 0),
     // should less than content length
-    Math.min(offset + visibleLength * (bufferSize + 1), contentLength)
+
+    // for buffered max and min, only if contentLength is greater than 0,
+    // it should be in consider
+    contentLength
+      ? Math.min(offset + visibleLength * (bufferSize + 1), contentLength)
+      : offset + visibleLength * (bufferSize + 1)
   );
 
   const { minOffset: visibleMinOffset, maxOffset: visibleMaxOffset } =
@@ -25,7 +31,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const bufferedIndexRange = dimension.computeIndexRange(
     minOffset,
-    Math.min(maxOffset, contentLength)
+    contentLength ? Math.min(maxOffset, contentLength) : maxOffset
   );
 
   info('scrollMetrics info ', {

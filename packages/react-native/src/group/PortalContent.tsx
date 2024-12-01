@@ -15,6 +15,7 @@ import { View, ViewStyle } from 'react-native';
 
 import GroupListItemImpl from './GroupListItemImpl';
 
+// @ts-ignore
 const RecycleContentItem = (props) => {
   const {
     listKey,
@@ -68,6 +69,7 @@ const RecycleContent = <T extends {}>(props: GroupRecycleContentProps<T>) => {
   const { state, ...rest } = props;
   return (
     <>
+      {/* @ts-ignore */}
       {state.map((stateResult) => {
         const { key, itemMeta, ...stateResultRest } = stateResult;
         return (
@@ -100,9 +102,11 @@ const SpaceContent = <T extends {}>(props: GroupSpaceContentProps<T>) => {
           <View key={key} style={{ height: length }} />
         ) : (
           <GroupListItemImpl
+            // @ts-ignore
             item={item}
             key={key}
             listKey={listKey}
+            // @ts-ignore
             itemMeta={itemMeta}
             // @ts-ignore
             renderItem={itemMeta.getOwner().renderItem}
@@ -150,6 +154,7 @@ const PortalContent = <T extends {}>(
       <MemoedRecycleContent
         listKey={id}
         ownerId={id}
+        // @ts-ignore
         state={store.recycleState}
         dimensions={listGroupDimensions}
         scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}

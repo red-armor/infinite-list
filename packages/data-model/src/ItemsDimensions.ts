@@ -95,7 +95,10 @@ class ItemsDimensions extends BaseDimensions {
     return values;
   }
 
-  dispatchMetrics(scrollMetrics: ScrollMetrics) {
+  dispatchMetrics(
+    scrollMetrics: ScrollMetrics | undefined = this._scrollMetrics
+  ) {
+    if (!scrollMetrics) return;
     const { offset: scrollOffset, visibleLength } = scrollMetrics;
     const minOffset = scrollOffset;
     const maxOffset = scrollOffset + (visibleLength || 0);

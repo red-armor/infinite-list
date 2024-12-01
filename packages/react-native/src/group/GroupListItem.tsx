@@ -2,6 +2,7 @@ import React, { useContext, useRef } from 'react';
 import context from './context';
 import useMountItem from './hooks/useMountItem';
 
+// @ts-ignore
 const GroupListItem = (props) => {
   useMountItem(props);
   return null;
@@ -21,6 +22,7 @@ const MemoedGroupListItem = React.memo(GroupListItem, (prev, cur) => {
   return true;
 });
 
+// @ts-ignore
 const GroupListItemWrapper = (props) => {
   const contextValues = useContext(context);
   const contextValuesRef = useRef(contextValues);

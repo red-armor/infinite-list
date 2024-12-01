@@ -19,6 +19,7 @@ import {
   ListDimensionsModelProps,
   ListDimensionsModelContainer,
   GenericItemT,
+  OnListDimensionsModelDataChanged,
 } from './types';
 import * as log from './utils/logger';
 
@@ -27,6 +28,7 @@ class ListDimensionsModel<
 > extends BaseDimensions<ItemT> {
   private _data: Array<ItemT> = [];
   private _initialData: Array<ItemT> = [];
+  private _onDataChanged?: OnListDimensionsModelDataChanged<ItemT>;
 
   private _keyExtractor: KeyExtractor<ItemT>;
   private _getItemLayout?: GetItemLayout<ItemT>;
@@ -60,6 +62,7 @@ class ListDimensionsModel<
       getItemSeparatorLength,
       useItemApproximateLength,
       manuallyApplyInitialData = false,
+      onListDimensionsModelDataChanged,
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
     } = props;
 
@@ -69,6 +72,7 @@ class ListDimensionsModel<
     this._itemApproximateLength = itemApproximateLength || 0;
     this._getItemLayout = getItemLayout;
     this._isFixedLength = isFixedLength;
+    this._onDataChanged = onListDimensionsModelDataChanged;
 
     // `_approximateMode` is enabled on default
     this._approximateMode = recycleEnabled
@@ -204,7 +208,7 @@ class ListDimensionsModel<
     }
   }
 
-  getItemKey(item: ItemT, index: number) {
+  getItemKey(item: ItemT, index?: number) {
     const cachedKey = this._itemToKeyMap.get(item);
     if (cachedKey) return cachedKey;
     if (!item) return null;
@@ -301,11 +305,11 @@ class ListDimensionsModel<
   }
 
   hasKey(key: string) {
-    return this._indexKeys.indexOf(key) !== -1;
+    return this.keyIndexManager.hasKey(key);
   }
 
   performKeyOperationGuard(key: string) {
-    if (this._indexKeys.indexOf(key) !== -1) return true;
+    if (this.keyIndexManager.hasKey(key)) return true;
     return false;
   }
 
@@ -317,7 +321,9 @@ class ListDimensionsModel<
 
     if (changedType === KeysChangedType.Equal) return KeysChangedType.Equal;
 
-    // 如果没有值，这个时候要触发一次触底
+    // If data is empty, then trigger onEndReached one time..
+    // TODO: maybe there is a bug... if the list the beneath viewport, the trigger
+    // may not required...
     if (!data.length && this.initialNumToRender) {
       this._container.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
@@ -325,6 +331,30 @@ class ListDimensionsModel<
     this._container.onDataSourceChanged();
 
     return changedType;
+  }
+
+  /**
+   *
+   * @param dataChangedType
+   * @param data
+   */
+  handleDataChange(dataChangedType: KeysChangedType, data: ItemT[]) {
+    switch (dataChangedType) {
+      case KeysChangedType.Equal:
+        break;
+      case KeysChangedType.Append:
+        this.updateTheLastItemIntervalValue();
+        this.append(data);
+        break;
+      case KeysChangedType.Initial:
+        this.append(data);
+        break;
+      case KeysChangedType.Add:
+      case KeysChangedType.Remove:
+      case KeysChangedType.Reorder:
+        this.shuffle(data);
+        break;
+    }
   }
 
   _setData(_data: Array<ItemT>) {
@@ -358,28 +388,25 @@ class ListDimensionsModel<
       (index: number) => this._data[index] === data[index]
     );
 
-    switch (dataChangedType) {
-      case KeysChangedType.Equal:
-        break;
-      case KeysChangedType.Append:
-        this.updateTheLastItemIntervalValue();
-        this.append(data);
-        break;
-      case KeysChangedType.Initial:
-        this.append(data);
-        break;
-      case KeysChangedType.Add:
-      case KeysChangedType.Remove:
-      case KeysChangedType.Reorder:
-        this.shuffle(data);
-        break;
-    }
+    this.handleDataChange(dataChangedType, data);
+
+    // _onDataChanged should be placed after handleDataChange.
+    // Because the itemMeta may required...
+
+    const oldData = this._data.slice();
 
     this._data = data;
-
-    this._keyToIndexMap = keyToIndexMap;
-    this._indexKeys = keyToIndexArray;
+    this.keyIndexManager.setKeyToIndexMap(keyToIndexMap);
+    this.keyIndexManager.setIndexKeys(keyToIndexArray);
     this._itemToKeyMap = itemToKeyMap;
+
+    this._onDataChanged?.({
+      dataModel: this,
+      data,
+      oldData,
+      dataChangedType,
+    });
+
     return dataChangedType;
   }
 
@@ -408,9 +435,6 @@ class ListDimensionsModel<
   }
 
   getIndexInfo(key: string): IndexInfo<ItemT> | null {
-    const info = {} as IndexInfo;
-    info.index = this._indexKeys.indexOf(key);
-
     return this._container.getFinalKeyIndexInfo(key, this.id);
   }
 
@@ -470,7 +494,7 @@ class ListDimensionsModel<
   }
 
   append(data: Array<ItemT>) {
-    const baseIndex = this._indexKeys.length;
+    const baseIndex = this.keyIndexManager.getIndexKeysLength();
     this.pump(data, baseIndex, this._keyToMetaMap, this.intervalTree);
 
     // after set interval tree. should then trigger a update..
@@ -480,10 +504,8 @@ class ListDimensionsModel<
   shuffle(data: Array<ItemT>) {
     const oldLength = this.intervalTree.getHeap()[1];
     this.intervalTree = this.createIntervalTree();
-    // const itemIntervalTree = this.createIntervalTree();
     const keyToMetaMap = new Map();
     this.pump(data, 0, keyToMetaMap, this.intervalTree);
-    // this.replaceIntervalTree(itemIntervalTree);
     this._keyToMetaMap = keyToMetaMap;
     const nextLength = this.intervalTree.getHeap()[1];
 
@@ -496,7 +518,8 @@ class ListDimensionsModel<
    *
    * @param key string, itemKey
    * @param info
-   * @param updateIntervalTree target IntervalTree
+   * @param updateIntervalTree target IntervalTree, now this property is used in
+   * MasonryList
    * @returns boolean value, true for updating intervalTree successfully.
    */
   _setKeyItemLayout(

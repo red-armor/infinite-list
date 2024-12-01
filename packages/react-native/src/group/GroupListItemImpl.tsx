@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import ListItem from '../ListItem';
+import ListItem from './ListItem';
 import { GroupListItemImplProps, DefaultItemT } from '../types';
 
 const GroupListItemImpl = <ItemT extends DefaultItemT>(
@@ -28,7 +28,8 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
 
   const teleportProps =
     typeof teleportItemProps === 'function'
-      ? teleportItemProps({ item, index: itemMeta.getIndexInfo?.()?.index })
+      ? // @ts-ignore
+        teleportItemProps({ item, index: itemMeta.getIndexInfo?.()?.index })
       : {};
 
   return (
@@ -49,6 +50,7 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
           item={item}
           {...teleportProps}
           {...rest}
+          // @ts-ignore
           itemMeta={itemMeta}
         />
       ) : null}

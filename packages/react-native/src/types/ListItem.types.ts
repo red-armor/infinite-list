@@ -1,7 +1,8 @@
 import {
   ItemMeta,
-  ListGroupDimensionsExperimental,
+  ListGroupDimensions,
   ListDimensions,
+  GenericItemT,
 } from '@infinite-list/data-model';
 import React, { ForwardedRef } from 'react';
 import { ViewStyle, LayoutChangeEvent } from 'react-native';
@@ -9,9 +10,10 @@ import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
 type OnLayout = (event: LayoutChangeEvent) => void;
 
-export type DefaultItemT = {
-  [key: string]: any;
-};
+export type DefaultItemT = GenericItemT;
+// export type DefaultItemT = {
+//   [key: string]: any;
+// };
 
 type OnMeasureLayout =
   | ((x: number, y: number, width: number, height: number) => void)
@@ -35,7 +37,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   itemMeta: ItemMeta;
 
-  dimensions: ListGroupDimensionsExperimental | ListDimensions;
+  dimensions: ListGroupDimensions | ListDimensions;
 
   withWrapper?: boolean;
   onLayout?: OnLayout;

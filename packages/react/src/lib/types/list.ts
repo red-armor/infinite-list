@@ -8,9 +8,9 @@ import {
 
 import { ItemMeta } from '@infinite-list/data-model';
 
-export type RenderItemInfo<ItemT> = {
+export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   item: ItemT;
-  itemMeta: ItemMeta;
+  itemMeta: ItemMeta<ItemT>;
 };
 
 export type DefaultItemT = {
@@ -30,14 +30,14 @@ export type ListProps<ItemT extends GenericItemT = GenericItemT> = Omit<
 
 export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> = {
   data: RecycleStateToken<ItemT>;
-  key: string;
+  // key: string;
   renderItem: RenderItem<ItemT>;
   dimensions: ListDimensions<ItemT>;
 };
 
 export type SpaceItemProps<ItemT extends GenericItemT = GenericItemT> = {
   data: SpaceStateToken<ItemT>;
-  key: string;
+  // key: string;
   renderItem: RenderItem<ItemT>;
   dimensions: ListDimensions<ItemT>;
 };

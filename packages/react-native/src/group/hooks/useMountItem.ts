@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import context from '../context';
-import { DimensionExperimental as Dimension } from '@infinite-list/data-model';
+import { Dimension } from '@infinite-list/data-model';
 
+// @ts-ignore
 export default (props) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);

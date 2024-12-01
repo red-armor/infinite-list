@@ -1,6 +1,11 @@
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import memoizeOne from 'memoize-one';
-import { buildStateTokenIndexKey, DEFAULT_RECYCLER_TYPE } from '../common';
+import {
+  buildStateTokenIndexKey,
+  DEFAULT_RECYCLER_TYPE,
+  RECYCLER_BUFFER_SIZE,
+  RECYCLER_RESERVED_BUFFER_PER_BATCH,
+} from '../common';
 import {
   ListState,
   RecycleStateResult,
@@ -9,11 +14,13 @@ import {
   StateListener,
   SpaceStateResult,
   RecycleStateImplProps,
+  ListGroupIndexInfo,
 } from '../types';
 import ItemMeta from '../ItemMeta';
 import { resolveToken } from './utils';
 import BaseState from './BaseState';
 import * as log from '../utils/logger';
+import defaultValue from '@x-oasis/default-value';
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
@@ -43,8 +50,8 @@ class RecycleStateImpl<
     });
     const {
       recyclerTypes = [DEFAULT_RECYCLER_TYPE],
-      recyclerBufferSize,
-      recyclerReservedBufferPerBatch,
+      recyclerBufferSize = RECYCLER_BUFFER_SIZE,
+      recyclerReservedBufferPerBatch = RECYCLER_RESERVED_BUFFER_PER_BATCH,
 
       onRecyclerProcess,
     } = props;
@@ -56,21 +63,34 @@ class RecycleStateImpl<
       // the following is appended with setting default recyclerType
       recyclerTypes,
       recyclerBufferSize,
+      recyclerReservedBufferPerBatch,
       /**
        * set recycle start item
        */
       thresholdIndexValue: this.listContainer.initialNumToRender,
-      recyclerReservedBufferPerBatch,
-      metaExtractor: (index) => this.listContainer.getFinalIndexItemMeta(index),
-      indexExtractor: (meta) => {
+      metaExtractor: (index) => {
+        // console.log('met ---- ', index, this.listContainer.getFinalIndexItemMeta(index))
+        return this.listContainer.getFinalIndexItemMeta(index);
+      },
+      indexExtractor: (meta: ItemMeta<ItemT>) => {
         const indexInfo = meta.getIndexInfo();
-        return indexInfo?.indexInGroup || indexInfo.index;
+        const index =
+          (indexInfo as ListGroupIndexInfo<ItemT>)?.indexInGroup ||
+          indexInfo?.index;
+        if (typeof index !== 'number') {
+          console.error(
+            '[RecycleStateImpl error]: index should has a valid number ' +
+              'or will cause recycler not work correctly'
+          );
+        }
+        return defaultValue(index, -1);
       },
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) =>
         this.listContainer.getFinalIndexItemMeta(index)?.recyclerType ||
         DEFAULT_RECYCLER_TYPE,
     });
+
     // default recyclerTypes should be set immediately
     this.initializeDefaultRecycleBuffer();
 
@@ -100,9 +120,7 @@ class RecycleStateImpl<
   }
 
   applyStateResult(stateResult: RecycleStateResult<ItemT>) {
-    const shouldStateUpdate = true;
-
-    if (shouldStateUpdate && typeof this.stateListener === 'function') {
+    if (typeof this.stateListener === 'function') {
       const { recycleState: _recycleState, spaceState } = stateResult;
 
       const recycleState = _recycleState
@@ -168,6 +186,19 @@ class RecycleStateImpl<
       ? this.resolveRecycleState(state)
       : this.memoizedResolveRecycleState(state);
     this.applyStateResult(stateResult);
+  }
+
+  dispatchState(
+    state: ListState,
+    force = false
+  ): [RecycleStateResult<ItemT>, RecycleStateResult<ItemT>] {
+    const oldStateResult = { ...this._stateResult };
+    const stateResult = force
+      ? this.resolveRecycleState(state)
+      : this.memoizedResolveRecycleState(state);
+    this._stateResult = stateResult;
+
+    return [stateResult, oldStateResult];
   }
 
   getStateResult() {
