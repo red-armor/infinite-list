@@ -11,6 +11,6 @@
         "options": {
           "config": "packages/react/vite.config.ts"
         }
-    }    
+    }
   }
 }
