@@ -55,6 +55,10 @@ jobs:
       - name: Modify Workspace File
         run: sed "s/packages\//dist\/packages\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
 
+        # https://github.com/jmcdo29/ogma/blob/main/.github/workflows/release.yml#L45
+      - name: Update workspace deps
+        run: pnpm i --frozen-lockfile=false        
+
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
