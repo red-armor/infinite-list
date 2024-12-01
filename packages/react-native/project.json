@@ -9,6 +9,7 @@
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "cwd": "packages/react-native",
         "outputPath": "dist/packages/react-native",
         "tsConfig": "packages/react-native/tsconfig.lib.json",
         "project": "packages/react-native/package.json",
