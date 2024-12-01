@@ -2,8 +2,8 @@ name: run-test
 
 on:
   - push
-    branches:
-      - setup-*    
+  #   branches:
+  #     - setup-*    
   - pull_request
   # workflow_dispatch:
   # push:
