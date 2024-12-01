@@ -20,6 +20,7 @@ import ItemMeta from '../ItemMeta';
 import { resolveToken } from './utils';
 import BaseState from './BaseState';
 import * as log from '../utils/logger';
+import defaultValue from '@x-oasis/default-value';
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
@@ -82,7 +83,7 @@ class RecycleStateImpl<
               'or will cause recycler not work correctly'
           );
         }
-        return index || -1;
+        return defaultValue(index, -1);
       },
       getMetaType: (meta) => meta.recyclerType,
       getType: (index) =>
