@@ -9,7 +9,6 @@
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "cwd": "packages/react-native",
         "command": [
           "echo $PWD",
           "echo '3333'"
