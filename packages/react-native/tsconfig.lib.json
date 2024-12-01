@@ -20,7 +20,8 @@
     "@infinite-list/data-model/**/*.jsx",
     "packages/data-model/src/index.ts,",
     "infinite-list/packages/data-model/src/index.ts",
-    "data-model/src/index.ts"
+    "data-model/src/index.ts",
+    "/home/runner/work/infinite-list/infinite-list/packages/data-model/src/index.ts",
   ],
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
 }
