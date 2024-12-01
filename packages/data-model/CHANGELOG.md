@@ -1,5 +1,12 @@
 # @infinite-list/data-model
 
+## 2.2.1
+
+### Patch Changes
+
+- cc95ac1: feat: update release config
+- d4d3798: feat: workspace yml
+
 ## 2.2.0
 
 ### Minor Changes
