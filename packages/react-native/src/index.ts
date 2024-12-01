@@ -7,3 +7,4 @@ export { default as GroupListItem } from './group/GroupListItem';
 export { default as ListGroupContext } from './group/context';
 
 export { ScrollView };
+export * from './scrollView';
