@@ -4,19 +4,19 @@
     // "baseUrl": "./",
     "jsx": "react-jsx",
     "moduleResolution": "node",
-    "allowJs": true,
+    // "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     // "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "paths": {
-      "@infinite-list/data-model": ["../data-model/src"],
-      // "@/*": [
-      //   "./*"
-      // ],
-    }
+    // "paths": {
+    //   "@infinite-list/data-model": ["../data-model/src"],
+    //   // "@/*": [
+    //   //   "./*"
+    //   // ],
+    // }
   },
   "files": [],
   "include": [],

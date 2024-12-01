@@ -10,6 +10,10 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "cwd": "packages/react-native",
+        "command": [
+          "echo $PWD",
+          "echo '3333'"
+        ],
         "outputPath": "dist/packages/react-native",
         "tsConfig": "packages/react-native/tsconfig.lib.json",
         "project": "packages/react-native/package.json",
