@@ -14,7 +14,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
         position: 'absolute',
         top: offset,
         // left: 0,
-        with: columnDimension.width,
+        width: columnDimension.width,
         left: columnDimension.left,
         right: 0,
       };
