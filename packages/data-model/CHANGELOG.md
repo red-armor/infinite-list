@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.2.0
+
+### Minor Changes
+
+- e2f3c30: feat: update ci
+
 ## 2.1.1
 
 ### Patch Changes

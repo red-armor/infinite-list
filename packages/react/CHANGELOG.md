@@ -1,5 +1,16 @@
 # @infinite-list/react
 
+## 2.2.0
+
+### Minor Changes
+
+- e2f3c30: feat: update ci
+
+### Patch Changes
+
+- Updated dependencies [e2f3c30]
+  - @infinite-list/data-model@2.2.0
+
 ## 2.1.1
 
 ### Patch Changes

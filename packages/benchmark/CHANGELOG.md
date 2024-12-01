@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.0
+
+### Minor Changes
+
+- e2f3c30: feat: update ci
+
 ## 1.1.1
 
 ### Patch Changes
