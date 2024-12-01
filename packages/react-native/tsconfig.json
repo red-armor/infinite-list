@@ -11,12 +11,12 @@
     // "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    // "paths": {
-    //   "@infinite-list/data-model": ["../data-model/src"],
-    //   // "@/*": [
-    //   //   "./*"
-    //   // ],
-    // }
+    "paths": {
+      "@infinite-list/data-model": ["../data-model/src"],
+      // "@/*": [
+      //   "./*"
+      // ],
+    }
   },
   "files": [],
   "include": [],
