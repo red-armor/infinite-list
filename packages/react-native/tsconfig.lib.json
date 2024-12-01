@@ -17,7 +17,10 @@
     "@infinite-list/data-model/**/*.ts",
     "@infinite-list/data-model/**/*.tsx",
     "@infinite-list/data-model/**/*.js",
-    "@infinite-list/data-model/**/*.jsx"
+    "@infinite-list/data-model/**/*.jsx",
+    "packages/data-model/src/index.ts,",
+    "infinite-list/packages/data-model/src/index.ts",
+    "data-model/src/index.ts"
   ],
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
 }
