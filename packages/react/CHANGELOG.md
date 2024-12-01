@@ -1,5 +1,11 @@
 # @infinite-list/react
 
+## 2.2.2
+
+### Patch Changes
+
+- ff06d26: fix: masonry list column width
+
 ## 2.2.1
 
 ### Patch Changes
