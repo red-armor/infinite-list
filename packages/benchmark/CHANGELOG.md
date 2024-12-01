@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.1.1
+
+### Patch Changes
+
+- 1c7a800: publish after change ci config
+
 ## 1.1.0
 
 ### Minor Changes
