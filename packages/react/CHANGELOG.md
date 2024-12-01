@@ -1,5 +1,15 @@
 # @infinite-list/react
 
+## 2.2.1
+
+### Patch Changes
+
+- cc95ac1: feat: update release config
+- d4d3798: feat: workspace yml
+- Updated dependencies [cc95ac1]
+- Updated dependencies [d4d3798]
+  - @infinite-list/data-model@2.2.1
+
 ## 2.2.0
 
 ### Minor Changes
