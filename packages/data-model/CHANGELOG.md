@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.1.0
+
+### Minor Changes
+
+- e2d82ce: feat: support basic List and MasonryList
+
 ## 2.0.0
 
 ### Major Changes
