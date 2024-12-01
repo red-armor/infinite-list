@@ -10,7 +10,8 @@
     "src/**/*.spec.tsx",
     "src/test-setup.ts",
     "../data-model",
-    "**/data-model"
+    "**/data-model",
+    "@infinite-list/data-model"
   ],
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
 }
