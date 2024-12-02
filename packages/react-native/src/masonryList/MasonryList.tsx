@@ -42,6 +42,7 @@ const MasonryList = <ItemT extends GenericItemT>(
       const current = {
         width: getColumnWidth?.(index) || nextWidth / column,
         left: 0,
+        right: nextWidth - (getColumnWidth?.(index) || nextWidth / column),
       };
       if (!index) {
         acc.push(current);
@@ -50,6 +51,7 @@ const MasonryList = <ItemT extends GenericItemT>(
       const last = acc[acc.length - 1];
       if (last) {
         current.left = last.left + last.width;
+        current.right = nextWidth - current.left - last.width;
       }
       acc.push(current);
       return acc;
@@ -111,10 +113,6 @@ const MasonryList = <ItemT extends GenericItemT>(
   const tsRef = useRef(Date.now());
 
   useEffect(() => {
-    console.log(
-      'contextValues.getScrollHelper() ',
-      contextValues.getScrollHelper().getScrollMetrics()
-    );
     const scrollMetrics = contextValues.getScrollHelper().getScrollMetrics();
     dimensionsModel.updateScrollMetrics({
       offset: scrollMetrics.offset || 0,
@@ -148,8 +146,6 @@ const MasonryList = <ItemT extends GenericItemT>(
         }
       );
   }, []);
-
-  console.log('dimensions ', columnDimensions);
 
   return (
     <View

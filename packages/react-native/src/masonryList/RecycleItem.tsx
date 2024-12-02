@@ -22,7 +22,7 @@ const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
         top: offset,
         with: columnDimension.width,
         left: columnDimension.left,
-        // right: 0,
+        right: columnDimension.right,
       };
     return {};
   }, [offset, columnDimension]);

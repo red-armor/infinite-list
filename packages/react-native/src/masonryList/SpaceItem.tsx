@@ -18,12 +18,22 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
       return {
         height: length,
         width: columnDimension.width,
+        transform: [
+          {
+            translateX: columnDimension.left,
+          },
+        ],
       };
+
     return {
       width: columnDimension.width,
-      left: columnDimension.left,
+      transform: [
+        {
+          translateX: columnDimension.left,
+        },
+      ],
     };
-  }, [length]);
+  }, [length, columnDimension]);
 
   useEffect(() => {
     const onMeasureSuccess = (
