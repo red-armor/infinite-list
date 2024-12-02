@@ -9,7 +9,7 @@ import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
 import ScrollTracker from '../events/ScrollTracker';
 
-const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
+export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const { renderItem, id, data, recycleEnabled = true } = props;
   const listModel = useMemo(() => new ListDimensions<ItemT>(props), []);
   const [state, setState] = useState(listModel.getStateResult());
@@ -46,7 +46,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   );
 
   useEffect(() => {
-    scrollHandlerRef.current = new ScrollTracker({
+    const scrollTracker = new ScrollTracker({
       domNode: listRef.current!,
       onScroll: () => {
         listModel.updateScrollMetrics(
@@ -54,12 +54,13 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
         );
       },
     });
+    scrollHandlerRef.current = scrollTracker;
 
-    scrollHandlerRef.current.addEventListeners();
+    scrollTracker.addEventListeners();
 
-    listModel.updateScrollMetrics(scrollHandlerRef.current.getScrollMetrics());
+    listModel.updateScrollMetrics(scrollTracker.getScrollMetrics());
 
-    return () => scrollHandlerRef.current?.dispose();
+    return () => scrollTracker.dispose();
   }, []);
 
   if (recycleEnabled) {
@@ -86,6 +87,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
       </>
     );
   }
+  // TODO: implement static list
 };
 
 export default List;

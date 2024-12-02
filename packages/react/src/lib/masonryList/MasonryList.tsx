@@ -19,7 +19,7 @@ import ScrollTracker from '../events/ScrollTracker';
 
 let count = 0;
 
-const MasonryList = <ItemT extends GenericItemT>(
+export const MasonryList = <ItemT extends GenericItemT>(
   props: MasonryListProps<ItemT>
 ) => {
   const [state, setState] = useState<MasonryStateResults<ItemT>>();

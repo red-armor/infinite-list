@@ -12,8 +12,9 @@ const RecycleItem = <ItemT extends GenericItemT>(
     if (typeof offset === 'number')
       return {
         position: 'absolute',
-        top: offset,
+        transform: `translateY(${offset}px)`,
         left: 0,
+        top: 0,
         right: 0,
       };
     return {};
