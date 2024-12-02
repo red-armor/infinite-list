@@ -10,6 +10,7 @@ import ListDimensionsModel from '../ListDimensionsModel';
 import KeyIndexManager from '../utils/KeyIndexManager';
 import MasonryDimensionStrategy from './MasonryDimensionStrategy';
 import { LAYOUT_EQUAL_CORRECTION_VALUE } from '../common';
+import defaultValue from '@x-oasis/default-value';
 
 /**
  * The key point is how to decorate `columnIntervalTree` and `columnKeyIndexManager`
@@ -152,6 +153,24 @@ class MasonryDimensionsModel<
     return 0;
   }
 
+  // should be overrided, or will cause error
+  override getKeyItemOffset(key: string, exclusive?: boolean) {
+    const columnIndex = this.getKeyColumnIndex(key);
+    const index = this.getKeyIndexInColumn(key);
+    const listOffset = exclusive ? 0 : this.getContainerOffset();
+    const intervalTree = this.getColumnIntervalTree(columnIndex);
+
+    if (typeof index === 'number') {
+      return (
+        listOffset +
+        (index >= intervalTree.getMaxUsefulLength()
+          ? intervalTree.getHeap()[1]
+          : intervalTree.sumUntil(index))
+      );
+    }
+    return 0;
+  }
+
   /**
    *
    */
@@ -166,19 +185,12 @@ class MasonryDimensionsModel<
   }
 
   /**
-   * return index in column
+   * return index in column; comparing with `getKeyIndex` which will return index in total
    */
   getKeyIndexInColumn(key: string) {
-    for (let columnIndex = 0; columnIndex < this.column; columnIndex++) {
-      const indexManager = this.getColumnKeyIndexManager(columnIndex);
-
-      const indexInColumn = indexManager.getKeyIndex(key);
-
-      if (typeof indexInColumn === 'number') {
-        return indexInColumn;
-      }
-    }
-    return 0;
+    const columnIndex = this.getKeyColumnIndex(key);
+    const keyIndexManager = this.getColumnKeyIndexManager(columnIndex);
+    return defaultValue(keyIndexManager.getKeyIndex(key), -1);
   }
 
   getColumnTotalLength(columnIndex: number) {

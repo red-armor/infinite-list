@@ -57,6 +57,14 @@ abstract class BaseDimensions<
     this._intervalTree = intervalTree;
   }
 
+  /**
+   *
+   * @param key
+   * @returns
+   *
+   * it returns different meaning index on different List condition
+   * 1: MasonryList: index in total data, maybe you should use `getKeyIndexInColumn` as a choice.
+   */
   getKeyIndex(key: string) {
     // const index = this._keyToIndexMap.get(key);
     const index = this.keyIndexManager.getKeyIndex(key);
@@ -71,6 +79,7 @@ abstract class BaseDimensions<
 
   getIndexKeyOffset(index: number, exclusive?: boolean) {
     const listOffset = exclusive ? 0 : this.getContainerOffset();
+
     log.info(
       'list ======',
       index,

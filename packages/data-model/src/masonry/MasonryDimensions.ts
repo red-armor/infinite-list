@@ -150,10 +150,11 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
    */
   getFinalKeyIndexInfo(key: string): MasonryIndexInfo<ItemT> {
     const indexInTotal = this._dataModel.getKeyIndex(key);
+    const columnIndex = this._dataModel.getKeyColumnIndex(key);
     const index = this._dataModel.getKeyIndexInColumn(key);
     return {
       dimensions: this as any,
-      columnIndex: 0,
+      columnIndex,
       indexInTotal,
       index,
     };

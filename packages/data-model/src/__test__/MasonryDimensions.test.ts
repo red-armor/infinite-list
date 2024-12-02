@@ -220,7 +220,46 @@ describe('basic', () => {
 });
 
 describe('operations', () => {
+  it('getKeyIndexInfo', () => {
+    const initialData = buildData(4);
+    const masonryDimensions = new MasonryDimensions({
+      data: initialData,
+      id: 'masonry',
+      keyExtractor: (item) => `${item.key}`,
+    });
+
+    expect(masonryDimensions.getFinalKeyIndexInfo('2')).toEqual({
+      dimensions: masonryDimensions,
+      columnIndex: 0,
+      indexInTotal: 2,
+      index: 1,
+    });
+    expect(masonryDimensions.getFinalKeyIndexInfo('1')).toEqual({
+      dimensions: masonryDimensions,
+      columnIndex: 1,
+      indexInTotal: 1,
+      index: 0,
+    });
+  });
+
   it('should update itemLayout and columnIntervalTree', () => {
-    expect(1).toBe(1);
+    const initialData = buildData(4);
+    const masonryDimensions = new MasonryDimensions({
+      data: initialData,
+      id: 'masonry',
+      keyExtractor: (item) => `${item.key}`,
+    });
+    const dataModel = masonryDimensions.getDataModel();
+    expect(dataModel.getKeyItemOffset('0')).toBe(0);
+    expect(dataModel.getKeyItemOffset('1')).toBe(0);
+    expect(dataModel.getKeyItemOffset('2')).toBe(80);
+    expect(dataModel.getKeyItemOffset('3')).toBe(80);
+
+    expect(dataModel.getKeyIndexInColumn('0')).toBe(0);
+
+    masonryDimensions.setFinalKeyItemLayout('0', 200);
+
+    expect(dataModel.getKeyItemOffset('2')).toBe(200);
+    expect(dataModel.getKeyItemOffset('3')).toBe(80);
   });
 });
