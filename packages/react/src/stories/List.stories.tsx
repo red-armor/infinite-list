@@ -1,5 +1,8 @@
 import type { Meta } from '@storybook/react';
-import { defaultKeyExtractor } from '@infinite-list/data-model';
+import {
+  defaultKeyExtractor,
+  type KeyExtractor,
+} from '@infinite-list/data-model';
 import { List } from '../';
 
 const buildData = (count: number) =>
@@ -16,7 +19,7 @@ const meta: Meta<typeof List> = {
           height: '400px',
           width: '600px',
           backgroundColor: '#efefef',
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <List
@@ -42,7 +45,7 @@ const meta: Meta<typeof List> = {
               </div>
             );
           }}
-          keyExtractor={defaultKeyExtractor}
+          keyExtractor={defaultKeyExtractor as KeyExtractor<{ key: number }>}
         />
       </div>
     );

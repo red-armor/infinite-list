@@ -14,7 +14,8 @@
     "prepare": "husky install",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "publish": "pnpm publish -r --access public",
-    "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules"
+    "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
+    "dev:web": "nx storybook react"
   },
   "private": true,
   "lint-staged": {
