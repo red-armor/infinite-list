@@ -43,7 +43,6 @@ const RecycleItem = <ItemT extends GenericItemT>(
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
-        // @ts-ignore
         containerRef.current,
         onMeasureSuccess,
         onMeasureFailed

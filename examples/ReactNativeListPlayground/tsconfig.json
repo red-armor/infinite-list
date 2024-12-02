@@ -3,10 +3,10 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
+      "@/*": [
+        "./*"
+      ],
       "@infinite-list/react-native": ["../../packages/react-native/src"],
-      // "@/*": [
-      //   "./*"
-      // ],
     }
   },
   "include": [

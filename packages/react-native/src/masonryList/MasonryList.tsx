@@ -110,34 +110,46 @@ const MasonryList = <ItemT extends GenericItemT>(
   const offsetRef = useRef(0);
   const tsRef = useRef(Date.now());
 
-  useEffect(
-    () =>
-      contextValues
-        .getScrollHelper()
-        .addListener(
-          'onScroll',
-          (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-            const scrollMetrics = event.nativeEvent;
-            const timestamp = Date.now();
-            const offset = scrollMetrics.contentOffset.y;
+  useEffect(() => {
+    console.log(
+      'contextValues.getScrollHelper() ',
+      contextValues.getScrollHelper().getScrollMetrics()
+    );
+    const scrollMetrics = contextValues.getScrollHelper().getScrollMetrics();
+    dimensionsModel.updateScrollMetrics({
+      offset: scrollMetrics.offset || 0,
+      visibleLength: scrollMetrics?.visibleLength || 750,
+      contentLength: scrollMetrics.contentLength,
+      velocity: 0,
+    });
 
-            const dOffset = offset - offsetRef.current;
-            const dt = timestamp - tsRef.current;
-            const velocity = dOffset / dt;
+    return contextValues
+      .getScrollHelper()
+      .addListener(
+        'onScroll',
+        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          const scrollMetrics = event.nativeEvent;
+          const timestamp = Date.now();
+          const offset = scrollMetrics.contentOffset.y;
 
-            offsetRef.current = offset;
-            tsRef.current = timestamp;
+          const dOffset = offset - offsetRef.current;
+          const dt = timestamp - tsRef.current;
+          const velocity = dOffset / dt;
 
-            dimensionsModel.updateScrollMetrics({
-              offset,
-              visibleLength: scrollMetrics.layoutMeasurement.height,
-              contentLength: scrollMetrics.contentSize.height,
-              velocity,
-            });
-          }
-        ),
-    []
-  );
+          offsetRef.current = offset;
+          tsRef.current = timestamp;
+
+          dimensionsModel.updateScrollMetrics({
+            offset,
+            visibleLength: scrollMetrics.layoutMeasurement.height,
+            contentLength: scrollMetrics.contentSize.height,
+            velocity,
+          });
+        }
+      );
+  }, []);
+
+  console.log('dimensions ', columnDimensions);
 
   return (
     <View

@@ -7,7 +7,11 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, length, isSpace } = data;
   const style = useMemo(() => {
-    if (isSpace) return { height: length };
+    if (isSpace)
+      return {
+        width: columnDimension.width,
+        height: length,
+      };
     return {
       width: columnDimension.width,
       left: columnDimension.left,
@@ -28,7 +32,7 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   }
 
   return (
-    <div ref={itemRef} key={key}>
+    <div ref={itemRef} key={key} style={style}>
       <RenderItem item={item!} itemMeta={itemMeta!} />
     </div>
   );

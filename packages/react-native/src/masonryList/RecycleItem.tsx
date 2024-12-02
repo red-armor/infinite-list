@@ -6,7 +6,13 @@ import { View, ViewStyle } from 'react-native';
 const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
   props: RecycleItemProps<ItemT>
 ) => {
-  const { data, dimensions, renderItem: RenderItem, columnDimension } = props;
+  const {
+    data,
+    dimensions,
+    renderItem: RenderItem,
+    columnDimension,
+    containerRef,
+  } = props;
   const itemRef = useRef<View>(null);
   const { item, key, itemMeta, offset } = data;
   const style: ViewStyle = useMemo(() => {
@@ -14,10 +20,9 @@ const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
       return {
         position: 'absolute',
         top: offset,
-        // left: 0,
         with: columnDimension.width,
         left: columnDimension.left,
-        right: 0,
+        // right: 0,
       };
     return {};
   }, [offset, columnDimension]);
@@ -45,7 +50,6 @@ const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
-        // @ts-ignore
         containerRef.current,
         onMeasureSuccess,
         onMeasureFailed
