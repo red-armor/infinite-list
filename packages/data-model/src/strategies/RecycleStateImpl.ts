@@ -113,9 +113,10 @@ class RecycleStateImpl<
   // }
 
   addStateListener(listener: StateListener<ItemT>) {
-    if (typeof listener === 'function') this.stateListener = listener;
+    const isFunction = typeof listener === 'function';
+    if (isFunction) this.stateListener = listener;
     return () => {
-      if (typeof listener === 'function') this.stateListener = undefined;
+      if (isFunction) this.stateListener = undefined;
     };
   }
 

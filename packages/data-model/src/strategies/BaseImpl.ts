@@ -250,12 +250,7 @@ abstract class BaseImpl<
   }
 
   addStateListener(listener: StateListener<ItemT>) {
-    this._stateHub.addStateListener(listener);
-
-    // if (typeof listener === 'function') this.stateListener = listener;
-    // return () => {
-    //   if (typeof listener === 'function') this.stateListener = undefined;
-    // };
+    return this._stateHub.addStateListener(listener);
   }
 
   setStoreMetrics(scrollMetrics: ScrollMetrics) {

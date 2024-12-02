@@ -37,11 +37,13 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     []
   );
 
-  useEffect(() => {
-    listModel.addStateListener((newState) => {
-      setState(newState);
-    });
-  }, []);
+  useEffect(
+    () =>
+      listModel.addStateListener((newState) => {
+        setState(newState);
+      }),
+    []
+  );
 
   useEffect(() => {
     scrollHandlerRef.current = new ScrollTracker({
