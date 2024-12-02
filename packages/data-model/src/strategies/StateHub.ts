@@ -63,7 +63,7 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
   }
 
   addStateListener(listener: StateListener<ItemT>) {
-    this._handler.addStateListener(listener);
+    return this._handler.addStateListener(listener);
   }
 
   addBuffer(type: string) {
