@@ -15,14 +15,14 @@ export default () => {
 
   const renderItem = useCallback((props: { item }) => {
     const { item, itemMeta } = props;
-    const index = itemMeta.getIndexInfo().indexInColumn;
-
-    console.log('index ===', itemMeta.getIndexInfo(), index);
+    const index = itemMeta.getIndexInfo().index;
+    const totalIndex = itemMeta.getIndexInfo().indexInTotal;
 
     return (
       <View
         style={{
-          height: 80,
+          height: totalIndex % 3 ? 50 : 75,
+          flex: 1,
           width: '100%',
           backgroundColor: index % 2 ? '#fff' : '#eee',
         }}
@@ -47,6 +47,9 @@ export default () => {
         data={data}
         renderItem={renderItem}
         id="basic"
+        recyclerBufferSize={100}
+        recyclerReservedBufferPerBatch={50}
+        initialNumToRender={0}
         keyExtractor={keyExtractor}
         containerRef={scrollViewRef}
       />
