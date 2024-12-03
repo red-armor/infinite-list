@@ -245,8 +245,8 @@ class ListGroupDimensions<
         indexToOffsetMap[index] = this.itemOffsetBeforeLayoutReady;
       } else {
         indexToOffsetMap[index] = startOffset;
-        startOffset += itemMeta?.getFinalItemLength();
       }
+      startOffset += itemMeta?.getFinalItemLength();
     }
     return indexToOffsetMap;
   }
