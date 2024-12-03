@@ -49,4 +49,5 @@ export type SpaceItemProps<ItemT extends GenericItemT = GenericItemT> = {
 export type ColumnDimensionInfo = {
   width: number;
   left: number;
+  right: number;
 };

@@ -36,6 +36,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
       const current = {
         width: getColumnWidth?.(index) || nextWidth / column,
         left: 0,
+        right: nextWidth - (getColumnWidth?.(index) || nextWidth / column),
       };
       if (!index) {
         acc.push(current);
@@ -44,6 +45,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
       const last = acc[acc.length - 1];
       if (last) {
         current.left = last.left + last.width;
+        current.right = nextWidth - current.left - last.width;
       }
       acc.push(current);
       return acc;
