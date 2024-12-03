@@ -49,7 +49,6 @@ export default () => {
         id="basic"
         recyclerBufferSize={100}
         recyclerReservedBufferPerBatch={50}
-        initialNumToRender={0}
         keyExtractor={keyExtractor}
         containerRef={scrollViewRef}
       />
