@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
