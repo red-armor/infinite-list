@@ -1,6 +1,7 @@
 import React, { PropsWithChildren, useContext, useRef, FC } from 'react';
 
-import { DefaultItemT, GroupListProps } from '../types';
+import { DefaultItemT } from '../types';
+import { GroupListProps } from './types';
 import context from './context';
 import useMountList from './hooks/useMountList';
 

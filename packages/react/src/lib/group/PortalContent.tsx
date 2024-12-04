@@ -10,7 +10,7 @@ import {
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
-} from '../types';
+} from './types';
 import { View, ViewStyle } from 'react-native';
 
 import GroupListItemImpl from './GroupListItemImpl';

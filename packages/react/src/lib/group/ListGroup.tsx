@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import { View, Platform } from 'react-native';
 
-import { ListGroupProps } from '../types';
+import { ListGroupProps } from './types';
 import context from './context';
 import PortalContent from './PortalContent';
 
