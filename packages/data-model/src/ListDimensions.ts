@@ -93,6 +93,15 @@ class ListDimensions<
     return containerOffset + (typeof height === 'number' ? height : 0);
   }
 
+  /**
+   * TODO: important !!!!!!!
+   * @param startIndex
+   * @param endIndex
+   * @param exclusive
+   * @returns
+   *
+   * fix snap jump issue which may cause blank...
+   */
   getFinalIndexRangeOffsetMap(
     startIndex: number,
     endIndex: number,
@@ -108,12 +117,14 @@ class ListDimensions<
 
       indexToOffsetMap[index] = startOffset;
 
+      // high light ------
       if (itemMeta?.isApproximateLayout) {
         indexToOffsetMap[index] = this.itemOffsetBeforeLayoutReady;
       } else {
         indexToOffsetMap[index] = startOffset;
-        startOffset += itemMeta?.getFinalItemLength();
       }
+
+      startOffset += itemMeta?.getFinalItemLength();
     }
     return indexToOffsetMap;
   }

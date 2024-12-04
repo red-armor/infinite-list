@@ -203,8 +203,8 @@ abstract class BaseImpl<
    * However its consecutive item's offset should make by its itemMeta.isApproximateLayout
    *
    * if itemMeta.isApproximateLayout is true, then its offset should be
-   * `itemOffsetBeforeLayoutReady` and its length should not be included in
-   * consecutive item's offset sum value
+   * `itemOffsetBeforeLayoutReady`, However its length should be included in
+   * consecutive item's offset sum value !!!!
    *
    */
   abstract getFinalIndexRangeOffsetMap(

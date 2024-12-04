@@ -38,6 +38,17 @@ describe('basic', () => {
       [{ key: 1 }, { key: 3 }],
     ]);
   });
+  it('constructor - initialNumToRender should be 0', () => {
+    const initialData = buildData(4);
+    const masonryDimensions = new MasonryDimensions({
+      data: initialData,
+      id: 'masonry',
+      initialNumToRender: 10,
+      keyExtractor: (item) => `${item.key}`,
+    });
+    const dataModel = masonryDimensions.getDataModel();
+    expect(dataModel.initialNumToRender).toBe(0);
+  });
 
   it('constructor -- append data', () => {
     const initialData = buildData(4);
@@ -125,6 +136,10 @@ describe('basic', () => {
     expect(
       stateResult[0][0].recycleState.map((state) => state.targetKey)
     ).toEqual([
+      '0',
+      '2',
+      '4',
+      '6',
       '8',
       '10',
       '12',
@@ -141,22 +156,18 @@ describe('basic', () => {
       '34',
       '36',
       '38',
-      '40',
-      '42',
-      '44',
-      '46',
     ]);
     expect(stateResult[0][0].spaceState.map((state) => state.key)).toEqual([
-      '0',
-      '2',
-      '4',
-      '6',
-      'space_4_28',
+      'space_0_28',
     ]);
 
     expect(
       stateResult[1][0].recycleState.map((state) => state.targetKey)
     ).toEqual([
+      '1',
+      '3',
+      '5',
+      '7',
       '9',
       '11',
       '13',
@@ -173,17 +184,9 @@ describe('basic', () => {
       '35',
       '37',
       '39',
-      '41',
-      '43',
-      '45',
-      '47',
     ]);
     expect(stateResult[1][0].spaceState.map((state) => state.key)).toEqual([
-      '1',
-      '3',
-      '5',
-      '7',
-      'space_4_28',
+      'space_0_28',
     ]);
 
     masonryDimensions.updateScrollMetrics({
@@ -195,6 +198,10 @@ describe('basic', () => {
     expect(
       stateResult[0][1].recycleState.map((state) => state.targetKey)
     ).toEqual([
+      '0',
+      '2',
+      '4',
+      '6',
       '8',
       '10',
       '12',
@@ -211,10 +218,6 @@ describe('basic', () => {
       '34',
       '36',
       '38',
-      '40',
-      '42',
-      '44',
-      '46',
     ]);
   });
 });

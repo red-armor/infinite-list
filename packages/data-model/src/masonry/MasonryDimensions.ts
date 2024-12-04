@@ -77,6 +77,8 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
       onListDimensionsModelDataChanged:
         this.onListDimensionsModelDataChanged.bind(this),
       ...props,
+
+      initialNumToRender: 0,
     });
   }
 

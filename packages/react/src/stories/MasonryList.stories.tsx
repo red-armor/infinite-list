@@ -21,7 +21,6 @@ const meta: Meta<typeof MasonryList> = {
       >
         <MasonryList
           id="basic"
-          initialNumToRender={0}
           data={buildData(10000)}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}

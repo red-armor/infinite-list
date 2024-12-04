@@ -4,16 +4,36 @@ import { GenericItemT } from '@infinite-list/data-model';
 import { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
-  const { data, dimensions, renderItem: RenderItem, columnDimension } = props;
+  const {
+    data,
+    dimensions,
+    renderItem: RenderItem,
+    columnDimension,
+    containerRef,
+  } = props;
   const itemRef = useRef<View>(null);
   const { item, key, itemMeta, length, isSpace } = data;
   const style = useMemo(() => {
-    if (isSpace) return { height: length };
+    if (isSpace)
+      return {
+        height: length,
+        width: columnDimension.width,
+        transform: [
+          {
+            translateX: columnDimension.left,
+          },
+        ],
+      };
+
     return {
       width: columnDimension.width,
-      left: columnDimension.left,
+      transform: [
+        {
+          translateX: columnDimension.left,
+        },
+      ],
     };
-  }, [length]);
+  }, [length, columnDimension]);
 
   useEffect(() => {
     const onMeasureSuccess = (
@@ -38,7 +58,6 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
-        // @ts-ignore
         containerRef.current,
         onMeasureSuccess,
         onMeasureFailed
@@ -51,7 +70,7 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   }
 
   return (
-    <View ref={itemRef} key={key}>
+    <View ref={itemRef} key={key} style={style}>
       <RenderItem item={item!} itemMeta={itemMeta!} />
     </View>
   );
