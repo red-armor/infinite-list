@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.2
+
+### Patch Changes
+
+- 5e72b9f: fix `getFinalIndexRangeOffsetMap` and upgrade expo version to 0.52'
+
 ## 1.2.1
 
 ### Patch Changes

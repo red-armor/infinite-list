@@ -1,5 +1,13 @@
 # @infinite-list/react
 
+## 2.2.3
+
+### Patch Changes
+
+- 5e72b9f: fix `getFinalIndexRangeOffsetMap` and upgrade expo version to 0.52'
+- Updated dependencies [5e72b9f]
+  - @infinite-list/data-model@2.2.2
+
 ## 2.2.2
 
 ### Patch Changes
