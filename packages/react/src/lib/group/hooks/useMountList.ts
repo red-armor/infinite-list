@@ -1,9 +1,9 @@
 import { defaultKeyExtractor } from '@infinite-list/data-model';
 import { useContext, useEffect, useRef } from 'react';
 import context from '../context';
+import { DefaultItemT, GroupListProps } from '../types';
 
-// @ts-ignore
-export default (props) => {
+export default <ItemT extends DefaultItemT>(props: GroupListProps<ItemT>) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);
 
@@ -34,9 +34,7 @@ export default (props) => {
       recyclerType,
       ...rest,
     }).remover;
-    // @ts-ignore
     listGroupDimensions!.getDimension(id).renderItem = renderItem;
-    // @ts-ignore
     listGroupDimensions!.getDimension(id).teleportItemProps = teleportItemProps;
     initialRef.current = false;
   }

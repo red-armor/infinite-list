@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import context from '../context';
-import { Dimension } from '@infinite-list/data-model';
+import { Dimension, GenericItemT } from '@infinite-list/data-model';
+import { GroupListItemImplProps } from '../types';
 
-// @ts-ignore
-export default (props) => {
+export default <ItemT extends GenericItemT>(
+  props: GroupListItemImplProps<ItemT>
+) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);
   const listGroupDimensions = useContext(context).listGroupDimensions!;
@@ -17,7 +19,6 @@ export default (props) => {
       rest
     );
     disposerRef.current = remover;
-    // @ts-ignore
     dimensionRef.current = dimensions;
 
     initialRef.current = false;
@@ -30,7 +31,6 @@ export default (props) => {
         })
       : children;
 
-    // @ts-ignore
     dimensionRef.current!.renderItem = clonedChildren;
   }, [children]);
 

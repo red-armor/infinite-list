@@ -65,26 +65,24 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   if (recycleEnabled) {
     return (
-      <>
-        <div id={id} ref={listRef} style={style.container}>
-          {(state as RecycleStateResult<ItemT>).spaceState.map((data) => (
-            <SpaceItem
-              key={data.key}
-              data={data}
-              renderItem={renderItem}
-              dimensions={listModel}
-            />
-          ))}
-          {(state as RecycleStateResult<ItemT>).recycleState.map((data) => (
-            <RecycleItem
-              key={data.key}
-              data={data}
-              renderItem={renderItem}
-              dimensions={listModel}
-            />
-          ))}
-        </div>
-      </>
+      <div id={id} ref={listRef} style={style.container}>
+        {(state as RecycleStateResult<ItemT>).spaceState.map((data) => (
+          <SpaceItem
+            key={data.key}
+            data={data}
+            renderItem={renderItem}
+            dimensions={listModel}
+          />
+        ))}
+        {(state as RecycleStateResult<ItemT>).recycleState.map((data) => (
+          <RecycleItem
+            key={data.key}
+            data={data}
+            renderItem={renderItem}
+            dimensions={listModel}
+          />
+        ))}
+      </div>
     );
   }
   // TODO: implement static list

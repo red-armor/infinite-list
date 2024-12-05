@@ -4,14 +4,15 @@ import React, {
   memo,
   useState,
   PropsWithChildren,
+  CSSProperties,
 } from 'react';
-import { RecycleStateResult } from '@infinite-list/data-model';
+import { GenericItemT, RecycleStateResult } from '@infinite-list/data-model';
 import {
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
+  genericMemo,
 } from './types';
-import { View, ViewStyle } from 'react-native';
 
 import GroupListItemImpl from './GroupListItemImpl';
 
@@ -28,7 +29,7 @@ const RecycleContentItem = (props) => {
     scrollComponentUseMeasureLayout,
   } = props;
 
-  const containerStyle: ViewStyle = useMemo(
+  const containerStyle: CSSProperties = useMemo(
     () =>
       horizontal
         ? {
@@ -47,7 +48,7 @@ const RecycleContentItem = (props) => {
   );
 
   return (
-    <View style={containerStyle}>
+    <div style={containerStyle}>
       <GroupListItemImpl
         item={item}
         style={containerStyle}
@@ -59,7 +60,7 @@ const RecycleContentItem = (props) => {
         dimensions={dimensions}
         scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
       />
-    </View>
+    </div>
   );
 };
 
@@ -91,42 +92,43 @@ const MemoedRecycleContent = memo<
   PropsWithChildren<GroupRecycleContentProps<any>>
 >(RecycleContent, (prev, next) => prev.state === next.state);
 
-const SpaceContent = <T extends {}>(props: GroupSpaceContentProps<T>) => {
-  const { state, listKey, dimensions, scrollComponentUseMeasureLayout } = props;
+const MemoedSpaceContent = genericMemo(
+  <ItemT extends GenericItemT>(props: GroupSpaceContentProps<ItemT>) => {
+    const { state, listKey, dimensions, scrollComponentUseMeasureLayout } =
+      props;
 
-  return (
-    <>
-      {state.map((stateResult, index) => {
-        const { isSpace, key, item, length, isSticky, itemMeta } = stateResult;
-        return isSpace ? (
-          <View key={key} style={{ height: length }} />
-        ) : (
-          <GroupListItemImpl
-            // @ts-ignore
-            item={item}
-            key={key}
-            listKey={listKey}
-            // @ts-ignore
-            itemMeta={itemMeta}
-            // @ts-ignore
-            renderItem={itemMeta.getOwner().renderItem}
-            // @ts-ignore
-            teleportItemProps={itemMeta.getOwner().teleportItemProps}
-            dimensions={dimensions}
-            scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
-          />
-        );
-      })}
-    </>
-  );
-};
-const MemoedSpaceContent = memo<PropsWithChildren<GroupSpaceContentProps<any>>>(
-  SpaceContent,
+    return (
+      <>
+        {state.map((stateResult, index) => {
+          const { isSpace, key, item, length, isSticky, itemMeta } =
+            stateResult;
+          return isSpace ? (
+            <div key={key} style={{ height: length }} />
+          ) : (
+            <GroupListItemImpl<ItemT>
+              item={item!}
+              key={key}
+              listKey={listKey}
+              itemMeta={itemMeta!}
+              renderItem={itemMeta!.getOwner().renderItem}
+              teleportItemProps={itemMeta!.getOwner().teleportItemProps}
+              dimensions={dimensions}
+              scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
+            />
+          );
+        })}
+      </>
+    );
+  },
   (prev, next) => prev.state === next.state
 );
+// const MemoedSpaceContent = genericMemo(
+//   SpaceContent: PropsWithChildren<GroupSpaceContentProps<any>>,
+//   (prev, next) => prev.state === next.state
+// );
 
-const PortalContent = <T extends {}>(
-  props: PropsWithChildren<PortalContextProps>
+const PortalContent = <ItemT extends GenericItemT>(
+  props: PropsWithChildren<PortalContextProps<ItemT>>
 ) => {
   const { listGroupDimensions, id, scrollComponentUseMeasureLayout } = props;
   const [store, setStore] = useState(
@@ -136,14 +138,15 @@ const PortalContent = <T extends {}>(
   useEffect(
     () =>
       listGroupDimensions.addStateListener((newState) => {
-        setTimeout(() => setStore(newState as any as RecycleStateResult<T>));
+        setStore(newState as any as RecycleStateResult<T>);
+        // setTimeout(() => setStore(newState as any as RecycleStateResult<T>));
       }),
     []
   );
 
   return (
     <>
-      <MemoedSpaceContent
+      <MemoedSpaceContent<ItemT>
         listKey={id}
         ownerId={id}
         state={store.spaceState}
@@ -163,4 +166,4 @@ const PortalContent = <T extends {}>(
   );
 };
 
-export default React.memo(PortalContent);
+export default genericMemo(PortalContent);

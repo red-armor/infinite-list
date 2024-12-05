@@ -1,19 +1,17 @@
-import React, { PropsWithChildren, useContext, useRef, FC } from 'react';
+import { PropsWithChildren, useContext, useRef } from 'react';
 
 import { DefaultItemT } from '../types';
-import { GroupListProps } from './types';
+import { genericMemo, GroupListProps } from './types';
 import context from './context';
 import useMountList from './hooks/useMountList';
 
-const GroupList = <ItemT extends DefaultItemT>(
-  props: PropsWithChildren<GroupListProps<ItemT>>
-) => {
-  useMountList(props);
-  return null;
-};
-
-const MemoedGroupList = React.memo<PropsWithChildren<GroupListProps<any>>>(
-  GroupList,
+const MemoedGroupList = genericMemo(
+  <ItemT extends DefaultItemT>(
+    props: PropsWithChildren<GroupListProps<ItemT>>
+  ) => {
+    useMountList(props);
+    return null;
+  },
   (prev, cur) => {
     // @ts-ignore
     if (cur.changed) return true;
@@ -31,8 +29,8 @@ const MemoedGroupList = React.memo<PropsWithChildren<GroupListProps<any>>>(
   }
 );
 
-const GroupListWrapper: FC<PropsWithChildren<GroupListProps<any>>> = (
-  props
+const GroupListWrapper = <ItemT extends DefaultItemT>(
+  props: PropsWithChildren<GroupListProps<ItemT>>
 ) => {
   const contextValues = useContext(context);
   const contextValuesRef = useRef(contextValues);
@@ -42,7 +40,6 @@ const GroupListWrapper: FC<PropsWithChildren<GroupListProps<any>>> = (
   ) {
     contextValuesRef.current.heartBeat({
       inspectingTime: contextValues.inspectingTime,
-      // @ts-ignore
       listKey: props.id,
     });
     contextValuesRef.current = contextValues;

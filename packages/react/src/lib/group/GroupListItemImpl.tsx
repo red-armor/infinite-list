@@ -34,7 +34,7 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
       : {};
 
   return (
-    <ListItem
+    <ListItem<ItemT>
       item={item}
       listKey={listKey}
       itemMeta={itemMeta}

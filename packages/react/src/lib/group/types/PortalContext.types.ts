@@ -6,9 +6,9 @@ import {
 } from '@infinite-list/data-model';
 import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
-export type PortalContextProps = {
+export type PortalContextProps<ItemT extends GenericItemT = GenericItemT> = {
   id: string;
-  listGroupDimensions: ListGroupDimensions;
+  listGroupDimensions: ListGroupDimensions<ItemT>;
   scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 };
 
@@ -17,7 +17,7 @@ export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
     state: SpaceStateResult<ItemT>;
     listKey: string;
     ownerId: string;
-    dimensions: ListGroupDimensions;
+    dimensions: ListGroupDimensions<ItemT>;
     scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
   };
 
@@ -27,6 +27,6 @@ export type GroupRecycleContentProps<
   state: ListStateResult<ItemT>;
   listKey: string;
   ownerId: string;
-  dimensions: ListGroupDimensions;
+  dimensions: ListGroupDimensions<ItemT>;
   scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 };

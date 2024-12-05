@@ -30,8 +30,8 @@ const MemoedGroupList = React.memo<PropsWithChildren<GroupListProps<any>>>(
   }
 );
 
-const GroupListWrapper: FC<PropsWithChildren<GroupListProps<any>>> = (
-  props
+const GroupListWrapper = <ItemT extends DefaultItemT>(
+  props: PropsWithChildren<GroupListProps<ItemT>>
 ) => {
   const contextValues = useContext(context);
   const contextValuesRef = useRef(contextValues);

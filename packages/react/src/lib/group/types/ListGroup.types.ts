@@ -3,6 +3,7 @@ import {
   ViewabilityConfig,
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
+  GenericItemT,
 } from '@infinite-list/data-model';
 import { ComponentType, PropsWithChildren, MutableRefObject } from 'react';
 import { View, LayoutChangeEvent } from 'react-native';
@@ -20,8 +21,8 @@ export type ScrollComponentUseMeasureLayout = (
   layoutHandler: (e: LayoutChangeEvent) => void;
 };
 
-export type ListGroupProps = PropsWithChildren<{
-  GroupListSeparatorComponent?: ComponentType<any> | null | undefined;
+export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<{
+  GroupListSeparatorComponent?: ComponentType<ItemT> | null | undefined;
   id: string;
   onViewableItemsChanged?: OnViewableItemsChanged;
   viewabilityConfig?: ViewabilityConfig;
@@ -32,7 +33,7 @@ export type ListGroupProps = PropsWithChildren<{
   onRenderFinished?: () => void;
   persistanceIndices?: number[];
 
-  scrollComponentContext: any;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  scrollComponentContext?: any;
+  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
 }> &
   OnEndReachedHelperProps;

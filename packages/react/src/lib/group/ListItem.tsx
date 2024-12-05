@@ -7,7 +7,6 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { View, StyleSheet } from 'react-native';
 
 import { DefaultItemT } from '../types';
 import { ListItemProps } from './types';
@@ -27,8 +26,8 @@ import { ListItemProps } from './types';
  * Attention: use itemMeta as key!!!, not viewableItemHelperKey;;;
  * Because itemMeta may change, but viewableItemHelperKey not change...
  */
-const ListItem = <T extends DefaultItemT>(
-  props: PropsWithChildren<ListItemProps<T>>
+const ListItem = <ItemT extends DefaultItemT>(
+  props: PropsWithChildren<ListItemProps<ItemT>>
 ) => {
   const {
     style: _style = {},
@@ -51,47 +50,64 @@ const ListItem = <T extends DefaultItemT>(
     itemMeta,
     ...rest
   } = props;
-  const containerStyle = useMemo(
-    () => StyleSheet.flatten([_style, { elevation: 0 }]),
-    [_style]
-  );
+  const containerStyle = useMemo(() => ({ ..._style, elevation: 0 }), [_style]);
 
-  const defaultRef = useRef<View>(null);
+  const defaultRef = useRef<HTMLDivElement>(null);
   const viewRef = forwardRef || defaultRef;
 
   const itemMetaRef = useRef(itemMeta);
 
-  const onMeasureLayout = useCallback(
-    (x: number, y: number, width: number, height: number) => {
-      if (typeof _onMeasureLayout === 'function') {
-        _onMeasureLayout(x, y, width, height);
-      }
-      const layout = itemMetaRef.current?.getLayout();
-      const nextLayout = { x, y, width, height };
+  const layoutHandler = useCallback(() => {
+    // @ts-ignore
+    const rect = viewRef.current.getBoundingClientRect();
+    if (rect) {
+      const { x, y, width, height } = rect;
+      itemMetaRef.current
+        .getOwner()
+        .setKeyItemLayout(itemMetaRef.current.getKey(), {
+          x,
+          y,
+          width,
+          height,
+        });
+    }
+  }, []);
 
-      if (!layout || !shallowEqual(nextLayout, layout)) {
-        itemMetaRef.current
-          .getOwner()
-          .setKeyItemLayout(itemMetaRef.current.getKey(), {
-            x,
-            y,
-            width,
-            height,
-          });
-      }
-    },
-    []
-  );
+  useEffect(() => {
+    layoutHandler();
+  }, []);
 
-  const getCurrentKey = useCallback(() => itemMetaRef.current.getKey(), []);
+  // const onMeasureLayout = useCallback(
+  //   (x: number, y: number, width: number, height: number) => {
+  //     if (typeof _onMeasureLayout === 'function') {
+  //       _onMeasureLayout(x, y, width, height);
+  //     }
+  //     const layout = itemMetaRef.current?.getLayout();
+  //     const nextLayout = { x, y, width, height };
+
+  //     if (!layout || !shallowEqual(nextLayout, layout)) {
+  //       itemMetaRef.current
+  //         .getOwner()
+  //         .setKeyItemLayout(itemMetaRef.current.getKey(), {
+  //           x,
+  //           y,
+  //           width,
+  //           height,
+  //         });
+  //     }
+  //   },
+  //   []
+  // );
+
+  // const getCurrentKey = useCallback(() => itemMetaRef.current.getKey(), []);
 
   // @ts-ignore
-  const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
-    onLayout,
-    getCurrentKey,
-    isIntervalTreeItem: true,
-    onMeasureLayout,
-  });
+  // const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
+  //   onLayout,
+  //   getCurrentKey,
+  //   isIntervalTreeItem: true,
+  //   onMeasureLayout,
+  // });
 
   // note!!!!: has a condition, viewableItemHelperKey not change but itemMeta change..
   // reuse position with same data source..
@@ -106,18 +122,19 @@ const ListItem = <T extends DefaultItemT>(
         (!itemMetaRef.current?.getLayout() ||
           itemMetaRef.current.isApproximateLayout)
       ) {
-        setTimeout(() => handler(), 0);
+        // setTimeout(() => handler(), 0);
+        setTimeout(() => layoutHandler(), 0);
       }
     }
   }, [itemMeta]);
 
-  useEffect(() => {
-    if (typeof setMeasureLayoutHandler === 'function')
-      setMeasureLayoutHandler(handler);
-  }, []);
+  // useEffect(() => {
+  //   if (typeof setMeasureLayoutHandler === 'function')
+  //     setMeasureLayoutHandler(handler);
+  // }, []);
 
   const RenderComponent = useMemo(
-    () => CellRendererComponent || View,
+    () => CellRendererComponent || 'div',
     [CellRendererComponent]
   );
 
@@ -134,7 +151,7 @@ const ListItem = <T extends DefaultItemT>(
 
   return (
     <RenderComponent
-      onLayout={layoutHandler}
+      // onLayout={layoutHandler}
       key={containerKey}
       {...refProps}
       {...rest}
@@ -148,11 +165,16 @@ const ListItem = <T extends DefaultItemT>(
   );
 };
 
+// generic forwardRef https://gist.github.com/IrvingArmenta/a6d7fc76ed538697ad18b7f074accdde
+// https://www.totaltypescript.com/forwardref-with-generic-components
 export default React.forwardRef(
-  <T extends DefaultItemT>(
-    props: ListItemProps<T>,
-    ref: ForwardedRef<View>
+  <ItemT extends DefaultItemT>(
+    props: ListItemProps<ItemT>,
+    ref: ForwardedRef<HTMLDivElement>
   ) => {
     return <ListItem {...props} forwardRef={ref} />;
   }
-);
+) as <ItemT extends DefaultItemT>(
+  props: ListItemProps<ItemT>,
+  ref: ForwardedRef<HTMLDivElement>
+) => ReturnType<typeof ListItem>;

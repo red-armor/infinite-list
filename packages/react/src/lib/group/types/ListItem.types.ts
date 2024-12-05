@@ -4,16 +4,13 @@ import {
   ListDimensions,
   GenericItemT,
 } from '@infinite-list/data-model';
-import React, { ForwardedRef } from 'react';
-import { ViewStyle, LayoutChangeEvent } from 'react-native';
+import React, { CSSProperties, ForwardedRef } from 'react';
+import { LayoutChangeEvent } from 'react-native';
 import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
 type OnLayout = (event: LayoutChangeEvent) => void;
 
 export type DefaultItemT = GenericItemT;
-// export type DefaultItemT = {
-//   [key: string]: any;
-// };
 
 type OnMeasureLayout =
   | ((x: number, y: number, width: number, height: number) => void)
@@ -35,9 +32,9 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   listKey: string;
 
-  itemMeta: ItemMeta;
+  itemMeta: ItemMeta<ItemT>;
 
-  dimensions: ListGroupDimensions | ListDimensions;
+  dimensions: ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
 
   withWrapper?: boolean;
   onLayout?: OnLayout;
@@ -48,7 +45,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   measureLayoutHandlerOnDemand?: OnMeasureLayout;
 
-  style?: ViewStyle;
+  style?: CSSProperties;
 
   teleportItemProps?: TeleportItemProps;
 

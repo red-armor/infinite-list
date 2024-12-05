@@ -1,35 +1,45 @@
-import { ListGroupDimensions } from '@infinite-list/data-model';
+import { GenericItemT, ListGroupDimensions } from '@infinite-list/data-model';
 import React, {
+  CSSProperties,
   FC,
   useCallback,
-  useContext,
+  // useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { View, Platform } from 'react-native';
+// import { div, Platform } from 'react-native';
 
-import { ListGroupProps } from './types';
+import { ListGroupProps, genericMemo } from './types';
 import context from './context';
 import PortalContent from './PortalContent';
+import ScrollTracker from '../events/ScrollTracker';
 
-const ClockStart: FC<{
-  dimensions: ListGroupDimensions;
-  inspectingTimes: number;
-}> = React.memo((props) => {
-  props.dimensions.inspector.startCollection();
-  return null;
-});
-const ClockEnd: FC<{
-  dimensions: ListGroupDimensions;
-  inspectingTimes: number;
-}> = React.memo((props) => {
-  props.dimensions.inspector.terminateCollection();
-  return null;
-});
+// https://stackoverflow.com/a/70890101
 
-const ListGroup: FC<ListGroupProps> = (props) => {
+const ClockStart = genericMemo(
+  <ItemT extends GenericItemT>(props: {
+    dimensions: ListGroupDimensions<ItemT>;
+    inspectingTimes: number;
+  }) => {
+    props.dimensions.inspector.startCollection();
+    return null;
+  }
+);
+const ClockEnd = genericMemo(
+  <ItemT extends GenericItemT>(props: {
+    dimensions: ListGroupDimensions<ItemT>;
+    inspectingTimes: number;
+  }) => {
+    props.dimensions.inspector.terminateCollection();
+    return null;
+  }
+);
+
+const ListGroup = <ItemT extends GenericItemT>(
+  props: ListGroupProps<ItemT>
+) => {
   const {
     children,
     id,
@@ -43,9 +53,9 @@ const ListGroup: FC<ListGroupProps> = (props) => {
     ...rest
   } = props;
   // @ts-ignore
-  const { scrollEventHelper, getScrollHelper } = useContext(
-    scrollComponentContext
-  );
+  // const { scrollEventHelper, getScrollHelper } = useContext(
+  //   scrollComponentContext
+  // );
   const layoutRef = useRef<{
     x: number;
     y: number;
@@ -53,26 +63,36 @@ const ListGroup: FC<ListGroupProps> = (props) => {
     height: number;
   }>();
 
-  const viewRef = useRef<View>(null);
-  const measureLayout = useCallback(
-    (x: number, y: number, width: number, height: number) => {
+  const listRef = useRef<HTMLDivElement>(null);
+  const scrollHandlerRef = useRef<ScrollTracker>();
+
+  useEffect(() => {
+    const rect = listRef.current?.getBoundingClientRect();
+    if (rect) {
+      const { width, height, x, y } = rect;
       layoutRef.current = { x, y, width, height };
-    },
-    []
-  );
+    }
+  }, []);
 
-  const scrollMetricsRef = useRef<any>();
+  // const measureLayout = useCallback(
+  //   (x: number, y: number, width: number, height: number) => {
+  //     layoutRef.current = { x, y, width, height };
+  //   },
+  //   []
+  // );
 
-  const scrollHelper = getScrollHelper();
+  // const scrollMetricsRef = useRef<any>();
 
-  const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
-    onMeasureLayout: measureLayout,
-  });
+  // const scrollHelper = getScrollHelper();
+
+  // const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
+  //   onMeasureLayout: measureLayout,
+  // });
 
   const getContainerLayout = useCallback(() => layoutRef.current!, []);
   const listGroupDimensions = useMemo(
     () =>
-      new ListGroupDimensions({
+      new ListGroupDimensions<ItemT>({
         id,
         ...rest,
         viewabilityConfig,
@@ -81,59 +101,92 @@ const ListGroup: FC<ListGroupProps> = (props) => {
         persistanceIndices,
         onViewableItemsChanged,
         viewabilityConfigCallbackPairs,
-        canIUseRIC: Platform.OS !== 'ios',
+        canIUseRIC: true,
+        // canIUseRIC: Platform.OS !== 'ios',
       }),
     []
   );
 
-  useEffect(
-    () =>
-      scrollEventHelper.subscribeEventHandler('onContentSizeChange', () => {
-        if (typeof handler === 'function') {
-          handler();
-        }
-        const scrollMetrics = scrollHelper.getScrollMetrics();
-        if (scrollMetrics !== scrollMetricsRef.current) {
-          listGroupDimensions.updateScrollMetrics(
-            scrollHelper.getScrollMetrics()
-          );
-          scrollMetricsRef.current = scrollMetrics;
-        }
-      }),
+  const style: {
+    [key: string]: CSSProperties;
+  } = useMemo(
+    () => ({
+      container: {
+        width: '100%',
+        height: '100%',
+        overflowY: 'auto',
+        position: 'relative',
+      },
+    }),
     []
   );
 
-  useEffect(
-    () =>
-      scrollEventHelper.subscribeEventHandler('onScroll', () => {
-        const scrollMetrics = scrollHelper.getScrollMetrics();
-        if (scrollMetrics !== scrollMetricsRef.current) {
-          listGroupDimensions.updateScrollMetrics(
-            scrollHelper.getScrollMetrics()
-          );
-          scrollMetricsRef.current = scrollMetrics;
-        }
-      }),
-    []
-  );
+  // useEffect(
+  //   () =>
+  //     scrollEventHelper.subscribeEventHandler('onContentSizeChange', () => {
+  //       if (typeof handler === 'function') {
+  //         handler();
+  //       }
+  //       const scrollMetrics = scrollHelper.getScrollMetrics();
+  //       if (scrollMetrics !== scrollMetricsRef.current) {
+  //         listGroupDimensions.updateScrollMetrics(
+  //           scrollHelper.getScrollMetrics()
+  //         );
+  //         scrollMetricsRef.current = scrollMetrics;
+  //       }
+  //     }),
+  //   []
+  // );
 
-  useEffect(
-    () =>
-      scrollEventHelper.subscribeEventHandler('onMomentumScrollEnd', () => {
-        const scrollMetrics = scrollHelper.getScrollMetrics();
-        if (scrollMetrics !== scrollMetricsRef.current) {
-          listGroupDimensions.updateScrollMetrics(
-            scrollHelper.getScrollMetrics()
-          );
-          scrollMetricsRef.current = scrollMetrics;
-        }
-      }),
-    []
-  );
+  // useEffect(
+  //   () =>
+  //     scrollEventHelper.subscribeEventHandler('onScroll', () => {
+  //       const scrollMetrics = scrollHelper.getScrollMetrics();
+  //       if (scrollMetrics !== scrollMetricsRef.current) {
+  //         listGroupDimensions.updateScrollMetrics(
+  //           scrollHelper.getScrollMetrics()
+  //         );
+  //         scrollMetricsRef.current = scrollMetrics;
+  //       }
+  //     }),
+  //   []
+  // );
 
   useEffect(() => {
-    listGroupDimensions.updateScrollMetrics(scrollHelper.getScrollMetrics());
+    const scrollTracker = new ScrollTracker({
+      domNode: listRef.current!,
+      onScroll: () => {
+        listGroupDimensions.updateScrollMetrics(
+          scrollHandlerRef.current?.getScrollMetrics()
+        );
+      },
+    });
+    scrollHandlerRef.current = scrollTracker;
+
+    scrollTracker.addEventListeners();
+
+    listGroupDimensions.updateScrollMetrics(scrollTracker.getScrollMetrics());
+
+    return () => scrollTracker.dispose();
   }, []);
+
+  // useEffect(
+  //   () =>
+  //     scrollEventHelper.subscribeEventHandler('onMomentumScrollEnd', () => {
+  //       const scrollMetrics = scrollHelper.getScrollMetrics();
+  //       if (scrollMetrics !== scrollMetricsRef.current) {
+  //         listGroupDimensions.updateScrollMetrics(
+  //           scrollHelper.getScrollMetrics()
+  //         );
+  //         scrollMetricsRef.current = scrollMetrics;
+  //       }
+  //     }),
+  //   []
+  // );
+
+  // useEffect(() => {
+  //   listGroupDimensions.updateScrollMetrics(scrollHelper.getScrollMetrics());
+  // }, []);
 
   const [state, setState] = useState(() => ({
     ...listGroupDimensions.inspector.getAPI(),
@@ -150,14 +203,14 @@ const ListGroup: FC<ListGroupProps> = (props) => {
   }, []);
 
   return (
-    <View onLayout={layoutHandler} ref={viewRef}>
-      <ClockStart
+    <div ref={listRef} style={style.container}>
+      <ClockStart<ItemT>
         dimensions={listGroupDimensions}
         inspectingTimes={state.inspectingTimes}
       />
       <context.Provider value={state}>
         {children}
-        <PortalContent
+        <PortalContent<ItemT>
           id={id}
           listGroupDimensions={listGroupDimensions}
           scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
@@ -167,7 +220,7 @@ const ListGroup: FC<ListGroupProps> = (props) => {
         dimensions={listGroupDimensions}
         inspectingTimes={state.inspectingTimes}
       />
-    </View>
+    </div>
   );
 };
 
