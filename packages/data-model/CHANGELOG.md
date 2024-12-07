@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.2.3
+
+### Patch Changes
+
+- 8705b86: attemp to fix types
+
 ## 2.2.2
 
 ### Patch Changes

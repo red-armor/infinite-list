@@ -1,5 +1,13 @@
 # @infinite-list/react
 
+## 2.2.4
+
+### Patch Changes
+
+- 8705b86: attemp to fix types
+- Updated dependencies [8705b86]
+  - @infinite-list/data-model@2.2.3
+
 ## 2.2.3
 
 ### Patch Changes
