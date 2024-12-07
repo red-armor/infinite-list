@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.3
+
+### Patch Changes
+
+- 8705b86: attemp to fix types
+
 ## 1.2.2
 
 ### Patch Changes
