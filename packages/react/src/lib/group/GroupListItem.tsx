@@ -24,8 +24,9 @@ const MemoedGroupListItem = genericMemo(
   }
 );
 
-// @ts-ignore
-const GroupListItemWrapper = (props) => {
+const GroupListItemWrapper = <ItemT extends GenericItemT>(
+  props: GroupListItemImplProps<ItemT>
+) => {
   const contextValues = useContext(context);
   const contextValuesRef = useRef(contextValues);
 

@@ -35,15 +35,12 @@ const ListItem = <ItemT extends DefaultItemT>(
     onLayout,
     forwardRef,
 
-    // @ts-ignore
     dimensions,
     containerKey,
     CellRendererComponent,
     setMeasureLayoutHandler,
     onMeasureLayout: _onMeasureLayout,
-    // @ts-ignore
     measureLayoutHandlerOnDemand,
-    // @ts-ignore
     getMetaOnViewableItemsChanged,
     scrollComponentUseMeasureLayout,
 

@@ -13,5 +13,5 @@ export type RenderItem<ItemT extends DefaultItemT = DefaultItemT> = (
 export interface GroupListItemImplProps<ItemT extends DefaultItemT>
   extends ListItemProps<ItemT> {
   renderItem: RenderItem<ItemT>;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
 }

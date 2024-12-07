@@ -22,7 +22,7 @@ export default <ItemT extends DefaultItemT>(props: GroupListProps<ItemT>) => {
   const dataRef = useRef(data);
 
   useEffect(() => {
-    listGroupDimensions!.setOnEndReached(id, onEndReached);
+    if (onEndReached) listGroupDimensions!.setOnEndReached(id, onEndReached);
   }, [onEndReached]);
 
   if (initialRef.current) {

@@ -13,7 +13,6 @@ const MemoedGroupList = genericMemo(
     return null;
   },
   (prev, cur) => {
-    // @ts-ignore
     if (cur.changed) return true;
 
     const keys = Object.keys(prev);

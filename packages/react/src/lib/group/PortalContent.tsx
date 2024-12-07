@@ -138,7 +138,7 @@ const PortalContent = <ItemT extends GenericItemT>(
   useEffect(
     () =>
       listGroupDimensions.addStateListener((newState) => {
-        setStore(newState as any as RecycleStateResult<T>);
+        setStore(newState as any as RecycleStateResult<ItemT>);
         // setTimeout(() => setStore(newState as any as RecycleStateResult<T>));
       }),
     []

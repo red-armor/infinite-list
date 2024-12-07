@@ -30,7 +30,8 @@ export type TeleportItemProps =
 export interface ListItemProps<ItemT extends DefaultItemT> {
   item: ItemT;
 
-  listKey: string;
+  // listKey: string;
+  itemKey: string;
 
   itemMeta: ItemMeta<ItemT>;
 
@@ -57,5 +58,5 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   containerKey?: string;
 
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
 }

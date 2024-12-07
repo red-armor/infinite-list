@@ -9,7 +9,8 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
 ) => {
   const {
     item,
-    listKey,
+    // listKey,
+    itemKey,
     dimensions,
     itemMeta,
     containerKey,
@@ -30,13 +31,17 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
   const teleportProps =
     typeof teleportItemProps === 'function'
       ? // @ts-ignore
-        teleportItemProps({ item, index: itemMeta.getIndexInfo?.()?.index })
+        teleportItemProps({
+          item,
+          index: itemMeta.getIndexInfo?.()?.index || -1,
+        })
       : {};
 
   return (
     <ListItem<ItemT>
       item={item}
-      listKey={listKey}
+      itemKey={itemKey}
+      // listKey={listKey}
       itemMeta={itemMeta}
       dimensions={dimensions}
       containerKey={containerKey}
@@ -51,7 +56,6 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
           item={item}
           {...teleportProps}
           {...rest}
-          // @ts-ignore
           itemMeta={itemMeta}
         />
       ) : null}

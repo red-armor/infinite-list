@@ -9,7 +9,7 @@ import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 export type PortalContextProps<ItemT extends GenericItemT = GenericItemT> = {
   id: string;
   listGroupDimensions: ListGroupDimensions<ItemT>;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
 };
 
 export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
@@ -18,7 +18,7 @@ export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
     listKey: string;
     ownerId: string;
     dimensions: ListGroupDimensions<ItemT>;
-    scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+    scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
   };
 
 export type GroupRecycleContentProps<
@@ -28,5 +28,5 @@ export type GroupRecycleContentProps<
   listKey: string;
   ownerId: string;
   dimensions: ListGroupDimensions<ItemT>;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
 };
