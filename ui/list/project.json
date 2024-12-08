@@ -4,25 +4,5 @@
   "sourceRoot": "ui/list/src",
   "projectType": "library",
   "tags": [],
-  "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/ui/list",
-        "tsConfig": "ui/list/tsconfig.lib.json",
-        "project": "ui/list/package.json",
-        "entryFile": "ui/list/src/index.ts",
-        "external": ["react/jsx-runtime", "react-native", "react", "react-dom"],
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
-        "assets": [
-          {
-            "glob": "ui/list/README.md",
-            "input": ".",
-            "output": "."
-          }
-        ]
-      }
-    }
-  }
+  "targets": {}
 }

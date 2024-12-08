@@ -363,6 +363,12 @@ importers:
 
   ui/list:
     dependencies:
+      '@infinite-list/data-model':
+        specifier: workspace:*
+        version: link:../../packages/data-model
+      '@infinite-list/scroller':
+        specifier: workspace:*
+        version: link:../scroller
       react:
         specifier: 18.2.0
         version: 18.2.0
