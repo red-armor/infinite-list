@@ -17,7 +17,8 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "paths": {
-      "@infinite-list/list": ["ui/list/src/index.ts"]
+      "@infinite-list/list": ["ui/list/src/index.ts"],
+      "@infinite-list/scroller": ["ui/scroller/src/index.ts"]
     }
   },
   "ts-node": {
