@@ -19,6 +19,7 @@
     "paths": {
       "@infinite-list/group": ["ui/group/src/index.ts"],
       "@infinite-list/list": ["ui/list/src/index.ts"],
+      "@infinite-list/masonry": ["ui/masonry/src/index.ts"],
       "@infinite-list/scroller": ["ui/scroller/src/index.ts"]
     }
   },
