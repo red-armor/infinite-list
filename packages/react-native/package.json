@@ -14,6 +14,16 @@
     "react": "18.2.0",
     "react-native": "0.74.1"
   },
+  "exports": {
+    "./react": {
+      "types": "./next.esm.d.ts",
+      "default": "./next.esm.js"
+    },
+    "./react-native": {
+      "types": "./index.esm.d.ts",
+      "import": "./index.esm.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   }
