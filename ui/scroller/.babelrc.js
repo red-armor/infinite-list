@@ -7,7 +7,7 @@ module.exports = function (api) {
         '@nx/react/babel',
         {
           runtime: 'automatic',
-          useBuiltIns: 'usage',
+          // useBuiltIns: 'usage',
         },
       ],
     ],
