@@ -29,11 +29,11 @@ jobs:
 
       - name: Cache turbo build setup
         uses: actions/cache@v4
-        with: 
+        with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-turbo-      
+            ${{ runner.os }}-turbo-
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v3
@@ -54,10 +54,12 @@ jobs:
         # https://dev.to/jmcdo29/automating-your-package-deployment-in-an-nx-monorepo-with-changeset-4em8
       - name: Modify Workspace File
         run: sed "s/packages\//dist\/packages\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
+      - name: Modify ui workspace
+        run: sed "s/ui\//dist\/ui\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
 
         # https://github.com/jmcdo29/ogma/blob/main/.github/workflows/release.yml#L45
       - name: Update workspace deps
-        run: pnpm i --frozen-lockfile=false        
+        run: pnpm i --frozen-lockfile=false
 
       - name: Create Release Pull Request or Publish
         id: changesets
