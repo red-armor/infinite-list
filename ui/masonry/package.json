@@ -1,0 +1,8 @@
+{
+  "name": "@infinite-list/masonry",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-native": "0.74.1"
+  }
+}
