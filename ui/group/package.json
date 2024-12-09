@@ -4,5 +4,18 @@
   "peerDependencies": {
     "react": "18.2.0",
     "react-native": "0.74.1"
+  },
+  "exports": {
+    "./react": {
+      "types": "./react.esm.d.ts",
+      "default": "./react.esm.js"
+    },
+    "./react-native": {
+      "types": "./react-native.esm.d.ts",
+      "import": "./react-native.esm.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
