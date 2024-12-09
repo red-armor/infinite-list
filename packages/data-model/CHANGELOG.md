@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.2.4
+
+### Patch Changes
+
+- b0840fc: init to publish ui component
+
 ## 2.2.3
 
 ### Patch Changes
