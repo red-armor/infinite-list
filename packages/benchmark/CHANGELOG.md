@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.4
+
+### Patch Changes
+
+- b0840fc: init to publish ui component
+
 ## 1.2.3
 
 ### Patch Changes
