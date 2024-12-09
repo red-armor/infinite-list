@@ -1,0 +1,29 @@
+{
+  "name": "@infinite-list/group",
+  "version": "1.0.0",
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-native": "0.74.1"
+  },
+  "exports": {
+    "./react": {
+      "types": "./react.esm.d.ts",
+      "default": "./react.esm.js"
+    },
+    "./react-native": {
+      "types": "./react-native.esm.d.ts",
+      "import": "./react-native.esm.js"
+    }
+  },
+  "dependencies": {
+    "@infinite-list/data-model": "workspace:*",
+    "@infinite-list/scroller": "workspace:*",
+    "@x-oasis/noop": "^0.1.14",
+    "@x-oasis/shallow-equal": "^0.1.14"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts"
+}

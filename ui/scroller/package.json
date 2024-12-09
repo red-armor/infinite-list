@@ -1,0 +1,32 @@
+{
+  "name": "@infinite-list/scroller",
+  "version": "1.0.0",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": "18.2.0",
+    "react-native": "0.74.1"
+  },
+  "exports": {
+    "./web": {
+      "types": "./web.esm.d.ts",
+      "default": "./web.esm.js"
+    },
+    "./react-native": {
+      "types": "./react-native.esm.d.ts",
+      "import": "./react-native.esm.js"
+    }
+  },
+  "dependencies": {
+    "@x-oasis/is-ref": "^0.1.35",
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/noop": "^0.1.14",
+    "@x-oasis/select-value": "^0.1.14",
+    "@x-oasis/shallow-equal": "^0.1.14",
+    "@x-oasis/throttle": "^0.1.35",
+    "@infinite-list/data-model": "workspace:*"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "scroller",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "ui/scroller/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}

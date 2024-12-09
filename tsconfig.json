@@ -16,9 +16,12 @@
     "noStrictGenericChecks": false,
     "resolveJsonModule": true,
     "allowJs": true,
-    // "paths": {
-    //   "@infinite-list/react-native": ["packages/react-native/src/index.ts"]
-    // }
+    "paths": {
+      "@infinite-list/group": ["ui/group/src/index.ts"],
+      "@infinite-list/list": ["ui/list/src/index.ts"],
+      "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
+      "@infinite-list/scroller/web": ["ui/scroller/src/web"]
+    }
   },
   "ts-node": {
     "compilerOptions": {

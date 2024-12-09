@@ -1,0 +1,8 @@
+{
+  "name": "list",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "ui/list/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}
