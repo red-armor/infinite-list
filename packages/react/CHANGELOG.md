@@ -1,5 +1,13 @@
 # @infinite-list/react
 
+## 2.2.6
+
+### Patch Changes
+
+- 168d9cc: feat: publish ui masonry
+- Updated dependencies [168d9cc]
+  - @infinite-list/data-model@2.2.5
+
 ## 2.2.5
 
 ### Patch Changes

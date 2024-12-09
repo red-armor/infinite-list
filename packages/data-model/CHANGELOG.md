@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.2.5
+
+### Patch Changes
+
+- 168d9cc: feat: publish ui masonry
+
 ## 2.2.4
 
 ### Patch Changes

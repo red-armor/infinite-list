@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.5
+
+### Patch Changes
+
+- 168d9cc: feat: publish ui masonry
+
 ## 1.2.4
 
 ### Patch Changes
