@@ -1,5 +1,5 @@
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
-import memoizeOne from 'memoize-one';
+// import memoizeOne from 'memoize-one';
 import {
   buildStateTokenIndexKey,
   DEFAULT_RECYCLER_TYPE,
@@ -94,9 +94,10 @@ class RecycleStateImpl<
     // default recyclerTypes should be set immediately
     this.initializeDefaultRecycleBuffer();
 
-    this.memoizedResolveRecycleState = memoizeOne(
-      this.resolveRecycleState.bind(this)
-    );
+    this.memoizedResolveRecycleState = this.resolveRecycleState.bind(this);
+    // this.memoizedResolveRecycleState = memoizeOne(
+    //   this.resolveRecycleState.bind(this)
+    // );
   }
 
   initializeDefaultRecycleBuffer() {
