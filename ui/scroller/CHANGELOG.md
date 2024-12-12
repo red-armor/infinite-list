@@ -1,5 +1,13 @@
 # @infinite-list/scroller
 
+## 1.0.3
+
+### Patch Changes
+
+- 763d201: remove memoOne
+- Updated dependencies [763d201]
+  - @infinite-list/data-model@2.2.6
+
 ## 1.0.2
 
 ### Patch Changes

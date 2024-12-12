@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.2.6
+
+### Patch Changes
+
+- 763d201: remove memoOne
+
 ## 2.2.5
 
 ### Patch Changes
