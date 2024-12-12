@@ -1,5 +1,13 @@
 # @infinite-list/react-native
 
+## 2.2.6
+
+### Patch Changes
+
+- 763d201: remove memoOne
+- Updated dependencies [763d201]
+  - @infinite-list/data-model@2.2.6
+
 ## 2.2.5
 
 ### Patch Changes

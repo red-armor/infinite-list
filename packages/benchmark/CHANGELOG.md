@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.6
+
+### Patch Changes
+
+- 763d201: remove memoOne
+
 ## 1.2.5
 
 ### Patch Changes
