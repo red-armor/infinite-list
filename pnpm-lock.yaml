@@ -352,6 +352,27 @@ importers:
         specifier: ^0.1.37
         version: 0.1.38
 
+  core/strategies:
+    dependencies:
+      '@infinite-list/types':
+        specifier: workspace:*
+        version: link:../types
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/default-boolean-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/default-value':
+        specifier: ^0.1.35
+        version: 0.1.35
+      '@x-oasis/is-clamped':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/recycler':
+        specifier: ^0.1.37
+        version: 0.1.38
+
   core/types:
     dependencies:
       '@x-oasis/batchinator':
@@ -5743,9 +5764,7 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
-      - bufferutil
       - supports-color
-      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:

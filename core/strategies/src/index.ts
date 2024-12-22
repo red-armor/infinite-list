@@ -1,1 +1,1 @@
-export * from './lib/strategies';
+export { default as BaseImpl } from './BaseImpl';
