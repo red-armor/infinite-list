@@ -4,4 +4,6 @@ export * from './BaseLayout.types';
 
 // [TODO]
 export type BaseDimensions = any;
-export type Dimension = any;
+
+// [TODO]
+// export type Dimension = any;

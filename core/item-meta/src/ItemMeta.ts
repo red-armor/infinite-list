@@ -1,6 +1,7 @@
 // import BaseDimensions from './BaseDimensions';
 // import Dimension from './Dimension';
-import { BaseDimensions, Dimension } from './types';
+
+import { BaseDimensions } from './types';
 
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
 import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
@@ -202,8 +203,7 @@ class ItemMeta<
 
       return offset;
     }
-
-    // @ts-ignore [TODO] for dimension
+    // @ts-ignore [TODO]
     if (this._owner instanceof Dimension) {
       return this._owner.getItemOffset();
     }

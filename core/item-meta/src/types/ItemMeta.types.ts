@@ -9,7 +9,7 @@ import { GenericItemT } from './generic.types';
 
 // [TODO]
 type ListDimensionsModel = any;
-type Dimension = any;
+export type Dimension = any;
 type ListGroupIndexInfo = any;
 type PseudoListDimensions = any;
 type ItemsDimensions = any;

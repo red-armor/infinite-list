@@ -4,7 +4,11 @@
     "outDir": "../../dist/out-tsc",
     "declaration": true,
     "types": ["node"],
+    "rootDir": "../../",
+    // "paths": {
+    //   "@infinite-list/viewable": ["../viewable/src/index.ts"]
+    // }
   },
-  "include": ["src/**/*.ts", "../../core/**/src/*", "../../dist/**/*"],
+  "include": ["src/**/*.ts", "../../core/viewable/src/*"],
   "exclude": ["vite.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }
