@@ -1,8 +1,13 @@
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import layoutEqual from '@x-oasis/layout-equal';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import BaseDimensions from './BaseDimensions';
-import ItemMeta from './ItemMeta';
+
+import { BaseDimensions } from '@infinite-list/base-dimensions';
+import { ItemMeta } from '@infinite-list/item-meta';
+import { log } from '@infinite-list/utils';
+
+// import BaseDimensions from './BaseDimensions';
+// import ItemMeta from './ItemMeta';
 import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
@@ -10,18 +15,31 @@ import {
 } from './common';
 
 import {
-  GetItemLayout,
-  GetItemSeparatorLength,
-  IndexInfo,
   ItemLayout,
   KeyExtractor,
-  KeysChangedType,
+  GetItemLayout,
+  GetItemSeparatorLength,
   ListDimensionsModelProps,
   ListDimensionsModelContainer,
-  GenericItemT,
   OnListDimensionsModelDataChanged,
+} from '@infinite-list/dimensions-model';
+
+import { KeysChangedType } from '@infinite-list/base-dimensions';
+import { IndexInfo } from '@infinite-list/item-meta';
+
+import {
+  // GetItemLayout,
+  // GetItemSeparatorLength,
+  // IndexInfo,
+  // ItemLayout,
+  // KeyExtractor,
+  // KeysChangedType,
+  // ListDimensionsModelProps,
+  // ListDimensionsModelContainer,
+  GenericItemT,
+  // OnListDimensionsModelDataChanged,
 } from './types';
-import * as log from './utils/logger';
+// import * as log from './utils/logger';
 
 class ListDimensionsModel<
   ItemT extends GenericItemT = GenericItemT

@@ -1,1 +1,1 @@
-export * from './lib/group-dimensions';
+export { default as ListGroupDimensions } from './ListGroupDimensions';

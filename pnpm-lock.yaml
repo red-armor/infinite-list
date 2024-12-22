@@ -394,7 +394,50 @@ importers:
         specifier: ^0.1.16
         version: 0.1.35
 
-  model/group-dimensions: {}
+  model/group-dimensions:
+    dependencies:
+      '@infinite-list/base-dimensions':
+        specifier: workspace:*
+        version: link:../../core/base-dimensions
+      '@infinite-list/dimension':
+        specifier: workspace:*
+        version: link:../dimension
+      '@infinite-list/item-meta':
+        specifier: workspace:*
+        version: link:../../core/item-meta
+      '@infinite-list/items-dimensions':
+        specifier: workspace:*
+        version: link:../items-dimensions
+      '@infinite-list/state':
+        specifier: workspace:*
+        version: link:../../core/state
+      '@infinite-list/strategies':
+        specifier: workspace:*
+        version: link:../../core/strategies
+      '@infinite-list/utils':
+        specifier: workspace:*
+        version: link:../../core/utils
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/default-boolean-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/find-last-index':
+        specifier: ^0.1.34
+        version: 0.1.35
+      '@x-oasis/is-clamped':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/layout-equal':
+        specifier: ^0.1.16
+        version: 0.1.35
+      '@x-oasis/prefix-interval-tree':
+        specifier: ^0.2.4
+        version: 0.2.4
+      '@x-oasis/shallow-array-equal':
+        specifier: ^0.1.14
+        version: 0.1.35
 
   model/items-dimensions:
     dependencies:

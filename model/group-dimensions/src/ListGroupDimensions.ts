@@ -1,17 +1,22 @@
 import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import Dimension from './Dimension';
-import ItemMeta from './ItemMeta';
-import ItemsDimensions from './ItemsDimensions';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+// import Dimension from './Dimension';
+// import ItemMeta from './ItemMeta';
+// import ItemsDimensions from './ItemsDimensions';
+import { Dimension } from '@infinite-list/dimension';
+import { ItemMeta } from '@infinite-list/item-meta';
+import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import { BaseImpl } from '@infinite-list/strategies';
+import { log } from '@infinite-list/utils';
+import { createStore } from '@infinite-list/state';
+
 import ListDimensionsModel from './ListDimensionsModel';
 import {
   ListGroupIndexInfo,
-  ItemLayout,
-  KeysChangedType,
   ListGroupDimensionsProps,
   ListRangeResult,
-  OnEndReached,
   ScrollMetrics,
   KeyToOnEndReachedMap,
   RegisteredListProps,
@@ -19,13 +24,17 @@ import {
   DimensionsIndexRange,
   GenericItemT,
   ListGroupChildDimensions,
-  IndexToOffsetMap,
 } from './types';
-import BaseImpl from './strategies/BaseImpl';
+import { KeysChangedType } from '@infinite-list/base-dimensions';
+import { OnEndReached, OnEndReachedHelper } from '@infinite-list/viewable';
+import { ItemLayout, IndexToOffsetMap } from '@infinite-list/dimensions-model';
+
+// import BaseImpl from './strategies/BaseImpl';
 import Inspector from './Inspector';
-import { info } from './utils/logger';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import createStore from './state/createStore';
+// import { info } from './utils/logger';
+// import createStore from './state/createStore';
+
+const info = log.info;
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -456,6 +465,7 @@ class ListGroupDimensions<
     // should update indexKeys first !!!
     const dimensions = new ListDimensionsModel({
       id: listKey,
+      // @ts-ignore [TODO]
       container: this,
       horizontal: this.getHorizontal(),
       isFixedLength: this._isFixedLength,
@@ -470,7 +480,7 @@ class ListGroupDimensions<
 
     dimensions.applyInitialData();
 
-    let onEndReachedCleaner;
+    let onEndReachedCleaner: Function;
 
     if (listDimensionsProps.onEndReached) {
       onEndReachedCleaner = this.addOnEndReached(

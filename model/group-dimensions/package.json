@@ -1,7 +1,22 @@
 {
   "name": "@infinite-list/group-dimensions",
   "version": "0.0.1",
-  "dependencies": {},
+  "dependencies": {
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/default-boolean-value": "^0.1.14",
+    "@x-oasis/find-last-index": "^0.1.34",
+    "@x-oasis/is-clamped": "^0.1.14",
+    "@x-oasis/layout-equal": "^0.1.16",
+    "@x-oasis/prefix-interval-tree": "^0.2.4",
+    "@x-oasis/shallow-array-equal": "^0.1.14",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/base-dimensions": "workspace:*",
+    "@infinite-list/items-dimensions": "workspace:*",
+    "@infinite-list/dimension": "workspace:*",
+    "@infinite-list/strategies": "workspace:*",
+    "@infinite-list/state": "workspace:*",
+    "@infinite-list/utils": "workspace:*"
+  },
   "main": "./index.cjs",
   "module": "./index.js"
 }

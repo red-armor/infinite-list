@@ -1,0 +1,3 @@
+export const DEFAULT_ITEM_APPROXIMATE_LENGTH = 80;
+export const LAYOUT_EQUAL_CORRECTION_VALUE = 0.5;
+export const DEFAULT_RECYCLER_TYPE = '__default_recycler_buffer__';
