@@ -3,6 +3,7 @@
     "baseUrl": "./",
     "rootDir": "./",
     "target": "ES2015",
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
     "module": "commonjs",
@@ -27,6 +28,7 @@
       "@infinite-list/masonry": ["ui/masonry/src/index.ts"],
       "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
       "@infinite-list/scroller/web": ["ui/scroller/src/web"],
+      "@infinite-list/utils": ["core/utils/src/index.ts"],
       "@infinite-list/viewable": ["core/viewable/src/index.ts"]
     }
   },

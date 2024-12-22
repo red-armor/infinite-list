@@ -265,6 +265,12 @@ importers:
         specifier: ^0.1.14
         version: 0.1.35
 
+  core/utils:
+    dependencies:
+      '@x-oasis/batchinate-last':
+        specifier: ^0.1.14
+        version: 0.1.35
+
   core/viewable:
     dependencies:
       '@x-oasis/batchinator':

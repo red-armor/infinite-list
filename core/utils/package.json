@@ -1,0 +1,9 @@
+{
+  "name": "@infinite-list/utils",
+  "version": "0.0.1",
+  "dependencies": {
+    "@x-oasis/batchinate-last": "^0.1.14"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}
