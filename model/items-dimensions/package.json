@@ -1,0 +1,15 @@
+{
+  "name": "@infinite-list/items-dimensions",
+  "version": "0.0.1",
+  "dependencies": {
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/layout-equal": "^0.1.16",
+    "@x-oasis/select-value": "^0.1.14",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/utils": "workspace:*",
+    "@infinite-list/viewable": "workspace:*",
+    "@infinite-list/container": "workspace:*"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

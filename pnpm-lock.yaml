@@ -286,6 +286,30 @@ importers:
         specifier: ^0.1.14
         version: 0.1.35
 
+  model/items-dimensions:
+    dependencies:
+      '@infinite-list/container':
+        specifier: workspace:*
+        version: link:../../core/container
+      '@infinite-list/item-meta':
+        specifier: workspace:*
+        version: link:../../core/item-meta
+      '@infinite-list/utils':
+        specifier: workspace:*
+        version: link:../../core/utils
+      '@infinite-list/viewable':
+        specifier: workspace:*
+        version: link:../../core/viewable
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/layout-equal':
+        specifier: ^0.1.16
+        version: 0.1.35
+      '@x-oasis/select-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+
   packages/benchmark:
     devDependencies:
       rimraf:

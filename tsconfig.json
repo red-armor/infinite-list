@@ -24,6 +24,9 @@
       "@infinite-list/container": ["core/container/src/index.ts"],
       "@infinite-list/group": ["ui/group/src/index.ts"],
       "@infinite-list/item-meta": ["core/item-meta/src/index.ts"],
+      "@infinite-list/items-dimensions": [
+        "model/items-dimensions/src/index.ts"
+      ],
       "@infinite-list/list": ["ui/list/src/index.ts"],
       "@infinite-list/masonry": ["ui/masonry/src/index.ts"],
       "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
