@@ -1,1 +1,1 @@
-export * from './lib/viewable';
+export { default as ViewabilityItemMeta } from './ViewabilityItemMeta';

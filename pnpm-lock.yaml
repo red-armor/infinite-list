@@ -258,6 +258,18 @@ importers:
 
   core/viewable:
     dependencies:
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/is-clamped':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/resolve-changed':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/unique-array-object':
+        specifier: ^0.1.14
+        version: 0.1.35
       tslib:
         specifier: ^2.3.0
         version: 2.8.1

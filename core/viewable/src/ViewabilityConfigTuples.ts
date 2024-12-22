@@ -5,10 +5,11 @@ import {
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
   ViewabilityScrollMetrics,
-} from '../types';
+} from './types';
 import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
-import ItemMeta from '../ItemMeta';
+// TODO ------
+import { ItemMeta } from './types';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
 
 class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
@@ -118,6 +119,7 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
       [key: string]: boolean;
     }>((value, helper) => {
       const falsy = helper.checkItemViewability(
+        // @ts-ignore [TODO]
         itemMeta,
         viewabilityScrollMetrics,
         getItemOffset

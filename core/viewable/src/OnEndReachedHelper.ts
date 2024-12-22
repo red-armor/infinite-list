@@ -3,13 +3,13 @@ import {
   ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD,
   ON_END_REACHED_THRESHOLD,
   ON_END_REACHED_TIMEOUT_THRESHOLD,
-} from '../common';
+} from './common';
 import {
   OnEndReached,
   OnEndReachedHelperProps,
   ScrollMetrics,
   SendOnEndReachedDistanceFromBottomStack,
-} from '../types';
+} from './types';
 import isClamped from '@x-oasis/is-clamped';
 
 class OnEndReachedHelper {

@@ -10,7 +10,7 @@ import {
   ViewabilityConfigCallbackPair,
   VisiblePercentModeConfig,
   ViewabilityHelperChangedToken,
-} from '../types';
+} from './types';
 import { isItemViewable } from './viewabilityUtils';
 
 const createChangedToken = (opts: {
@@ -237,6 +237,7 @@ class ViewablityHelper {
       });
     });
 
+    // @ts-ignore [TODO]
     for (const [itemMeta, state] of itemMetaStateMap) {
       // @ts-ignore TODO, should reconsider.
       // it only used for itemDimensions.....
