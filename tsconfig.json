@@ -45,6 +45,7 @@
       ],
       "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
       "@infinite-list/scroller/web": ["ui/scroller/src/web"],
+      "@infinite-list/strategies": ["core/strategies/src/index.ts"],
       "@infinite-list/types": ["core/types/src/index.ts"],
       "@infinite-list/utils": ["core/utils/src/index.ts"],
       "@infinite-list/viewable": ["core/viewable/src/index.ts"]
