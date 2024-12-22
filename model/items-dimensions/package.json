@@ -8,7 +8,8 @@
     "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/utils": "workspace:*",
     "@infinite-list/viewable": "workspace:*",
-    "@infinite-list/container": "workspace:*"
+    "@infinite-list/container": "workspace:*",
+    "@infinite-list/base-dimensions": "workspace:*"
   },
   "main": "./index.cjs",
   "module": "./index.js"

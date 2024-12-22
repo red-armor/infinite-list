@@ -1,7 +1,7 @@
 import Batchinator from '@x-oasis/batchinator';
 import layoutEqual from '@x-oasis/layout-equal';
 import { ItemMeta } from '@infinite-list/item-meta';
-import BaseDimensions from './BaseDimensions';
+import { BaseDimensions } from '@infinite-list/base-dimensions';
 import SortedItems from './SortedItems';
 
 import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
