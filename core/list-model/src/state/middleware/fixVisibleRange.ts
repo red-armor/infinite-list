@@ -4,7 +4,8 @@ import ListGroupDimensions from '../../ListGroupDimensions';
 import ListDimensions from '../../ListDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
 // import { isValidMetaLayout } from '../../ItemMeta';
-import { info } from '../../utils/logger';
+// import { info } from '../../utils/logger';
+import { log } from '@infinite-list/utils';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -54,7 +55,7 @@ export default <State extends ReducerResult = ReducerResult>(
     }
 
     if (ctx.visibleIndexRange.endIndex !== nextStartIndex) {
-      info(
+      log.info(
         'middleware fixVisibleRange endIndex set from ',
         endIndex,
         ' to ',

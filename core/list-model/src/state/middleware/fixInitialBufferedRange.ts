@@ -3,8 +3,8 @@ import ListDimensionsModel from '../../ListDimensionsModel';
 import ListDimensions from '../../ListDimensions';
 import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
-import { isValidMetaLayout } from '../../ItemMeta';
-import { info } from '../../utils/logger';
+import { isValidMetaLayout } from '@infinite-list/item-meta';
+import { log } from '@infinite-list/utils';
 
 // recalculate buffer
 export default <State extends ReducerResult = ReducerResult>(
@@ -82,7 +82,7 @@ export default <State extends ReducerResult = ReducerResult>(
         break;
       }
     }
-    info('fixInitialBufferedRange ', _nextBufferedEndIndex);
+    log.info('fixInitialBufferedRange ', _nextBufferedEndIndex);
     ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   }
 };

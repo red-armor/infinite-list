@@ -10,23 +10,34 @@ import {
 } from '../common';
 import {
   ListBaseDimensionsProps,
-  OnEndReached,
   ScrollMetrics,
   ItemLayout,
   StateListener,
   ListBaseDimensionsStore,
   GenericItemT,
-  IndexInfo,
+  // IndexInfo,
   IndexToOffsetMap,
   ListStateResult,
 } from '../types';
-import ListSpyUtils from '../utils/ListSpyUtils';
-import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
-import EnabledSelector from '../utils/EnabledSelector';
-import StillnessHelper from '../utils/StillnessHelper';
-import ViewabilityConfigTuples from '../viewable/ViewabilityConfigTuples';
+import { IndexInfo } from '@infinite-list/item-meta';
+import { OnEndReached } from '@infinite-list/viewable';
+import {
+  ListSpyUtils,
+  EnabledSelector,
+  StillnessHelper,
+} from '@infinite-list/utils';
+import {
+  OnEndReachedHelper,
+  ViewabilityConfigTuples,
+} from '@infinite-list/viewable';
+import { BaseLayout } from '@infinite-list/base-dimensions';
+// import ListSpyUtils from '../utils/ListSpyUtils';
+// import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
+// import EnabledSelector from '../utils/EnabledSelector';
+// import StillnessHelper from '../utils/StillnessHelper';
+// import ViewabilityConfigTuples from '../viewable/ViewabilityConfigTuples';
 
-import BaseLayout from '../BaseLayout';
+// import BaseLayout from '../BaseLayout';
 import StateHub from './StateHub';
 import { ReducerResult } from '../state/types';
 

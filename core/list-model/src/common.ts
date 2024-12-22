@@ -17,3 +17,4 @@ export const buildStateTokenIndexKey = (startIndex: number, endIndex: number) =>
   `space_${startIndex}_${endIndex}`;
 export const RECYCLER_BUFFER_SIZE = 40;
 export const RECYCLER_RESERVED_BUFFER_PER_BATCH = 20;
+export const INVALID_LENGTH = 'invalid_length';
