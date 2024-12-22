@@ -35,7 +35,6 @@
       ],
       "@infinite-list/list": ["ui/list/src/index.ts"],
       "@infinite-list/list-dimensions": ["model/list-dimensions/src/index.ts"],
-      "@infinite-list/list-model": ["core/list-model/src/index.ts"],
       "@infinite-list/masonry": ["ui/masonry/src/index.ts"],
       "@infinite-list/masonry-dimensions": [
         "model/masonry-dimensions/src/index.ts"

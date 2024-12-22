@@ -1,6 +1,8 @@
-import ListDimensions from '../ListDimensions';
-import ListGroupDimensions from '../ListGroupDimensions';
-import { ScrollMetrics } from '../types';
+// import ListDimensions from '../ListDimensions';
+// import ListGroupDimensions from '../ListGroupDimensions';
+
+import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
+import { ScrollMetrics } from './scrollMetrics.types';
 
 export type ReducerResult = {
   visibleStartIndex: number;
@@ -13,7 +15,7 @@ export type ReducerResult = {
 };
 
 export type ActionPayload = {
-  dimension: ListDimensions | ListGroupDimensions;
+  dimension: IListDimensions | IListGroupDimensions;
   scrollMetrics: ScrollMetrics;
   isEndReached: boolean;
   distanceFromEnd: number;
@@ -30,7 +32,7 @@ export enum ActionType {
 export type RawAction = {
   type: ActionType; // 应用触底了，但是List仍旧有数据没有渲染
   payload: {
-    dimension: ListDimensions | ListGroupDimensions;
+    dimension: IListDimensions | IListGroupDimensions;
     scrollMetrics: ScrollMetrics;
   };
 };
@@ -44,7 +46,7 @@ export type Reducer<State> = (state: State, action: Action) => State;
 
 type Dispatch<State> = (action: Action) => State;
 type DispatchMetrics<State> = (props: {
-  dimension: ListDimensions | ListGroupDimensions;
+  dimension: IListDimensions | IListGroupDimensions;
   scrollMetrics: ScrollMetrics;
 }) => State;
 

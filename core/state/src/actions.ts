@@ -1,16 +1,17 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import ListDimensions from '../ListDimensions';
-import { INVALID_LENGTH } from '../common';
-import { ScrollMetrics } from '../types';
-import { Action, ActionType, ReducerResult } from './types';
+// import ListDimensions from '../ListDimensions';
+import { INVALID_LENGTH } from './common';
+import { ScrollMetrics } from './types';
+import { Action, ActionType, ReducerResult } from './types/types';
 import defaultValue from '@x-oasis/default-value';
-import ListGroupDimensions from '../ListGroupDimensions';
+// import ListGroupDimensions from '../ListGroupDimensions';
+import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
 
 export const resolveAction = <State extends ReducerResult = ReducerResult>(
   state: State,
   props: {
     scrollMetrics: ScrollMetrics;
-    dimension: ListDimensions | ListGroupDimensions;
+    dimension: IListDimensions | IListGroupDimensions;
   },
   ctx: {
     dataLength: number;

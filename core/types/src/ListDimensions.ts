@@ -10,6 +10,38 @@ export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
     itemKey: string,
     listKey: string
   ) => ListIndexInfo<ItemT>;
+
+  /**
+   * for state start
+   */
+  getDataLength(): number;
+  initialNumToRender: number;
+  getTotalLength(): number;
+  getBufferSize(): number;
+  computeIndexRange(
+    minOffset: number,
+    maxOffset: number
+  ): {
+    startIndex: number;
+    endIndex: number;
+  };
+  // inherit from BaseLayout
+  resolveOffsetRange(
+    minOffset: number,
+    maxOffset: number,
+    exclusive?: boolean
+  ): {
+    minOffset: number;
+    maxOffset: number;
+  };
+
+  getContainerOffset(): number;
+  hasUnLayoutItems(): boolean;
+  getOnEndReachedHelper(): IOnEndReachedHelper;
+
+  /**
+   * for state end
+   */
 }
 
 export type ListIndexInfo<ItemT extends GenericItemT = GenericItemT> = {

@@ -1,1 +1,1 @@
-export * from './lib/state';
+export { default as createStore } from './createStore';

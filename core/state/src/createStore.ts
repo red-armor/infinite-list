@@ -1,9 +1,11 @@
-import ListDimensions from '../ListDimensions';
-import ListGroupDimensions from '../ListGroupDimensions';
-import { ScrollMetrics } from '../types';
+// import ListDimensions from '../ListDimensions';
+// import ListGroupDimensions from '../ListGroupDimensions';
+
+import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
+import { ScrollMetrics } from './types';
 import { resolveAction } from './actions';
 import reducer from './reducer';
-import { Action, ActionType, Reducer, ReducerResult } from './types';
+import { Action, ActionType, Reducer, ReducerResult } from './types/types';
 
 function createStore<State extends ReducerResult = ReducerResult>(
   _reducer: Reducer<State> = reducer
@@ -32,7 +34,7 @@ function createStore<State extends ReducerResult = ReducerResult>(
   };
 
   const dispatchMetrics = (props: {
-    dimension: ListDimensions | ListGroupDimensions;
+    dimension: IListDimensions | IListGroupDimensions;
     scrollMetrics: ScrollMetrics;
   }) => {
     const action = resolveAction(currentState, props, storeContext);

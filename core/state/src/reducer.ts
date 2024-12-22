@@ -3,11 +3,17 @@ import hydrateOnEndReached from './middleware/hydrateOnEndReached';
 import makeIndexMeaningful from './middleware/makeIndexMeaningful';
 import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
-import fixVisibleRange from './middleware/fixVisibleRange';
-import fixBufferedRange from './middleware/fixBufferedRange';
-import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
+// import fixVisibleRange from './middleware/fixVisibleRange';
+// import fixBufferedRange from './middleware/fixBufferedRange';
+// import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
 import resolveInitialState from './middleware/resolveInitialState';
-import { Action, ActionPayload, ActionType, Ctx, ReducerResult } from './types';
+import {
+  Action,
+  ActionPayload,
+  ActionType,
+  Ctx,
+  ReducerResult,
+} from './types/types';
 
 const initialize = <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -16,8 +22,8 @@ const initialize = <State extends ReducerResult = ReducerResult>(
   const ctx = {} as Ctx;
   resolveIndexRange(state, payload, ctx);
   hydrateOnEndReached(state, payload, ctx);
-  fixVisibleRange(state, payload, ctx);
-  fixInitialBufferedRange(state, payload, ctx);
+  // fixVisibleRange(state, payload, ctx);
+  // fixInitialBufferedRange(state, payload, ctx);
   resolveInitialState(state, payload);
 
   const {
@@ -49,8 +55,8 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  fixBufferedRange(state, payload, ctx);
-  fixVisibleRange(state, payload, ctx);
+  // fixBufferedRange(state, payload, ctx);
+  // fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -86,8 +92,8 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  fixBufferedRange(state, payload, ctx);
-  fixVisibleRange(state, payload, ctx);
+  // fixBufferedRange(state, payload, ctx);
+  // fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -123,8 +129,8 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  fixBufferedRange(state, payload, ctx);
-  fixVisibleRange(state, payload, ctx);
+  // fixBufferedRange(state, payload, ctx);
+  // fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);
@@ -160,8 +166,8 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
 
   hydrateOnEndReached(state, payload, ctx);
   resolveMaxIndex(state, payload, ctx);
-  fixBufferedRange(state, payload, ctx);
-  fixVisibleRange(state, payload, ctx);
+  // fixBufferedRange(state, payload, ctx);
+  // fixVisibleRange(state, payload, ctx);
 
   // should be the last
   makeIndexMeaningful(state, payload, ctx);

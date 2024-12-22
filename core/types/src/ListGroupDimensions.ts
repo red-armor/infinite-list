@@ -14,6 +14,38 @@ export interface IListGroupDimensions<
     itemKey: string,
     listKey: string
   ) => ListGroupIndexInfo<ItemT> | null;
+
+  /**
+   * for state start
+   */
+  getDataLength(): number;
+  initialNumToRender: number;
+  getTotalLength(): number;
+  getBufferSize(): number;
+  computeIndexRange(
+    minOffset: number,
+    maxOffset: number
+  ): {
+    startIndex: number;
+    endIndex: number;
+  };
+  // inherit from BaseLayout
+  resolveOffsetRange(
+    minOffset: number,
+    maxOffset: number,
+    exclusive?: boolean
+  ): {
+    minOffset: number;
+    maxOffset: number;
+  };
+
+  getContainerOffset(): number;
+  hasUnLayoutItems(): boolean;
+  getOnEndReachedHelper(): IOnEndReachedHelper;
+
+  /**
+   * for state end
+   */
 }
 
 export type ListGroupIndexInfo<ItemT extends GenericItemT = GenericItemT> = {
