@@ -235,6 +235,63 @@ importers:
         specifier: ^1.3.1
         version: 1.6.0(@types/node@18.16.9)(@vitest/ui@1.6.0)(jsdom@22.1.0)
 
+  core/container:
+    dependencies:
+      '@x-oasis/select-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  core/item-meta:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  core/list-model:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  core/viewable:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  model/group-dimensions:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  model/items-dimensions:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  model/list-dimensions:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  model/masonry-dimensions:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
+  model/pseudo-list-dimensions:
+    dependencies:
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+
   packages/benchmark:
     devDependencies:
       rimraf:
@@ -396,21 +453,12 @@ importers:
       '@infinite-list/scroller':
         specifier: workspace:*
         version: link:../scroller
-      '@x-oasis/batchinator':
-        specifier: ^0.1.14
-        version: 0.1.35
-      '@x-oasis/default-boolean-value':
-        specifier: ^0.1.14
-        version: 0.1.35
-      '@x-oasis/default-value':
-        specifier: ^0.1.35
-        version: 0.1.35
-      '@x-oasis/layout-equal':
-        specifier: ^0.1.16
-        version: 0.1.35
-      '@x-oasis/prefix-interval-tree':
-        specifier: ^0.2.4
-        version: 0.2.4
+      react:
+        specifier: 18.2.0
+        version: 18.2.0
+      react-native:
+        specifier: 0.74.1
+        version: 0.74.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0)(@types/react@18.3.1)(react@18.2.0)
 
   ui/scroller:
     dependencies:
