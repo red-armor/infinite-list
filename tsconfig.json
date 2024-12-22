@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
+    "rootDir": "./",
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
@@ -19,10 +20,12 @@
     "paths": {
       "@infinite-list/container": ["core/container/src/index.ts"],
       "@infinite-list/group": ["ui/group/src/index.ts"],
+      "@infinite-list/item-meta": ["core/item-meta/src/index.ts"],
       "@infinite-list/list": ["ui/list/src/index.ts"],
       "@infinite-list/masonry": ["ui/masonry/src/index.ts"],
       "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
-      "@infinite-list/scroller/web": ["ui/scroller/src/web"]
+      "@infinite-list/scroller/web": ["ui/scroller/src/web"],
+      "@infinite-list/viewable": ["core/viewable/src/index.ts"]
     }
   },
   "ts-node": {
