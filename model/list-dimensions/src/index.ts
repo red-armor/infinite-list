@@ -1,1 +1,1 @@
-export * from './lib/list-dimensions';
+export { default as ListDimensions } from './ListDimensions';

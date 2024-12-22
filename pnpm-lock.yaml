@@ -466,7 +466,20 @@ importers:
         specifier: ^0.1.14
         version: 0.1.35
 
-  model/list-dimensions: {}
+  model/list-dimensions:
+    dependencies:
+      '@infinite-list/dimensions-model':
+        specifier: workspace:*
+        version: link:../../core/dimensions-model
+      '@infinite-list/state':
+        specifier: workspace:*
+        version: link:../../core/state
+      '@infinite-list/strategies':
+        specifier: workspace:*
+        version: link:../../core/strategies
+      '@x-oasis/prefix-interval-tree':
+        specifier: ^0.2.4
+        version: 0.2.4
 
   model/masonry-dimensions: {}
 
@@ -5783,7 +5796,9 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
+      - bufferutil
       - supports-color
+      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:

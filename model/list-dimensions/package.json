@@ -1,7 +1,12 @@
 {
   "name": "@infinite-list/list-dimensions",
   "version": "0.0.1",
-  "dependencies": {},
+  "dependencies": {
+    "@infinite-list/dimensions-model": "workspace:*",
+    "@infinite-list/state": "workspace:*",
+    "@infinite-list/strategies": "workspace:*",
+    "@x-oasis/prefix-interval-tree": "^0.2.4"
+  },
   "main": "./index.cjs",
   "module": "./index.js"
 }
