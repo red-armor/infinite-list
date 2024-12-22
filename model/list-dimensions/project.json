@@ -1,0 +1,32 @@
+{
+  "name": "list-dimensions",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "model/list-dimensions/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/model/list-dimensions",
+        "main": "model/list-dimensions/src/index.ts",
+        "tsConfig": "model/list-dimensions/tsconfig.lib.json",
+        "assets": ["model/list-dimensions/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}

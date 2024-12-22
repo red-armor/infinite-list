@@ -1,0 +1,32 @@
+{
+  "name": "masonry-dimensions",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "model/masonry-dimensions/src",
+  "projectType": "library",
+  "release": {
+    "version": {
+      "generatorOptions": {
+        "packageRoot": "dist/{projectRoot}",
+        "currentVersionResolver": "git-tag"
+      }
+    }
+  },
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/model/masonry-dimensions",
+        "main": "model/masonry-dimensions/src/index.ts",
+        "tsConfig": "model/masonry-dimensions/tsconfig.lib.json",
+        "assets": ["model/masonry-dimensions/*.md"]
+      }
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "dist/{projectRoot}"
+      }
+    }
+  }
+}
