@@ -1,5 +1,7 @@
-import BaseDimensions from './BaseDimensions';
-import Dimension from './Dimension';
+// import BaseDimensions from './BaseDimensions';
+// import Dimension from './Dimension';
+import { BaseDimensions, Dimension } from './types';
+
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
 import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import {
@@ -13,7 +15,7 @@ import {
 } from './types';
 import noop from '@x-oasis/noop';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import ViewabilityItemMeta from './viewable/ViewabilityItemMeta';
+import { ViewabilityItemMeta } from '@infinite-list/viewable';
 
 export const isValidMetaLayout = (meta: ItemMeta | null | undefined) =>
   !!(meta && !meta.isApproximateLayout && meta.getLayout());
@@ -192,6 +194,7 @@ class ItemMeta<
 
   getItemOffset(exclusive?: boolean) {
     if (this._isListItem) {
+      // @ts-ignore [TODO]
       const offset = (this._owner as BaseDimensions<ItemT>).getKeyItemOffset(
         this._key,
         exclusive
@@ -200,7 +203,7 @@ class ItemMeta<
       return offset;
     }
 
-    // for dimension
+    // @ts-ignore [TODO] for dimension
     if (this._owner instanceof Dimension) {
       return this._owner.getItemOffset();
     }

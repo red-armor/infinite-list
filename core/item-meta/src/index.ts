@@ -1,1 +1,1 @@
-export * from './lib/item-meta';
+export { default as ItemMeta } from './ItemMeta';
