@@ -1,15 +1,14 @@
-import BaseImpl from '../strategies/BaseImpl';
+import { BaseImpl } from '@infinite-list/strategies';
+import { ItemLayout, IndexToOffsetMap } from '@infinite-list/dimensions-model';
+
 import {
-  ItemLayout,
   GenericItemT,
   ScrollMetrics,
   MasonryIndexInfo,
-  IndexToOffsetMap,
   MasonryDimensionStrategyProps,
-} from '@infinite-list/data-model';
+} from './types';
 import MasonryDimensionsModel from './MasonryDimensionsModel';
-import { ReducerResult } from '../state/types';
-import createStore from '../state/createStore';
+import { ReducerResult, createStore } from '@infinite-list/state';
 
 /**
  * a lite ListDimensionsModel version

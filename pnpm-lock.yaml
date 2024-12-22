@@ -481,7 +481,32 @@ importers:
         specifier: ^0.2.4
         version: 0.2.4
 
-  model/masonry-dimensions: {}
+  model/masonry-dimensions:
+    dependencies:
+      '@infinite-list/dimensions-model':
+        specifier: workspace:*
+        version: link:../../core/dimensions-model
+      '@infinite-list/state':
+        specifier: workspace:*
+        version: link:../../core/state
+      '@infinite-list/strategies':
+        specifier: workspace:*
+        version: link:../../core/strategies
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/default-boolean-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/default-value':
+        specifier: ^0.1.35
+        version: 0.1.35
+      '@x-oasis/layout-equal':
+        specifier: ^0.1.16
+        version: 0.1.35
+      '@x-oasis/prefix-interval-tree':
+        specifier: ^0.2.4
+        version: 0.2.4
 
   model/pseudo-list-dimensions: {}
 
@@ -5796,9 +5821,7 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
-      - bufferutil
       - supports-color
-      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:

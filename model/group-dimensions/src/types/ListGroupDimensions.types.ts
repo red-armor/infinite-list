@@ -4,7 +4,7 @@ import {
   OnEndReachedHelperProps,
   ViewabilityConfigTuplesProps,
 } from '@infinite-list/viewable';
-import ListDimensionsModel from '../ListDimensionsModel';
+import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
 
 import { Dimension, DimensionProps } from '@infinite-list/dimension';

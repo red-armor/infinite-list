@@ -1,6 +1,9 @@
-import { GenericItemT, KeysChangedType } from '../types';
+import { GenericItemT } from './types';
+import { KeysChangedType } from '@infinite-list/base-dimensions';
+
 import MasonryDimensionsModel from './MasonryDimensionsModel';
-import KeyIndexManager from '../utils/KeyIndexManager';
+// import KeyIndexManager from '../utils/KeyIndexManager';
+import { KeyIndexManager } from '@infinite-list/utils';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 
 /**

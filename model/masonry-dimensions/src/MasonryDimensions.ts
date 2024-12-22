@@ -1,22 +1,26 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import Batchinator from '@x-oasis/batchinator';
+import { ListDimensionsModel } from '@infinite-list/dimensions-model';
+
 import {
   GenericItemT,
-  ItemLayout,
-  KeysChangedType,
   MasonryDimensionsProps,
   MasonryIndexInfo,
   MasonryStateListener,
   ScrollMetrics,
   DimensionsModelContainer,
-  ListDimensionsModel,
-  DISPATCH_METRICS_THRESHOLD,
-} from '@infinite-list/data-model';
+} from './types';
+import { ItemLayout } from '@infinite-list/dimensions-model';
+
+import { KeysChangedType } from '@infinite-list/base-dimensions';
+
 import MasonryDimensionsModel from './MasonryDimensionsModel';
-import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
+// import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
+import { OnEndReachedHelper } from '@infinite-list/viewable';
 
 import { chunkifyDataSource } from './utils';
 
+import { DISPATCH_METRICS_THRESHOLD } from './common';
 const DEFAULT_MASONRY_COLUMN = 2;
 let count = 0;
 
@@ -72,9 +76,11 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
 
     this._dataModel = new MasonryDimensionsModel({
       column: DEFAULT_MASONRY_COLUMN,
+      // @ts-ignore [TODO]
       container: this,
       recycleEnabled: true,
       manuallyApplyInitialData: true,
+      // @ts-ignore [TODO]
       onListDimensionsModelDataChanged:
         this.onListDimensionsModelDataChanged.bind(this),
       ...props,

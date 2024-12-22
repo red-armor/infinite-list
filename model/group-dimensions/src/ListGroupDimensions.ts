@@ -12,7 +12,9 @@ import { BaseImpl } from '@infinite-list/strategies';
 import { log } from '@infinite-list/utils';
 import { createStore } from '@infinite-list/state';
 
-import ListDimensionsModel from './ListDimensionsModel';
+// import ListDimensionsModel from './ListDimensionsModel';
+import { ListDimensionsModel } from '@infinite-list/dimensions-model';
+
 import {
   ListGroupIndexInfo,
   ListGroupDimensionsProps,
@@ -26,7 +28,7 @@ import {
   ListGroupChildDimensions,
 } from './types';
 import { KeysChangedType } from '@infinite-list/base-dimensions';
-import { OnEndReached, OnEndReachedHelper } from '@infinite-list/viewable';
+import { OnEndReached } from '@infinite-list/viewable';
 import { ItemLayout, IndexToOffsetMap } from '@infinite-list/dimensions-model';
 
 // import BaseImpl from './strategies/BaseImpl';

@@ -1,7 +1,16 @@
 {
   "name": "@infinite-list/masonry-dimensions",
   "version": "0.0.1",
-  "dependencies": {},
+  "dependencies": {
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/default-boolean-value": "^0.1.14",
+    "@x-oasis/default-value": "^0.1.35",
+    "@x-oasis/layout-equal": "^0.1.16",
+    "@x-oasis/prefix-interval-tree": "^0.2.4",
+    "@infinite-list/dimensions-model": "workspace:*",
+    "@infinite-list/state": "workspace:*",
+    "@infinite-list/strategies": "workspace:*"
+  },
   "main": "./index.cjs",
   "module": "./index.js"
 }
