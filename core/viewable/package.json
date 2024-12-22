@@ -5,7 +5,9 @@
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/is-clamped": "^0.1.14",
     "@x-oasis/resolve-changed": "^0.1.14",
-    "@x-oasis/unique-array-object": "^0.1.14",
+    "@x-oasis/unique-array-object": "^0.1.14"
+  },
+  "devDependencies": {
     "tslib": "^2.3.0"
   },
   "type": "commonjs",

@@ -329,6 +329,7 @@ importers:
       '@x-oasis/unique-array-object':
         specifier: ^0.1.14
         version: 0.1.35
+    devDependencies:
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -341,6 +342,28 @@ importers:
 
   model/items-dimensions:
     dependencies:
+      '@infinite-list/container':
+        specifier: workspace:*
+        version: link:../../core/container
+      '@infinite-list/item-meta':
+        specifier: workspace:*
+        version: link:../../core/item-meta
+      '@infinite-list/utils':
+        specifier: workspace:*
+        version: link:../../core/utils
+      '@infinite-list/viewable':
+        specifier: workspace:*
+        version: link:../../core/viewable
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/layout-equal':
+        specifier: ^0.1.16
+        version: 0.1.35
+      '@x-oasis/select-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+    devDependencies:
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -5674,9 +5697,7 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
-      - bufferutil
       - supports-color
-      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:

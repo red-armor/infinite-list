@@ -1,1 +1,1 @@
-export { default as ItemsDimensions } from './lib/ItemsDimensions';
+export { default as ItemsDimensions } from './ItemsDimensions';
