@@ -23,6 +23,7 @@
     "paths": {
       "@infinite-list/base-dimensions": ["core/base-dimensions/src/index.ts"],
       "@infinite-list/container": ["core/container/src/index.ts"],
+      "@infinite-list/dimension": ["model/dimension/src/index.ts"],
       "@infinite-list/group": ["ui/group/src/index.ts"],
       "@infinite-list/group-dimensions": [
         "model/group-dimensions/src/index.ts"

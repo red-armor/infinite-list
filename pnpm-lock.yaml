@@ -337,6 +337,26 @@ importers:
         specifier: ^0.1.14
         version: 0.1.35
 
+  model/dimension:
+    dependencies:
+      '@infinite-list/container':
+        specifier: workspace:*
+        version: link:../../core/container
+      '@infinite-list/item-meta':
+        specifier: workspace:*
+        version: link:../../core/item-meta
+      '@x-oasis/default-boolean-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/is-object':
+        specifier: ^0.1.35
+        version: 0.1.35
+      '@x-oasis/layout-equal':
+        specifier: ^0.1.16
+        version: 0.1.35
+
+  model/group-dimensions: {}
+
   model/items-dimensions:
     dependencies:
       '@infinite-list/base-dimensions':
@@ -363,6 +383,12 @@ importers:
       '@x-oasis/select-value':
         specifier: ^0.1.14
         version: 0.1.35
+
+  model/list-dimensions: {}
+
+  model/masonry-dimensions: {}
+
+  model/pseudo-list-dimensions: {}
 
   packages/benchmark:
     devDependencies:
