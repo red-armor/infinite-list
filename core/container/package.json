@@ -2,16 +2,8 @@
   "name": "@infinite-list/container",
   "version": "0.0.1",
   "dependencies": {
-    "@x-oasis/select-value": "^0.1.14",
-    "tslib": "^2.3.0"
+    "@x-oasis/select-value": "^0.1.14"
   },
-  "type": "commonjs",
-  "main": "./src/index.ts",
-  "typings": "./src/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./src/types/index.ts",
-      "default": "./src/index.ts"
-    }
-  }
+  "main": "./index.cjs",
+  "module": "./index.js"
 }

@@ -1,5 +1,0 @@
-export const ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD = 2000;
-// 建议 ON_END_REACHED_THRESHOLD * VisibleLength > MAX_TO_RENDER_PER_BATCH * itemLength
-// 这样可以在滚动停止的时候，自动获取一屏幕
-export const ON_END_REACHED_THRESHOLD = 2;
-export const ON_END_REACHED_TIMEOUT_THRESHOLD = 200;

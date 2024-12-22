@@ -13,16 +13,6 @@
   },
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/core/container",
-        "main": "core/container/src/index.ts",
-        "tsConfig": "core/container/tsconfig.lib.json",
-        "assets": ["core/container/*.md"]
-      }
-    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

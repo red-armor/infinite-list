@@ -1,6 +1,0 @@
-export const INITIAL_NUM_TO_RENDER = 10;
-export const MAX_TO_RENDER_PER_BATCH = 10;
-export const WINDOW_SIZE = 5;
-export const RECYCLER_RESERVED_BUFFER_PER_BATCH = 20;
-export const LENGTH_PRECISION = 4;
-export const ITEM_OFFSET_BEFORE_LAYOUT_READY = -4000;
