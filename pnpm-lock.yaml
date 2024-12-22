@@ -283,6 +283,39 @@ importers:
         specifier: ^0.1.14
         version: 0.1.35
 
+  core/list-model:
+    dependencies:
+      '@infinite-list/base-dimensions':
+        specifier: workspace:*
+        version: link:../base-dimensions
+      '@infinite-list/item-meta':
+        specifier: workspace:*
+        version: link:../item-meta
+      '@infinite-list/viewable':
+        specifier: workspace:*
+        version: link:../viewable
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/default-boolean-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/default-value':
+        specifier: ^0.1.35
+        version: 0.1.35
+      '@x-oasis/is-clamped':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/layout-equal':
+        specifier: ^0.1.16
+        version: 0.1.35
+      '@x-oasis/prefix-interval-tree':
+        specifier: ^0.2.4
+        version: 0.2.4
+      '@x-oasis/recycler':
+        specifier: ^0.1.37
+        version: 0.1.38
+
   core/utils:
     dependencies:
       '@x-oasis/batchinate-last':
