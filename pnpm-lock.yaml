@@ -267,6 +267,9 @@ importers:
 
   core/item-meta:
     dependencies:
+      '@infinite-list/dimension':
+        specifier: workspace:*
+        version: link:../../model/dimension
       '@infinite-list/viewable':
         specifier: workspace:*
         version: link:../viewable

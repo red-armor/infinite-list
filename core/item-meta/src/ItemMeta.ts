@@ -2,6 +2,8 @@
 // import Dimension from './Dimension';
 
 import { BaseDimensions } from './types';
+// @ts-ignore
+// import { Dimension } from '@infinite-list/dimension'
 
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
 import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
@@ -203,8 +205,11 @@ class ItemMeta<
 
       return offset;
     }
-    // @ts-ignore [TODO]
-    if (this._owner instanceof Dimension) {
+
+    // [TODO]: temp remove instanceof logic, it may cause circular dependency
+    // `item-meta:build --> dimension:build --> item-meta:build`
+    // if (this._owner instanceof Dimension) {
+    if (this._owner?.getItemOffset) {
       return this._owner.getItemOffset();
     }
 
