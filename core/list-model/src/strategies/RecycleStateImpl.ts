@@ -1,4 +1,5 @@
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
+import { ItemMeta } from '@infinite-list/item-meta';
 // import memoizeOne from 'memoize-one';
 import {
   buildStateTokenIndexKey,
@@ -16,7 +17,7 @@ import {
   RecycleStateImplProps,
   ListGroupIndexInfo,
 } from '../types';
-import ItemMeta from '../ItemMeta';
+
 import { resolveToken } from './utils';
 import BaseState from './BaseState';
 import * as log from '../utils/logger';

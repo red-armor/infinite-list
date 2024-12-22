@@ -1,5 +1,6 @@
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import { ItemMeta } from '@infinite-list/item-meta';
 
 import {
   isEmpty,
@@ -24,7 +25,7 @@ import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
 import EnabledSelector from '../utils/EnabledSelector';
 import StillnessHelper from '../utils/StillnessHelper';
 import ViewabilityConfigTuples from '../viewable/ViewabilityConfigTuples';
-import ItemMeta from '../ItemMeta';
+
 import BaseLayout from '../BaseLayout';
 import StateHub from './StateHub';
 import { ReducerResult } from '../state/types';

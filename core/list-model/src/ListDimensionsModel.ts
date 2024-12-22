@@ -2,7 +2,7 @@ import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import layoutEqual from '@x-oasis/layout-equal';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import BaseDimensions from './BaseDimensions';
-import ItemMeta from './ItemMeta';
+import { ItemMeta } from '@infinite-list/item-meta';
 import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
