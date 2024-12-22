@@ -1,1 +1,1 @@
-export * from './lib/masonry-dimensions';
+export { default as MasonryDimensions } from './MasonryDimensions';
