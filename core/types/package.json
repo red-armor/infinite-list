@@ -1,0 +1,9 @@
+{
+  "name": "@infinite-list/types",
+  "version": "0.0.1",
+  "dependencies": {
+    "@x-oasis/batchinator": "^0.1.14"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

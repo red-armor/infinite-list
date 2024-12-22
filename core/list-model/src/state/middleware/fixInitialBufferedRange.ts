@@ -1,6 +1,7 @@
 import Dimension from '../../Dimension';
 import ListDimensionsModel from '../../ListDimensionsModel';
-import ListDimensions from '../../ListDimensions';
+// import ListDimensions from '../../ListDimensions';
+import { IListDimensions } from '@infinite-list/types';
 import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '../types';
 import { isValidMetaLayout } from '@infinite-list/item-meta';
@@ -66,7 +67,7 @@ export default <State extends ReducerResult = ReducerResult>(
     ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   }
 
-  if (dimension instanceof ListDimensions) {
+  if (dimension instanceof IListDimensions) {
     let count = 0;
     for (
       let startIndex = visibleIndexRange.startIndex;

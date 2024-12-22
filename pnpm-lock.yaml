@@ -108,6 +108,9 @@ importers:
       '@swc/helpers':
         specifier: ~0.5.11
         version: 0.5.15
+      '@swc/jest':
+        specifier: ~0.2.36
+        version: 0.2.37(@swc/core@1.5.29)
       '@testing-library/jest-native':
         specifier: ~5.4.3
         version: 5.4.3(react-native@0.74.1)(react-test-renderer@18.2.0)(react@18.3.1)
@@ -169,6 +172,9 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@18.16.9)(ts-node@10.9.1)
       jest-environment-jsdom:
+        specifier: ^29.7.0
+        version: 29.7.0
+      jest-environment-node:
         specifier: ^29.7.0
         version: 29.7.0
       jest-react-native:
@@ -265,11 +271,35 @@ importers:
         specifier: ^0.1.14
         version: 0.1.35
 
+  core/dimensions-model:
+    dependencies:
+      '@infinite-list/base-dimensions':
+        specifier: workspace:*
+        version: link:../base-dimensions
+      '@infinite-list/item-meta':
+        specifier: workspace:*
+        version: link:../item-meta
+      '@infinite-list/types':
+        specifier: workspace:*
+        version: link:../types
+      '@infinite-list/viewable':
+        specifier: workspace:*
+        version: link:../viewable
+      '@x-oasis/default-boolean-value':
+        specifier: ^0.1.14
+        version: 0.1.35
+      '@x-oasis/layout-equal':
+        specifier: ^0.1.16
+        version: 0.1.35
+      '@x-oasis/prefix-interval-tree':
+        specifier: ^0.2.4
+        version: 0.2.4
+      '@x-oasis/recycler':
+        specifier: ^0.1.37
+        version: 0.1.38
+
   core/item-meta:
     dependencies:
-      '@infinite-list/dimension':
-        specifier: workspace:*
-        version: link:../../model/dimension
       '@infinite-list/viewable':
         specifier: workspace:*
         version: link:../viewable
@@ -294,6 +324,9 @@ importers:
       '@infinite-list/item-meta':
         specifier: workspace:*
         version: link:../item-meta
+      '@infinite-list/types':
+        specifier: workspace:*
+        version: link:../types
       '@infinite-list/viewable':
         specifier: workspace:*
         version: link:../viewable
@@ -318,6 +351,12 @@ importers:
       '@x-oasis/recycler':
         specifier: ^0.1.37
         version: 0.1.38
+
+  core/types:
+    dependencies:
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
 
   core/utils:
     dependencies:
@@ -5704,7 +5743,9 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
+      - bufferutil
       - supports-color
+      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:

@@ -13,10 +13,7 @@ import {
 import {
   GetItemLayout,
   GetItemSeparatorLength,
-  // IndexInfo,
-  // ItemLayout,
   KeyExtractor,
-  // KeysChangedType,
   ListDimensionsModelProps,
   ListDimensionsModelContainer,
   GenericItemT,
