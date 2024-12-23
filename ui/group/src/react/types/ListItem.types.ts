@@ -1,9 +1,6 @@
-import {
-  ItemMeta,
-  ListGroupDimensions,
-  ListDimensions,
-  GenericItemT,
-} from '@infinite-list/data-model';
+import { ItemMeta, GenericItemT } from '@infinite-list/item-meta';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import React, { CSSProperties, ForwardedRef } from 'react';
 import { LayoutChangeEvent } from 'react-native';
 import { ScrollComponentUseMeasureLayout } from './ListGroup.types';

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useContext, useRef, FC } from 'react';
+import React, { PropsWithChildren, useContext, useRef } from 'react';
 
 import { DefaultItemT, GroupListProps } from '../types';
 import context from './context';

@@ -5,7 +5,7 @@ import React, {
   useState,
   PropsWithChildren,
 } from 'react';
-import { RecycleStateResult } from '@infinite-list/data-model';
+import { RecycleStateResult } from '@infinite-list/strategies';
 import {
   PortalContextProps,
   GroupRecycleContentProps,

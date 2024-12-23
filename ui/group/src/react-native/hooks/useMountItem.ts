@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import context from '../context';
-import { Dimension } from '@infinite-list/data-model';
+import { Dimension } from '@infinite-list/dimension';
 
 // @ts-ignore
 export default (props) => {

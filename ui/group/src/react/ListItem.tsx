@@ -1,4 +1,3 @@
-import shallowEqual from '@x-oasis/shallow-equal';
 import React, {
   ForwardedRef,
   PropsWithChildren,

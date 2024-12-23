@@ -3,7 +3,7 @@ import {
   ViewabilityConfig,
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
-} from '@infinite-list/data-model';
+} from '@infinite-list/viewable';
 import { ComponentType, PropsWithChildren, MutableRefObject } from 'react';
 import { View, LayoutChangeEvent } from 'react-native';
 

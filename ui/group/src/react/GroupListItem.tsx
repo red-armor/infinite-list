@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-import { GenericItemT } from '@infinite-list/data-model';
+import { GenericItemT } from '@infinite-list/types';
 import context from './context';
 import useMountItem from './hooks/useMountItem';
 import { genericMemo, GroupListItemImplProps } from './types';

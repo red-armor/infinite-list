@@ -1,4 +1,4 @@
-import { defaultKeyExtractor } from '@infinite-list/data-model';
+import { defaultKeyExtractor } from '@infinite-list/utils';
 import { useContext, useEffect, useRef } from 'react';
 import context from '../context';
 

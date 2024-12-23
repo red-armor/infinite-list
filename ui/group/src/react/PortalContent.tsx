@@ -6,7 +6,7 @@ import React, {
   PropsWithChildren,
   CSSProperties,
 } from 'react';
-import { GenericItemT, RecycleStateResult } from '@infinite-list/data-model';
+import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
 import {
   PortalContextProps,
   GroupRecycleContentProps,

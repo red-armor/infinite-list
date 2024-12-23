@@ -16,7 +16,6 @@
     }
   },
   "dependencies": {
-    "@infinite-list/data-model": "workspace:*",
     "@infinite-list/scroller": "workspace:*",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/shallow-equal": "^0.1.14"

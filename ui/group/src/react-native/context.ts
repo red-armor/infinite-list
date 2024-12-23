@@ -1,4 +1,4 @@
-import { ListGroupDimensions } from '@infinite-list/data-model';
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { createContext } from 'react';
 import noop from '@x-oasis/noop';
 

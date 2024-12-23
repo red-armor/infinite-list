@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import context from '../context';
-import { Dimension, GenericItemT } from '@infinite-list/data-model';
+import { Dimension, GenericItemT } from '@infinite-list/dimension';
 import { GroupListItemImplProps } from '../types';
 
 export default <ItemT extends GenericItemT>(

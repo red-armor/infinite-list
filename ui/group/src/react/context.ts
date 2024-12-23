@@ -1,4 +1,5 @@
-import { GenericItemT, ListGroupDimensions } from '@infinite-list/data-model';
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import { GenericItemT } from '@infinite-list/item-meta';
 import { createContext } from 'react';
 import noop from '@x-oasis/noop';
 

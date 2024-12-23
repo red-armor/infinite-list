@@ -4,3 +4,4 @@ export { default as ListSpy } from './ListSpy';
 export { default as ListSpyUtils } from './ListSpyUtils';
 export { default as log } from './logger';
 export { default as StillnessHelper } from './StillnessHelper';
+export * from './exportedUtils';

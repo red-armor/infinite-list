@@ -1,4 +1,4 @@
-import { ListGroupDimensions } from '@infinite-list/data-model';
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import React, {
   FC,
   useCallback,

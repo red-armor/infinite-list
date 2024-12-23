@@ -1,7 +1,5 @@
-import {
-  ListDimensionsModelProps,
-  OnEndReachedHelperProps,
-} from '@infinite-list/data-model';
+import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
+import { OnEndReachedHelperProps } from '@infinite-list/viewable';
 import { DefaultItemT } from './ListItem.types';
 
 export interface GroupListProps<ItemT extends DefaultItemT>

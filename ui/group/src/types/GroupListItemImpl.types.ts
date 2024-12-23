@@ -1,4 +1,4 @@
-import { ItemMeta } from '@infinite-list/data-model';
+import { ItemMeta } from '@infinite-list/item-meta';
 import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
 import { ListItemProps, DefaultItemT } from './ListItem.types';
