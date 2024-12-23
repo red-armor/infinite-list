@@ -10,9 +10,9 @@ import {
 } from 'react';
 import {
   GenericItemT,
-  MasonryDimension,
+  MasonryDimensions as MasonryDimension,
   MasonryStateResults,
-} from '@infinite-list/data-model';
+} from '@infinite-list/masonry-dimensions';
 import { ColumnDimensionInfo, MasonryListProps } from './types';
 import ColumnStateRenderer from './ColumnStateRender';
 import { ScrollTracker } from '@infinite-list/scroller/web';

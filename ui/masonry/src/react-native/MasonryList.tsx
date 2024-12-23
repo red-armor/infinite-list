@@ -17,9 +17,9 @@ import {
 } from 'react-native';
 import {
   GenericItemT,
-  MasonryDimension,
+  MasonryDimensions as MasonryDimension,
   MasonryStateResults,
-} from '@infinite-list/data-model';
+} from '@infinite-list/masonry-dimensions';
 import { ColumnDimensionInfo, MasonryListProps } from './types';
 import ColumnStateRenderer from './ColumnStateRender';
 import { ScrollViewContext } from '@infinite-list/scroller/react-native';

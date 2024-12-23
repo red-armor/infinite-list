@@ -16,7 +16,6 @@
     }
   },
   "dependencies": {
-    "@infinite-list/data-model": "workspace:*",
     "@infinite-list/scroller": "workspace:*"
   },
   "publishConfig": {

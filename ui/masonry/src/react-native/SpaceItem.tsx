@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
-import { GenericItemT } from '@infinite-list/data-model';
+import { GenericItemT } from '@infinite-list/item-meta';
 import { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {

@@ -665,9 +665,6 @@ importers:
 
   ui/masonry:
     dependencies:
-      '@infinite-list/data-model':
-        specifier: workspace:*
-        version: link:../../packages/data-model
       '@infinite-list/scroller':
         specifier: workspace:*
         version: link:../scroller

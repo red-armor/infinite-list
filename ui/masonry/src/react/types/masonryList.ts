@@ -1,11 +1,10 @@
 import {
-  GenericItemT,
-  RecycleStateToken,
-  SpaceStateToken,
-  MasonryDimension,
+  MasonryDimensions as MasonryDimension,
   MasonryColumnStateResults,
   MasonryDimensionsModelProps,
-} from '@infinite-list/data-model';
+} from '@infinite-list/masonry-dimensions';
+import { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
+import { GenericItemT } from '@infinite-list/item-meta';
 import { RenderItem } from './list';
 import { ForwardedRef } from 'react';
 

@@ -1,11 +1,8 @@
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
 
 import { GenericItemT } from './generic.types';
-// import { ListDimensionsModelProps } from './ListDimensionsModel.types';
-// import { ListStateResult } from './ListBaseDimensions.types';
 import MasonryDimensionsModel from '../MasonryDimensionsModel';
 import { ListIndexInfo } from '@infinite-list/item-meta';
-// import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 
 import {
   ListStateResult,
