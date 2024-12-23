@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { View, ViewStyle } from 'react-native';
-import { GenericItemT } from '@infinite-list/data-model';
+import { GenericItemT } from '@infinite-list/types';
 import { RecycleItemProps } from './types';
 
 const RecycleItem = <ItemT extends GenericItemT>(

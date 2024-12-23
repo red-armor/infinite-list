@@ -650,9 +650,9 @@ importers:
 
   ui/list:
     dependencies:
-      '@infinite-list/data-model':
+      '@infinite-list/list-dimensions':
         specifier: workspace:*
-        version: link:../../packages/data-model
+        version: link:../../model/list-dimensions
       '@infinite-list/scroller':
         specifier: workspace:*
         version: link:../scroller

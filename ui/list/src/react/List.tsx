@@ -1,10 +1,8 @@
 import { useEffect, useMemo, useState, useRef, CSSProperties } from 'react';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { RecycleStateResult } from '@infinite-list/strategies';
+import { GenericItemT } from '@infinite-list/item-meta';
 import { ListProps } from '../types';
-import {
-  GenericItemT,
-  ListDimensions,
-  RecycleStateResult,
-} from '@infinite-list/data-model';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
 import { ScrollTracker } from '@infinite-list/scroller/web';

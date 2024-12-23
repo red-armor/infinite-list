@@ -6,11 +6,9 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { ListProps } from './types';
-import {
-  ListDimensions,
-  GenericItemT,
-  RecycleStateResult,
-} from '@infinite-list/data-model';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { RecycleStateResult } from '@infinite-list/strategies';
+import { GenericItemT } from '@infinite-list/item-meta';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
 import { ScrollViewContext } from '@infinite-list/scroller/react-native';
