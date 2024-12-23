@@ -35,6 +35,7 @@
       "@infinite-list/types": ["core/types/src/index.ts"],
       "@infinite-list/utils": ["core/utils/src/index.ts"],
       "@infinite-list/viewable": ["core/viewable/src/index.ts"]
-    }
+    },
+    "skipLibCheck": true
   }
 }
