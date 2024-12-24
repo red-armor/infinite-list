@@ -206,7 +206,9 @@
     "which-typed-array": "^1.1.18",
     "word-wrap": "^1.2.5",
     "yallist": "^3.1.1",
-    "yocto-queue": "^0.1.0"
+    "yocto-queue": "^0.1.0",
+    "@infinite-list/list": "workspace:*",
+    "@infinite-list/scroller": "workspace:*"
   },
   "devDependencies": {},
   "scripts": {
