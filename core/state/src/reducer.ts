@@ -12,19 +12,47 @@ import {
   ActionPayload,
   ActionType,
   Ctx,
+  Enhancer,
   ReducerResult,
+  HydrationWithBatchUpdate,
+  Initial,
+  Recalculate,
+  ScrollDown,
+  ScrollUp,
 } from './types/types';
+import { ReducerAtom } from './types';
 
 const initialize = <State extends ReducerResult = ReducerResult>(
   state: State,
-  payload: ActionPayload
+  payload: ActionPayload,
+  enhancer?: Initial<State>
 ): State => {
   const ctx = {} as Ctx;
-  resolveIndexRange(state, payload, ctx);
-  hydrateOnEndReached(state, payload, ctx);
-  // fixVisibleRange(state, payload, ctx);
-  // fixInitialBufferedRange(state, payload, ctx);
-  resolveInitialState(state, payload);
+  const applyMiddleware = (middlewares: ReducerAtom<State>[]) => {
+    middlewares.forEach((middleware) => middleware(state, payload, ctx));
+  };
+
+  if (typeof enhancer === 'function') {
+    enhancer(
+      {
+        resolveIndexRange,
+        hydrateOnEndReached,
+        resolveInitialState,
+      },
+      applyMiddleware
+    );
+  } else {
+    applyMiddleware([
+      resolveIndexRange,
+      hydrateOnEndReached,
+      resolveInitialState,
+    ]);
+    // resolveIndexRange(state, payload, ctx);
+    // hydrateOnEndReached(state, payload, ctx);
+    // // fixVisibleRange(state, payload, ctx);
+    // // fixInitialBufferedRange(state, payload, ctx);
+    // resolveInitialState(state, payload);
+  }
 
   const {
     visibleIndexRange,
@@ -47,19 +75,45 @@ const initialize = <State extends ReducerResult = ReducerResult>(
 
 const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
   state: State,
-  payload: ActionPayload
+  payload: ActionPayload,
+  enhancer?: HydrationWithBatchUpdate<State>
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload);
-  resolveIndexRange(state, payload, ctx);
 
-  hydrateOnEndReached(state, payload, ctx);
-  resolveMaxIndex(state, payload, ctx);
-  // fixBufferedRange(state, payload, ctx);
-  // fixVisibleRange(state, payload, ctx);
+  const applyMiddleware = (middlewares: ReducerAtom<State>[]) => {
+    middlewares.forEach((middleware) => middleware(state, payload, ctx));
+  };
 
-  // should be the last
-  makeIndexMeaningful(state, payload, ctx);
+  if (typeof enhancer === 'function') {
+    enhancer(
+      {
+        preCheck,
+        resolveIndexRange,
+        hydrateOnEndReached,
+        resolveMaxIndex,
+        makeIndexMeaningful,
+      },
+      applyMiddleware
+    );
+  } else {
+    applyMiddleware([
+      preCheck,
+      resolveIndexRange,
+      hydrateOnEndReached,
+      resolveMaxIndex,
+      makeIndexMeaningful,
+    ]);
+    // preCheck(state, payload);
+    // resolveIndexRange(state, payload, ctx);
+
+    // hydrateOnEndReached(state, payload, ctx);
+    // resolveMaxIndex(state, payload, ctx);
+    // // fixBufferedRange(state, payload, ctx);
+    // // fixVisibleRange(state, payload, ctx);
+
+    // // should be the last
+    // makeIndexMeaningful(state, payload, ctx);
+  }
 
   const {
     visibleIndexRange,
@@ -84,19 +138,45 @@ const hydrationWithBatchUpdate = <State extends ReducerResult = ReducerResult>(
 
 const recalculate = <State extends ReducerResult = ReducerResult>(
   state: State,
-  payload: ActionPayload
+  payload: ActionPayload,
+  enhancer?: Recalculate<State>
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload);
-  resolveIndexRange(state, payload, ctx);
+  const applyMiddleware = (middlewares: ReducerAtom<State>[]) => {
+    middlewares.forEach((middleware) => middleware(state, payload, ctx));
+  };
 
-  hydrateOnEndReached(state, payload, ctx);
-  resolveMaxIndex(state, payload, ctx);
-  // fixBufferedRange(state, payload, ctx);
-  // fixVisibleRange(state, payload, ctx);
+  if (typeof enhancer === 'function') {
+    enhancer(
+      {
+        preCheck,
+        resolveIndexRange,
+        hydrateOnEndReached,
+        resolveMaxIndex,
+        makeIndexMeaningful,
+      },
+      applyMiddleware
+    );
+  } else {
+    applyMiddleware([
+      preCheck,
+      resolveIndexRange,
+      hydrateOnEndReached,
+      resolveMaxIndex,
+      makeIndexMeaningful,
+    ]);
 
-  // should be the last
-  makeIndexMeaningful(state, payload, ctx);
+    // preCheck(state, payload);
+    // resolveIndexRange(state, payload, ctx);
+
+    // hydrateOnEndReached(state, payload, ctx);
+    // resolveMaxIndex(state, payload, ctx);
+    // // fixBufferedRange(state, payload, ctx);
+    // // fixVisibleRange(state, payload, ctx);
+
+    // // should be the last
+    // makeIndexMeaningful(state, payload, ctx);
+  }
 
   const {
     visibleIndexRange,
@@ -121,19 +201,43 @@ const recalculate = <State extends ReducerResult = ReducerResult>(
 
 const scrollDown = <State extends ReducerResult = ReducerResult>(
   state: State,
-  payload: ActionPayload
+  payload: ActionPayload,
+  enhancer?: ScrollDown<State>
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload);
-  resolveIndexRange(state, payload, ctx);
+  const applyMiddleware = (middlewares: ReducerAtom<State>[]) => {
+    middlewares.forEach((middleware) => middleware(state, payload, ctx));
+  };
+  if (typeof enhancer === 'function') {
+    enhancer(
+      {
+        preCheck,
+        resolveIndexRange,
+        hydrateOnEndReached,
+        resolveMaxIndex,
+        makeIndexMeaningful,
+      },
+      applyMiddleware
+    );
+  } else {
+    applyMiddleware([
+      preCheck,
+      resolveIndexRange,
+      hydrateOnEndReached,
+      resolveMaxIndex,
+      makeIndexMeaningful,
+    ]);
+    // preCheck(state, payload);
+    // resolveIndexRange(state, payload, ctx);
 
-  hydrateOnEndReached(state, payload, ctx);
-  resolveMaxIndex(state, payload, ctx);
-  // fixBufferedRange(state, payload, ctx);
-  // fixVisibleRange(state, payload, ctx);
+    // hydrateOnEndReached(state, payload, ctx);
+    // resolveMaxIndex(state, payload, ctx);
+    // // fixBufferedRange(state, payload, ctx);
+    // // fixVisibleRange(state, payload, ctx);
 
-  // should be the last
-  makeIndexMeaningful(state, payload, ctx);
+    // // should be the last
+    // makeIndexMeaningful(state, payload, ctx);
+  }
 
   const {
     visibleIndexRange,
@@ -158,19 +262,43 @@ const scrollDown = <State extends ReducerResult = ReducerResult>(
 
 const scrollUp = <State extends ReducerResult = ReducerResult>(
   state: State,
-  payload: ActionPayload
+  payload: ActionPayload,
+  enhancer?: ScrollUp<State>
 ): State => {
   const ctx = {} as Ctx;
-  preCheck(state, payload);
-  resolveIndexRange(state, payload, ctx);
+  const applyMiddleware = (middlewares: ReducerAtom<State>[]) => {
+    middlewares.forEach((middleware) => middleware(state, payload, ctx));
+  };
+  if (typeof enhancer === 'function') {
+    enhancer(
+      {
+        preCheck,
+        resolveIndexRange,
+        hydrateOnEndReached,
+        resolveMaxIndex,
+        makeIndexMeaningful,
+      },
+      applyMiddleware
+    );
+  } else {
+    applyMiddleware([
+      preCheck,
+      resolveIndexRange,
+      hydrateOnEndReached,
+      resolveMaxIndex,
+      makeIndexMeaningful,
+    ]);
+    // preCheck(state, payload);
+    // resolveIndexRange(state, payload, ctx);
 
-  hydrateOnEndReached(state, payload, ctx);
-  resolveMaxIndex(state, payload, ctx);
-  // fixBufferedRange(state, payload, ctx);
-  // fixVisibleRange(state, payload, ctx);
+    // hydrateOnEndReached(state, payload, ctx);
+    // resolveMaxIndex(state, payload, ctx);
+    // // fixBufferedRange(state, payload, ctx);
+    // // fixVisibleRange(state, payload, ctx);
 
-  // should be the last
-  makeIndexMeaningful(state, payload, ctx);
+    // // should be the last
+    // makeIndexMeaningful(state, payload, ctx);
+  }
 
   const {
     visibleIndexRange,
@@ -194,20 +322,24 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
 };
 
 export default <State extends ReducerResult = ReducerResult>(
-  state: State,
-  action: Action
-) => {
-  const { type, payload } = action;
-  switch (type) {
-    case ActionType.HydrationWithBatchUpdate:
-      return hydrationWithBatchUpdate(state, payload);
-    case ActionType.ScrollDown:
-      return scrollDown(state, payload);
-    case ActionType.ScrollUp:
-      return scrollUp(state, payload);
-    case ActionType.Initial:
-      return initialize(state, payload);
-    case ActionType.Recalculate:
-      return recalculate(state, payload);
-  }
-};
+    enhancer: Enhancer<State>
+  ) =>
+  (state: State, action: Action) => {
+    const { type, payload } = action;
+    switch (type) {
+      case ActionType.HydrationWithBatchUpdate:
+        return hydrationWithBatchUpdate(
+          state,
+          payload,
+          enhancer[ActionType.HydrationWithBatchUpdate]
+        );
+      case ActionType.ScrollDown:
+        return scrollDown(state, payload, enhancer[ActionType.ScrollDown]);
+      case ActionType.ScrollUp:
+        return scrollUp(state, payload, enhancer[ActionType.ScrollUp]);
+      case ActionType.Initial:
+        return initialize(state, payload, enhancer[ActionType.Initial]);
+      case ActionType.Recalculate:
+        return recalculate(state, payload, enhancer[ActionType.Recalculate]);
+    }
+  };

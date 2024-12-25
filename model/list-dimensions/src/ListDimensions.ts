@@ -10,8 +10,6 @@ import {
 } from '@infinite-list/dimensions-model';
 import { IndexToOffsetMap } from '@infinite-list/dimensions-model';
 
-// import { ReducerResult } from './state/types';
-
 class ListDimensions<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseImpl<ItemT> {

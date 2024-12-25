@@ -11,6 +11,7 @@
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
     "lint": "eslint --ext js,ts,tsx .",
+    "format": "nx run-many -t prettier --write ",
     "prepare": "husky install",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "publish": "pnpm publish -r --access public",

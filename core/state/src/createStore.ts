@@ -5,10 +5,11 @@ import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
 import { ScrollMetrics } from './types';
 import { resolveAction } from './actions';
 import reducer from './reducer';
-import { Action, ActionType, Reducer, ReducerResult } from './types/types';
+import { Action, ActionType, Enhancer, ReducerResult } from './types/types';
 
 function createStore<State extends ReducerResult = ReducerResult>(
-  _reducer: Reducer<State> = reducer
+  enhancer: Enhancer<State>
+  // _reducer: EnhancedReducer<State> = reducer
 ) {
   let currentState: State = {
     visibleStartIndex: -1,
@@ -26,7 +27,7 @@ function createStore<State extends ReducerResult = ReducerResult>(
     dataLength: 0,
     getState,
   };
-  const currentReducer = _reducer;
+  const currentReducer = reducer(enhancer);
 
   const dispatch = (action: Action) => {
     currentState = currentReducer(currentState, action);
@@ -37,7 +38,7 @@ function createStore<State extends ReducerResult = ReducerResult>(
     dimension: IListDimensions | IListGroupDimensions;
     scrollMetrics: ScrollMetrics;
   }) => {
-    const action = resolveAction(currentState, props, storeContext);
+    const action = resolveAction<State>(currentState, props, storeContext);
     if (action) {
       currentState = dispatch(action);
       return currentState;

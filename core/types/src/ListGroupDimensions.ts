@@ -6,6 +6,7 @@ import { IDimension } from './Dimension';
 export interface IListGroupDimensions<
   ItemT extends GenericItemT = GenericItemT
 > {
+  maxToRenderPerBatch: number;
   getItemKey(item: ItemT, index?: number): string | null;
   onItemLayoutChanged(): void;
   onDataSourceChanged(): void;

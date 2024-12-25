@@ -3,6 +3,7 @@ import { IListDimensionsModel } from './ListDimensionsModel';
 import { IOnEndReachedHelper } from './OnEndReachedHelper';
 
 export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
+  maxToRenderPerBatch: number;
   onItemLayoutChanged: () => void;
   onDataSourceChanged(): void;
   onEndReachedHelper: IOnEndReachedHelper;
