@@ -477,6 +477,9 @@ importers:
       '@infinite-list/strategies':
         specifier: workspace:*
         version: link:../../core/strategies
+      '@x-oasis/batchinator':
+        specifier: ^0.1.14
+        version: 0.1.35
       '@x-oasis/prefix-interval-tree':
         specifier: ^0.2.4
         version: 0.2.4
@@ -5815,7 +5818,9 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
+      - bufferutil
       - supports-color
+      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:

@@ -5,6 +5,7 @@
     "@infinite-list/dimensions-model": "workspace:*",
     "@infinite-list/state": "workspace:*",
     "@infinite-list/strategies": "workspace:*",
+    "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/prefix-interval-tree": "^0.2.4"
   },
   "main": "./index.cjs",
