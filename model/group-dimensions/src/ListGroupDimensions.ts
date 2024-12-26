@@ -10,7 +10,7 @@ import { ItemMeta } from '@infinite-list/item-meta';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { BaseImpl } from '@infinite-list/strategies';
 import { log } from '@infinite-list/utils';
-import { createStore } from '@infinite-list/state';
+import { createStore } from './state';
 
 // import ListDimensionsModel from './ListDimensionsModel';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';

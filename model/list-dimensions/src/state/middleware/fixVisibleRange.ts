@@ -1,7 +1,7 @@
 // import Dimension from '../../Dimension';
 // import ListGroupDimensions from '../../ListGroupDimensions';
 // import ListDimensionsModel from '../../ListDimensionsModel';
-import ListDimensions from '../../ListDimensions';
+// import ListDimensions from '../../ListDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 // import { isValidMetaLayout } from '../../ItemMeta';
 // import { info } from '../../utils/logger';
@@ -12,7 +12,7 @@ export default <State extends ReducerResult = ReducerResult>(
   payload: ActionPayload,
   ctx: Ctx
 ) => {
-  const { dimension } = payload;
+  // const { dimension } = payload;
   const { visibleIndexRange } = ctx;
   const { startIndex, endIndex } = visibleIndexRange;
   let nextStartIndex = startIndex;

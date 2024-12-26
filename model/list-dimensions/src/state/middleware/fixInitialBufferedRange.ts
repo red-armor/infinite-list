@@ -1,6 +1,6 @@
 // import Dimension from '../../Dimension';
 // import ListDimensionsModel from '../../ListDimensionsModel';
-import ListDimensions from '../../ListDimensions';
+// import ListDimensions from '../../ListDimensions';
 // import { IListDimensions } from '@infinite-list/types';
 // import ListGroupDimensions from '../../ListGroupDimensions';
 import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
