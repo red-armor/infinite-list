@@ -47,21 +47,21 @@ export default <State extends ReducerResult = ReducerResult>(
   //   // }
   // }
 
-  if (dimension instanceof ListDimensions) {
-    for (nextStartIndex; nextStartIndex < endIndex; nextStartIndex++) {
-      // const meta = dimension.getIndexItemMeta(nextStartIndex);
-      // if (!meta) continue;
-      // if (!isValidMetaLayout(meta)) break;
-    }
-
-    if (ctx.visibleIndexRange.endIndex !== nextStartIndex) {
-      log.info(
-        'middleware fixVisibleRange endIndex set from ',
-        endIndex,
-        ' to ',
-        nextStartIndex
-      );
-      ctx.visibleIndexRange.endIndex = nextStartIndex;
-    }
+  // if (dimension instanceof ListDimensions) {
+  for (nextStartIndex; nextStartIndex < endIndex; nextStartIndex++) {
+    // const meta = dimension.getIndexItemMeta(nextStartIndex);
+    // if (!meta) continue;
+    // if (!isValidMetaLayout(meta)) break;
   }
+
+  if (ctx.visibleIndexRange.endIndex !== nextStartIndex) {
+    log.info(
+      'middleware fixVisibleRange endIndex set from ',
+      endIndex,
+      ' to ',
+      nextStartIndex
+    );
+    ctx.visibleIndexRange.endIndex = nextStartIndex;
+  }
+  // }
 };

@@ -67,22 +67,22 @@ export default <State extends ReducerResult = ReducerResult>(
   //   ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   // }
 
-  if (dimension instanceof ListDimensions) {
-    let count = 0;
-    for (
-      let startIndex = visibleIndexRange.startIndex;
-      startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
-      startIndex++
-    ) {
-      const meta = dimension.getIndexItemMeta(startIndex);
-      if (!meta) continue;
-      if (!isValidMetaLayout(meta)) count++;
+  // if (dimension instanceof ListDimensions) {
+  let count = 0;
+  for (
+    let startIndex = visibleIndexRange.startIndex;
+    startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
+    startIndex++
+  ) {
+    const meta = dimension.getIndexItemMeta(startIndex);
+    if (!meta) continue;
+    if (!isValidMetaLayout(meta)) count++;
 
-      if (count >= maxToRenderPerBatch) {
-        _nextBufferedEndIndex = startIndex;
-        break;
-      }
+    if (count >= maxToRenderPerBatch) {
+      _nextBufferedEndIndex = startIndex;
+      break;
     }
+    // }
     log.info('fixInitialBufferedRange ', _nextBufferedEndIndex);
     ctx.bufferedIndexRange.endIndex = _nextBufferedEndIndex;
   }

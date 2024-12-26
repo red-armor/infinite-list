@@ -2,6 +2,7 @@ import { GenericItemT } from './generic.types';
 import { IOnEndReachedHelper } from './OnEndReachedHelper';
 import { IListDimensionsModel } from './ListDimensionsModel';
 import { IDimension } from './Dimension';
+import { ItemMeta } from '@infinite-list/item-meta';
 
 export interface IListGroupDimensions<
   ItemT extends GenericItemT = GenericItemT
@@ -39,6 +40,7 @@ export interface IListGroupDimensions<
     minOffset: number;
     maxOffset: number;
   };
+  getIndexItemMeta(index: number): ItemMeta<ItemT>;
 
   getContainerOffset(): number;
   hasUnLayoutItems(): boolean;
