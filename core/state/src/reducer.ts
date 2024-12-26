@@ -322,24 +322,32 @@ const scrollUp = <State extends ReducerResult = ReducerResult>(
 };
 
 export default <State extends ReducerResult = ReducerResult>(
-    enhancer: Enhancer<State>
+    enhancer?: Enhancer<State>
   ) =>
   (state: State, action: Action) => {
     const { type, payload } = action;
+    const nextEnhancer = enhancer || {};
+
+    console.log('effect ', enhancer);
+
     switch (type) {
       case ActionType.HydrationWithBatchUpdate:
         return hydrationWithBatchUpdate(
           state,
           payload,
-          enhancer[ActionType.HydrationWithBatchUpdate]
+          nextEnhancer[ActionType.HydrationWithBatchUpdate]
         );
       case ActionType.ScrollDown:
-        return scrollDown(state, payload, enhancer[ActionType.ScrollDown]);
+        return scrollDown(state, payload, nextEnhancer[ActionType.ScrollDown]);
       case ActionType.ScrollUp:
-        return scrollUp(state, payload, enhancer[ActionType.ScrollUp]);
+        return scrollUp(state, payload, nextEnhancer[ActionType.ScrollUp]);
       case ActionType.Initial:
-        return initialize(state, payload, enhancer[ActionType.Initial]);
+        return initialize(state, payload, nextEnhancer[ActionType.Initial]);
       case ActionType.Recalculate:
-        return recalculate(state, payload, enhancer[ActionType.Recalculate]);
+        return recalculate(
+          state,
+          payload,
+          nextEnhancer[ActionType.Recalculate]
+        );
     }
   };

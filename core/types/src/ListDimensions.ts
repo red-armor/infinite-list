@@ -40,6 +40,7 @@ export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
   getIndexItemMeta(index: number): ItemMeta<ItemT>;
 
   getContainerOffset(): number;
+  // getItemKey(item: ItemT, index?: number): string | null;
   hasUnLayoutItems(): boolean;
   getOnEndReachedHelper(): IOnEndReachedHelper;
 

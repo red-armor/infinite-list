@@ -8,7 +8,7 @@ import reducer from './reducer';
 import { Action, ActionType, Enhancer, ReducerResult } from './types/types';
 
 function createStore<State extends ReducerResult = ReducerResult>(
-  enhancer: Enhancer<State>
+  enhancer?: Enhancer<State>
   // _reducer: EnhancedReducer<State> = reducer
 ) {
   let currentState: State = {
@@ -27,6 +27,9 @@ function createStore<State extends ReducerResult = ReducerResult>(
     dataLength: 0,
     getState,
   };
+
+  console.log('ench ', enhancer);
+
   const currentReducer = reducer(enhancer);
 
   const dispatch = (action: Action) => {

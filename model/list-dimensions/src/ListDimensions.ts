@@ -1,5 +1,5 @@
 import { BaseImpl } from '@infinite-list/strategies';
-import { createStore, ReducerResult } from '@infinite-list/state';
+import { ReducerResult } from '@infinite-list/state';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import { ScrollMetrics, GenericItemT } from './types';
@@ -9,6 +9,7 @@ import {
   ListDimensionsModelProps,
 } from '@infinite-list/dimensions-model';
 import { IndexToOffsetMap } from '@infinite-list/dimensions-model';
+import { createStore } from './state';
 
 class ListDimensions<
   ItemT extends GenericItemT = GenericItemT
@@ -25,6 +26,7 @@ class ListDimensions<
     this._dataModel = new ListDimensionsModel<ItemT>({
       recycleEnabled: true,
       ...props,
+      // @ts-ignore [TODO]
       container: this,
     });
   }

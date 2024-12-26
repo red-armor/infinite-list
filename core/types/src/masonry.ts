@@ -3,7 +3,7 @@ import { IOnEndReachedHelper } from './OnEndReachedHelper';
 import { ListIndexInfo } from './ListDimensions';
 
 export interface IMasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
-  getItemKey(item: ItemT, index?: number): string | null;
+  // getItemKey(item: ItemT, index?: number): string | null;
   onItemLayoutChanged(): void;
   onDataSourceChanged(): void;
   onEndReachedHelper: IOnEndReachedHelper;
@@ -13,7 +13,8 @@ export interface IMasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
 export interface IMasonryDimensionsModel<
   ItemT extends GenericItemT = GenericItemT
 > {
-  getItemKey(item: ItemT, index?: number): string | null;
+  getKeyItemOffset(key: string, exclusive: boolean): number;
+  // getItemKey(item: ItemT, index?: number): string | null;
 }
 
 export interface MasonryIndexInfo<ItemT extends GenericItemT = GenericItemT>

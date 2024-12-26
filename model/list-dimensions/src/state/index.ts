@@ -1,11 +1,13 @@
+import { ReducerResult } from '@infinite-list/state';
+
 import fixVisibleRange from './middleware/fixVisibleRange';
 import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
 import fixBufferedRange from './middleware/fixBufferedRange';
 
 import { createStore as _createStore } from '@infinite-list/state';
 
-export function createStore() {
-  _createStore({
+export function createStore<State extends ReducerResult = ReducerResult>() {
+  return _createStore<State>({
     initial: (middleware, applyMiddleware) => {
       const { resolveIndexRange, hydrateOnEndReached, resolveInitialState } =
         middleware;

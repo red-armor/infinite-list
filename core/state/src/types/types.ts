@@ -62,7 +62,7 @@ export type CreateStore<State extends ReducerResult = ReducerResult> = (
 ) => Store<State>;
 
 export type EnhancedReducer<State extends ReducerResult = ReducerResult> = (
-  enhancer: Enhancer<State>
+  enhancer?: Enhancer<State>
 ) => (state: State, action: Action) => void;
 
 export type Ctx = {
