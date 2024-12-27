@@ -4,6 +4,7 @@ import { IListDimensionsModel } from './ListDimensionsModel';
 import { IDimension } from './Dimension';
 import { IPseudoListDimensions } from './pseudoListDimensions';
 import { IItemDimensions } from './itemDimensions';
+import { ItemLayout } from './layout';
 
 export type IItemMeta<ItemT extends GenericItemT = GenericItemT> = {};
 
@@ -26,4 +27,9 @@ export type ItemMetaOwnerRequiredProps<
     index?: number;
   };
   getKeyItemOffset(key: string, exclusive?: boolean): number;
+  setKeyItemLayout(
+    key: string,
+    layout: ItemLayout | number,
+    updateIntervalTree?: boolean
+  ): boolean;
 };

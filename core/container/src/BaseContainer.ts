@@ -4,7 +4,8 @@ import SelectValue, {
 } from '@x-oasis/select-value';
 import { DEFAULT_LAYOUT } from './common';
 
-import { ItemLayout, BaseContainerProps, ContainerLayoutGetter } from './types';
+import { BaseContainerProps, ContainerLayoutGetter } from './types';
+import { ItemLayout } from '@infinite-list/types';
 
 class BaseContainer {
   public id: string;

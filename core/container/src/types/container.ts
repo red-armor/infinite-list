@@ -12,10 +12,3 @@ export type BaseContainerProps = {
 
   canIUseRIC?: boolean;
 };
-
-export type ItemLayout = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};

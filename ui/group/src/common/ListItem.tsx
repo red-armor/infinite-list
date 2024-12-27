@@ -52,7 +52,6 @@ const ListItem = <ItemT extends DefaultItemT>(
   const itemMetaRef = useRef(itemMeta);
 
   const layoutHandler = useCallback(() => {
-    // @ts-ignore
     const rect = viewRef.current.getBoundingClientRect();
     if (rect) {
       const { x, y, width, height } = rect;
