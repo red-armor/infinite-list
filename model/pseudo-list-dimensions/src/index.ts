@@ -1,1 +1,1 @@
-export * from './lib/pseudo-list-dimensions';
+export { default as PseudoListDimensions } from './PseudoListDimensions';
