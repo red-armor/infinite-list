@@ -137,6 +137,7 @@ const ListItem = <T extends DefaultItemT>(
       key={containerKey}
       {...refProps}
       {...rest}
+      // @ts-ignore
       style={containerStyle}
     >
       {children}

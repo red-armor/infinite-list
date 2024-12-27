@@ -7,8 +7,7 @@ import React, {
   useRef,
 } from 'react';
 
-import { DefaultItemT } from '../types';
-import { ListItemProps } from './types';
+import { DefaultItemT, ListItemProps } from '../types';
 
 /**
  *
@@ -151,6 +150,7 @@ const ListItem = <ItemT extends DefaultItemT>(
       key={containerKey}
       {...refProps}
       {...rest}
+      // @ts-ignore
       style={containerStyle}
     >
       {children}

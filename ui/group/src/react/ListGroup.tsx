@@ -12,8 +12,8 @@ import React, {
 } from 'react';
 // import { div, Platform } from 'react-native';
 
-import { ListGroupProps, genericMemo } from './types';
-import context from './context';
+import { ListGroupProps, genericMemo } from '../types';
+import context from '../common/context';
 import PortalContent from './PortalContent';
 import { ScrollTracker } from '@infinite-list/scroller/web';
 

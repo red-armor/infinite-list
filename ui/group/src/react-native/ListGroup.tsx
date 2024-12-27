@@ -11,7 +11,7 @@ import React, {
 import { View, Platform } from 'react-native';
 
 import { ListGroupProps } from '../types';
-import context from './context';
+import context from '../common/context';
 import PortalContent from './PortalContent';
 
 const ClockStart: FC<{

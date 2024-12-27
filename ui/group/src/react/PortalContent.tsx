@@ -12,9 +12,9 @@ import {
   GroupRecycleContentProps,
   GroupSpaceContentProps,
   genericMemo,
-} from './types';
+} from '../types';
 
-import GroupListItemImpl from './GroupListItemImpl';
+import GroupListItemImpl from '../common/GroupListItemImpl';
 
 // @ts-ignore
 const RecycleContentItem = (props) => {
@@ -52,8 +52,8 @@ const RecycleContentItem = (props) => {
       <GroupListItemImpl
         item={item}
         style={containerStyle}
-        // @ts-ignore
-        listKey={listKey}
+        // listKey={listKey}
+        itemKey={listKey}
         itemMeta={itemMeta}
         renderItem={itemMeta.getOwner().renderItem}
         teleportItemProps={itemMeta.getOwner().teleportItemProps}
@@ -67,31 +67,57 @@ const RecycleContentItem = (props) => {
 
 const MemoedRecycleContentItem = memo(RecycleContentItem);
 
-const RecycleContent = <T extends {}>(props: GroupRecycleContentProps<T>) => {
-  const { state, ...rest } = props;
-  return (
-    <>
-      {/* @ts-ignore */}
-      {state.map((stateResult) => {
-        const { key, itemMeta, ...stateResultRest } = stateResult;
-        return (
-          <MemoedRecycleContentItem
-            key={key}
-            containerKey={key}
-            // @ts-ignore
-            renderItem={itemMeta.getOwner().renderItem}
-            itemMeta={itemMeta}
-            {...rest}
-            {...stateResultRest}
-          />
-        );
-      })}
-    </>
-  );
-};
-const MemoedRecycleContent = memo<
-  PropsWithChildren<GroupRecycleContentProps<any>>
->(RecycleContent, (prev, next) => prev.state === next.state);
+const MemoedRecycleContent = genericMemo(
+  <ItemT extends GenericItemT>(props: GroupRecycleContentProps<ItemT>) => {
+    const { state, ...rest } = props;
+    return (
+      <>
+        {/* @ts-ignore */}
+        {state.map((stateResult) => {
+          const { key, itemMeta, ...stateResultRest } = stateResult;
+          return (
+            <MemoedRecycleContentItem
+              key={key}
+              containerKey={key}
+              // @ts-ignore
+              renderItem={itemMeta.getOwner().renderItem}
+              itemMeta={itemMeta}
+              {...rest}
+              {...stateResultRest}
+            />
+          );
+        })}
+      </>
+    );
+  },
+  (prev, next) => prev.state === next.state
+);
+
+// const RecycleContent = <T extends {}>(props: GroupRecycleContentProps<T>) => {
+//   const { state, ...rest } = props;
+//   return (
+//     <>
+//       {/* @ts-ignore */}
+//       {state.map((stateResult) => {
+//         const { key, itemMeta, ...stateResultRest } = stateResult;
+//         return (
+//           <MemoedRecycleContentItem
+//             key={key}
+//             containerKey={key}
+//             // @ts-ignore
+//             renderItem={itemMeta.getOwner().renderItem}
+//             itemMeta={itemMeta}
+//             {...rest}
+//             {...stateResultRest}
+//           />
+//         );
+//       })}
+//     </>
+//   );
+// };
+// const MemoedRecycleContent = memo<
+//   PropsWithChildren<GroupRecycleContentProps<any>>
+// >(RecycleContent, (prev, next) => prev.state === next.state);
 
 const MemoedSpaceContent = genericMemo(
   <ItemT extends GenericItemT>(props: GroupSpaceContentProps<ItemT>) => {
@@ -109,8 +135,8 @@ const MemoedSpaceContent = genericMemo(
             <GroupListItemImpl<ItemT>
               item={item!}
               key={key}
-              // @ts-ignore
-              listKey={listKey}
+              // listKey={listKey}
+              itemKey={listKey}
               itemMeta={itemMeta!}
               // @ts-ignore
               renderItem={itemMeta!.getOwner().renderItem}

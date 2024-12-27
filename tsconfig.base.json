@@ -11,7 +11,8 @@
       "@infinite-list/container": ["core/container/src/index.ts"],
       "@infinite-list/dimension": ["model/dimension/src/index.ts"],
       "@infinite-list/dimensions-model": ["core/dimensions-model/src/index.ts"],
-      "@infinite-list/group": ["ui/group/src/index.ts"],
+      // "@infinite-list/group": ["ui/group/src/index.ts"],
+      "@infinite-list/group/react": ["ui/group/src/react/index.ts"],
       "@infinite-list/group-dimensions": [
         "model/group-dimensions/src/index.ts"
       ],
@@ -19,9 +20,12 @@
       "@infinite-list/items-dimensions": [
         "model/items-dimensions/src/index.ts"
       ],
-      "@infinite-list/list": ["ui/list/src/index.ts"],
+      "@infinite-list/list/react": ["ui/list/src/react/index.ts"],
+      "@infinite-list/list/react-native": ["ui/list/src/react-native/index.ts"],
       "@infinite-list/list-dimensions": ["model/list-dimensions/src/index.ts"],
-      "@infinite-list/masonry": ["ui/masonry/src/index.ts"],
+
+      "@infinite-list/masonry/react": ["ui/masonry/src/react/index.ts"],
+      "@infinite-list/masonry/react-native": ["ui/masonry/src/react-native/index.ts"],
       "@infinite-list/masonry-dimensions": [
         "model/masonry-dimensions/src/index.ts"
       ],

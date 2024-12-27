@@ -1,21 +1,19 @@
 import type { Meta } from '@storybook/react';
-import {
-  defaultKeyExtractor,
-  // type KeyExtractor,
-} from '@infinite-list/utils';
-import { List } from '@infinite-list/list/react';
+import { defaultKeyExtractor } from '@infinite-list/utils';
+import { MasonryList } from '@infinite-list/masonry/react';
 import { KeyExtractor } from '@infinite-list/dimensions-model';
 
 type Item = {
   key: string;
 };
+
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: `${index}`,
   }));
 
-const meta: Meta<typeof List> = {
-  component: List,
+const meta: Meta<typeof MasonryList> = {
+  component: MasonryList,
   render: () => {
     return (
       <div
@@ -26,19 +24,21 @@ const meta: Meta<typeof List> = {
           position: 'relative',
         }}
       >
-        <List
+        <MasonryList
           id="basic"
-          initialNumToRender={0}
           data={buildData(10000)}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
-            const { item } = props;
+            const { item, itemMeta } = props;
+
+            const indexInfo = itemMeta.getIndexInfo();
+            const index = indexInfo?.index || 0;
 
             return (
               <div
                 style={{
-                  height: '50px',
+                  height: index % 2 ? '50px' : '75px',
                   width: '100%',
                   backgroundColor: '#efdbff',
                   paddingBottom: '5px',
@@ -54,11 +54,11 @@ const meta: Meta<typeof List> = {
       </div>
     );
   },
-  title: 'List',
+  title: 'MasonryList',
 };
 export default meta;
 
-export const SimpleList = {
+export const SimpleMasonryList = {
   args: {
     data: buildData(100),
     keyExtractor: defaultKeyExtractor,

@@ -5,15 +5,16 @@ import React, {
   useState,
   PropsWithChildren,
 } from 'react';
-import { RecycleStateResult } from '@infinite-list/strategies';
+import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
 import {
+  genericMemo,
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
 } from '../types';
 import { View, ViewStyle } from 'react-native';
 
-import GroupListItemImpl from './GroupListItemImpl';
+import GroupListItemImpl from '../common/GroupListItemImpl';
 
 // @ts-ignore
 const RecycleContentItem = (props) => {
@@ -51,7 +52,8 @@ const RecycleContentItem = (props) => {
       <GroupListItemImpl
         item={item}
         style={containerStyle}
-        listKey={listKey}
+        itemKey={listKey}
+        // listKey={listKey}
         itemMeta={itemMeta}
         renderItem={itemMeta.getOwner().renderItem}
         teleportItemProps={itemMeta.getOwner().teleportItemProps}
@@ -65,78 +67,139 @@ const RecycleContentItem = (props) => {
 
 const MemoedRecycleContentItem = memo(RecycleContentItem);
 
-const RecycleContent = <T extends {}>(props: GroupRecycleContentProps<T>) => {
-  const { state, ...rest } = props;
-  return (
-    <>
-      {/* @ts-ignore */}
-      {state.map((stateResult) => {
-        const { key, itemMeta, ...stateResultRest } = stateResult;
-        return (
-          <MemoedRecycleContentItem
-            key={key}
-            containerKey={key}
-            // @ts-ignore
-            renderItem={itemMeta.getOwner().renderItem}
-            itemMeta={itemMeta}
-            {...rest}
-            {...stateResultRest}
-          />
-        );
-      })}
-    </>
-  );
-};
-const MemoedRecycleContent = memo<
-  PropsWithChildren<GroupRecycleContentProps<any>>
->(RecycleContent, (prev, next) => prev.state === next.state);
-
-const SpaceContent = <T extends {}>(props: GroupSpaceContentProps<T>) => {
-  const { state, listKey, dimensions, scrollComponentUseMeasureLayout } = props;
-
-  return (
-    <>
-      {state.map((stateResult, index) => {
-        const { isSpace, key, item, length, isSticky, itemMeta } = stateResult;
-        return isSpace ? (
-          <View key={key} style={{ height: length }} />
-        ) : (
-          <GroupListItemImpl
-            // @ts-ignore
-            item={item}
-            key={key}
-            listKey={listKey}
-            // @ts-ignore
-            itemMeta={itemMeta}
-            // @ts-ignore
-            renderItem={itemMeta.getOwner().renderItem}
-            // @ts-ignore
-            teleportItemProps={itemMeta.getOwner().teleportItemProps}
-            dimensions={dimensions}
-            scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
-          />
-        );
-      })}
-    </>
-  );
-};
-const MemoedSpaceContent = memo<PropsWithChildren<GroupSpaceContentProps<any>>>(
-  SpaceContent,
+const MemoedRecycleContent = genericMemo(
+  <ItemT extends GenericItemT>(props: GroupRecycleContentProps<ItemT>) => {
+    const { state, ...rest } = props;
+    return (
+      <>
+        {/* @ts-ignore */}
+        {state.map((stateResult) => {
+          const { key, itemMeta, ...stateResultRest } = stateResult;
+          return (
+            <MemoedRecycleContentItem
+              key={key}
+              containerKey={key}
+              // @ts-ignore
+              renderItem={itemMeta.getOwner().renderItem}
+              itemMeta={itemMeta}
+              {...rest}
+              {...stateResultRest}
+            />
+          );
+        })}
+      </>
+    );
+  },
   (prev, next) => prev.state === next.state
 );
 
-const PortalContent = <T extends {}>(
-  props: PropsWithChildren<PortalContextProps>
+// const RecycleContent = <T extends {}>(props: GroupRecycleContentProps<T>) => {
+//   const { state, ...rest } = props;
+//   return (
+//     <>
+//       {/* @ts-ignore */}
+//       {state.map((stateResult) => {
+//         const { key, itemMeta, ...stateResultRest } = stateResult;
+//         return (
+//           <MemoedRecycleContentItem
+//             key={key}
+//             containerKey={key}
+//             // @ts-ignore
+//             renderItem={itemMeta.getOwner().renderItem}
+//             itemMeta={itemMeta}
+//             {...rest}
+//             {...stateResultRest}
+//           />
+//         );
+//       })}
+//     </>
+//   );
+// };
+// const MemoedRecycleContent = memo<
+//   PropsWithChildren<GroupRecycleContentProps<any>>
+// >(RecycleContent, (prev, next) => prev.state === next.state);
+
+const MemoedSpaceContent = genericMemo(
+  <ItemT extends GenericItemT>(props: GroupSpaceContentProps<ItemT>) => {
+    const { state, listKey, dimensions, scrollComponentUseMeasureLayout } =
+      props;
+
+    return (
+      <>
+        {state.map((stateResult, index) => {
+          const { isSpace, key, item, length, isSticky, itemMeta } =
+            stateResult;
+          return isSpace ? (
+            <div key={key} style={{ height: length }} />
+          ) : (
+            <GroupListItemImpl<ItemT>
+              item={item!}
+              key={key}
+              // listKey={listKey}
+              itemKey={listKey}
+              itemMeta={itemMeta!}
+              // @ts-ignore
+              renderItem={itemMeta!.getOwner().renderItem}
+              // @ts-ignore
+              teleportItemProps={itemMeta!.getOwner().teleportItemProps}
+              dimensions={dimensions}
+              scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
+            />
+          );
+        })}
+      </>
+    );
+  },
+  (prev, next) => prev.state === next.state
+);
+
+// const SpaceContent = <T extends {}>(props: GroupSpaceContentProps<T>) => {
+//   const { state, listKey, dimensions, scrollComponentUseMeasureLayout } = props;
+
+//   return (
+//     <>
+//       {state.map((stateResult, index) => {
+//         const { isSpace, key, item, length, isSticky, itemMeta } = stateResult;
+//         return isSpace ? (
+//           <View key={key} style={{ height: length }} />
+//         ) : (
+//           <GroupListItemImpl
+//             item={item}
+//             key={key}
+//             listKey={listKey}
+//             itemMeta={itemMeta}
+//             // @ts-ignore
+//             renderItem={itemMeta.getOwner().renderItem}
+//             // @ts-ignore
+//             teleportItemProps={itemMeta.getOwner().teleportItemProps}
+//             dimensions={dimensions}
+//             scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
+//           />
+//         );
+//       })}
+//     </>
+//   );
+// };
+// const MemoedSpaceContent = memo<PropsWithChildren<GroupSpaceContentProps<any>>>(
+//   SpaceContent,
+//   (prev, next) => prev.state === next.state
+// );
+
+const PortalContent = <ItemT extends GenericItemT>(
+  props: PropsWithChildren<PortalContextProps<ItemT>>
 ) => {
   const { listGroupDimensions, id, scrollComponentUseMeasureLayout } = props;
   const [store, setStore] = useState(
-    () => listGroupDimensions.getStateResult() as any as RecycleStateResult<T>
+    () =>
+      listGroupDimensions.getStateResult() as any as RecycleStateResult<ItemT>
   );
 
   useEffect(
     () =>
       listGroupDimensions.addStateListener((newState) => {
-        setTimeout(() => setStore(newState as any as RecycleStateResult<T>));
+        setTimeout(() =>
+          setStore(newState as any as RecycleStateResult<ItemT>)
+        );
       }),
     []
   );

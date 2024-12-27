@@ -1,7 +1,7 @@
 import { ItemMeta, GenericItemT } from '@infinite-list/item-meta';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ListDimensions } from '@infinite-list/list-dimensions';
-import React, { ForwardedRef } from 'react';
+import React, { CSSProperties, ForwardedRef } from 'react';
 import { ViewStyle, LayoutChangeEvent } from 'react-native';
 import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
@@ -30,7 +30,8 @@ export type TeleportItemProps =
 export interface ListItemProps<ItemT extends DefaultItemT> {
   item: ItemT;
 
-  listKey: string;
+  // listKey: string;
+  itemKey: string;
 
   itemMeta: ItemMeta;
 
@@ -45,7 +46,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   measureLayoutHandlerOnDemand?: OnMeasureLayout;
 
-  style?: ViewStyle;
+  style?: ViewStyle | CSSProperties;
 
   teleportItemProps?: TeleportItemProps;
 
