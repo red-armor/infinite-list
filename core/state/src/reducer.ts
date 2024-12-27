@@ -328,8 +328,6 @@ export default <State extends ReducerResult = ReducerResult>(
     const { type, payload } = action;
     const nextEnhancer = enhancer || {};
 
-    console.log('effect ', enhancer);
-
     switch (type) {
       case ActionType.HydrationWithBatchUpdate:
         return hydrationWithBatchUpdate(

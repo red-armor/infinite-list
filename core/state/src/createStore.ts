@@ -28,8 +28,6 @@ function createStore<State extends ReducerResult = ReducerResult>(
     getState,
   };
 
-  console.log('ench ', enhancer);
-
   const currentReducer = reducer(enhancer);
 
   const dispatch = (action: Action) => {
