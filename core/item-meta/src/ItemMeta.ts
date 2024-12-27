@@ -1,9 +1,7 @@
-import { BaseDimensions } from './types';
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
 import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import {
   ItemLayout,
-  ItemMetaOwner,
   ItemMetaState,
   ItemMetaProps,
   StateEventListener,
@@ -11,7 +9,7 @@ import {
   GenericItemT,
 } from './types';
 import noop from '@x-oasis/noop';
-import { IItemMeta } from '@infinite-list/types';
+import { IItemMeta, ItemMetaOwner } from '@infinite-list/types';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import { ViewabilityItemMeta } from '@infinite-list/viewable';
 
@@ -193,11 +191,7 @@ class ItemMeta<ItemT extends GenericItemT = GenericItemT>
 
   getItemOffset(exclusive?: boolean) {
     if (this._isListItem) {
-      // @ts-ignore [TODO]
-      const offset = (this._owner as BaseDimensions<ItemT>).getKeyItemOffset(
-        this._key,
-        exclusive
-      );
+      const offset = this._owner.getKeyItemOffset(this._key, exclusive);
 
       return offset;
     }

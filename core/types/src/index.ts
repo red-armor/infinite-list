@@ -9,3 +9,4 @@ export * from './itemMeta';
 export * from './Dimension';
 export * from './pseudoListDimensions';
 export * from './itemDimensions';
+export * from './baseDimensions';

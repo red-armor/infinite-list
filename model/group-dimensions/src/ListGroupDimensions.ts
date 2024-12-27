@@ -2,9 +2,6 @@ import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-// import Dimension from './Dimension';
-// import ItemMeta from './ItemMeta';
-// import ItemsDimensions from './ItemsDimensions';
 import { Dimension } from '@infinite-list/dimension';
 import { ItemMeta } from '@infinite-list/item-meta';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
@@ -12,7 +9,6 @@ import { BaseImpl } from '@infinite-list/strategies';
 import { log } from '@infinite-list/utils';
 import { createStore } from './state';
 
-// import ListDimensionsModel from './ListDimensionsModel';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 
 import {
@@ -450,7 +446,7 @@ class ListGroupDimensions<
    * @param listDimensionsProps to initialize ListDimensions instance
    * @returns listener remover
    */
-  registerList(
+  registerList<ExtraInfo extends {} = {}>(
     listKey: string,
     listDimensionsProps: RegisteredListProps<ItemT>
   ): {
@@ -465,7 +461,7 @@ class ListGroupDimensions<
         },
       };
     // should update indexKeys first !!!
-    const dimensions = new ListDimensionsModel({
+    const dimensions = new ListDimensionsModel<ItemT, ExtraInfo>({
       id: listKey,
       // @ts-ignore [TODO]
       container: this,

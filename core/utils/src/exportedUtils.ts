@@ -1,3 +1,5 @@
+import { GenericItemT } from '@infinite-list/types';
+
 export type ItemPossibleT<T> =
   | T
   | {
@@ -23,15 +25,20 @@ export type ExtractIdItem<T> = Extract<
 
 const isPresent = (v: any) => v != null;
 
-export const defaultKeyExtractor = <T>(
-  item: ItemPossibleT<T>,
+export type IDefaultKeyExtra<ItemT extends GenericItemT = GenericItemT> = (
+  item: ItemPossibleT<ItemT>,
   index: number
+) => string;
+
+export const defaultKeyExtractor = <ItemT extends GenericItemT = GenericItemT>(
+  item: ItemPossibleT<ItemT>,
+  index?: number
 ) => {
-  if (isPresent((item as ExtractKeyItem<ItemPossibleT<T>>).key)) {
-    return String((item as ExtractKeyItem<ItemPossibleT<T>>).key);
+  if (isPresent((item as ExtractKeyItem<ItemPossibleT<ItemT>>).key)) {
+    return String((item as ExtractKeyItem<ItemPossibleT<ItemT>>).key);
   }
-  if (isPresent((item as ExtractIdItem<ItemPossibleT<T>>).id)) {
-    return String((item as ExtractIdItem<ItemPossibleT<T>>).id);
+  if (isPresent((item as ExtractIdItem<ItemPossibleT<ItemT>>).id)) {
+    return String((item as ExtractIdItem<ItemPossibleT<ItemT>>).id);
   }
   return `default_index_key_${index}`;
 };

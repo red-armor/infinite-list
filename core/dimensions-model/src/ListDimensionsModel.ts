@@ -23,7 +23,10 @@ import { IndexInfo } from '@infinite-list/item-meta';
 import { ItemLayout, KeysChangedType } from '@infinite-list/base-dimensions';
 import { IListDimensionsModel } from '@infinite-list/types';
 
-class ListDimensionsModel<ItemT extends GenericItemT = GenericItemT>
+class ListDimensionsModel<
+    ItemT extends GenericItemT = GenericItemT,
+    ExtraInfo extends {} = {}
+  >
   extends BaseDimensions<ItemT>
   implements IListDimensionsModel<ItemT>
 {
@@ -46,6 +49,8 @@ class ListDimensionsModel<ItemT extends GenericItemT = GenericItemT>
   private _recyclerType: string;
   private _isFixedLength: boolean;
 
+  public extraInfo: ExtraInfo;
+
   constructor(props: Omit<ListDimensionsModelProps<ItemT>, 'store'>) {
     super({
       ...props,
@@ -67,6 +72,7 @@ class ListDimensionsModel<ItemT extends GenericItemT = GenericItemT>
       itemApproximateLength = DEFAULT_ITEM_APPROXIMATE_LENGTH,
     } = props;
 
+    this.extraInfo = {} as ExtraInfo;
     this._anchorKey = anchorKey || this.id;
     this._keyExtractor = keyExtractor;
     this._recyclerType = recyclerType;

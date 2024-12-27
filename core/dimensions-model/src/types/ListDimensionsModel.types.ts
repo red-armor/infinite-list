@@ -12,6 +12,7 @@ import {
   IMasonryDimensions,
   IMasonryDimensionsModel,
 } from '@infinite-list/types';
+import { IDefaultKeyExtra } from '@infinite-list/utils';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,
@@ -54,7 +55,7 @@ export interface ListDimensionsModelProps<
   container: ListDimensionsModelContainer<ItemT>;
 
   recycleEnabled?: boolean;
-  keyExtractor: KeyExtractor<ItemT>;
+  keyExtractor: IDefaultKeyExtra<ItemT>;
   getItemLayout?: GetItemLayout<ItemT>;
   getItemSeparatorLength?: GetItemSeparatorLength<ItemT>;
 

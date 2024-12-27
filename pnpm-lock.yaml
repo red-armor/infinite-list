@@ -354,6 +354,9 @@ importers:
       '@x-oasis/batchinator':
         specifier: ^0.1.14
         version: 0.1.35
+      '@x-oasis/select-value':
+        specifier: ^0.1.14
+        version: 0.1.35
 
   core/utils:
     dependencies:

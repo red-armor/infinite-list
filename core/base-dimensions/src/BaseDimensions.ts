@@ -3,6 +3,7 @@ import { ItemMeta } from '@infinite-list/item-meta';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import { ViewabilityConfigTuples } from '@infinite-list/viewable';
 import { log, KeyIndexManager } from '@infinite-list/utils';
+import { IBaseDimensions } from '@infinite-list/types';
 
 import {
   BaseDimensionsProps,
@@ -14,9 +15,10 @@ import {
   ScrollMetrics,
 } from './types';
 
-abstract class BaseDimensions<
-  ItemT extends GenericItemT = GenericItemT
-> extends BaseLayout {
+abstract class BaseDimensions<ItemT extends GenericItemT = GenericItemT>
+  extends BaseLayout
+  implements IBaseDimensions<ItemT>
+{
   _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
   _configTuple: ViewabilityConfigTuples;
 
@@ -99,13 +101,6 @@ abstract class BaseDimensions<
     return 0;
   }
 
-  /**
-   *
-   * @param key instance's key
-   * @param exclusive default as false, if value is true, container offset
-   *                  will not be included on calculating item offset.
-   * @returns
-   */
   getKeyItemOffset(key: string, exclusive?: boolean) {
     const index = this.getKeyIndex(key);
     return this.getIndexKeyOffset(index, exclusive);

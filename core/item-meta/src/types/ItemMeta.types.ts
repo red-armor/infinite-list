@@ -1,11 +1,9 @@
 import { ItemLayout } from './BaseLayout.types';
 import { GenericItemT } from './generic.types';
 import {
-  IDimension,
   IListDimensionsModel,
   ListGroupIndexInfo,
-  IItemDimensions,
-  IPseudoListDimensions,
+  ItemMetaOwner,
 } from '@infinite-list/types';
 
 export type StateEventListener = (eventValue?: boolean) => void;
@@ -30,11 +28,11 @@ export type ItemMetaState = {
   [key: string]: boolean;
 };
 
-export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
-  | IListDimensionsModel<ItemT>
-  | IDimension<ItemT>
-  | IPseudoListDimensions
-  | IItemDimensions;
+// export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
+//   | IListDimensionsModel<ItemT>
+//   | IDimension<ItemT>
+//   | IPseudoListDimensions
+//   | IItemDimensions;
 
 export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   /**
