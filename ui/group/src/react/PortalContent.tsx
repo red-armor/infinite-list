@@ -7,12 +7,13 @@ import React, {
   CSSProperties,
 } from 'react';
 import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
+import { genericMemo } from '../types';
+
 import {
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
-  genericMemo,
-} from '../types';
+} from './types';
 
 import GroupListItemImpl from '../common/GroupListItemImpl';
 
@@ -121,8 +122,7 @@ const MemoedRecycleContent = genericMemo(
 
 const MemoedSpaceContent = genericMemo(
   <ItemT extends GenericItemT>(props: GroupSpaceContentProps<ItemT>) => {
-    const { state, listKey, dimensions, scrollComponentUseMeasureLayout } =
-      props;
+    const { state, listKey, dimensions } = props;
 
     return (
       <>
@@ -143,7 +143,6 @@ const MemoedSpaceContent = genericMemo(
               // @ts-ignore
               teleportItemProps={itemMeta!.getOwner().teleportItemProps}
               dimensions={dimensions}
-              scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
             />
           );
         })}
@@ -160,7 +159,7 @@ const MemoedSpaceContent = genericMemo(
 const PortalContent = <ItemT extends GenericItemT>(
   props: PropsWithChildren<PortalContextProps<ItemT>>
 ) => {
-  const { listGroupDimensions, id, scrollComponentUseMeasureLayout } = props;
+  const { listGroupDimensions, id } = props;
   const [store, setStore] = useState(
     () =>
       listGroupDimensions.getStateResult() as any as RecycleStateResult<ItemT>
@@ -182,7 +181,6 @@ const PortalContent = <ItemT extends GenericItemT>(
         ownerId={id}
         state={store.spaceState}
         dimensions={listGroupDimensions}
-        scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
       />
 
       <MemoedRecycleContent
@@ -191,7 +189,6 @@ const PortalContent = <ItemT extends GenericItemT>(
         // @ts-ignore
         state={store.recycleState}
         dimensions={listGroupDimensions}
-        scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
       />
     </>
   );

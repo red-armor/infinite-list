@@ -4,36 +4,12 @@ import {
   SpaceStateResult,
 } from '@infinite-list/strategies';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
-import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
+// import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
-// export type PortalContextProps = {
-//   id: string;
-//   listGroupDimensions: ListGroupDimensions;
-//   scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
-// };
-
-// export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
-//   {
-//     state: SpaceStateResult<ItemT>;
-//     listKey: string;
-//     ownerId: string;
-//     dimensions: ListGroupDimensions;
-//     scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
-//   };
-
-// export type GroupRecycleContentProps<
-//   ItemT extends GenericItemT = GenericItemT
-// > = {
-//   state: ListStateResult<ItemT>;
-//   listKey: string;
-//   ownerId: string;
-//   dimensions: ListGroupDimensions;
-//   scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
-// };
 export type PortalContextProps<ItemT extends GenericItemT = GenericItemT> = {
   id: string;
   listGroupDimensions: ListGroupDimensions<ItemT>;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  // scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 };
 
 export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
@@ -42,7 +18,7 @@ export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
     listKey: string;
     ownerId: string;
     dimensions: ListGroupDimensions<ItemT>;
-    scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+    // scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
   };
 
 export type GroupRecycleContentProps<
@@ -52,5 +28,5 @@ export type GroupRecycleContentProps<
   listKey: string;
   ownerId: string;
   dimensions: ListGroupDimensions<ItemT>;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  // scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 };

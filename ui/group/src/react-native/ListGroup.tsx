@@ -1,4 +1,5 @@
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import { GenericItemT } from '@infinite-list/item-meta';
 import React, {
   FC,
   useCallback,
@@ -29,7 +30,9 @@ const ClockEnd: FC<{
   return null;
 });
 
-const ListGroup: FC<ListGroupProps> = (props) => {
+const ListGroup = <ItemT extends GenericItemT>(
+  props: ListGroupProps<ItemT>
+) => {
   const {
     children,
     id,

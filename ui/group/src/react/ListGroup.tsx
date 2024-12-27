@@ -2,15 +2,12 @@ import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { GenericItemT } from '@infinite-list/item-meta';
 import React, {
   CSSProperties,
-  FC,
   useCallback,
-  // useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-// import { div, Platform } from 'react-native';
 
 import { ListGroupProps, genericMemo } from '../types';
 import context from '../common/context';
@@ -74,21 +71,6 @@ const ListGroup = <ItemT extends GenericItemT>(
       layoutRef.current = { x, y, width, height };
     }
   }, []);
-
-  // const measureLayout = useCallback(
-  //   (x: number, y: number, width: number, height: number) => {
-  //     layoutRef.current = { x, y, width, height };
-  //   },
-  //   []
-  // );
-
-  // const scrollMetricsRef = useRef<any>();
-
-  // const scrollHelper = getScrollHelper();
-
-  // const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
-  //   onMeasureLayout: measureLayout,
-  // });
 
   const getContainerLayout = useCallback(() => layoutRef.current!, []);
   const listGroupDimensions = useMemo(

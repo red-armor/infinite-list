@@ -3,7 +3,6 @@ import {
   ViewabilityConfig,
   OnViewableItemsChanged,
   ViewabilityConfigCallbackPairs,
-  GenericItemT,
 } from '@infinite-list/viewable';
 import { ComponentType, PropsWithChildren, MutableRefObject } from 'react';
 import { View, LayoutChangeEvent } from 'react-native';
@@ -21,24 +20,8 @@ export type ScrollComponentUseMeasureLayout = (
   layoutHandler: (e: LayoutChangeEvent) => void;
 };
 
-// export type ListGroupProps = PropsWithChildren<{
-//   GroupListSeparatorComponent?: ComponentType<any> | null | undefined;
-//   id: string;
-//   onViewableItemsChanged?: OnViewableItemsChanged;
-//   viewabilityConfig?: ViewabilityConfig;
-//   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
-//   initialNumToRender?: number;
-//   windowSize?: number;
-//   maxToRenderPerBatch?: number;
-//   onRenderFinished?: () => void;
-//   persistanceIndices?: number[];
-
-//   scrollComponentContext: any;
-//   scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
-// }> &
-//   OnEndReachedHelperProps;
-export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<{
-  GroupListSeparatorComponent?: ComponentType<ItemT> | null | undefined;
+export type ListGroupProps = PropsWithChildren<{
+  GroupListSeparatorComponent?: ComponentType<any> | null | undefined;
   id: string;
   onViewableItemsChanged?: OnViewableItemsChanged;
   viewabilityConfig?: ViewabilityConfig;
@@ -49,7 +32,7 @@ export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<{
   onRenderFinished?: () => void;
   persistanceIndices?: number[];
 
-  scrollComponentContext?: any;
-  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
+  scrollComponentContext: any;
+  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 }> &
   OnEndReachedHelperProps;
