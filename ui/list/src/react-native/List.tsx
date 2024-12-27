@@ -51,75 +51,34 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const offsetRef = useRef(0);
   const tsRef = useRef(Date.now());
 
-  useEffect(() => {
-    // scrollHandlerRef.current = new ScrollTracker({
-    //   domNode: listRef.current!,
-    //   onScroll: () => {
-    //     listModel.updateScrollMetrics(
-    //       scrollHandlerRef.current?.getScrollMetrics()
-    //     );
-    //   },
-    // });
+  useEffect(
+    () =>
+      contextValues
+        .getScrollHelper()
+        .addListener(
+          'onScroll',
+          (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            const scrollMetrics = event.nativeEvent;
+            const timestamp = Date.now();
+            const offset = scrollMetrics.contentOffset.y;
 
-    // scrollHandlerRef.current.addEventListeners();
+            const dOffset = offset - offsetRef.current;
+            const dt = timestamp - tsRef.current;
+            const velocity = dOffset / dt;
 
-    return contextValues
-      .getScrollHelper()
-      .addListener(
-        'onScroll',
-        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          const scrollMetrics = event.nativeEvent;
-          const timestamp = Date.now();
-          const offset = scrollMetrics.contentOffset.y;
+            offsetRef.current = offset;
+            tsRef.current = timestamp;
 
-          const dOffset = offset - offsetRef.current;
-          const dt = timestamp - tsRef.current;
-          const velocity = dOffset / dt;
-
-          offsetRef.current = offset;
-          tsRef.current = timestamp;
-
-          listModel.updateScrollMetrics({
-            offset,
-            visibleLength: scrollMetrics.layoutMeasurement.height,
-            contentLength: scrollMetrics.contentSize.height,
-            velocity,
-          });
-        }
-      );
-
-    // @ts-ignore
-    // props.events.addEventListener(
-    //   'onScroll',
-    //   (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    //     const scrollMetrics = event.nativeEvent;
-    //     const timestamp = Date.now();
-    //     const offset = scrollMetrics.contentOffset.y;
-
-    //     const dOffset = offset - offsetRef.current;
-    //     const dt = timestamp - tsRef.current;
-    //     const velocity = dOffset / dt;
-
-    //     offsetRef.current = offset;
-    //     tsRef.current = timestamp;
-
-    //     listModel.updateScrollMetrics({
-    //       offset,
-    //       visibleLength: scrollMetrics.layoutMeasurement.height,
-    //       contentLength: scrollMetrics.contentSize.height,
-    //       velocity,
-    //     });
-    //   }
-    // );
-
-    // listModel.updateScrollMetrics({
-    //   offset: 0,
-    //   visibleLength: 900,
-    //   contentLength: 0,
-    // });
-
-    // return () => scrollHandlerRef.current?.dispose();
-  }, []);
+            listModel.updateScrollMetrics({
+              offset,
+              visibleLength: scrollMetrics.layoutMeasurement.height,
+              contentLength: scrollMetrics.contentSize.height,
+              velocity,
+            });
+          }
+        ),
+    []
+  );
 
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;
