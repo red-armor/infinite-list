@@ -1,10 +1,12 @@
 import { useEffect, useMemo, memo, useState, PropsWithChildren } from 'react';
 import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
+import { ItemMetaOwner } from '@infinite-list/types';
 import {
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
   RecycleContentItem,
+  ExtraInfo,
 } from '../types';
 
 import GroupListItemImpl from './GroupListItemImpl';
@@ -41,14 +43,18 @@ const RecycleContentItem = <IStyle, ItemT extends GenericItemT = GenericItemT>(
     [offset]
   );
 
+  const metaOwner = useMemo<ItemMetaOwner<ItemT, ExtraInfo<ItemT>>>(() => {
+    return itemMeta.getOwner();
+  }, [itemMeta]);
+
   return (
     <RecycleContentItemWrapper style={containerStyle}>
       <GroupListItemImpl
         item={item}
         itemKey={listKey}
         itemMeta={itemMeta}
-        renderItem={itemMeta.getOwner().renderItem}
-        teleportItemProps={itemMeta.getOwner().teleportItemProps}
+        renderItem={metaOwner.extraInfo.renderItem}
+        teleportItemProps={metaOwner.extraInfo.teleportItemProps}
         containerKey={containerKey}
         dimensions={dimensions}
       />

@@ -7,6 +7,12 @@ import { PropsWithChildren, FC } from 'react';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ItemMeta } from '@infinite-list/item-meta';
 import { RenderItem } from './GroupListItemImpl.types';
+import { TeleportItemProps } from './ListItem.types';
+
+export type ExtraInfo<ItemT extends GenericItemT = GenericItemT> = {
+  renderItem: RenderItem<ItemT>;
+  teleportItemProps: TeleportItemProps<ItemT>;
+};
 
 export type RecycleContentItemWrapper<IStyle> = FC<
   PropsWithChildren<{

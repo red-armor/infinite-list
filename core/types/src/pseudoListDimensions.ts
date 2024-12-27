@@ -1,5 +1,7 @@
 import { ItemMetaOwnerRequiredProps } from './itemMeta';
 
-export interface IPseudoListDimensions extends ItemMetaOwnerRequiredProps {
+export interface IPseudoListDimensions<ExtraInfo extends {} = {}>
+  extends ItemMetaOwnerRequiredProps {
   id: string;
+  extraInfo: ExtraInfo;
 }

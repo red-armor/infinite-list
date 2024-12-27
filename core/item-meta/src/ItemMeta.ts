@@ -33,7 +33,10 @@ export const resetContext = () => {
 /**
  * _layout should always exist. `_isApproximateLayout` should make the difference.
  */
-class ItemMeta<ItemT extends GenericItemT = GenericItemT>
+class ItemMeta<
+    ItemT extends GenericItemT = GenericItemT,
+    ItemMetaOwnerExtraInfo extends {} = {}
+  >
   extends ViewabilityItemMeta
   implements IItemMeta
 {
@@ -42,7 +45,7 @@ class ItemMeta<ItemT extends GenericItemT = GenericItemT>
   private _layout?: ItemLayout;
   private _separatorLength?: number;
   private _recyclerType: string;
-  private _owner: ItemMetaOwner<ItemT>;
+  private _owner: ItemMetaOwner<ItemT, ItemMetaOwnerExtraInfo>;
   private _state: ItemMetaState;
   private _stateEventSubscriptions: Map<string, ItemMetaStateEventHelper>;
   readonly getMetaOnViewableItemsChanged?: any;

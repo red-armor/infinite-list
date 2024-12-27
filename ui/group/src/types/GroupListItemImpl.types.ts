@@ -1,5 +1,4 @@
 import { ItemMeta } from '@infinite-list/item-meta';
-import { DimensionProps } from '@infinite-list/dimension';
 
 import { ListItemProps, DefaultItemT } from './ListItem.types';
 export type RenderItemInfo<ItemT extends DefaultItemT = DefaultItemT> = {

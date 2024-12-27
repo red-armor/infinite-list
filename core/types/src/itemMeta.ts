@@ -8,9 +8,12 @@ import { ItemLayout } from './layout';
 
 export type IItemMeta<ItemT extends GenericItemT = GenericItemT> = {};
 
-export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
-  | IListDimensionsModel<ItemT>
-  | IDimension<ItemT>
+export type ItemMetaOwner<
+  ItemT extends GenericItemT = GenericItemT,
+  ItemMetaOwnerExtraInfo extends {} = {}
+> =
+  | IListDimensionsModel<ItemT, ItemMetaOwnerExtraInfo>
+  | IDimension<ItemT, ItemMetaOwnerExtraInfo>
   | IPseudoListDimensions
   | IItemDimensions;
 
