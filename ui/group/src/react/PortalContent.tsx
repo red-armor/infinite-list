@@ -53,7 +53,6 @@ const RecycleContentItem = (props) => {
       <GroupListItemImpl
         item={item}
         style={containerStyle}
-        // listKey={listKey}
         itemKey={listKey}
         itemMeta={itemMeta}
         renderItem={itemMeta.getOwner().renderItem}
@@ -94,32 +93,6 @@ const MemoedRecycleContent = genericMemo(
   (prev, next) => prev.state === next.state
 );
 
-// const RecycleContent = <T extends {}>(props: GroupRecycleContentProps<T>) => {
-//   const { state, ...rest } = props;
-//   return (
-//     <>
-//       {/* @ts-ignore */}
-//       {state.map((stateResult) => {
-//         const { key, itemMeta, ...stateResultRest } = stateResult;
-//         return (
-//           <MemoedRecycleContentItem
-//             key={key}
-//             containerKey={key}
-//             // @ts-ignore
-//             renderItem={itemMeta.getOwner().renderItem}
-//             itemMeta={itemMeta}
-//             {...rest}
-//             {...stateResultRest}
-//           />
-//         );
-//       })}
-//     </>
-//   );
-// };
-// const MemoedRecycleContent = memo<
-//   PropsWithChildren<GroupRecycleContentProps<any>>
-// >(RecycleContent, (prev, next) => prev.state === next.state);
-
 const MemoedSpaceContent = genericMemo(
   <ItemT extends GenericItemT>(props: GroupSpaceContentProps<ItemT>) => {
     const { state, listKey, dimensions } = props;
@@ -151,10 +124,6 @@ const MemoedSpaceContent = genericMemo(
   },
   (prev, next) => prev.state === next.state
 );
-// const MemoedSpaceContent = genericMemo(
-//   SpaceContent: PropsWithChildren<GroupSpaceContentProps<any>>,
-//   (prev, next) => prev.state === next.state
-// );
 
 const PortalContent = <ItemT extends GenericItemT>(
   props: PropsWithChildren<PortalContextProps<ItemT>>
@@ -169,7 +138,6 @@ const PortalContent = <ItemT extends GenericItemT>(
     () =>
       listGroupDimensions.addStateListener((newState) => {
         setStore(newState as any as RecycleStateResult<ItemT>);
-        // setTimeout(() => setStore(newState as any as RecycleStateResult<T>));
       }),
     []
   );
