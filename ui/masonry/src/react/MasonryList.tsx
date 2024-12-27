@@ -13,9 +13,10 @@ import {
   MasonryDimensions as MasonryDimension,
   MasonryStateResults,
 } from '@infinite-list/masonry-dimensions';
-import { ColumnDimensionInfo, MasonryListProps } from './types';
+import { MasonryListProps } from './types';
 import ColumnStateRenderer from './ColumnStateRender';
 import { ScrollTracker } from '@infinite-list/scroller/web';
+import { resolveColumnInfo } from '../common/utils';
 
 let count = 0;
 
@@ -29,30 +30,19 @@ export const MasonryList = <ItemT extends GenericItemT>(
 
   const listId = useMemo(() => id || `__masonry_list${count++}__`, []);
 
-  const resolveColumnInfo = useCallback((width?: number) => {
-    const sequence = Array.from({ length: column }, (_, i) => i + 1);
-    const nextWidth = width || 0;
-    return sequence.reduce<ColumnDimensionInfo[]>((acc, cur, index) => {
-      const current = {
-        width: getColumnWidth?.(index) || nextWidth / column,
-        left: 0,
-        right: nextWidth - (getColumnWidth?.(index) || nextWidth / column),
-      };
-      if (!index) {
-        acc.push(current);
-        return acc;
-      }
-      const last = acc[acc.length - 1];
-      if (last) {
-        current.left = last.left + last.width;
-        current.right = nextWidth - current.left - last.width;
-      }
-      acc.push(current);
-      return acc;
-    }, []);
-  }, []);
+  const nextResolveColumnInfo = useCallback(
+    (width?: number) =>
+      resolveColumnInfo({
+        width,
+        getColumnWidth,
+        column,
+      }),
+    [column]
+  );
 
-  const [columnDimensions, setColumnDimensions] = useState(resolveColumnInfo());
+  const [columnDimensions, setColumnDimensions] = useState(
+    nextResolveColumnInfo()
+  );
 
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +65,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
       const boundingRect = listRef.current?.getBoundingClientRect();
       if (boundingRect) {
         const { width } = boundingRect;
-        setColumnDimensions(resolveColumnInfo(width));
+        setColumnDimensions(nextResolveColumnInfo(width));
       }
     }
   }, []);
