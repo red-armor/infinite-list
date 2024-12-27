@@ -9,10 +9,13 @@ import {
   useState,
 } from 'react';
 import { View, Platform } from 'react-native';
-
+import {
+  RecycleContentItemWrapper,
+  SpaceRendererComponent,
+} from './CompatComponent';
 import { ListGroupProps } from './types';
 import context from '../common/context';
-import PortalContent from './PortalContent';
+import PortalContent from '../common/PortalContent';
 import { ClockStart, ClockEnd } from '../common/clock';
 import { measureLayout } from './measure';
 
@@ -159,7 +162,12 @@ const ListGroup = <ItemT extends GenericItemT>(
       />
       <context.Provider value={state}>
         {children}
-        <PortalContent id={id} listGroupDimensions={listGroupDimensions} />
+        <PortalContent
+          id={id}
+          listGroupDimensions={listGroupDimensions}
+          RecycleContentItemWrapper={RecycleContentItemWrapper}
+          SpaceRendererComponent={SpaceRendererComponent}
+        />
       </context.Provider>
       <ClockEnd
         dimensions={listGroupDimensions}
