@@ -3,14 +3,10 @@ import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ListDimensions } from '@infinite-list/list-dimensions';
 import React, { CSSProperties, ForwardedRef } from 'react';
 import { ViewStyle, LayoutChangeEvent } from 'react-native';
-import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
 type OnLayout = (event: LayoutChangeEvent) => void;
 
 export type DefaultItemT = GenericItemT;
-// export type DefaultItemT = {
-//   [key: string]: any;
-// };
 
 type OnMeasureLayout =
   | ((x: number, y: number, width: number, height: number) => void)
@@ -21,8 +17,8 @@ type GetMetaOnViewableItemsChanged = () => {
   [key: string]: any;
 };
 
-export type TeleportItemProps =
-  | ((opts: { index: number; item: any }) => {
+export type TeleportItemProps<ItemT extends DefaultItemT> =
+  | ((opts: { index: number; item: ItemT }) => {
       [key: string]: any;
     })
   | undefined;
@@ -35,7 +31,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   itemMeta: ItemMeta;
 
-  dimensions: ListGroupDimensions | ListDimensions;
+  dimensions: ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
 
   withWrapper?: boolean;
   onLayout?: OnLayout;
@@ -48,7 +44,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   style?: ViewStyle | CSSProperties;
 
-  teleportItemProps?: TeleportItemProps;
+  teleportItemProps?: TeleportItemProps<ItemT>;
 
   setMeasureLayoutHandler?: SetMeasureLayoutHandler;
 
@@ -57,6 +53,4 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
   CellRendererComponent?: React.ComponentType<any> | undefined;
 
   containerKey?: string;
-
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 }

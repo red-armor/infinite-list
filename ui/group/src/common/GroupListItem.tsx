@@ -1,30 +1,17 @@
-import React, { useContext, useRef } from 'react';
+import { useContext, useRef, memo } from 'react';
 import { GenericItemT } from '@infinite-list/types';
 import context from './context';
 import useMountItem from './hooks/useMountItem';
-import { genericMemo, GroupListItemImplProps } from '../types';
+import { GroupListItemImplProps } from '../types';
 
-const MemoedGroupListItem = genericMemo(
-  <ItemT extends GenericItemT>(props: GroupListItemImplProps<ItemT>) => {
-    useMountItem(props);
-    return null;
-  },
-  (prev, cur) => {
-    // @ts-ignore
-    if (cur.changed) return true;
+const GroupListItem = <ItemT extends GenericItemT>(
+  props: GroupListItemImplProps<ItemT>
+) => {
+  useMountItem<ItemT>(props);
+  return null;
+};
 
-    const keys = Object.keys(prev);
-
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
-      // @ts-ignore
-      if (prev[key] !== cur[key]) {
-        return false;
-      }
-    }
-    return true;
-  }
-);
+const MemoedGroupListItem = memo(GroupListItem) as typeof GroupListItem;
 
 const GroupListItemWrapper = <ItemT extends GenericItemT>(
   props: GroupListItemImplProps<ItemT>

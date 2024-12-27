@@ -6,6 +6,7 @@ import {
 import { PropsWithChildren, FC } from 'react';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ItemMeta } from '@infinite-list/item-meta';
+import { RenderItem } from './GroupListItemImpl.types';
 
 export type RecycleContentItemWrapper<IStyle> = FC<
   PropsWithChildren<{
@@ -23,6 +24,7 @@ export type PortalContextProps<
   ItemT extends GenericItemT = GenericItemT
 > = {
   id: string;
+  horizontal?: boolean;
   listGroupDimensions: ListGroupDimensions<ItemT>;
   RecycleContentItemWrapper: RecycleContentItemWrapper<IStyle>;
   SpaceRendererComponent: SpaceRendererComponent<IStyle>;
@@ -58,8 +60,9 @@ export type RecycleContentItem<
   itemMeta: ItemMeta<ItemT>;
   item: ItemT;
   offset: number;
-  horizontal: boolean;
+  horizontal?: boolean;
   containerKey: string;
+  renderItem: RenderItem<ItemT>;
   dimensions: ListGroupDimensions<ItemT>;
   RecycleContentItemWrapper: RecycleContentItemWrapper<IStyle>;
 };

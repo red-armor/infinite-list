@@ -3,7 +3,7 @@ import { GenericItemT } from '@infinite-list/item-meta';
 import { createContext } from 'react';
 import noop from '@x-oasis/noop';
 
-type ContextType<ItemT extends GenericItemT> = {
+export type ContextType<ItemT extends GenericItemT> = {
   inspectingTimes: number;
   inspectingTime: number;
   heartBeat: (props: { listKey: string; inspectingTime: number }) => void;

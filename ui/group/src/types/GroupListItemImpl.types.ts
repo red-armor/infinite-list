@@ -1,5 +1,4 @@
 import { ItemMeta } from '@infinite-list/item-meta';
-import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
 import { ListItemProps, DefaultItemT } from './ListItem.types';
 export type RenderItemInfo<ItemT extends DefaultItemT = DefaultItemT> = {
@@ -13,5 +12,4 @@ export type RenderItem<ItemT extends DefaultItemT = DefaultItemT> = (
 export interface GroupListItemImplProps<ItemT extends DefaultItemT>
   extends ListItemProps<ItemT> {
   renderItem: RenderItem<ItemT>;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 }

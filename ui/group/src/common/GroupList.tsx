@@ -1,33 +1,18 @@
-import { PropsWithChildren, useContext, useRef } from 'react';
+import { memo, PropsWithChildren, useContext, useRef } from 'react';
 
 import { DefaultItemT } from '../types';
-import { genericMemo, GroupListProps } from '../types';
+import { GroupListProps } from '../types';
 import context from './context';
 import useMountList from './hooks/useMountList';
 
-const MemoedGroupList = genericMemo(
-  <ItemT extends DefaultItemT>(
-    props: PropsWithChildren<GroupListProps<ItemT>>
-  ) => {
-    useMountList(props);
-    return null;
-  },
-  (prev, cur) => {
-    // @ts-ignore
-    if (cur.changed) return true;
+const GroupList = <ItemT extends DefaultItemT>(
+  props: PropsWithChildren<GroupListProps<ItemT>>
+) => {
+  useMountList(props);
+  return null;
+};
 
-    const keys = Object.keys(prev);
-
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
-      // @ts-ignore
-      if (prev[key] !== cur[key]) {
-        return false;
-      }
-    }
-    return true;
-  }
-);
+const MemoedGroupList = memo(GroupList) as typeof GroupList;
 
 const GroupListWrapper = <ItemT extends DefaultItemT>(
   props: PropsWithChildren<GroupListProps<ItemT>>

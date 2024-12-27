@@ -7,5 +7,5 @@ export interface GroupListProps<ItemT extends DefaultItemT>
   extends ListDimensionsModelProps<ItemT>,
     OnEndReachedHelperProps {
   renderItem: RenderItem<ItemT>;
-  teleportItemProps?: TeleportItemProps;
+  teleportItemProps?: TeleportItemProps<ItemT>;
 }

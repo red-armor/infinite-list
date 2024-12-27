@@ -1,15 +1,14 @@
 import React, { useCallback } from 'react';
+import { GenericItemT } from '@infinite-list/strategies';
 
 import ListItem from './ListItem';
-import { DefaultItemT } from '../types';
 import { GroupListItemImplProps } from '../types';
 
-const GroupListItemImpl = <ItemT extends DefaultItemT>(
+const GroupListItemImpl = <ItemT extends GenericItemT>(
   props: GroupListItemImplProps<ItemT>
 ) => {
   const {
     item,
-    // listKey,
     itemKey,
     dimensions,
     itemMeta,
@@ -17,7 +16,6 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
     renderItem: RenderItem,
     teleportItemProps,
     CellRendererComponent,
-    scrollComponentUseMeasureLayout,
     ...rest
   } = props;
 
@@ -30,8 +28,7 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
 
   const teleportProps =
     typeof teleportItemProps === 'function'
-      ? // @ts-ignore
-        teleportItemProps({
+      ? teleportItemProps({
           item,
           index: itemMeta.getIndexInfo?.()?.index || -1,
         })
@@ -41,13 +38,11 @@ const GroupListItemImpl = <ItemT extends DefaultItemT>(
     <ListItem<ItemT>
       item={item}
       itemKey={itemKey}
-      // listKey={listKey}
       itemMeta={itemMeta}
       dimensions={dimensions}
       containerKey={containerKey}
       CellRendererComponent={CellRendererComponent}
       getMetaOnViewableItemsChanged={getMetaOnViewableItemsChanged}
-      scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
     >
       {React.isValidElement(RenderItem) ? (
         RenderItem

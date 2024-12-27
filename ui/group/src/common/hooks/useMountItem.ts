@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import context from '../context';
+import context, { ContextType } from '../context';
 import { Dimension, GenericItemT } from '@infinite-list/dimension';
 import { GroupListItemImplProps } from '../../types';
 
@@ -8,15 +8,15 @@ export default <ItemT extends GenericItemT>(
 ) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);
-  const listGroupDimensions = useContext(context).listGroupDimensions!;
+  const listGroupDimensions =
+    useContext<ContextType<ItemT>>(context).listGroupDimensions;
   const { itemKey, children, ...rest } = props;
 
   const dimensionRef = useRef<Dimension>();
 
-  if (initialRef.current) {
+  if (initialRef.current && listGroupDimensions) {
     const { remover, dimensions } = listGroupDimensions.registerItem(
       itemKey,
-      // @ts-ignore
       rest
     );
     disposerRef.current = remover;
@@ -33,7 +33,6 @@ export default <ItemT extends GenericItemT>(
         })
       : children;
 
-    // @ts-ignore
     dimensionRef.current!.renderItem = clonedChildren;
   }, [children]);
 

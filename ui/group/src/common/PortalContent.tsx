@@ -1,13 +1,6 @@
-import React, {
-  useEffect,
-  useMemo,
-  memo,
-  useState,
-  PropsWithChildren,
-} from 'react';
+import { useEffect, useMemo, memo, useState, PropsWithChildren } from 'react';
 import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
 import {
-  genericMemo,
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
@@ -16,7 +9,7 @@ import {
 
 import GroupListItemImpl from './GroupListItemImpl';
 
-const RecycleContentItem = <IStyle, ItemT extends GenericItemT>(
+const RecycleContentItem = <IStyle, ItemT extends GenericItemT = GenericItemT>(
   props: RecycleContentItem<IStyle, ItemT>
 ) => {
   const {
@@ -66,19 +59,20 @@ const MemoedRecycleContentItem = memo(
   RecycleContentItem
 ) as typeof RecycleContentItem;
 
-const RecycleContent = <IStyle, ItemT extends GenericItemT>(
+const RecycleContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
   props: GroupRecycleContentProps<IStyle, ItemT>
 ) => {
   const { state, RecycleContentItemWrapper, ...rest } = props;
   return (
     <>
       {state.map((stateResult) => {
-        const { key, itemMeta, ...stateResultRest } = stateResult;
+        const { key, itemMeta, item, ...stateResultRest } = stateResult;
         return (
-          <MemoedRecycleContentItem<IStyle, ItemT>
+          <MemoedRecycleContentItem
             key={key}
             containerKey={key}
             renderItem={itemMeta!.getOwner().renderItem}
+            item={item!}
             RecycleContentItemWrapper={RecycleContentItemWrapper}
             itemMeta={itemMeta!}
             {...rest}
@@ -91,7 +85,7 @@ const RecycleContent = <IStyle, ItemT extends GenericItemT>(
 };
 const MemoedRecycleContent = memo(RecycleContent) as typeof RecycleContent;
 
-const SpaceContent = <IStyle, ItemT extends GenericItemT>(
+const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
   props: GroupSpaceContentProps<IStyle, ItemT>
 ) => {
   const { state, listKey, dimensions, SpaceRendererComponent } = props;
@@ -103,7 +97,7 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT>(
         return isSpace ? (
           <SpaceRendererComponent key={key} style={{ height: length }} />
         ) : (
-          <GroupListItemImpl<ItemT>
+          <GroupListItemImpl
             item={item!}
             key={key}
             itemKey={listKey}
@@ -119,7 +113,7 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT>(
 };
 const MemoedSpaceContent = memo(SpaceContent) as typeof SpaceContent;
 
-const PortalContent = <IStyle, ItemT extends GenericItemT>(
+const PortalContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
   props: PropsWithChildren<PortalContextProps<IStyle, ItemT>>
 ) => {
   const {
@@ -164,4 +158,4 @@ const PortalContent = <IStyle, ItemT extends GenericItemT>(
   );
 };
 
-export default genericMemo(PortalContent);
+export default memo(PortalContent) as typeof PortalContent;

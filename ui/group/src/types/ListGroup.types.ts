@@ -6,20 +6,20 @@ import {
   GenericItemT,
 } from '@infinite-list/viewable';
 import { ComponentType, PropsWithChildren, MutableRefObject } from 'react';
-import { View, LayoutChangeEvent } from 'react-native';
+// import { View, LayoutChangeEvent } from 'react-native';
 
-export type ScrollComponentUseMeasureLayout = (
-  itemRef: MutableRefObject<View | null>,
-  options: {
-    onLayout?: Function;
-    getCurrentKey?: () => string;
-    isIntervalTreeItem?: boolean;
-    onMeasureLayout?: Function;
-  }
-) => {
-  handler: Function;
-  layoutHandler: (e: LayoutChangeEvent) => void;
-};
+// export type ScrollComponentUseMeasureLayout = (
+//   itemRef: MutableRefObject<View | null>,
+//   options: {
+//     onLayout?: Function;
+//     getCurrentKey?: () => string;
+//     isIntervalTreeItem?: boolean;
+//     onMeasureLayout?: Function;
+//   }
+// ) => {
+//   handler: Function;
+//   layoutHandler: (e: LayoutChangeEvent) => void;
+// };
 
 // export type ListGroupProps = PropsWithChildren<{
 //   GroupListSeparatorComponent?: ComponentType<any> | null | undefined;
@@ -40,6 +40,7 @@ export type ScrollComponentUseMeasureLayout = (
 export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<{
   GroupListSeparatorComponent?: ComponentType<ItemT> | null | undefined;
   id: string;
+  horizontal?: boolean;
   onViewableItemsChanged?: OnViewableItemsChanged;
   viewabilityConfig?: ViewabilityConfig;
   viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
@@ -50,6 +51,6 @@ export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<{
   persistanceIndices?: number[];
 
   scrollComponentContext?: any;
-  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
+  // scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
 }> &
   OnEndReachedHelperProps;
