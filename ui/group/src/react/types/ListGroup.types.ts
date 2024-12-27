@@ -33,6 +33,6 @@ export type ListGroupProps = PropsWithChildren<{
   persistanceIndices?: number[];
 
   scrollComponentContext: any;
-  scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
+  // scrollComponentUseMeasureLayout: ScrollComponentUseMeasureLayout;
 }> &
   OnEndReachedHelperProps;

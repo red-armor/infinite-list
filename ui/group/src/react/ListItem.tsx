@@ -40,7 +40,6 @@ const ListItem = <ItemT extends DefaultItemT>(
     onMeasureLayout: _onMeasureLayout,
     measureLayoutHandlerOnDemand,
     getMetaOnViewableItemsChanged,
-    scrollComponentUseMeasureLayout,
 
     itemMeta,
     ...rest

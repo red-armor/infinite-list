@@ -11,73 +11,75 @@ import {
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
+  RecycleContentItem,
 } from '../types';
-import { View, ViewStyle } from 'react-native';
 
-import GroupListItemImpl from '../common/GroupListItemImpl';
+import GroupListItemImpl from './GroupListItemImpl';
 
-// @ts-ignore
-const RecycleContentItem = (props) => {
-  const {
-    listKey,
-    itemMeta,
-    dimensions,
-    item,
-    offset,
-    containerKey,
-    horizontal,
-  } = props;
+const MemoedRecycleContentItem = genericMemo(
+  <IStyle, ItemT extends GenericItemT>(
+    props: RecycleContentItem<IStyle, ItemT>
+  ) => {
+    const {
+      listKey,
+      itemMeta,
+      dimensions,
+      item,
+      offset,
+      containerKey,
+      horizontal,
+      RecycleContentItemWrapper,
+    } = props;
 
-  const containerStyle: ViewStyle = useMemo(
-    () =>
-      horizontal
-        ? {
-            position: 'absolute',
-            left: offset,
-            top: 0,
-            bottom: 0,
-          }
-        : {
-            position: 'absolute',
-            top: offset,
-            left: 0,
-            right: 0,
-          },
-    [offset]
-  );
+    const containerStyle = useMemo(
+      () =>
+        horizontal
+          ? {
+              position: 'absolute',
+              left: offset,
+              top: 0,
+              bottom: 0,
+            }
+          : {
+              position: 'absolute',
+              top: offset,
+              left: 0,
+              right: 0,
+            },
+      [offset]
+    );
 
-  return (
-    <View style={containerStyle}>
-      <GroupListItemImpl
-        item={item}
-        style={containerStyle}
-        itemKey={listKey}
-        itemMeta={itemMeta}
-        renderItem={itemMeta.getOwner().renderItem}
-        teleportItemProps={itemMeta.getOwner().teleportItemProps}
-        containerKey={containerKey}
-        dimensions={dimensions}
-      />
-    </View>
-  );
-};
-
-const MemoedRecycleContentItem = memo(RecycleContentItem);
+    return (
+      <RecycleContentItemWrapper style={containerStyle}>
+        <GroupListItemImpl
+          item={item}
+          itemKey={listKey}
+          itemMeta={itemMeta}
+          renderItem={itemMeta.getOwner().renderItem}
+          teleportItemProps={itemMeta.getOwner().teleportItemProps}
+          containerKey={containerKey}
+          dimensions={dimensions}
+        />
+      </RecycleContentItemWrapper>
+    );
+  }
+);
 
 const MemoedRecycleContent = genericMemo(
-  <ItemT extends GenericItemT>(props: GroupRecycleContentProps<ItemT>) => {
-    const { state, ...rest } = props;
+  <IStyle, ItemT extends GenericItemT>(
+    props: GroupRecycleContentProps<IStyle, ItemT>
+  ) => {
+    const { state, RecycleContentItemWrapper, ...rest } = props;
     return (
       <>
-        {/* @ts-ignore */}
         {state.map((stateResult) => {
           const { key, itemMeta, ...stateResultRest } = stateResult;
           return (
             <MemoedRecycleContentItem
               key={key}
               containerKey={key}
-              // @ts-ignore
-              renderItem={itemMeta.getOwner().renderItem}
+              renderItem={itemMeta!.getOwner().renderItem}
+              RecycleContentItemWrapper={RecycleContentItemWrapper}
               itemMeta={itemMeta}
               {...rest}
               {...stateResultRest}
@@ -91,8 +93,10 @@ const MemoedRecycleContent = genericMemo(
 );
 
 const MemoedSpaceContent = genericMemo(
-  <ItemT extends GenericItemT>(props: GroupSpaceContentProps<ItemT>) => {
-    const { state, listKey, dimensions } = props;
+  <IStyle, ItemT extends GenericItemT>(
+    props: GroupSpaceContentProps<IStyle, ItemT>
+  ) => {
+    const { state, listKey, dimensions, SpaceRendererComponent } = props;
 
     return (
       <>
@@ -100,20 +104,16 @@ const MemoedSpaceContent = genericMemo(
           const { isSpace, key, item, length, isSticky, itemMeta } =
             stateResult;
           return isSpace ? (
-            <div key={key} style={{ height: length }} />
+            <SpaceRendererComponent key={key} style={{ height: length }} />
           ) : (
             <GroupListItemImpl<ItemT>
               item={item!}
               key={key}
-              // listKey={listKey}
               itemKey={listKey}
               itemMeta={itemMeta!}
-              // @ts-ignore
               renderItem={itemMeta!.getOwner().renderItem}
-              // @ts-ignore
               teleportItemProps={itemMeta!.getOwner().teleportItemProps}
               dimensions={dimensions}
-              // scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
             />
           );
         })}
@@ -123,10 +123,15 @@ const MemoedSpaceContent = genericMemo(
   (prev, next) => prev.state === next.state
 );
 
-const PortalContent = <ItemT extends GenericItemT>(
-  props: PropsWithChildren<PortalContextProps<ItemT>>
+const PortalContent = <IStyle, ItemT extends GenericItemT>(
+  props: PropsWithChildren<PortalContextProps<IStyle, ItemT>>
 ) => {
-  const { listGroupDimensions, id } = props;
+  const {
+    id,
+    listGroupDimensions,
+    RecycleContentItemWrapper,
+    SpaceRendererComponent,
+  } = props;
   const [store, setStore] = useState(
     () =>
       listGroupDimensions.getStateResult() as any as RecycleStateResult<ItemT>
@@ -149,19 +154,18 @@ const PortalContent = <ItemT extends GenericItemT>(
         ownerId={id}
         state={store.spaceState}
         dimensions={listGroupDimensions}
-        // scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
+        SpaceRendererComponent={SpaceRendererComponent}
       />
 
       <MemoedRecycleContent
         listKey={id}
         ownerId={id}
-        // @ts-ignore
         state={store.recycleState}
         dimensions={listGroupDimensions}
-        // scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
+        RecycleContentItemWrapper={RecycleContentItemWrapper}
       />
     </>
   );
 };
 
-export default React.memo(PortalContent);
+export default genericMemo(PortalContent);

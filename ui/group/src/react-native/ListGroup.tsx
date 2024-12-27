@@ -1,7 +1,6 @@
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { GenericItemT } from '@infinite-list/item-meta';
-import React, {
-  FC,
+import {
   useCallback,
   useContext,
   useEffect,
@@ -11,24 +10,25 @@ import React, {
 } from 'react';
 import { View, Platform } from 'react-native';
 
-import { ListGroupProps } from '../types';
+import { ListGroupProps } from './types';
 import context from '../common/context';
 import PortalContent from './PortalContent';
 import { ClockStart, ClockEnd } from '../common/clock';
+import { measureLayout } from './measure';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>
 ) => {
   const {
-    children,
     id,
+    children,
+    containerRef,
     onViewableItemsChanged,
     viewabilityConfig,
     viewabilityConfigCallbackPairs,
     initialNumToRender,
     persistanceIndices,
     scrollComponentContext,
-    scrollComponentUseMeasureLayout,
     ...rest
   } = props;
   // @ts-ignore
@@ -43,7 +43,7 @@ const ListGroup = <ItemT extends GenericItemT>(
   }>();
 
   const viewRef = useRef<View>(null);
-  const measureLayout = useCallback(
+  const measureLayoutOnSuccessCallback = useCallback(
     (x: number, y: number, width: number, height: number) => {
       layoutRef.current = { x, y, width, height };
     },
@@ -54,9 +54,25 @@ const ListGroup = <ItemT extends GenericItemT>(
 
   const scrollHelper = getScrollHelper();
 
-  const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
-    onMeasureLayout: measureLayout,
-  });
+  const layoutHandler = useCallback(() => {
+    if (viewRef.current) {
+      measureLayout(
+        viewRef.current,
+        containerRef.current,
+        measureLayoutOnSuccessCallback
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (viewRef.current) {
+      measureLayout(
+        viewRef.current,
+        containerRef.current,
+        measureLayoutOnSuccessCallback
+      );
+    }
+  }, []);
 
   const getContainerLayout = useCallback(() => layoutRef.current!, []);
   const listGroupDimensions = useMemo(
@@ -78,9 +94,6 @@ const ListGroup = <ItemT extends GenericItemT>(
   useEffect(
     () =>
       scrollEventHelper.subscribeEventHandler('onContentSizeChange', () => {
-        if (typeof handler === 'function') {
-          handler();
-        }
         const scrollMetrics = scrollHelper.getScrollMetrics();
         if (scrollMetrics !== scrollMetricsRef.current) {
           listGroupDimensions.updateScrollMetrics(
@@ -146,11 +159,7 @@ const ListGroup = <ItemT extends GenericItemT>(
       />
       <context.Provider value={state}>
         {children}
-        <PortalContent
-          id={id}
-          listGroupDimensions={listGroupDimensions}
-          scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
-        />
+        <PortalContent id={id} listGroupDimensions={listGroupDimensions} />
       </context.Provider>
       <ClockEnd
         dimensions={listGroupDimensions}

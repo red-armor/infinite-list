@@ -11,9 +11,13 @@ import {
 
 import { ListGroupProps } from '../types';
 import context from '../common/context';
-import PortalContent from './PortalContent';
+import PortalContent from '../common/PortalContent';
 import { ScrollTracker } from '@infinite-list/scroller/web';
 import { ClockStart, ClockEnd } from '../common/clock';
+import {
+  RecycleContentItemWrapper,
+  SpaceRendererComponent,
+} from './CompatComponent';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>
@@ -27,7 +31,6 @@ const ListGroup = <ItemT extends GenericItemT>(
     initialNumToRender,
     persistanceIndices,
     scrollComponentContext,
-    scrollComponentUseMeasureLayout,
     ...rest
   } = props;
 
@@ -120,9 +123,11 @@ const ListGroup = <ItemT extends GenericItemT>(
       />
       <context.Provider value={state}>
         {children}
-        <PortalContent<ItemT>
+        <PortalContent<CSSProperties, ItemT>
           id={id}
           listGroupDimensions={listGroupDimensions}
+          RecycleContentItemWrapper={RecycleContentItemWrapper}
+          SpaceRendererComponent={SpaceRendererComponent}
         />
       </context.Provider>
       <ClockEnd
