@@ -14,21 +14,7 @@ import { View, Platform } from 'react-native';
 import { ListGroupProps } from '../types';
 import context from '../common/context';
 import PortalContent from './PortalContent';
-
-const ClockStart: FC<{
-  dimensions: ListGroupDimensions;
-  inspectingTimes: number;
-}> = React.memo((props) => {
-  props.dimensions.inspector.startCollection();
-  return null;
-});
-const ClockEnd: FC<{
-  dimensions: ListGroupDimensions;
-  inspectingTimes: number;
-}> = React.memo((props) => {
-  props.dimensions.inspector.terminateCollection();
-  return null;
-});
+import { ClockStart, ClockEnd } from '../common/clock';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>

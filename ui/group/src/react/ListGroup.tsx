@@ -9,30 +9,11 @@ import {
   useState,
 } from 'react';
 
-import { ListGroupProps, genericMemo } from '../types';
+import { ListGroupProps } from '../types';
 import context from '../common/context';
 import PortalContent from './PortalContent';
 import { ScrollTracker } from '@infinite-list/scroller/web';
-
-// https://stackoverflow.com/a/70890101
-const ClockStart = genericMemo(
-  <ItemT extends GenericItemT>(props: {
-    dimensions: ListGroupDimensions<ItemT>;
-    inspectingTimes: number;
-  }) => {
-    props.dimensions.inspector.startCollection();
-    return null;
-  }
-);
-const ClockEnd = genericMemo(
-  <ItemT extends GenericItemT>(props: {
-    dimensions: ListGroupDimensions<ItemT>;
-    inspectingTimes: number;
-  }) => {
-    props.dimensions.inspector.terminateCollection();
-    return null;
-  }
-);
+import { ClockStart, ClockEnd } from '../common/clock';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>

@@ -72,38 +72,6 @@ const ListItem = <ItemT extends DefaultItemT>(
     layoutHandler();
   }, []);
 
-  // const onMeasureLayout = useCallback(
-  //   (x: number, y: number, width: number, height: number) => {
-  //     if (typeof _onMeasureLayout === 'function') {
-  //       _onMeasureLayout(x, y, width, height);
-  //     }
-  //     const layout = itemMetaRef.current?.getLayout();
-  //     const nextLayout = { x, y, width, height };
-
-  //     if (!layout || !shallowEqual(nextLayout, layout)) {
-  //       itemMetaRef.current
-  //         .getOwner()
-  //         .setKeyItemLayout(itemMetaRef.current.getKey(), {
-  //           x,
-  //           y,
-  //           width,
-  //           height,
-  //         });
-  //     }
-  //   },
-  //   []
-  // );
-
-  // const getCurrentKey = useCallback(() => itemMetaRef.current.getKey(), []);
-
-  // @ts-ignore
-  // const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
-  //   onLayout,
-  //   getCurrentKey,
-  //   isIntervalTreeItem: true,
-  //   onMeasureLayout,
-  // });
-
   // note!!!!: has a condition, viewableItemHelperKey not change but itemMeta change..
   // reuse position with same data source..
   useEffect(() => {
@@ -117,16 +85,10 @@ const ListItem = <ItemT extends DefaultItemT>(
         (!itemMetaRef.current?.getLayout() ||
           itemMetaRef.current.isApproximateLayout)
       ) {
-        // setTimeout(() => handler(), 0);
         setTimeout(() => layoutHandler(), 0);
       }
     }
   }, [itemMeta]);
-
-  // useEffect(() => {
-  //   if (typeof setMeasureLayoutHandler === 'function')
-  //     setMeasureLayoutHandler(handler);
-  // }, []);
 
   const RenderComponent = useMemo(
     () => CellRendererComponent || 'div',
