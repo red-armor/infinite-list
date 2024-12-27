@@ -1,16 +1,16 @@
 import { defaultKeyExtractor } from '@infinite-list/utils';
 import { useContext, useEffect, useRef } from 'react';
-import context from '../context';
+import context, { ContextType } from '../context';
 import { DefaultItemT, GroupListProps } from '../../types';
 
 export default <ItemT extends DefaultItemT>(props: GroupListProps<ItemT>) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);
 
-  const { listGroupDimensions } = useContext(context);
+  const { listGroupDimensions } = useContext<ContextType<ItemT>>(context);
   const {
     data,
-    keyExtractor = defaultKeyExtractor,
+    keyExtractor = defaultKeyExtractor<ItemT>,
     id,
     renderItem,
     onEndReached,
@@ -28,16 +28,14 @@ export default <ItemT extends DefaultItemT>(props: GroupListProps<ItemT>) => {
   if (initialRef.current) {
     disposerRef.current = listGroupDimensions!.registerList(id, {
       data,
-      // @ts-ignore
       keyExtractor,
       onEndReached,
       recycleEnabled: true,
       recyclerType,
       ...rest,
     }).remover;
-    // @ts-ignore
+
     listGroupDimensions!.getDimension(id).renderItem = renderItem;
-    // @ts-ignore
     listGroupDimensions!.getDimension(id).teleportItemProps = teleportItemProps;
     initialRef.current = false;
   }

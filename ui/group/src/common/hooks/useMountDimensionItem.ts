@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import context, { ContextType } from '../context';
 import { Dimension, GenericItemT } from '@infinite-list/dimension';
-import { GroupListItemImplProps } from '../../types';
+import { GroupDimensionItemProps } from '../../types';
 
 export default <ItemT extends GenericItemT>(
-  props: GroupListItemImplProps<ItemT>
+  props: GroupDimensionItemProps<ItemT>
 ) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);
@@ -27,8 +27,7 @@ export default <ItemT extends GenericItemT>(
 
   useMemo(() => {
     const clonedChildren = children
-      ? // @ts-ignore
-        React.cloneElement(children, {
+      ? React.cloneElement(children, {
           itemMeta: dimensionRef.current?.getMeta(),
         })
       : children;

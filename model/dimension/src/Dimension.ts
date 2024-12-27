@@ -9,13 +9,10 @@ import {
 import layoutEqual from '@x-oasis/layout-equal';
 import {
   DimensionProps,
-  // ItemLayout,
   GetDimensionLength,
   GenericItemT,
   ListGroupChildDimensionsContainer,
   ListGroupIndexInfo,
-
-  // [TODO]
   ListGroupDimensions,
 } from './types';
 

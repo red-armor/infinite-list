@@ -1,20 +1,22 @@
 import { useContext, useRef, memo } from 'react';
 import { GenericItemT } from '@infinite-list/types';
 import context from './context';
-import useMountItem from './hooks/useMountItem';
-import { GroupListItemImplProps } from '../types';
+import useMountItem from './hooks/useMountDimensionItem';
+import { GroupDimensionItemProps } from '../types';
 
-const GroupListItem = <ItemT extends GenericItemT>(
-  props: GroupListItemImplProps<ItemT>
+const GroupDimensionItem = <ItemT extends GenericItemT>(
+  props: GroupDimensionItemProps<ItemT>
 ) => {
   useMountItem<ItemT>(props);
   return null;
 };
 
-const MemoedGroupListItem = memo(GroupListItem) as typeof GroupListItem;
+const MemoedGroupDimensionItem = memo(
+  GroupDimensionItem
+) as typeof GroupDimensionItem;
 
-const GroupListItemWrapper = <ItemT extends GenericItemT>(
-  props: GroupListItemImplProps<ItemT>
+const GroupDimensionItemWrapper = <ItemT extends GenericItemT>(
+  props: GroupDimensionItemProps<ItemT>
 ) => {
   const contextValues = useContext(context);
   const contextValuesRef = useRef(contextValues);
@@ -34,7 +36,7 @@ const GroupListItemWrapper = <ItemT extends GenericItemT>(
     // changed = true;
   }
 
-  return <MemoedGroupListItem {...props} />;
+  return <MemoedGroupDimensionItem {...props} />;
 };
 
-export default GroupListItemWrapper;
+export default GroupDimensionItemWrapper;
