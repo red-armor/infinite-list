@@ -1,7 +1,7 @@
 import { GenericItemT } from './generic.types';
 import { IListDimensionsModel } from './ListDimensionsModel';
 import { IOnEndReachedHelper } from './OnEndReachedHelper';
-import { ItemMeta } from '@infinite-list/item-meta';
+import { IItemMeta } from './itemMeta';
 
 export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
   maxToRenderPerBatch: number;
@@ -37,7 +37,7 @@ export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
     maxOffset: number;
   };
 
-  getIndexItemMeta(index: number): ItemMeta<ItemT>;
+  getIndexItemMeta(index: number): IItemMeta<ItemT>;
 
   getContainerOffset(): number;
   // getItemKey(item: ItemT, index?: number): string | null;

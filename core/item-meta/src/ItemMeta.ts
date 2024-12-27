@@ -1,10 +1,4 @@
-// import BaseDimensions from './BaseDimensions';
-// import Dimension from './Dimension';
-
 import { BaseDimensions } from './types';
-// @ts-ignore
-// import { Dimension } from '@infinite-list/dimension'
-
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
 import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import {
@@ -17,6 +11,7 @@ import {
   GenericItemT,
 } from './types';
 import noop from '@x-oasis/noop';
+import { IItemMeta } from '@infinite-list/types';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import { ViewabilityItemMeta } from '@infinite-list/viewable';
 
@@ -40,9 +35,10 @@ export const resetContext = () => {
 /**
  * _layout should always exist. `_isApproximateLayout` should make the difference.
  */
-class ItemMeta<
-  ItemT extends GenericItemT = GenericItemT
-> extends ViewabilityItemMeta {
+class ItemMeta<ItemT extends GenericItemT = GenericItemT>
+  extends ViewabilityItemMeta
+  implements IItemMeta
+{
   private _isListItem: boolean;
   private _id: string;
   private _layout?: ItemLayout;

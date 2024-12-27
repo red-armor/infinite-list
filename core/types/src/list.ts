@@ -1,18 +1,9 @@
-// import {
-//   GenericItemT,
-//   ListDimensions,
-//   RecycleStateToken,
-//   SpaceStateToken,
-//   ListDimensionsModelProps,
-// } from '@infinite-list/data-model';
-
-// import { ItemMeta } from '@infinite-list/data-model';
-import { ItemMeta } from '@infinite-list/item-meta';
 import { GenericItemT } from './generic.types';
+import { IItemMeta } from './itemMeta';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   item: ItemT;
-  itemMeta: ItemMeta<ItemT>;
+  itemMeta: IItemMeta<ItemT>;
 };
 
 export type DefaultItemT = {

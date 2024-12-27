@@ -21,7 +21,7 @@ export type ExtractIdItem<T> = Extract<
   }
 >;
 
-const isPresent = (v: any) => typeof v !== 'undefined';
+const isPresent = (v: any) => v != null;
 
 export const defaultKeyExtractor = <T>(
   item: ItemPossibleT<T>,

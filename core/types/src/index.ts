@@ -5,3 +5,7 @@ export * from './ListGroupDimensions';
 export * from './masonry';
 export * from './scrollMetrics.types';
 export * from './list';
+export * from './itemMeta';
+export * from './Dimension';
+export * from './pseudoListDimensions';
+export * from './itemDimensions';
