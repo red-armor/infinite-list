@@ -1,5 +1,4 @@
 import { CSSProperties, useEffect, useMemo, useRef } from 'react';
-// import { GenericItemT } from '@infinite-list/data-model';
 import { GenericItemT } from '@infinite-list/strategies';
 import { RecycleItemProps } from '../types';
 
