@@ -2,7 +2,7 @@ import SelectValue from '@x-oasis/select-value';
 import { GenericItemT } from './generic.types';
 import { IListDimensionsModel } from './ListDimensionsModel';
 import { IDimension } from './Dimension';
-import { IPseudoListDimensions } from './pseudoListDimensions';
+// import { IPseudoListDimensions } from './pseudoListDimensions';
 import { IItemDimensions } from './itemDimensions';
 import { ItemLayout } from './layout';
 
@@ -14,7 +14,7 @@ export type ItemMetaOwner<
 > =
   | IListDimensionsModel<ItemT, ItemMetaOwnerExtraInfo>
   | IDimension<ItemT, ItemMetaOwnerExtraInfo>
-  | IPseudoListDimensions
+  // | IPseudoListDimensions
   | IItemDimensions;
 
 export type ItemMetaOwnerRequiredProps<

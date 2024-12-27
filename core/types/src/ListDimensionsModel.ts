@@ -6,6 +6,5 @@ export interface IListDimensionsModel<
   ExtraInfo extends {} = {}
 > extends ItemMetaOwnerRequiredProps<ItemT> {
   getItemKey(item: ItemT, index?: number): string | null;
-
   extraInfo: ExtraInfo;
 }

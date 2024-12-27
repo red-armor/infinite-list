@@ -36,10 +36,10 @@ const ListItem = <ItemT extends DefaultItemT>(
     dimensions,
     containerKey,
     CellRendererComponent,
-    setMeasureLayoutHandler,
+    // setMeasureLayoutHandler,
     onMeasureLayout: _onMeasureLayout,
-    measureLayoutHandlerOnDemand,
-    getMetaOnViewableItemsChanged,
+    // measureLayoutHandlerOnDemand,
+    // getMetaOnViewableItemsChanged,
 
     itemMeta,
     ...rest

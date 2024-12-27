@@ -38,7 +38,7 @@ class ItemMeta<
     ItemMetaOwnerExtraInfo extends {} = {}
   >
   extends ViewabilityItemMeta
-  implements IItemMeta
+  implements IItemMeta<ItemT>
 {
   private _isListItem: boolean;
   private _id: string;

@@ -12,10 +12,10 @@ type OnMeasureLayout =
   | ((x: number, y: number, width: number, height: number) => void)
   | null;
 
-type SetMeasureLayoutHandler = (handler: Function) => void;
-type GetMetaOnViewableItemsChanged = () => {
-  [key: string]: any;
-};
+// type SetMeasureLayoutHandler = (handler: Function) => void;
+// type GetMetaOnViewableItemsChanged = () => {
+//   [key: string]: any;
+// };
 
 export type TeleportItemProps<ItemT extends DefaultItemT> =
   | ((opts: { index: number; item: ItemT }) => {
@@ -33,22 +33,22 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   dimensions: ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
 
-  withWrapper?: boolean;
+  // withWrapper?: boolean;
   onLayout?: OnLayout;
   forwardRef?: ForwardedRef<any>;
   children?: React.ReactNode | undefined;
 
   onMeasureLayout?: OnMeasureLayout;
 
-  measureLayoutHandlerOnDemand?: OnMeasureLayout;
+  // measureLayoutHandlerOnDemand?: OnMeasureLayout;
 
   style?: ViewStyle | CSSProperties;
 
   teleportItemProps?: TeleportItemProps<ItemT>;
 
-  setMeasureLayoutHandler?: SetMeasureLayoutHandler;
+  // setMeasureLayoutHandler?: SetMeasureLayoutHandler;
 
-  getMetaOnViewableItemsChanged?: GetMetaOnViewableItemsChanged;
+  // getMetaOnViewableItemsChanged?: GetMetaOnViewableItemsChanged;
 
   CellRendererComponent?: React.ComponentType<any> | undefined;
 

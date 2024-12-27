@@ -27,7 +27,7 @@ const isPresent = (v: any) => v != null;
 
 export type IDefaultKeyExtra<ItemT extends GenericItemT = GenericItemT> = (
   item: ItemPossibleT<ItemT>,
-  index: number
+  index?: number
 ) => string;
 
 export const defaultKeyExtractor = <ItemT extends GenericItemT = GenericItemT>(

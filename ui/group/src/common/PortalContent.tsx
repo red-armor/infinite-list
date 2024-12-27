@@ -47,14 +47,16 @@ const RecycleContentItem = <IStyle, ItemT extends GenericItemT = GenericItemT>(
     return itemMeta.getOwner();
   }, [itemMeta]);
 
+  const info = metaOwner.extraInfo as ExtraInfo<ItemT>;
+
   return (
     <RecycleContentItemWrapper style={containerStyle}>
       <GroupListItemImpl
         item={item}
         itemKey={listKey}
         itemMeta={itemMeta}
-        renderItem={metaOwner.extraInfo.renderItem}
-        teleportItemProps={metaOwner.extraInfo.teleportItemProps}
+        renderItem={info.renderItem}
+        teleportItemProps={info.teleportItemProps}
         containerKey={containerKey}
         dimensions={dimensions}
       />
@@ -73,11 +75,13 @@ const RecycleContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
     <>
       {state.map((stateResult) => {
         const { key, itemMeta, item, ...stateResultRest } = stateResult;
+        const metaOwner = itemMeta!.getOwner();
+        const info = metaOwner.extraInfo as ExtraInfo<ItemT>;
         return (
           <MemoedRecycleContentItem
             key={key}
             containerKey={key}
-            renderItem={itemMeta!.getOwner().renderItem}
+            renderItem={info.renderItem}
             item={item!}
             RecycleContentItemWrapper={RecycleContentItemWrapper}
             itemMeta={itemMeta!}
@@ -100,6 +104,10 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
     <>
       {state.map((stateResult, index) => {
         const { isSpace, key, item, length, isSticky, itemMeta } = stateResult;
+
+        const metaOwner = itemMeta!.getOwner();
+        const info = metaOwner.extraInfo as ExtraInfo<ItemT>;
+
         return isSpace ? (
           <SpaceRendererComponent key={key} style={{ height: length }} />
         ) : (
@@ -108,8 +116,8 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
             key={key}
             itemKey={listKey}
             itemMeta={itemMeta!}
-            renderItem={itemMeta!.getOwner().renderItem}
-            teleportItemProps={itemMeta!.getOwner().teleportItemProps}
+            renderItem={info.renderItem}
+            teleportItemProps={info.teleportItemProps}
             dimensions={dimensions}
           />
         );

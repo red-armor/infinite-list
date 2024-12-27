@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { GenericItemT } from '@infinite-list/strategies';
 
 import ListItem from './ListItem';
@@ -19,12 +19,12 @@ const GroupListItemImpl = <ItemT extends GenericItemT>(
     ...rest
   } = props;
 
-  const getMetaOnViewableItemsChanged = useCallback(() => {
-    return {
-      item,
-      index: itemMeta.getIndexInfo?.()?.index,
-    };
-  }, [item]);
+  // const getMetaOnViewableItemsChanged = useCallback(() => {
+  //   return {
+  //     item,
+  //     index: itemMeta.getIndexInfo?.()?.index,
+  //   };
+  // }, [item]);
 
   const teleportProps =
     typeof teleportItemProps === 'function'
@@ -42,7 +42,7 @@ const GroupListItemImpl = <ItemT extends GenericItemT>(
       dimensions={dimensions}
       containerKey={containerKey}
       CellRendererComponent={CellRendererComponent}
-      getMetaOnViewableItemsChanged={getMetaOnViewableItemsChanged}
+      // getMetaOnViewableItemsChanged={getMetaOnViewableItemsChanged}
     >
       {React.isValidElement(RenderItem) ? (
         RenderItem

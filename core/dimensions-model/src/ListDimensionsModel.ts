@@ -28,7 +28,7 @@ class ListDimensionsModel<
     ExtraInfo extends {} = {}
   >
   extends BaseDimensions<ItemT>
-  implements IListDimensionsModel<ItemT>
+  implements IListDimensionsModel<ItemT, ExtraInfo>
 {
   private _data: Array<ItemT> = [];
   private _initialData: Array<ItemT> = [];

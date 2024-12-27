@@ -6,16 +6,22 @@ import SortedItems from './SortedItems';
 
 import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
 import { ListSpyUtils } from '@infinite-list/utils';
+import { IItemDimensions } from '@infinite-list/types';
 
-class ItemsDimensions extends BaseDimensions {
+class ItemsDimensions<ExtraInfo extends {} = {}>
+  extends BaseDimensions
+  implements IItemDimensions<ExtraInfo>
+{
   private _sortedItems: SortedItems;
   private _scrollMetrics?: ScrollMetrics;
   private _dispatchMetricsBatchinator: Batchinator;
   private _onUpdateItemsMetaChangeBatchinator: Batchinator;
+  public extraInfo: ExtraInfo;
 
   constructor(props: ItemsDimensionsProps) {
     super(props);
 
+    this.extraInfo = {} as ExtraInfo;
     this._sortedItems = new SortedItems({ selectValue: this._selectValue });
     this._dispatchMetricsBatchinator = new Batchinator(
       this.dispatchMetrics.bind(this),
@@ -72,7 +78,15 @@ class ItemsDimensions extends BaseDimensions {
   }
 
   getIndexInfo() {
-    return null;
+    return {};
+  }
+
+  /**
+   *
+   * @returns TODO:
+   */
+  getItemOffset() {
+    return -1;
   }
 
   computeIndexRangeMeta(minOffset: number, maxOffset: number) {

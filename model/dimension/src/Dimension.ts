@@ -1,6 +1,8 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isObject from '@x-oasis/is-object';
 import { ItemMeta } from '@infinite-list/item-meta';
+import { IDimension, ItemLayout } from '@infinite-list/types';
+import { Container as BaseContainer } from '@infinite-list/container';
 import {
   INVALID_LENGTH,
   DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
@@ -16,18 +18,16 @@ import {
   ListGroupDimensions,
 } from './types';
 
-import { ItemLayout } from '@infinite-list/container';
-
-import { Container as BaseContainer } from '@infinite-list/container';
-
-// import ListGroupDimensions from './ListGroupDimensions';
-
 /**
  * Abstraction of singleton item, It is used in ListGroup Condition.
  */
 class Dimension<
-  ItemT extends GenericItemT = GenericItemT
-> extends BaseContainer {
+    ItemT extends GenericItemT = GenericItemT,
+    ExtraInfo extends {} = {}
+  >
+  extends BaseContainer
+  implements IDimension<ItemT, ExtraInfo>
+{
   private _meta: ItemMeta<ItemT>;
   readonly _container: ListGroupChildDimensionsContainer<ItemT>;
   readonly _ignoredToPerBatch: boolean;
@@ -39,6 +39,7 @@ class Dimension<
   private _approximateMode: boolean;
   private _getItemLength?: GetDimensionLength;
   private _isFixedLength: boolean;
+  // public extraInfo: ExtraInfo;
 
   constructor(props: DimensionProps<ItemT>) {
     super(props);
@@ -54,6 +55,8 @@ class Dimension<
       useItemApproximateLength,
       itemApproximateLength = DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
     } = props;
+
+    // this.extraInfo = {} as ExtraInfo
 
     this._data = [
       {
