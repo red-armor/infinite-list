@@ -1,5 +1,12 @@
 # @infinite-list/data-model
 
+## 2.2.7
+
+### Patch Changes
+
+- 3b54664: bump version
+- fc97cde: bump version
+
 ## 2.2.6
 
 ### Patch Changes

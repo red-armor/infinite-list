@@ -1,5 +1,12 @@
 # @infinite-list/benchmark
 
+## 1.2.7
+
+### Patch Changes
+
+- 3b54664: bump version
+- fc97cde: bump version
+
 ## 1.2.6
 
 ### Patch Changes
