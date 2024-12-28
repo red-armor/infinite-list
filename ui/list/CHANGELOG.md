@@ -1,5 +1,16 @@
 # @infinite-list/list
 
+## 1.1.1
+
+### Patch Changes
+
+- 3b54664: bump version
+- fc97cde: bump version
+- Updated dependencies [3b54664]
+- Updated dependencies [fc97cde]
+  - @infinite-list/list-dimensions@0.0.2
+  - @infinite-list/scroller@1.0.4
+
 ## 1.1.0
 
 ### Minor Changes
