@@ -1,5 +1,14 @@
 # @infinite-list/dimension
 
+## 0.0.3
+
+### Patch Changes
+
+- 08cef6a: update ci
+- Updated dependencies [08cef6a]
+  - @infinite-list/container@0.0.3
+  - @infinite-list/item-meta@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

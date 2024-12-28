@@ -1,5 +1,13 @@
 # @infinite-list/scroller
 
+## 1.0.5
+
+### Patch Changes
+
+- 08cef6a: update ci
+- Updated dependencies [08cef6a]
+  - @infinite-list/data-model@2.2.8
+
 ## 1.0.4
 
 ### Patch Changes

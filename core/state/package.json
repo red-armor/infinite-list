@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/state",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "@x-oasis/default-boolean-value": "^0.1.14",
     "@x-oasis/default-value": "^0.1.35",

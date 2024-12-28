@@ -1,5 +1,14 @@
 # @infinite-list/list
 
+## 1.1.2
+
+### Patch Changes
+
+- 08cef6a: update ci
+- Updated dependencies [08cef6a]
+  - @infinite-list/list-dimensions@0.0.3
+  - @infinite-list/scroller@1.0.5
+
 ## 1.1.1
 
 ### Patch Changes

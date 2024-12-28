@@ -1,5 +1,13 @@
 # @infinite-list/react
 
+## 2.2.9
+
+### Patch Changes
+
+- 08cef6a: update ci
+- Updated dependencies [08cef6a]
+  - @infinite-list/data-model@2.2.8
+
 ## 2.2.8
 
 ### Patch Changes
