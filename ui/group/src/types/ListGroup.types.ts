@@ -5,7 +5,7 @@ import {
   ViewabilityConfigCallbackPairs,
   GenericItemT,
 } from '@infinite-list/viewable';
-import { ComponentType, PropsWithChildren, MutableRefObject } from 'react';
+import { ComponentType, PropsWithChildren } from 'react';
 // import { View, LayoutChangeEvent } from 'react-native';
 
 // export type ScrollComponentUseMeasureLayout = (

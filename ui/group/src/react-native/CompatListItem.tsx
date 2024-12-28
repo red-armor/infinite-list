@@ -44,6 +44,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
 
   const updateItemLayout = useCallback(() => {
     measureLayout(
+      // @ts-ignore [TODO]
       viewRef.current,
       containerRef.current,
       measureLayoutOnSuccessCallback

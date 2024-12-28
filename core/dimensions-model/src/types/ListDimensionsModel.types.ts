@@ -43,6 +43,9 @@ export interface ListDimensionsModelProps<
   ItemT extends GenericItemT = GenericItemT
 > extends ListBaseDimensionsProps,
     BaseDimensionsProps {
+  /**
+   * @template ItemT the generic data item type
+   */
   data: Array<ItemT>;
   itemApproximateLength?: number;
   /**
@@ -55,7 +58,19 @@ export interface ListDimensionsModelProps<
   container: ListDimensionsModelContainer<ItemT>;
 
   recycleEnabled?: boolean;
+
+  /**
+   * @template ItemT the generic date item type
+   * @type {( item: ItemPossibleT<ItemT>, index?: number ) => string }
+   *
+   * @param {number} index maybe removed in the future
+   *
+   * Used to extract a unique key for a given item at the specified index. Key is used for caching
+   * and as the react key to track item re-ordering. The default extractor checks `item.key`, then
+   * falls back to using the index, like React does.
+   */
   keyExtractor: IDefaultKeyExtra<ItemT>;
+
   getItemLayout?: GetItemLayout<ItemT>;
   getItemSeparatorLength?: GetItemSeparatorLength<ItemT>;
 

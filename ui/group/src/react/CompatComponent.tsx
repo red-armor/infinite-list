@@ -1,4 +1,5 @@
-import { CSSProperties, FC, PropsWithChildren } from 'react';
+import { CSSProperties, FC, PropsWithChildren, useMemo } from 'react';
+import { CompatStyle } from '../types';
 
 /**
  * compatible Component for ReactNative or React usage
@@ -6,19 +7,24 @@ import { CSSProperties, FC, PropsWithChildren } from 'react';
 
 export const RecycleContentItemWrapper: FC<
   PropsWithChildren<{
-    style?: CSSProperties;
+    style?: CompatStyle;
   }>
 > = (props) => {
   const { children, style = {} } = props;
-
-  return <div style={style}>{children}</div>;
+  const nextStyle = useMemo<CSSProperties>(() => {
+    return (style as CSSProperties) || {};
+  }, [style]);
+  return <div style={nextStyle}>{children}</div>;
 };
 
 export const SpaceRendererComponent: FC<
   PropsWithChildren<{
-    style?: CSSProperties;
+    style?: CompatStyle;
   }>
 > = (props) => {
-  const { style = {} } = props;
-  return <div style={style} />;
+  const { style } = props;
+  const nextStyle = useMemo<CSSProperties>(() => {
+    return (style as CSSProperties) || {};
+  }, [style]);
+  return <div style={nextStyle} />;
 };

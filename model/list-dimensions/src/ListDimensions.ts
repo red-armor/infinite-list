@@ -9,11 +9,13 @@ import {
   ListDimensionsModelProps,
 } from '@infinite-list/dimensions-model';
 import { IndexToOffsetMap } from '@infinite-list/dimensions-model';
+import { IListDimensions } from '@infinite-list/types';
 import { createStore } from './state';
 
-class ListDimensions<
-  ItemT extends GenericItemT = GenericItemT
-> extends BaseImpl<ItemT> {
+class ListDimensions<ItemT extends GenericItemT = GenericItemT>
+  extends BaseImpl<ItemT>
+  implements IListDimensions<ItemT>
+{
   private _dataModel: ListDimensionsModel<ItemT>;
 
   constructor(

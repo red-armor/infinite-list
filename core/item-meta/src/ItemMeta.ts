@@ -13,7 +13,7 @@ import { IItemMeta, ItemMetaOwner } from '@infinite-list/types';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import { ViewabilityItemMeta } from '@infinite-list/viewable';
 
-export const isValidMetaLayout = (meta: ItemMeta | null | undefined) =>
+export const isValidMetaLayout = (meta: IItemMeta | null | undefined) =>
   !!(meta && !meta.isApproximateLayout && meta.getLayout());
 
 type ItemMetaContext<T extends GenericItemT = GenericItemT> = {
@@ -38,7 +38,7 @@ class ItemMeta<
     ItemMetaOwnerExtraInfo extends {} = {}
   >
   extends ViewabilityItemMeta
-  implements IItemMeta<ItemT>
+  implements IItemMeta<ItemT, ItemMetaOwnerExtraInfo>
 {
   private _isListItem: boolean;
   private _id: string;
@@ -97,7 +97,10 @@ class ItemMeta<
     (context as any)[this.key] = this;
   }
 
-  static spawn<T extends GenericItemT = GenericItemT>(props: ItemMetaProps<T>) {
+  static spawn<
+    T extends GenericItemT = GenericItemT,
+    SpawnItemMetaOwnerExtraInfo extends {} = {}
+  >(props: ItemMetaProps<T>) {
     const ancestor = context[props.key];
     if (ancestor) {
       const layout = ancestor.getLayout();
@@ -109,7 +112,7 @@ class ItemMeta<
         if (_props) spawnProps[key] = _props;
       }
 
-      return new ItemMeta({
+      return new ItemMeta<T, SpawnItemMetaOwnerExtraInfo>({
         layout,
         // isApproximateLayout may cause change...
         isApproximateLayout: ancestor.isApproximateLayout,
@@ -340,9 +343,10 @@ class ItemMeta<
 
   /**
    *
-   * @param event
+   * @param {string} event
    * @param callback
    * @param triggerOnceIfTrue
+   * @param {string} key
    *
    * In reuse condition, once add listener, then it will not be changed anymore.
    *

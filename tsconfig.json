@@ -3,7 +3,9 @@
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
-    "removeComments": true,
+    // ---- bullshit why remove comments on default-----
+    // "removeComments": true,
+    "removeComments": false,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,

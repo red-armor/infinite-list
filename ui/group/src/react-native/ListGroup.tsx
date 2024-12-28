@@ -14,6 +14,7 @@ import {
   SpaceRendererComponent,
 } from './CompatComponent';
 import { ListGroupProps } from './types';
+import { ListItemWrapper as TListItemWrapper } from '../types';
 import context from '../common/context';
 import PortalContent from '../common/PortalContent';
 import { ClockStart, ClockEnd } from '../common/clock';
@@ -81,7 +82,7 @@ const ListGroup = <ItemT extends GenericItemT>(
   const getContainerLayout = useCallback(() => layoutRef.current!, []);
   const listGroupDimensions = useMemo(
     () =>
-      new ListGroupDimensions({
+      new ListGroupDimensions<ItemT>({
         id,
         ...rest,
         viewabilityConfig,
@@ -155,6 +156,13 @@ const ListGroup = <ItemT extends GenericItemT>(
     });
   }, []);
 
+  /**
+   * like IOC, the specific logic placed on the topmost.
+   */
+  const ListItemWrapper = useCallback<TListItemWrapper<ItemT>>((props) => {
+    return <CompatListItem {...props} containerRef={containerRef} />;
+  }, []);
+
   return (
     <View onLayout={layoutHandler} ref={viewRef}>
       <ClockStart
@@ -165,7 +173,7 @@ const ListGroup = <ItemT extends GenericItemT>(
         {children}
         <PortalContent
           id={id}
-          ListItemWrapper={CompatListItem}
+          ListItemWrapper={ListItemWrapper}
           listGroupDimensions={listGroupDimensions}
           RecycleContentItemWrapper={RecycleContentItemWrapper}
           SpaceRendererComponent={SpaceRendererComponent}

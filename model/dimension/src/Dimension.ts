@@ -39,7 +39,7 @@ class Dimension<
   private _approximateMode: boolean;
   private _getItemLength?: GetDimensionLength;
   private _isFixedLength: boolean;
-  // public extraInfo: ExtraInfo;
+  public extraInfo: ExtraInfo;
 
   constructor(props: DimensionProps<ItemT>) {
     super(props);
@@ -56,7 +56,7 @@ class Dimension<
       itemApproximateLength = DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
     } = props;
 
-    // this.extraInfo = {} as ExtraInfo
+    this.extraInfo = {} as ExtraInfo;
 
     this._data = [
       {
@@ -109,7 +109,7 @@ class Dimension<
   }
 
   createItemMeta() {
-    const meta = ItemMeta.spawn({
+    const meta = ItemMeta.spawn<ItemT, ExtraInfo>({
       key: this.id,
       isListItem: false,
       owner: this,
@@ -178,6 +178,10 @@ class Dimension<
     return this.getContainerOffset();
   }
 
+  getKeyItemOffset(key: string, exclusive?: boolean): number {
+    return this.getContainerOffset();
+  }
+
   getKey() {
     return this.id;
   }
@@ -235,7 +239,7 @@ class Dimension<
     layout: ItemLayout | number,
     updateIntervalTree?: boolean
   ) {
-    this.setItemLayout(layout, updateIntervalTree);
+    return this.setItemLayout(layout, updateIntervalTree);
   }
 
   triggerOwnerRecalculateLayout() {

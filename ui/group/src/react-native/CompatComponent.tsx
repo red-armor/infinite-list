@@ -1,5 +1,6 @@
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, useMemo } from 'react';
 import { View, ViewStyle } from 'react-native';
+import { CompatStyle } from '../types';
 
 /**
  * compatible Component for ReactNative or React usage
@@ -7,19 +8,25 @@ import { View, ViewStyle } from 'react-native';
 
 export const RecycleContentItemWrapper: FC<
   PropsWithChildren<{
-    style?: ViewStyle;
+    style?: CompatStyle;
   }>
 > = (props) => {
-  const { children, style = {} } = props;
+  const { children, style } = props;
+  const nextStyle = useMemo<ViewStyle>(() => {
+    return (style as ViewStyle) || {};
+  }, [style]);
 
-  return <View style={style}>{children}</View>;
+  return <View style={nextStyle}>{children}</View>;
 };
 
 export const SpaceRendererComponent: FC<
   PropsWithChildren<{
-    style?: ViewStyle;
+    style?: CompatStyle;
   }>
 > = (props) => {
-  const { style = {} } = props;
-  return <View style={style} />;
+  const { style } = props;
+  const nextStyle = useMemo<ViewStyle>(() => {
+    return (style as ViewStyle) || {};
+  }, [style]);
+  return <View style={nextStyle} />;
 };

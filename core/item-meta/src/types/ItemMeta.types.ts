@@ -28,12 +28,6 @@ export type ItemMetaState = {
   [key: string]: boolean;
 };
 
-// export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
-//   | IListDimensionsModel<ItemT>
-//   | IDimension<ItemT>
-//   | IPseudoListDimensions
-//   | IItemDimensions;
-
 export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   /**
    * indicate including separatorLength on return item length

@@ -3,11 +3,13 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "allowJs": true,
+    "declaration": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "removeComments": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },

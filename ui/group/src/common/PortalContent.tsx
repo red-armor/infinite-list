@@ -11,8 +11,8 @@ import {
 
 import GroupListItemImpl from './GroupListItemImpl';
 
-const RecycleContentItem = <IStyle, ItemT extends GenericItemT = GenericItemT>(
-  props: TRecycleContentItem<IStyle, ItemT>
+const RecycleContentItem = <ItemT extends GenericItemT = GenericItemT>(
+  props: TRecycleContentItem<ItemT>
 ) => {
   const {
     listKey,
@@ -69,8 +69,8 @@ const MemoedRecycleContentItem = memo(
   RecycleContentItem
 ) as typeof RecycleContentItem;
 
-const RecycleContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
-  props: GroupRecycleContentProps<IStyle, ItemT>
+const RecycleContent = <ItemT extends GenericItemT = GenericItemT>(
+  props: GroupRecycleContentProps<ItemT>
 ) => {
   const { state, RecycleContentItemWrapper, ListItemWrapper, ...rest } = props;
   return (
@@ -98,8 +98,8 @@ const RecycleContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
 };
 const MemoedRecycleContent = memo(RecycleContent) as typeof RecycleContent;
 
-const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
-  props: GroupSpaceContentProps<IStyle, ItemT>
+const SpaceContent = <ItemT extends GenericItemT = GenericItemT>(
+  props: GroupSpaceContentProps<ItemT>
 ) => {
   const {
     state,
@@ -111,7 +111,7 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
 
   return (
     <>
-      {state.map((stateResult, index) => {
+      {state.map((stateResult) => {
         const { isSpace, key, item, length, isSticky, itemMeta } = stateResult;
 
         const metaOwner = itemMeta?.getOwner();
@@ -138,8 +138,8 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
 };
 const MemoedSpaceContent = memo(SpaceContent) as typeof SpaceContent;
 
-const PortalContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
-  props: PropsWithChildren<PortalContextProps<IStyle, ItemT>>
+const PortalContent = <ItemT extends GenericItemT = GenericItemT>(
+  props: PropsWithChildren<PortalContextProps<ItemT>>
 ) => {
   const {
     id,
@@ -165,7 +165,7 @@ const PortalContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
 
   return (
     <>
-      <MemoedSpaceContent<IStyle, ItemT>
+      <MemoedSpaceContent<ItemT>
         listKey={id}
         ownerId={id}
         state={store.spaceState}

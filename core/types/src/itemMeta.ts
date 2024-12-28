@@ -6,7 +6,13 @@ import { IDimension } from './Dimension';
 import { IItemDimensions } from './itemDimensions';
 import { ItemLayout } from './layout';
 
-export type IItemMeta<ItemT extends GenericItemT = GenericItemT> = {};
+export type IItemMeta<
+  ItemT extends GenericItemT = GenericItemT,
+  ItemMetaOwnerExtraInfo extends {} = {}
+> = {
+  isApproximateLayout: boolean;
+  getLayout(): ItemLayout | undefined;
+};
 
 export type ItemMetaOwner<
   ItemT extends GenericItemT = GenericItemT,
@@ -25,10 +31,10 @@ export type ItemMetaOwnerRequiredProps<
   };
   getContainerOffset(): number;
   getSelectValue(): SelectValue;
-  getItemOffset(): number;
+  getItemOffset?(): number;
   getIndexInfo(key: string): {
     index?: number;
-  };
+  } | null;
   getKeyItemOffset(key: string, exclusive?: boolean): number;
   setKeyItemLayout(
     key: string,

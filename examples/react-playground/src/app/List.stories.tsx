@@ -4,11 +4,7 @@ import {
   // type KeyExtractor,
 } from '@infinite-list/utils';
 import { List } from '@infinite-list/list/react';
-import { KeyExtractor } from '@infinite-list/dimensions-model';
 
-type Item = {
-  key: string;
-};
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: `${index}`,
@@ -49,7 +45,7 @@ const meta: Meta<typeof List> = {
               </div>
             );
           }}
-          keyExtractor={defaultKeyExtractor as KeyExtractor<Item>}
+          keyExtractor={defaultKeyExtractor}
         />
       </div>
     );

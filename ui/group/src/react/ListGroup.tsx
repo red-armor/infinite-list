@@ -124,7 +124,7 @@ const ListGroup = <ItemT extends GenericItemT>(
       />
       <context.Provider value={state}>
         {children}
-        <PortalContent<CSSProperties, ItemT>
+        <PortalContent<ItemT>
           id={id}
           ListItemWrapper={CompatListItem}
           listGroupDimensions={listGroupDimensions}

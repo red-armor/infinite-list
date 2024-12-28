@@ -43,7 +43,6 @@ export default () => {
       <List
         data={data}
         renderItem={renderItem}
-        test="3"
         id="basic"
         keyExtractor={keyExtractor}
         containerRef={scrollViewRef}

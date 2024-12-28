@@ -272,7 +272,7 @@ class ListDimensionsModel<
   createItemMeta(key: string, data: Array<ItemT>, index: number) {
     const isInitialItem = index < this.initialNumToRender;
 
-    const meta = ItemMeta.spawn({
+    const meta = ItemMeta.spawn<ItemT, ExtraInfo>({
       key,
       owner: this,
       isListItem: true,

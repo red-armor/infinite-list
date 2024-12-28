@@ -27,11 +27,13 @@ export default <ItemT extends GenericItemT>(
 
   useMemo(() => {
     const clonedChildren = children
-      ? React.cloneElement(children, {
+      ? // @ts-ignore [TODO]
+        React.cloneElement(children, {
           itemMeta: dimensionRef.current?.getMeta(),
         })
       : children;
 
+    // @ts-ignore [TODO]
     dimensionRef.current!.renderItem = clonedChildren;
   }, [children]);
 

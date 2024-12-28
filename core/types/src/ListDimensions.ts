@@ -37,7 +37,7 @@ export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
     maxOffset: number;
   };
 
-  getIndexItemMeta(index: number): IItemMeta<ItemT>;
+  getIndexItemMeta(index: number): IItemMeta<ItemT> | undefined | null;
 
   getContainerOffset(): number;
   // getItemKey(item: ItemT, index?: number): string | null;
