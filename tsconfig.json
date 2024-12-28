@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
-    "removeComments": true,
+    // ---- bullshit why remove comments on default-----
+    // "removeComments": true,
+    "removeComments": false,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,
@@ -15,18 +16,12 @@
     "noImplicitUseStrict": false,
     "noStrictGenericChecks": false,
     "resolveJsonModule": true,
-    "allowJs": true,
-    "paths": {
-      "@infinite-list/group": ["ui/group/src/index.ts"],
-      "@infinite-list/list": ["ui/list/src/index.ts"],
-      "@infinite-list/masonry": ["ui/masonry/src/index.ts"],
-      "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
-      "@infinite-list/scroller/web": ["ui/scroller/src/web"]
-    }
+    "allowJs": true
   },
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
     }
-  }
+  },
+  "extends": "./tsconfig.base.json"
 }

@@ -1,15 +1,18 @@
-import {
-  GenericItemT,
-  ListDimensions,
-  RecycleStateToken,
-  SpaceStateToken,
-  ListDimensionsModelProps,
-} from '@infinite-list/data-model';
-
-import { ItemMeta } from '@infinite-list/data-model';
+import { GenericItemT } from '@infinite-list/types';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { SpaceStateToken, RecycleStateToken } from '@infinite-list/strategies';
+import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
+import { ItemMeta } from '@infinite-list/item-meta';
+// import { IDefaultKeyExtra } from '@infinite-list/utils';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
+  /**
+   * @type ItemT generic type
+   */
   item: ItemT;
+  /**
+   * @type itemMeta
+   */
   itemMeta: ItemMeta<ItemT>;
 };
 
@@ -21,16 +24,59 @@ export type RenderItem<ItemT extends DefaultItemT> = (
   info: RenderItemInfo<ItemT>
 ) => React.ReactElement | null;
 
-export type ListProps<ItemT extends GenericItemT = GenericItemT> = Omit<
-  ListDimensionsModelProps<ItemT>,
-  'store' | 'container'
-> & {
+export interface ListProps<ItemT extends GenericItemT = GenericItemT>
+  extends Omit<
+    ListDimensionsModelProps<ItemT>,
+    'store' | 'container'
+    // 'store' | 'container' | 'keyExtractor'
+  > {
+  /**
+   * @template ItemT the generic data item type
+   * @type {(info: { item: ItemT, itemMeta: ItemMeta<ItemT> }) => JSX}
+   *
+   * ItemMeta @see {@link ItemMeta}
+   */
   renderItem: RenderItem<ItemT>;
-};
+
+  // /**
+  //  * @template ItemT the generic date item type
+  //  * @type {( item: ItemPossibleT<ItemT>, index?: number ) => string }
+  //  *
+  //  * @param {number} index maybe removed in the future
+  //  *
+  //  * Used to extract a unique key for a given item at the specified index. Key is used for caching
+  //  * and as the react key to track item re-ordering. The default extractor checks `item.key`, then
+  //  * falls back to using the index, like React does.
+  //  */
+  // keyExtractor: IDefaultKeyExtra<ItemT>;
+}
+// export type ListProps<ItemT extends GenericItemT = GenericItemT> = Omit<
+//   ListDimensionsModelProps<ItemT>,
+//   'store' | 'container' | 'keyExtractor'
+// > & {
+//   /**
+//    * @template ItemT the generic data item type
+//    * @type {(info: { item: ItemT, itemMeta: ItemMeta<ItemT> }) => JSX}
+//    *
+//    * ItemMeta @see {@link ItemMeta}
+//    */
+//   renderItem: RenderItem<ItemT>;
+
+//   /**
+//    * @template ItemT the generic date item type
+//    * @type {( item: ItemPossibleT<ItemT>, index?: number ) => string }
+//    *
+//    * @param {number} index maybe removed in the future
+//    *
+//    * Used to extract a unique key for a given item at the specified index. Key is used for caching
+//    * and as the react key to track item re-ordering. The default extractor checks `item.key`, then
+//    * falls back to using the index, like React does.
+//    */
+//   keyExtractor: IDefaultKeyExtra<ItemT>;
+// };
 
 export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> = {
   data: RecycleStateToken<ItemT>;
-  // key: string;
   renderItem: RenderItem<ItemT>;
   dimensions: ListDimensions<ItemT>;
 };

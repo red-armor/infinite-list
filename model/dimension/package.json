@@ -1,0 +1,13 @@
+{
+  "name": "@infinite-list/dimension",
+  "version": "0.0.1",
+  "dependencies": {
+    "@x-oasis/default-boolean-value": "^0.1.14",
+    "@x-oasis/is-object": "^0.1.35",
+    "@x-oasis/layout-equal": "^0.1.16",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/container": "workspace:*"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

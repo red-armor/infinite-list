@@ -1,0 +1,12 @@
+{
+  "name": "@infinite-list/viewable",
+  "version": "0.0.1",
+  "dependencies": {
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/is-clamped": "^0.1.14",
+    "@x-oasis/resolve-changed": "^0.1.14",
+    "@x-oasis/unique-array-object": "^0.1.14"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

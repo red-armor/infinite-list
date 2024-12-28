@@ -16,8 +16,8 @@
     }
   },
   "dependencies": {
-    "@infinite-list/data-model": "workspace:*",
-    "@infinite-list/scroller": "workspace:*"
+    "@infinite-list/scroller": "workspace:*",
+    "@infinite-list/masonry-dimensions": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

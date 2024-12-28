@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { ScrollView as NativeScrollView } from 'react-native';
-import { MasonryList, ScrollView } from '@infinite-list/react-native';
+import { MasonryList } from '@infinite-list/masonry';
+import { ScrollView } from '@infinite-list/scroller';
 import { Text, View } from 'react-native';
 
 const buildData = (count: number, startIndex = 0) =>

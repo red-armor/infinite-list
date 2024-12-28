@@ -1,0 +1,14 @@
+{
+  "name": "@infinite-list/strategies",
+  "version": "0.0.1",
+  "dependencies": {
+    "@infinite-list/types": "workspace:*",
+    "@x-oasis/batchinator": "^0.1.14",
+    "@x-oasis/default-boolean-value": "^0.1.14",
+    "@x-oasis/default-value": "^0.1.35",
+    "@x-oasis/is-clamped": "^0.1.14",
+    "@x-oasis/recycler": "^0.1.37"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

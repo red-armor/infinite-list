@@ -1,0 +1,47 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "target": "ES2015",
+    "module": "commonjs",
+    "baseUrl": "./",
+    "paths": {
+      "@infinite-list/react": ["packages/react/src/index.ts"],
+
+      "@infinite-list/base-dimensions": ["core/base-dimensions/src/index.ts"],
+      "@infinite-list/container": ["core/container/src/index.ts"],
+      "@infinite-list/dimension": ["model/dimension/src/index.ts"],
+      "@infinite-list/dimensions-model": ["core/dimensions-model/src/index.ts"],
+      // "@infinite-list/group": ["ui/group/src/index.ts"],
+      "@infinite-list/group/react": ["ui/group/src/react/index.ts"],
+      "@infinite-list/group-dimensions": [
+        "model/group-dimensions/src/index.ts"
+      ],
+      "@infinite-list/item-meta": ["core/item-meta/src/index.ts"],
+      "@infinite-list/items-dimensions": [
+        "model/items-dimensions/src/index.ts"
+      ],
+      "@infinite-list/list/react": ["ui/list/src/react/index.ts"],
+      "@infinite-list/list/react-native": ["ui/list/src/react-native/index.ts"],
+      "@infinite-list/list-dimensions": ["model/list-dimensions/src/index.ts"],
+
+      "@infinite-list/masonry/react": ["ui/masonry/src/react/index.ts"],
+      "@infinite-list/masonry/react-native": ["ui/masonry/src/react-native/index.ts"],
+      "@infinite-list/masonry-dimensions": [
+        "model/masonry-dimensions/src/index.ts"
+      ],
+      "@infinite-list/pseudo-list-dimensions": [
+        "model/pseudo-list-dimensions/src/index.ts"
+      ],
+      "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
+      "@infinite-list/scroller/web": ["ui/scroller/src/web/index.ts"],
+      "@infinite-list/state": ["core/state/src/index.ts"],
+      "@infinite-list/strategies": ["core/strategies/src/index.ts"],
+      "@infinite-list/types": ["core/types/src/index.ts"],
+      "@infinite-list/utils": ["core/utils/src/index.ts"],
+      "@infinite-list/viewable": ["core/viewable/src/index.ts"]
+    },
+    "skipLibCheck": true
+  }
+}

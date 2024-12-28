@@ -1,32 +1,7 @@
 import {
-  GenericItemT,
-  ListStateResult,
-  SpaceStateResult,
-  ListGroupDimensions,
-} from '@infinite-list/data-model';
-import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
+  PortalContextProps,
+  GroupSpaceContentProps,
+  GroupRecycleContentProps,
+} from '../../types/PortalContext.types';
 
-export type PortalContextProps<ItemT extends GenericItemT = GenericItemT> = {
-  id: string;
-  listGroupDimensions: ListGroupDimensions<ItemT>;
-  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
-};
-
-export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
-  {
-    state: SpaceStateResult<ItemT>;
-    listKey: string;
-    ownerId: string;
-    dimensions: ListGroupDimensions<ItemT>;
-    scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
-  };
-
-export type GroupRecycleContentProps<
-  ItemT extends GenericItemT = GenericItemT
-> = {
-  state: ListStateResult<ItemT>;
-  listKey: string;
-  ownerId: string;
-  dimensions: ListGroupDimensions<ItemT>;
-  scrollComponentUseMeasureLayout?: ScrollComponentUseMeasureLayout;
-};
+export { PortalContextProps, GroupRecycleContentProps, GroupSpaceContentProps };

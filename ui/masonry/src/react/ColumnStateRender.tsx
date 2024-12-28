@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import { GenericItemT, RecycleStateResult } from '@infinite-list/data-model';
+import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
 import { ColumnStateRendererProps } from './types';
 
 import RecycleItem from './RecycleItem';
@@ -11,6 +11,9 @@ const ColumnStateRenderer = <ItemT extends GenericItemT>(
 ) => {
   const { state, columnIndex, columnDimensions, ...rest } = props;
   const current = state[0] as RecycleStateResult<ItemT>;
+
+  console.log('space ', current);
+
   return (
     <Fragment>
       {current.spaceState.map((data) => (

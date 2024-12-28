@@ -1,0 +1,11 @@
+{
+  "name": "@infinite-list/state",
+  "version": "0.0.1",
+  "dependencies": {
+    "@x-oasis/default-boolean-value": "^0.1.14",
+    "@x-oasis/default-value": "^0.1.35",
+    "@infinite-list/types": "workspace:*"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js"
+}

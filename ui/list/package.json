@@ -6,7 +6,7 @@
     "react-native": "0.74.1"
   },
   "dependencies": {
-    "@infinite-list/data-model": "workspace:*",
+    "@infinite-list/list-dimensions": "workspace:*",
     "@infinite-list/scroller": "workspace:*"
   },
   "exports": {

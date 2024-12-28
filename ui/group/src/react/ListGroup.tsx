@@ -1,41 +1,24 @@
-import { GenericItemT, ListGroupDimensions } from '@infinite-list/data-model';
-import React, {
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import { GenericItemT } from '@infinite-list/item-meta';
+import {
   CSSProperties,
-  FC,
   useCallback,
-  // useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-// import { div, Platform } from 'react-native';
 
-import { ListGroupProps, genericMemo } from './types';
-import context from './context';
-import PortalContent from './PortalContent';
+import { ListGroupProps } from '../types';
+import context from '../common/context';
+import PortalContent from '../common/PortalContent';
 import { ScrollTracker } from '@infinite-list/scroller/web';
-
-// https://stackoverflow.com/a/70890101
-
-const ClockStart = genericMemo(
-  <ItemT extends GenericItemT>(props: {
-    dimensions: ListGroupDimensions<ItemT>;
-    inspectingTimes: number;
-  }) => {
-    props.dimensions.inspector.startCollection();
-    return null;
-  }
-);
-const ClockEnd = genericMemo(
-  <ItemT extends GenericItemT>(props: {
-    dimensions: ListGroupDimensions<ItemT>;
-    inspectingTimes: number;
-  }) => {
-    props.dimensions.inspector.terminateCollection();
-    return null;
-  }
-);
+import { ClockStart, ClockEnd } from '../common/clock';
+import {
+  RecycleContentItemWrapper,
+  SpaceRendererComponent,
+} from './CompatComponent';
+import CompatListItem from './CompatListItem';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>
@@ -49,13 +32,9 @@ const ListGroup = <ItemT extends GenericItemT>(
     initialNumToRender,
     persistanceIndices,
     scrollComponentContext,
-    scrollComponentUseMeasureLayout,
     ...rest
   } = props;
-  // @ts-ignore
-  // const { scrollEventHelper, getScrollHelper } = useContext(
-  //   scrollComponentContext
-  // );
+
   const layoutRef = useRef<{
     x: number;
     y: number;
@@ -74,21 +53,6 @@ const ListGroup = <ItemT extends GenericItemT>(
     }
   }, []);
 
-  // const measureLayout = useCallback(
-  //   (x: number, y: number, width: number, height: number) => {
-  //     layoutRef.current = { x, y, width, height };
-  //   },
-  //   []
-  // );
-
-  // const scrollMetricsRef = useRef<any>();
-
-  // const scrollHelper = getScrollHelper();
-
-  // const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
-  //   onMeasureLayout: measureLayout,
-  // });
-
   const getContainerLayout = useCallback(() => layoutRef.current!, []);
   const listGroupDimensions = useMemo(
     () =>
@@ -102,7 +66,6 @@ const ListGroup = <ItemT extends GenericItemT>(
         onViewableItemsChanged,
         viewabilityConfigCallbackPairs,
         canIUseRIC: true,
-        // canIUseRIC: Platform.OS !== 'ios',
       }),
     []
   );
@@ -121,37 +84,6 @@ const ListGroup = <ItemT extends GenericItemT>(
     []
   );
 
-  // useEffect(
-  //   () =>
-  //     scrollEventHelper.subscribeEventHandler('onContentSizeChange', () => {
-  //       if (typeof handler === 'function') {
-  //         handler();
-  //       }
-  //       const scrollMetrics = scrollHelper.getScrollMetrics();
-  //       if (scrollMetrics !== scrollMetricsRef.current) {
-  //         listGroupDimensions.updateScrollMetrics(
-  //           scrollHelper.getScrollMetrics()
-  //         );
-  //         scrollMetricsRef.current = scrollMetrics;
-  //       }
-  //     }),
-  //   []
-  // );
-
-  // useEffect(
-  //   () =>
-  //     scrollEventHelper.subscribeEventHandler('onScroll', () => {
-  //       const scrollMetrics = scrollHelper.getScrollMetrics();
-  //       if (scrollMetrics !== scrollMetricsRef.current) {
-  //         listGroupDimensions.updateScrollMetrics(
-  //           scrollHelper.getScrollMetrics()
-  //         );
-  //         scrollMetricsRef.current = scrollMetrics;
-  //       }
-  //     }),
-  //   []
-  // );
-
   useEffect(() => {
     const scrollTracker = new ScrollTracker({
       domNode: listRef.current!,
@@ -169,24 +101,6 @@ const ListGroup = <ItemT extends GenericItemT>(
 
     return () => scrollTracker.dispose();
   }, []);
-
-  // useEffect(
-  //   () =>
-  //     scrollEventHelper.subscribeEventHandler('onMomentumScrollEnd', () => {
-  //       const scrollMetrics = scrollHelper.getScrollMetrics();
-  //       if (scrollMetrics !== scrollMetricsRef.current) {
-  //         listGroupDimensions.updateScrollMetrics(
-  //           scrollHelper.getScrollMetrics()
-  //         );
-  //         scrollMetricsRef.current = scrollMetrics;
-  //       }
-  //     }),
-  //   []
-  // );
-
-  // useEffect(() => {
-  //   listGroupDimensions.updateScrollMetrics(scrollHelper.getScrollMetrics());
-  // }, []);
 
   const [state, setState] = useState(() => ({
     ...listGroupDimensions.inspector.getAPI(),
@@ -212,8 +126,10 @@ const ListGroup = <ItemT extends GenericItemT>(
         {children}
         <PortalContent<ItemT>
           id={id}
+          ListItemWrapper={CompatListItem}
           listGroupDimensions={listGroupDimensions}
-          scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
+          RecycleContentItemWrapper={RecycleContentItemWrapper}
+          SpaceRendererComponent={SpaceRendererComponent}
         />
       </context.Provider>
       <ClockEnd

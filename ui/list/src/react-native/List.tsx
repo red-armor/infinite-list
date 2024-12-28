@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useState, useRef, useContext } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useContext,
+  useCallback,
+} from 'react';
 import {
   View,
   ViewStyle,
@@ -6,11 +13,9 @@ import {
   NativeScrollEvent,
 } from 'react-native';
 import { ListProps } from './types';
-import {
-  ListDimensions,
-  GenericItemT,
-  RecycleStateResult,
-} from '@infinite-list/data-model';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { RecycleStateResult } from '@infinite-list/strategies';
+import { GenericItemT } from '@infinite-list/item-meta';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
 import { ScrollViewContext } from '@infinite-list/scroller/react-native';
@@ -53,80 +58,69 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const offsetRef = useRef(0);
   const tsRef = useRef(Date.now());
 
-  useEffect(() => {
-    // scrollHandlerRef.current = new ScrollTracker({
-    //   domNode: listRef.current!,
-    //   onScroll: () => {
-    //     listModel.updateScrollMetrics(
-    //       scrollHandlerRef.current?.getScrollMetrics()
-    //     );
-    //   },
-    // });
-
-    // scrollHandlerRef.current.addEventListeners();
-
-    return contextValues
+  /**
+   * Trigger list render after initialization or content will be blank
+   */
+  const onLayoutHandler = useCallback(() => {
+    const scrollMetrics = contextValues
       .getScrollHelper()
-      .addListener(
-        'onScroll',
-        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          const scrollMetrics = event.nativeEvent;
-          const timestamp = Date.now();
-          const offset = scrollMetrics.contentOffset.y;
+      .getScrollEventMetrics();
+    const timestamp = Date.now();
+    const offset = scrollMetrics.contentOffset.y;
 
-          const dOffset = offset - offsetRef.current;
-          const dt = timestamp - tsRef.current;
-          const velocity = dOffset / dt;
+    const dOffset = offset - offsetRef.current;
+    const dt = timestamp - tsRef.current;
+    const velocity = dOffset / dt;
 
-          offsetRef.current = offset;
-          tsRef.current = timestamp;
+    offsetRef.current = offset;
+    tsRef.current = timestamp;
 
-          listModel.updateScrollMetrics({
-            offset,
-            visibleLength: scrollMetrics.layoutMeasurement.height,
-            contentLength: scrollMetrics.contentSize.height,
-            velocity,
-          });
-        }
-      );
-
-    // @ts-ignore
-    // props.events.addEventListener(
-    //   'onScroll',
-    //   (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    //     const scrollMetrics = event.nativeEvent;
-    //     const timestamp = Date.now();
-    //     const offset = scrollMetrics.contentOffset.y;
-
-    //     const dOffset = offset - offsetRef.current;
-    //     const dt = timestamp - tsRef.current;
-    //     const velocity = dOffset / dt;
-
-    //     offsetRef.current = offset;
-    //     tsRef.current = timestamp;
-
-    //     listModel.updateScrollMetrics({
-    //       offset,
-    //       visibleLength: scrollMetrics.layoutMeasurement.height,
-    //       contentLength: scrollMetrics.contentSize.height,
-    //       velocity,
-    //     });
-    //   }
-    // );
-
-    // listModel.updateScrollMetrics({
-    //   offset: 0,
-    //   visibleLength: 900,
-    //   contentLength: 0,
-    // });
-
-    // return () => scrollHandlerRef.current?.dispose();
+    listModel.updateScrollMetrics({
+      offset,
+      visibleLength: scrollMetrics.layoutMeasurement.height,
+      contentLength: scrollMetrics.contentSize.height,
+      velocity,
+    });
   }, []);
+
+  useEffect(
+    () =>
+      contextValues
+        .getScrollHelper()
+        .addListener(
+          'onScroll',
+          (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            const scrollMetrics = event.nativeEvent;
+            const timestamp = Date.now();
+            const offset = scrollMetrics.contentOffset.y;
+
+            const dOffset = offset - offsetRef.current;
+            const dt = timestamp - tsRef.current;
+            const velocity = dOffset / dt;
+
+            offsetRef.current = offset;
+            tsRef.current = timestamp;
+
+            listModel.updateScrollMetrics({
+              offset,
+              visibleLength: scrollMetrics.layoutMeasurement.height,
+              contentLength: scrollMetrics.contentSize.height,
+              velocity,
+            });
+          }
+        ),
+    []
+  );
 
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;
     return (
-      <View id={id} ref={listRef} style={style.container}>
+      <View
+        id={id}
+        ref={listRef}
+        style={style.container}
+        onLayout={onLayoutHandler}
+      >
         {nextState.recycleState.map((data) => (
           <RecycleItem
             key={data.key}

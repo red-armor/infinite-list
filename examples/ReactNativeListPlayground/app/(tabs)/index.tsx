@@ -169,5 +169,6 @@ import MasonryList from './MasonryList';
 import { Text } from 'react-native';
 
 export default () => {
-  return <MasonryList />;
+  // return <MasonryList />;
+  return <List />;
 };

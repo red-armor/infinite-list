@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { View, ViewStyle } from 'react-native';
-import { GenericItemT } from '@infinite-list/data-model';
+import { GenericItemT } from '@infinite-list/types';
 import { RecycleItemProps } from './types';
 
 const RecycleItem = <ItemT extends GenericItemT>(
@@ -10,7 +10,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
   const itemRef = useRef<View>(null);
   const { item, key, itemMeta, offset } = data;
   const style: ViewStyle = useMemo(() => {
-    if (offset)
+    if (offset != null)
       return {
         position: 'absolute',
         top: offset,

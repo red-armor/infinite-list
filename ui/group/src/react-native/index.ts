@@ -1,4 +1,4 @@
 export { default as ListGroup } from './ListGroup';
-export { default as GroupList } from './GroupList';
-export { default as ListGroupContext } from './context';
-export { default as GroupListItem } from './GroupListItem';
+export { default as GroupList } from '../common/GroupList';
+export { default as ListGroupContext } from '../common/context';
+export { default as GroupListItem } from '../common/GroupDimensionItem';

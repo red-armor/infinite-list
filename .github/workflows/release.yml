@@ -52,8 +52,8 @@ jobs:
         run: pnpm run build
 
         # https://dev.to/jmcdo29/automating-your-package-deployment-in-an-nx-monorepo-with-changeset-4em8
-      - name: Modify Workspace File
-        run: sed "s/packages\//dist\/packages\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
+      # - name: Modify Workspace File
+      #   run: sed "s/packages\//dist\/packages\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
       - name: Modify ui workspace
         run: sed "s/ui\//dist\/ui\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
 

@@ -1,6 +1,6 @@
-import { ListGroupDimensions } from '@infinite-list/data-model';
-import React, {
-  FC,
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import { GenericItemT } from '@infinite-list/item-meta';
+import {
   useCallback,
   useContext,
   useEffect,
@@ -9,37 +9,31 @@ import React, {
   useState,
 } from 'react';
 import { View, Platform } from 'react-native';
+import {
+  RecycleContentItemWrapper,
+  SpaceRendererComponent,
+} from './CompatComponent';
+import { ListGroupProps } from './types';
+import { ListItemWrapper as TListItemWrapper } from '../types';
+import context from '../common/context';
+import PortalContent from '../common/PortalContent';
+import { ClockStart, ClockEnd } from '../common/clock';
+import { measureLayout } from './measure';
+import CompatListItem from './CompatListItem';
 
-import { ListGroupProps } from '../types';
-import context from './context';
-import PortalContent from './PortalContent';
-
-const ClockStart: FC<{
-  dimensions: ListGroupDimensions;
-  inspectingTimes: number;
-}> = React.memo((props) => {
-  props.dimensions.inspector.startCollection();
-  return null;
-});
-const ClockEnd: FC<{
-  dimensions: ListGroupDimensions;
-  inspectingTimes: number;
-}> = React.memo((props) => {
-  props.dimensions.inspector.terminateCollection();
-  return null;
-});
-
-const ListGroup: FC<ListGroupProps> = (props) => {
+const ListGroup = <ItemT extends GenericItemT>(
+  props: ListGroupProps<ItemT>
+) => {
   const {
-    children,
     id,
+    children,
+    containerRef,
     onViewableItemsChanged,
     viewabilityConfig,
     viewabilityConfigCallbackPairs,
     initialNumToRender,
     persistanceIndices,
     scrollComponentContext,
-    scrollComponentUseMeasureLayout,
     ...rest
   } = props;
   // @ts-ignore
@@ -54,7 +48,7 @@ const ListGroup: FC<ListGroupProps> = (props) => {
   }>();
 
   const viewRef = useRef<View>(null);
-  const measureLayout = useCallback(
+  const measureLayoutOnSuccessCallback = useCallback(
     (x: number, y: number, width: number, height: number) => {
       layoutRef.current = { x, y, width, height };
     },
@@ -65,14 +59,30 @@ const ListGroup: FC<ListGroupProps> = (props) => {
 
   const scrollHelper = getScrollHelper();
 
-  const { handler, layoutHandler } = scrollComponentUseMeasureLayout(viewRef, {
-    onMeasureLayout: measureLayout,
-  });
+  const layoutHandler = useCallback(() => {
+    if (viewRef.current) {
+      measureLayout(
+        viewRef.current,
+        containerRef.current,
+        measureLayoutOnSuccessCallback
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (viewRef.current) {
+      measureLayout(
+        viewRef.current,
+        containerRef.current,
+        measureLayoutOnSuccessCallback
+      );
+    }
+  }, []);
 
   const getContainerLayout = useCallback(() => layoutRef.current!, []);
   const listGroupDimensions = useMemo(
     () =>
-      new ListGroupDimensions({
+      new ListGroupDimensions<ItemT>({
         id,
         ...rest,
         viewabilityConfig,
@@ -89,9 +99,6 @@ const ListGroup: FC<ListGroupProps> = (props) => {
   useEffect(
     () =>
       scrollEventHelper.subscribeEventHandler('onContentSizeChange', () => {
-        if (typeof handler === 'function') {
-          handler();
-        }
         const scrollMetrics = scrollHelper.getScrollMetrics();
         if (scrollMetrics !== scrollMetricsRef.current) {
           listGroupDimensions.updateScrollMetrics(
@@ -149,6 +156,13 @@ const ListGroup: FC<ListGroupProps> = (props) => {
     });
   }, []);
 
+  /**
+   * like IOC, the specific logic placed on the topmost.
+   */
+  const ListItemWrapper = useCallback<TListItemWrapper<ItemT>>((props) => {
+    return <CompatListItem {...props} containerRef={containerRef} />;
+  }, []);
+
   return (
     <View onLayout={layoutHandler} ref={viewRef}>
       <ClockStart
@@ -159,8 +173,10 @@ const ListGroup: FC<ListGroupProps> = (props) => {
         {children}
         <PortalContent
           id={id}
+          ListItemWrapper={ListItemWrapper}
           listGroupDimensions={listGroupDimensions}
-          scrollComponentUseMeasureLayout={scrollComponentUseMeasureLayout}
+          RecycleContentItemWrapper={RecycleContentItemWrapper}
+          SpaceRendererComponent={SpaceRendererComponent}
         />
       </context.Provider>
       <ClockEnd

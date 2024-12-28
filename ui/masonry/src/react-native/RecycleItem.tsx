@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { GenericItemT } from '@infinite-list/data-model';
+import { GenericItemT } from '@infinite-list/item-meta';
 import { RecycleItemProps } from './types';
 import { View, ViewStyle } from 'react-native';
 

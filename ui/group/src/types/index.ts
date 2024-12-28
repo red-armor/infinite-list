@@ -3,3 +3,4 @@ export * from './GroupListItemImpl.types';
 export * from './PortalContext.types';
 export * from './ListGroup.types';
 export * from './GroupList.types';
+export * from './GroupDimensionItem.types';

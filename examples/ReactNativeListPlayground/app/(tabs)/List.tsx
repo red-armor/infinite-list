@@ -1,8 +1,10 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { List, ScrollView } from '@infinite-list/react-native';
+import { List } from '@infinite-list/list';
+import { ScrollView } from '@infinite-list/scroller';
 import {
   // NativeScrollEvent,
   // NativeSyntheticEvent,
+  ScrollView as NativeScrollView,
   Text,
   View,
 } from 'react-native';
@@ -15,7 +17,7 @@ const buildData = (count: number, startIndex = 0) =>
 
 export default () => {
   const data = useMemo(() => buildData(10000), []);
-  const scrollViewRef = useRef<ScrollView>(null);
+  const scrollViewRef = useRef<NativeScrollView>(null);
 
   const renderItem = useCallback((props: { item }) => {
     const { item } = props;
@@ -41,7 +43,6 @@ export default () => {
       <List
         data={data}
         renderItem={renderItem}
-        test="3"
         id="basic"
         keyExtractor={keyExtractor}
         containerRef={scrollViewRef}

@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import { GenericItemT, RecycleStateResult } from '@infinite-list/data-model';
+import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
 import { ColumnStateRendererProps } from './types';
 
 import RecycleItem from './RecycleItem';
