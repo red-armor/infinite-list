@@ -15,7 +15,6 @@ import { ItemLayout } from '@infinite-list/dimensions-model';
 import { KeysChangedType } from '@infinite-list/base-dimensions';
 
 import MasonryDimensionsModel from './MasonryDimensionsModel';
-// import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
 import { OnEndReachedHelper } from '@infinite-list/viewable';
 
 import { chunkifyDataSource } from './utils';

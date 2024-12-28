@@ -31,7 +31,7 @@ const meta: Meta<typeof ListGroup> = {
           <GroupList
             id="first"
             initialNumToRender={0}
-            data={buildData(100)}
+            data={buildData(500)}
             recyclerBufferSize={100}
             recyclerReservedBufferPerBatch={50}
             renderItem={(props: RenderItemInfo<Item>) => {
@@ -56,7 +56,7 @@ const meta: Meta<typeof ListGroup> = {
           <GroupList
             id="second"
             initialNumToRender={0}
-            data={buildData(100, 100)}
+            data={buildData(500, 500)}
             recyclerBufferSize={100}
             recyclerReservedBufferPerBatch={50}
             renderItem={(props: RenderItemInfo<Item>) => {

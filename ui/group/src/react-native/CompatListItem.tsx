@@ -62,6 +62,10 @@ const CompatListItem = <ItemT extends GenericItemT>(
 
   const itemMetaRef = useRef(itemMeta);
 
+  if (itemMetaRef.current !== itemMeta) {
+    itemMetaRef.current = itemMeta;
+  }
+
   useEffect(
     () =>
       addItemChangedListener(() => {

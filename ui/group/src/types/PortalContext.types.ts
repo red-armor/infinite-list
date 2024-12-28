@@ -61,7 +61,7 @@ export type GroupRecycleContentProps<
   ListItemWrapper: ListItemWrapper<ItemT>;
 };
 
-export type RecycleContentItem<
+export type TRecycleContentItem<
   IStyle,
   ItemT extends GenericItemT = GenericItemT
 > = {

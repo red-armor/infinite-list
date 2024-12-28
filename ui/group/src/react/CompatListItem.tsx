@@ -16,15 +16,12 @@ const CompatListItem = <ItemT extends GenericItemT>(
     style: _style = {},
     children,
     forwardRef,
-
-    dimensions,
     recycleItemContainerKey,
     CellRendererComponent,
     onMeasureLayout: _onMeasureLayout,
     setDimensionItemLayout,
     addItemChangedListener,
     itemMeta,
-    ...rest
   } = props;
 
   const defaultRef = useRef<HTMLDivElement>(null);
@@ -48,6 +45,10 @@ const CompatListItem = <ItemT extends GenericItemT>(
 
   const itemMetaRef = useRef(itemMeta);
 
+  if (itemMetaRef.current !== itemMeta) {
+    itemMetaRef.current = itemMeta;
+  }
+
   useEffect(() => {
     updateItemLayout();
   }, []);
@@ -69,12 +70,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
   }, [itemMeta]);
 
   return (
-    <RenderComponent
-      key={recycleItemContainerKey}
-      {...refProps}
-      {...rest}
-      style={_style}
-    >
+    <RenderComponent key={recycleItemContainerKey} {...refProps} style={_style}>
       {children}
     </RenderComponent>
   );

@@ -5,14 +5,14 @@ import {
   PortalContextProps,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
-  RecycleContentItem,
+  TRecycleContentItem,
   ExtraInfo,
 } from '../types';
 
 import GroupListItemImpl from './GroupListItemImpl';
 
 const RecycleContentItem = <IStyle, ItemT extends GenericItemT = GenericItemT>(
-  props: RecycleContentItem<IStyle, ItemT>
+  props: TRecycleContentItem<IStyle, ItemT>
 ) => {
   const {
     listKey,
@@ -114,8 +114,8 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
       {state.map((stateResult, index) => {
         const { isSpace, key, item, length, isSticky, itemMeta } = stateResult;
 
-        const metaOwner = itemMeta!.getOwner();
-        const info = metaOwner.extraInfo as ExtraInfo<ItemT>;
+        const metaOwner = itemMeta?.getOwner();
+        const info = metaOwner?.extraInfo as ExtraInfo<ItemT>;
 
         return isSpace ? (
           <SpaceRendererComponent key={key} style={{ height: length }} />

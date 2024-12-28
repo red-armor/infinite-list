@@ -1,6 +1,7 @@
 import type { Meta } from '@storybook/react';
 import { defaultKeyExtractor } from '@infinite-list/utils';
 import { MasonryList } from '@infinite-list/masonry/react';
+// import { MasonryList } from '@infinite-list/react';
 import { KeyExtractor } from '@infinite-list/dimensions-model';
 
 type Item = {
@@ -31,7 +32,6 @@ const meta: Meta<typeof MasonryList> = {
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
             const { item, itemMeta } = props;
-
             const indexInfo = itemMeta.getIndexInfo();
             const index = indexInfo?.index || 0;
 

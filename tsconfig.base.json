@@ -7,6 +7,8 @@
     "module": "commonjs",
     "baseUrl": "./",
     "paths": {
+      "@infinite-list/react": ["packages/react/src/index.ts"],
+
       "@infinite-list/base-dimensions": ["core/base-dimensions/src/index.ts"],
       "@infinite-list/container": ["core/container/src/index.ts"],
       "@infinite-list/dimension": ["model/dimension/src/index.ts"],
