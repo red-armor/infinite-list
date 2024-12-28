@@ -28,7 +28,6 @@ class ListDimensions<ItemT extends GenericItemT = GenericItemT>
     this._dataModel = new ListDimensionsModel<ItemT>({
       recycleEnabled: true,
       ...props,
-      // @ts-ignore [TODO]
       container: this,
     });
   }

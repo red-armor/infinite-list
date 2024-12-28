@@ -2,7 +2,7 @@
   "name": "@infinite-list/masonry",
   "version": "0.1.0",
   "peerDependencies": {
-    "react": "18.2.0",
+    "react": "*",
     "react-native": "0.74.1"
   },
   "exports": {

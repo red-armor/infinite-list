@@ -38,6 +38,8 @@ export interface ListProps<ItemT extends GenericItemT = GenericItemT>
    */
   renderItem: RenderItem<ItemT>;
 
+  horizontal?: boolean;
+
   // /**
   //  * @template ItemT the generic date item type
   //  * @type {( item: ItemPossibleT<ItemT>, index?: number ) => string }

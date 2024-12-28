@@ -5,5 +5,8 @@
     "@x-oasis/select-value": "^0.1.14"
   },
   "main": "./index.cjs",
-  "module": "./index.js"
+  "module": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  }
 }

@@ -8,5 +8,8 @@
     "@x-oasis/unique-array-object": "^0.1.14"
   },
   "main": "./index.cjs",
-  "module": "./index.js"
+  "module": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  }
 }

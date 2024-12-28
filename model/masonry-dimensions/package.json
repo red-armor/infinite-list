@@ -12,5 +12,8 @@
     "@infinite-list/strategies": "workspace:*"
   },
   "main": "./index.cjs",
-  "module": "./index.js"
+  "module": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  }
 }

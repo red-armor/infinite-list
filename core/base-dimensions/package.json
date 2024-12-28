@@ -8,6 +8,9 @@
     "@infinite-list/viewable": "workspace:*",
     "@x-oasis/prefix-interval-tree": "^0.2.4"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./index.cjs",
   "module": "./index.js"
 }

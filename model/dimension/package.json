@@ -9,5 +9,8 @@
     "@infinite-list/container": "workspace:*"
   },
   "main": "./index.cjs",
-  "module": "./index.js"
+  "module": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  }
 }

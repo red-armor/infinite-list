@@ -10,5 +10,8 @@
     "@x-oasis/recycler": "^0.1.37"
   },
   "main": "./index.cjs",
-  "module": "./index.js"
+  "module": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  }
 }
