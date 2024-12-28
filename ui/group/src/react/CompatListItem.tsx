@@ -5,6 +5,7 @@ import {
   useEffect,
   useRef,
   useMemo,
+  FC,
 } from 'react';
 import { CompatListItemProps } from './types';
 
@@ -14,21 +15,24 @@ const CompatListItem = <ItemT extends GenericItemT>(
   const {
     style: _style = {},
     children,
-    onLayout,
     forwardRef,
 
     dimensions,
-    containerKey,
+    recycleItemContainerKey,
     CellRendererComponent,
     onMeasureLayout: _onMeasureLayout,
     setDimensionItemLayout,
-    onItemChanged,
+    addItemChangedListener,
     itemMeta,
     ...rest
   } = props;
 
+  const defaultRef = useRef<HTMLDivElement>(null);
+  const viewRef = forwardRef || defaultRef;
+
   const updateItemLayout = useCallback(() => {
-    const rect = viewRef.current.getBoundingClientRect();
+    // @ts-ignore
+    const rect = viewRef?.current?.getBoundingClientRect();
     if (rect) {
       const { x, y, width, height } = rect;
       setDimensionItemLayout(itemMetaRef.current.getKey(), {
@@ -40,14 +44,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
     }
   }, []);
 
-  useEffect(() => {
-    return onItemChanged(updateItemLayout);
-  }, []);
-
-  // const containerStyle = useMemo(() => ({ ..._style, elevation: 0 }), [_style]);
-
-  const defaultRef = useRef<HTMLDivElement>(null);
-  const viewRef = forwardRef || defaultRef;
+  useEffect(() => addItemChangedListener(updateItemLayout), []);
 
   const itemMetaRef = useRef(itemMeta);
 
@@ -73,17 +70,12 @@ const CompatListItem = <ItemT extends GenericItemT>(
 
   return (
     <RenderComponent
-      // onLayout={layoutHandler}
-      key={containerKey}
+      key={recycleItemContainerKey}
       {...refProps}
       {...rest}
-      // @ts-ignore
-      style={containerStyle}
+      style={_style}
     >
       {children}
-      {/* <Text style={{ position: 'absolute', right: 20, top: 0, color: 'red' }}>
-        {props.itemMeta.getIndexInfo()?.indexInGroup}
-      </Text> */}
     </RenderComponent>
   );
 };

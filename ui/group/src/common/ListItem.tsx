@@ -3,11 +3,11 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
 } from 'react';
 
 import { DefaultItemT, ListItemProps } from '../types';
+import { ItemLayout } from '@infinite-list/types';
 
 /**
  *
@@ -28,43 +28,19 @@ const ListItem = <ItemT extends DefaultItemT>(
   props: PropsWithChildren<ListItemProps<ItemT>>
 ) => {
   const {
-    style: _style = {},
     children,
-    onLayout,
     forwardRef,
-
+    recycleItemContainerKey,
     dimensions,
-    containerKey,
     CellRendererComponent,
     onMeasureLayout: _onMeasureLayout,
     itemMeta,
+    ListItemWrapper,
     ...rest
   } = props;
-  const containerStyle = useMemo(() => ({ ..._style, elevation: 0 }), [_style]);
-
-  const defaultRef = useRef<HTMLDivElement>(null);
-  const viewRef = forwardRef || defaultRef;
 
   const itemMetaRef = useRef(itemMeta);
-
-  const layoutHandler = useCallback(() => {
-    const rect = viewRef.current.getBoundingClientRect();
-    if (rect) {
-      const { x, y, width, height } = rect;
-      itemMetaRef.current
-        .getOwner()
-        .setKeyItemLayout(itemMetaRef.current.getKey(), {
-          x,
-          y,
-          width,
-          height,
-        });
-    }
-  }, []);
-
-  useEffect(() => {
-    layoutHandler();
-  }, []);
+  const itemChangeHandlerRef = useRef<Function | null>();
 
   // note!!!!: has a condition, viewableItemHelperKey not change but itemMeta change..
   // reuse position with same data source..
@@ -79,41 +55,37 @@ const ListItem = <ItemT extends DefaultItemT>(
         (!itemMetaRef.current?.getLayout() ||
           itemMetaRef.current.isApproximateLayout)
       ) {
-        setTimeout(() => layoutHandler(), 0);
+        if (itemChangeHandlerRef.current) itemChangeHandlerRef.current();
       }
     }
   }, [itemMeta]);
 
-  const RenderComponent = useMemo(
-    () => CellRendererComponent || 'div',
-    [CellRendererComponent]
+  const addItemChangedListener = useCallback((fn: Function) => {
+    itemChangeHandlerRef.current = fn;
+    return () => {
+      itemChangeHandlerRef.current = null;
+    };
+  }, []);
+
+  const setDimensionItemLayout = useCallback(
+    (key: string, layout: ItemLayout) => {
+      itemMetaRef.current.getOwner().setKeyItemLayout(key, layout);
+    },
+    []
   );
 
-  // TODO: temp fix
-  // Warning: Function components cannot be given refs. Attempts to
-  // access this ref will fail. Did you mean to use React.forwardRef()?
-  const refProps = useMemo(() => {
-    if (CellRendererComponent)
-      return {
-        cellKey: itemMeta.getKey(),
-      };
-    return { ref: viewRef };
-  }, [itemMeta]);
-
   return (
-    <RenderComponent
-      // onLayout={layoutHandler}
-      key={containerKey}
-      {...refProps}
+    <ListItemWrapper
+      addItemChangedListener={addItemChangedListener}
+      setDimensionItemLayout={setDimensionItemLayout}
+      key={recycleItemContainerKey}
+      itemMeta={itemMeta}
+      dimensions={dimensions}
+      recycleItemContainerKey={recycleItemContainerKey}
       {...rest}
-      // @ts-ignore
-      style={containerStyle}
     >
       {children}
-      {/* <Text style={{ position: 'absolute', right: 20, top: 0, color: 'red' }}>
-        {props.itemMeta.getIndexInfo()?.indexInGroup}
-      </Text> */}
-    </RenderComponent>
+    </ListItemWrapper>
   );
 };
 

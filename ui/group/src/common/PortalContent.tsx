@@ -20,8 +20,9 @@ const RecycleContentItem = <IStyle, ItemT extends GenericItemT = GenericItemT>(
     dimensions,
     item,
     offset,
-    containerKey,
+    recycleItemContainerKey,
     horizontal,
+    ListItemWrapper,
     RecycleContentItemWrapper,
   } = props;
 
@@ -57,7 +58,8 @@ const RecycleContentItem = <IStyle, ItemT extends GenericItemT = GenericItemT>(
         itemMeta={itemMeta}
         renderItem={info.renderItem}
         teleportItemProps={info.teleportItemProps}
-        containerKey={containerKey}
+        recycleItemContainerKey={recycleItemContainerKey}
+        ListItemWrapper={ListItemWrapper}
         dimensions={dimensions}
       />
     </RecycleContentItemWrapper>
@@ -70,7 +72,7 @@ const MemoedRecycleContentItem = memo(
 const RecycleContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
   props: GroupRecycleContentProps<IStyle, ItemT>
 ) => {
-  const { state, RecycleContentItemWrapper, ...rest } = props;
+  const { state, RecycleContentItemWrapper, ListItemWrapper, ...rest } = props;
   return (
     <>
       {state.map((stateResult) => {
@@ -80,10 +82,11 @@ const RecycleContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
         return (
           <MemoedRecycleContentItem
             key={key}
-            containerKey={key}
             renderItem={info.renderItem}
             item={item!}
+            recycleItemContainerKey={key}
             RecycleContentItemWrapper={RecycleContentItemWrapper}
+            ListItemWrapper={ListItemWrapper}
             itemMeta={itemMeta!}
             {...rest}
             {...stateResultRest}
@@ -98,7 +101,13 @@ const MemoedRecycleContent = memo(RecycleContent) as typeof RecycleContent;
 const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
   props: GroupSpaceContentProps<IStyle, ItemT>
 ) => {
-  const { state, listKey, dimensions, SpaceRendererComponent } = props;
+  const {
+    state,
+    listKey,
+    dimensions,
+    SpaceRendererComponent,
+    ListItemWrapper,
+  } = props;
 
   return (
     <>
@@ -119,6 +128,8 @@ const SpaceContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
             renderItem={info.renderItem}
             teleportItemProps={info.teleportItemProps}
             dimensions={dimensions}
+            ListItemWrapper={ListItemWrapper}
+            recycleItemContainerKey={key}
           />
         );
       })}
@@ -159,6 +170,7 @@ const PortalContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
         ownerId={id}
         state={store.spaceState}
         dimensions={listGroupDimensions}
+        ListItemWrapper={ListItemWrapper}
         SpaceRendererComponent={SpaceRendererComponent}
       />
 
@@ -166,6 +178,7 @@ const PortalContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
         listKey={id}
         ownerId={id}
         state={store.recycleState}
+        ListItemWrapper={ListItemWrapper}
         dimensions={listGroupDimensions}
         RecycleContentItemWrapper={RecycleContentItemWrapper}
       />

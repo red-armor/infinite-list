@@ -18,6 +18,7 @@ import context from '../common/context';
 import PortalContent from '../common/PortalContent';
 import { ClockStart, ClockEnd } from '../common/clock';
 import { measureLayout } from './measure';
+import CompatListItem from './CompatListItem';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>
@@ -164,6 +165,7 @@ const ListGroup = <ItemT extends GenericItemT>(
         {children}
         <PortalContent
           id={id}
+          ListItemWrapper={CompatListItem}
           listGroupDimensions={listGroupDimensions}
           RecycleContentItemWrapper={RecycleContentItemWrapper}
           SpaceRendererComponent={SpaceRendererComponent}

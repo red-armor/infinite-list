@@ -7,7 +7,7 @@ import { PropsWithChildren, FC } from 'react';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ItemMeta } from '@infinite-list/item-meta';
 import { RenderItem } from './GroupListItemImpl.types';
-import { TeleportItemProps, CompatListItemProps } from './ListItem.types';
+import { TeleportItemProps, ListItemWrapper } from './ListItem.types';
 
 export type ExtraInfo<ItemT extends GenericItemT = GenericItemT> = {
   renderItem: RenderItem<ItemT>;
@@ -34,7 +34,7 @@ export type PortalContextProps<
   listGroupDimensions: ListGroupDimensions<ItemT>;
   RecycleContentItemWrapper: RecycleContentItemWrapper<IStyle>;
   SpaceRendererComponent: SpaceRendererComponent<IStyle>;
-  ListItemWrapper: CompatListItemProps<ItemT>;
+  ListItemWrapper: ListItemWrapper<ItemT>;
 };
 
 export type GroupSpaceContentProps<
@@ -45,6 +45,7 @@ export type GroupSpaceContentProps<
   listKey: string;
   ownerId: string;
   dimensions: ListGroupDimensions<ItemT>;
+  ListItemWrapper: ListItemWrapper<ItemT>;
   SpaceRendererComponent: SpaceRendererComponent<IStyle>;
 };
 
@@ -57,6 +58,7 @@ export type GroupRecycleContentProps<
   ownerId: string;
   dimensions: ListGroupDimensions<ItemT>;
   RecycleContentItemWrapper: RecycleContentItemWrapper<IStyle>;
+  ListItemWrapper: ListItemWrapper<ItemT>;
 };
 
 export type RecycleContentItem<
@@ -68,8 +70,9 @@ export type RecycleContentItem<
   item: ItemT;
   offset: number;
   horizontal?: boolean;
-  containerKey: string;
+  recycleItemContainerKey: string;
   renderItem: RenderItem<ItemT>;
   dimensions: ListGroupDimensions<ItemT>;
   RecycleContentItemWrapper: RecycleContentItemWrapper<IStyle>;
+  ListItemWrapper: ListItemWrapper<ItemT>;
 };

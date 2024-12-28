@@ -1,10 +1,12 @@
 import { GenericItemT, ItemLayout } from '@infinite-list/types';
 import { ListItemProps } from '../../types';
 import { ViewStyle } from 'react-native';
+import { ContainerRef } from './ListGroup.types';
 
 export interface CompatListItemProps<ItemT extends GenericItemT>
-  extends ListItemProps<ItemT> {
+  extends Omit<ListItemProps<ItemT>, 'ListItemWrapper'> {
   setDimensionItemLayout(key: string, values: ItemLayout): void;
-  onItemChanged(fn: Function): void;
+  addItemChangedListener(fn: Function): void;
   style?: ViewStyle;
+  containerRef: ContainerRef;
 }

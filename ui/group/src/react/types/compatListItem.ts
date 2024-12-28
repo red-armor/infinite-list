@@ -3,8 +3,8 @@ import { ListItemProps } from '../../types';
 import { CSSProperties } from 'react';
 
 export interface CompatListItemProps<ItemT extends GenericItemT>
-  extends ListItemProps<ItemT> {
+  extends Omit<ListItemProps<ItemT>, 'ListItemWrapper'> {
   setDimensionItemLayout(key: string, values: ItemLayout): void;
-  onItemChanged(fn: Function): void;
+  addItemChangedListener(fn: Function): void;
   style?: CSSProperties;
 }

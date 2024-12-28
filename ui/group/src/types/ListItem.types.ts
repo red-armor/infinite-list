@@ -1,11 +1,11 @@
 import { ItemMeta, GenericItemT } from '@infinite-list/item-meta';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ListDimensions } from '@infinite-list/list-dimensions';
-import React, { CSSProperties, ForwardedRef } from 'react';
-import { ViewStyle, LayoutChangeEvent } from 'react-native';
+import React, { ForwardedRef, FC, PropsWithChildren } from 'react';
+// import { ViewStyle, LayoutChangeEvent } from 'react-native';
 import { ItemLayout } from '@infinite-list/types';
 
-type OnLayout = (event: LayoutChangeEvent) => void;
+// type OnLayout = (event: LayoutChangeEvent) => void;
 
 export type DefaultItemT = GenericItemT;
 
@@ -26,38 +26,27 @@ export type TeleportItemProps<ItemT extends GenericItemT> =
 
 export interface ListItemProps<ItemT extends GenericItemT> {
   item: ItemT;
-
-  // listKey: string;
   itemKey: string;
-
-  itemMeta: ItemMeta;
-
+  itemMeta: ItemMeta<ItemT>;
   dimensions: ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
 
-  // withWrapper?: boolean;
-  onLayout?: OnLayout;
+  // onLayout?: OnLayout;
   forwardRef?: ForwardedRef<any>;
   children?: React.ReactNode | undefined;
 
   onMeasureLayout?: OnMeasureLayout;
-
-  // measureLayoutHandlerOnDemand?: OnMeasureLayout;
-
-  // style?: ViewStyle | CSSProperties;
-
   teleportItemProps?: TeleportItemProps<ItemT>;
-
-  // setMeasureLayoutHandler?: SetMeasureLayoutHandler;
-
-  // getMetaOnViewableItemsChanged?: GetMetaOnViewableItemsChanged;
-
   CellRendererComponent?: React.ComponentType<any> | undefined;
-
-  containerKey?: string;
+  ListItemWrapper: ListItemWrapper<ItemT>;
+  recycleItemContainerKey: string;
 }
 
 export interface CompatListItemProps<ItemT extends GenericItemT>
-  extends ListItemProps<ItemT> {
+  extends Omit<ListItemProps<ItemT>, 'ListItemWrapper'> {
   setDimensionItemLayout(key: string, values: ItemLayout): void;
-  onItemChanged(fn: Function): void;
+  addItemChangedListener(fn: Function): void;
 }
+
+export type ListItemWrapper<ItemT extends GenericItemT> = FC<
+  PropsWithChildren<CompatListItemProps<ItemT>>
+>;

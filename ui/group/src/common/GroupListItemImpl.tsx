@@ -12,19 +12,13 @@ const GroupListItemImpl = <ItemT extends GenericItemT>(
     itemKey,
     dimensions,
     itemMeta,
-    containerKey,
+    recycleItemContainerKey,
     renderItem: RenderItem,
     teleportItemProps,
+    ListItemWrapper,
     CellRendererComponent,
     ...rest
   } = props;
-
-  // const getMetaOnViewableItemsChanged = useCallback(() => {
-  //   return {
-  //     item,
-  //     index: itemMeta.getIndexInfo?.()?.index,
-  //   };
-  // }, [item]);
 
   const teleportProps =
     typeof teleportItemProps === 'function'
@@ -40,7 +34,8 @@ const GroupListItemImpl = <ItemT extends GenericItemT>(
       itemKey={itemKey}
       itemMeta={itemMeta}
       dimensions={dimensions}
-      containerKey={containerKey}
+      recycleItemContainerKey={recycleItemContainerKey}
+      ListItemWrapper={ListItemWrapper}
       CellRendererComponent={CellRendererComponent}
     >
       {React.isValidElement(RenderItem) ? (

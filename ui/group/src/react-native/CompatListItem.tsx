@@ -16,15 +16,14 @@ const CompatListItem = <ItemT extends GenericItemT>(
   const {
     style: _style = {},
     children,
-    onLayout,
     forwardRef,
 
     dimensions,
-    containerKey,
+    recycleItemContainerKey,
     CellRendererComponent,
     onMeasureLayout: _onMeasureLayout,
     setDimensionItemLayout,
-    onItemChanged,
+    addItemChangedListener,
     containerRef,
     itemMeta,
     ...rest
@@ -58,25 +57,25 @@ const CompatListItem = <ItemT extends GenericItemT>(
     []
   );
 
-  // const containerStyle = useMemo(() => ({ ..._style, elevation: 0 }), [_style]);
-
   const defaultRef = useRef<HTMLDivElement>(null);
   const viewRef = forwardRef || defaultRef;
 
   const itemMetaRef = useRef(itemMeta);
 
-  useEffect(() => {
-    return onItemChanged(() => {
-      updateItemLayout();
-    });
-  }, []);
+  useEffect(
+    () =>
+      addItemChangedListener(() => {
+        updateItemLayout();
+      }),
+    []
+  );
 
   const layoutHandler = useMemo(
     () => (e: LayoutChangeEvent) => {
-      if (typeof onLayout === 'function') onLayout(e);
+      // if (typeof onLayout === 'function') onLayout(e);
       _updateItemLayout(e.nativeEvent.layout);
     },
-    [onLayout]
+    []
   );
 
   const RenderComponent = useMemo(
@@ -98,7 +97,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
   return (
     <RenderComponent
       onLayout={layoutHandler}
-      key={containerKey}
+      key={recycleItemContainerKey}
       {...refProps}
       {...rest}
       style={containerStyle}

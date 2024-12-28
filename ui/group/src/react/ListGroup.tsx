@@ -18,6 +18,7 @@ import {
   RecycleContentItemWrapper,
   SpaceRendererComponent,
 } from './CompatComponent';
+import CompatListItem from './CompatListItem';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>
@@ -125,6 +126,7 @@ const ListGroup = <ItemT extends GenericItemT>(
         {children}
         <PortalContent<CSSProperties, ItemT>
           id={id}
+          ListItemWrapper={CompatListItem}
           listGroupDimensions={listGroupDimensions}
           RecycleContentItemWrapper={RecycleContentItemWrapper}
           SpaceRendererComponent={SpaceRendererComponent}
