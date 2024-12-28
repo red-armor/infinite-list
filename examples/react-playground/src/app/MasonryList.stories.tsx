@@ -1,7 +1,6 @@
 import type { Meta } from '@storybook/react';
 import { defaultKeyExtractor } from '@infinite-list/utils';
 import { MasonryList } from '@infinite-list/masonry/react';
-// import { MasonryList } from '@infinite-list/react';
 import { KeyExtractor } from '@infinite-list/dimensions-model';
 
 type Item = {
@@ -38,7 +37,7 @@ const meta: Meta<typeof MasonryList> = {
             return (
               <div
                 style={{
-                  height: index % 2 ? '50px' : '75px',
+                  height: index % 2 ? '50px' : index % 3 ? 60 : '75px',
                   width: '100%',
                   backgroundColor: '#efdbff',
                   paddingBottom: '5px',

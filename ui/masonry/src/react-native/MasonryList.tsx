@@ -61,6 +61,11 @@ const MasonryList = <ItemT extends GenericItemT>(
         height: '100%',
         overflowY: 'auto',
         position: 'relative',
+        display: 'flex',
+        /**
+         * to make the backdrop div to render in column style
+         */
+        flexDirection: 'row',
       },
     }),
     []

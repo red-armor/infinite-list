@@ -668,6 +668,9 @@ importers:
 
   ui/masonry:
     dependencies:
+      '@infinite-list/masonry-dimensions':
+        specifier: workspace:*
+        version: link:../../model/masonry-dimensions
       '@infinite-list/scroller':
         specifier: workspace:*
         version: link:../scroller
@@ -5821,9 +5824,7 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
-      - bufferutil
       - supports-color
-      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:
