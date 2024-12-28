@@ -7,6 +7,8 @@
         "./*"
       ],
       "@infinite-list/react-native": ["../../packages/react-native/src"],
+      "@infinite-list/masonry": ["../../ui/masonry/src/react-native"],
+      "@infinite-list/scroller": ["../../ui/scroller/src/react-native"],
     }
   },
   "include": [
