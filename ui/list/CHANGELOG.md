@@ -1,5 +1,11 @@
 # @infinite-list/list
 
+## 1.1.0
+
+### Minor Changes
+
+- 6ada575: bump version
+
 ## 1.0.3
 
 ### Patch Changes

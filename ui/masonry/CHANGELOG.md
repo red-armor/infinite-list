@@ -1,5 +1,11 @@
 # @infinite-list/masonry
 
+## 0.1.0
+
+### Minor Changes
+
+- 6ada575: bump version
+
 ## 0.0.3
 
 ### Patch Changes
