@@ -10,7 +10,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
   const itemRef = useRef<View>(null);
   const { item, key, itemMeta, offset } = data;
   const style: ViewStyle = useMemo(() => {
-    if (offset)
+    if (offset != null)
       return {
         position: 'absolute',
         top: offset,

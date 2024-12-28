@@ -42,7 +42,6 @@ const GroupListItemImpl = <ItemT extends GenericItemT>(
       dimensions={dimensions}
       containerKey={containerKey}
       CellRendererComponent={CellRendererComponent}
-      // getMetaOnViewableItemsChanged={getMetaOnViewableItemsChanged}
     >
       {React.isValidElement(RenderItem) ? (
         RenderItem

@@ -7,7 +7,7 @@ import { PropsWithChildren, FC } from 'react';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ItemMeta } from '@infinite-list/item-meta';
 import { RenderItem } from './GroupListItemImpl.types';
-import { TeleportItemProps } from './ListItem.types';
+import { TeleportItemProps, CompatListItemProps } from './ListItem.types';
 
 export type ExtraInfo<ItemT extends GenericItemT = GenericItemT> = {
   renderItem: RenderItem<ItemT>;
@@ -34,6 +34,7 @@ export type PortalContextProps<
   listGroupDimensions: ListGroupDimensions<ItemT>;
   RecycleContentItemWrapper: RecycleContentItemWrapper<IStyle>;
   SpaceRendererComponent: SpaceRendererComponent<IStyle>;
+  ListItemWrapper: CompatListItemProps<ItemT>;
 };
 
 export type GroupSpaceContentProps<

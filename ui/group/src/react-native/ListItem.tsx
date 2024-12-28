@@ -41,9 +41,7 @@ const ListItem = <T extends DefaultItemT>(
     CellRendererComponent,
     setMeasureLayoutHandler,
     onMeasureLayout: _onMeasureLayout,
-    // @ts-ignore
     measureLayoutHandlerOnDemand,
-    // @ts-ignore
     getMetaOnViewableItemsChanged,
     scrollComponentUseMeasureLayout,
 

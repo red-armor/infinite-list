@@ -135,6 +135,7 @@ const PortalContent = <IStyle, ItemT extends GenericItemT = GenericItemT>(
     listGroupDimensions,
     RecycleContentItemWrapper,
     SpaceRendererComponent,
+    ListItemWrapper,
   } = props;
   const [store, setStore] = useState(
     () =>

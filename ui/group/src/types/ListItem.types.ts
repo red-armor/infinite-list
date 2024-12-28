@@ -3,6 +3,7 @@ import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import { ListDimensions } from '@infinite-list/list-dimensions';
 import React, { CSSProperties, ForwardedRef } from 'react';
 import { ViewStyle, LayoutChangeEvent } from 'react-native';
+import { ItemLayout } from '@infinite-list/types';
 
 type OnLayout = (event: LayoutChangeEvent) => void;
 
@@ -17,13 +18,13 @@ type OnMeasureLayout =
 //   [key: string]: any;
 // };
 
-export type TeleportItemProps<ItemT extends DefaultItemT> =
+export type TeleportItemProps<ItemT extends GenericItemT> =
   | ((opts: { index: number; item: ItemT }) => {
       [key: string]: any;
     })
   | undefined;
 
-export interface ListItemProps<ItemT extends DefaultItemT> {
+export interface ListItemProps<ItemT extends GenericItemT> {
   item: ItemT;
 
   // listKey: string;
@@ -42,7 +43,7 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
 
   // measureLayoutHandlerOnDemand?: OnMeasureLayout;
 
-  style?: ViewStyle | CSSProperties;
+  // style?: ViewStyle | CSSProperties;
 
   teleportItemProps?: TeleportItemProps<ItemT>;
 
@@ -53,4 +54,10 @@ export interface ListItemProps<ItemT extends DefaultItemT> {
   CellRendererComponent?: React.ComponentType<any> | undefined;
 
   containerKey?: string;
+}
+
+export interface CompatListItemProps<ItemT extends GenericItemT>
+  extends ListItemProps<ItemT> {
+  setDimensionItemLayout(key: string, values: ItemLayout): void;
+  onItemChanged(fn: Function): void;
 }
