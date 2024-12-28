@@ -1,5 +1,13 @@
 # @infinite-list/group
 
+## 1.1.2
+
+### Patch Changes
+
+- 08cef6a: update ci
+- Updated dependencies [08cef6a]
+  - @infinite-list/scroller@1.0.5
+
 ## 1.1.1
 
 ### Patch Changes

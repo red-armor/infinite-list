@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.8
+
+### Patch Changes
+
+- 08cef6a: update ci
+
 ## 1.2.7
 
 ### Patch Changes

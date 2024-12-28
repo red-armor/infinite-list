@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.2.8
+
+### Patch Changes
+
+- 08cef6a: update ci
+
 ## 2.2.7
 
 ### Patch Changes

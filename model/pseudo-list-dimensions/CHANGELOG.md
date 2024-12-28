@@ -1,5 +1,11 @@
 # @infinite-list/pseudo-list-dimensions
 
+## 0.0.3
+
+### Patch Changes
+
+- 08cef6a: update ci
+
 ## 0.0.2
 
 ### Patch Changes
