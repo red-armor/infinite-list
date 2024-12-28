@@ -84,9 +84,28 @@ const scrollerPkg = JSON.parse(
 const scrollerModules = Object.keys({
   ...scrollerPkg.dependencies,
 });
+const listPkg = JSON.parse(
+  fs.readFileSync(path.join(root, 'ui', 'list', 'package.json'), 'utf8')
+);
+const listModules = Object.keys({
+  ...listPkg.dependencies,
+});
+const groupPkg = JSON.parse(
+  fs.readFileSync(path.join(root, 'ui', 'group', 'package.json'), 'utf8')
+);
+const groupModules = Object.keys({
+  ...groupPkg.dependencies,
+});
 
 const extraModules = []
-  .concat(reactNativeModules, dataModelModules, masonryModules, scrollerModules)
+  .concat(
+    reactNativeModules,
+    dataModelModules,
+    masonryModules,
+    scrollerModules,
+    listModules,
+    groupModules
+  )
   .reduce((acc, name) => {
     acc[name] = path.join(root, 'packages', 'data-model', 'node_modules', name);
     return acc;
@@ -104,11 +123,25 @@ config.resolver.extraNodeModules = {
     'src'
   ),
   '@infinite-list/data-model': path.join(root, 'packages', 'data-model', 'src'),
+  '@infinite-list/list': path.join(root, 'ui', 'list', 'src'),
+  '@infinite-list/group': path.join(root, 'ui', 'group', 'src'),
   '@infinite-list/masonry': path.join(root, 'ui', 'masonry', 'src'),
+  '@infinite-list/group-dimensions': path.join(
+    root,
+    'model',
+    'group-dimensions',
+    'src'
+  ),
   '@infinite-list/masonry-dimensions': path.join(
     root,
     'model',
     'masonry-dimensions',
+    'src'
+  ),
+  '@infinite-list/list-dimensions': path.join(
+    root,
+    'model',
+    'list-dimensions',
     'src'
   ),
   '@infinite-list/scroller': path.join(root, 'ui', 'scroller', 'src'),
@@ -137,12 +170,20 @@ config.watchFolders = [
   path.join(root, 'packages', 'react-native', 'node_modules'),
   path.join(root, 'packages', 'data-model', 'src'),
   path.join(root, 'packages', 'data-model', 'node_modules'),
+  path.join(root, 'ui', 'group', 'src'),
+  path.join(root, 'ui', 'group', 'node_modules'),
+  path.join(root, 'ui', 'list', 'src'),
+  path.join(root, 'ui', 'list', 'node_modules'),
   path.join(root, 'ui', 'masonry', 'src'),
   path.join(root, 'ui', 'masonry', 'node_modules'),
   path.join(root, 'ui', 'scroller', 'src'),
   path.join(root, 'ui', 'scroller', 'node_modules'),
   path.join(root, 'model', 'masonry-dimensions', 'src'),
   path.join(root, 'model', 'masonry-dimensions', 'node_modules'),
+  path.join(root, 'model', 'group-dimensions', 'src'),
+  path.join(root, 'model', 'group-dimensions', 'node_modules'),
+  path.join(root, 'model', 'list-dimensions', 'src'),
+  path.join(root, 'model', 'list-dimensions', 'node_modules'),
   path.join(root, 'core', 'viewable', 'src'),
   path.join(root, 'core', 'viewable', 'node_modules'),
   path.join(root, 'core', 'base-dimensions', 'src'),

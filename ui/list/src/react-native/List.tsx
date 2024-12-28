@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useState, useRef, useContext } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  useContext,
+  useCallback,
+} from 'react';
 import {
   View,
   ViewStyle,
@@ -51,6 +58,31 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const offsetRef = useRef(0);
   const tsRef = useRef(Date.now());
 
+  /**
+   * Trigger list render after initialization or content will be blank
+   */
+  const onLayoutHandler = useCallback(() => {
+    const scrollMetrics = contextValues
+      .getScrollHelper()
+      .getScrollEventMetrics();
+    const timestamp = Date.now();
+    const offset = scrollMetrics.contentOffset.y;
+
+    const dOffset = offset - offsetRef.current;
+    const dt = timestamp - tsRef.current;
+    const velocity = dOffset / dt;
+
+    offsetRef.current = offset;
+    tsRef.current = timestamp;
+
+    listModel.updateScrollMetrics({
+      offset,
+      visibleLength: scrollMetrics.layoutMeasurement.height,
+      contentLength: scrollMetrics.contentSize.height,
+      velocity,
+    });
+  }, []);
+
   useEffect(
     () =>
       contextValues
@@ -83,7 +115,12 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;
     return (
-      <View id={id} ref={listRef} style={style.container}>
+      <View
+        id={id}
+        ref={listRef}
+        style={style.container}
+        onLayout={onLayoutHandler}
+      >
         {nextState.recycleState.map((data) => (
           <RecycleItem
             key={data.key}
