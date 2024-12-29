@@ -1,5 +1,11 @@
 # @infinite-list/benchmark
 
+## 1.2.9
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+
 ## 1.2.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 2.2.9
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+
 ## 2.2.8
 
 ### Patch Changes

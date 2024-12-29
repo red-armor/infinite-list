@@ -1,5 +1,13 @@
 # @infinite-list/react-native
 
+## 2.2.9
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+- Updated dependencies [4db4c47]
+  - @infinite-list/data-model@2.2.9
+
 ## 2.2.8
 
 ### Patch Changes
