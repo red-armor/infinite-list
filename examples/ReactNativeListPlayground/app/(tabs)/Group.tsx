@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView as NativeScrollView } from 'react-native';
 
 import { ScrollView, ScrollViewContext } from '@infinite-list/scroller';
@@ -20,7 +20,40 @@ export default () => {
   const scrollViewRef = useRef<NativeScrollView>(null);
 
   const renderItem = useCallback((props: { item }) => {
-    const { item } = props;
+    const { item, itemMeta, ...rest } = props;
+
+    const initRef = useRef(true);
+    const itemMetaRef = useRef(itemMeta);
+
+    if (itemMetaRef.current !== itemMeta) {
+      itemMetaRef.current = itemMeta;
+    }
+
+    useEffect(() => {
+      return () => {
+        console.log('unmount ------------------');
+      };
+    }, []);
+
+    console.log('rest ---- ', rest);
+
+    useEffect(() => {
+      if (initRef.current) console.log('mount ', itemMeta.getKey());
+      else {
+        console.log('update to ', itemMeta.getKey());
+      }
+
+      initRef.current = false;
+
+      return () => {
+        console.log(
+          'unmount ',
+          itemMeta.getKey(),
+          itemMetaRef.current.getKey()
+        );
+      };
+    }, [itemMeta]);
+
     return (
       <View style={{ height: 80, width: '100%', backgroundColor: '#fff' }}>
         <Text>{item.value}</Text>
@@ -40,27 +73,30 @@ export default () => {
           backgroundColor: 'green',
         }}
       >
+        <View
+          style={{
+            height: 340,
+          }}
+        />
+
         <ListGroup
           id="basic"
           containerRef={scrollViewRef}
+          recyclerBufferSize={100}
+          recyclerReservedBufferPerBatch={50}
+          initialNumToRender={10}
           scrollComponentContext={ScrollViewContext}
         >
           <GroupList
             id="first"
             data={buildData(500)}
-            recyclerBufferSize={100}
-            recyclerReservedBufferPerBatch={50}
             renderItem={renderItem}
             keyExtractor={keyExtractor}
-            initialNumToRender={0}
           />
 
           <GroupList<Item>
             id="second"
-            initialNumToRender={0}
             data={buildData(500, 500)}
-            recyclerBufferSize={100}
-            recyclerReservedBufferPerBatch={50}
             renderItem={renderItem}
             keyExtractor={keyExtractor}
           />

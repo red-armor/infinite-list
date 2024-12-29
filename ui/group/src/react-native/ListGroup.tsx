@@ -160,7 +160,7 @@ const ListGroup = <ItemT extends GenericItemT>(
    * like IOC, the specific logic placed on the topmost.
    */
   const ListItemWrapper = useCallback<TListItemWrapper<ItemT>>((props) => {
-    return <CompatListItem {...props} containerRef={containerRef} />;
+    return <CompatListItem {...props} containerRef={viewRef} />;
   }, []);
 
   return (
