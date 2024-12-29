@@ -20,4 +20,6 @@ export type ScrollComponentUseMeasureLayout = (
 export type ContainerRef = RefObject<ScrollView | View | any>;
 
 export type ListGroupProps<ItemT extends GenericItemT> =
-  CommonListGroupProps<ItemT>;
+  CommonListGroupProps<ItemT> & {
+    containerRef: ContainerRef;
+  };
