@@ -21,7 +21,14 @@ import SpaceItem from './SpaceItem';
 import { ScrollViewContext } from '@infinite-list/scroller/react-native';
 
 const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
-  const { renderItem, id, data, containerRef, recycleEnabled = true } = props;
+  const {
+    renderItem,
+    id,
+    data,
+    containerRef,
+    recycleEnabled = true,
+    horizontal,
+  } = props;
   const listModel = useMemo(() => new ListDimensions(props), []);
   const [state, setState] = useState(listModel.getStateResult());
   const contextValues = useContext(ScrollViewContext);
@@ -34,19 +41,24 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   }
 
   const listRef = useRef<View>(null);
-  const style: {
-    [key: string]: ViewStyle;
-  } = useMemo(
-    () => ({
-      container: {
-        width: '100%',
+  const containerStyle = useMemo<ViewStyle>(() => {
+    const style = {
+      // width: '100%',
+      // height: '100%',
+      // overflowY: 'auto',
+      // position: 'relative',
+    } as ViewStyle;
+    if (horizontal)
+      return {
+        ...style,
+        display: 'flex',
         height: '100%',
-        overflowY: 'auto',
+        flexDirection: 'row',
+        backgroundColor: 'blue',
         position: 'relative',
-      },
-    }),
-    []
-  );
+      };
+    return style;
+  }, []);
 
   useEffect(() => {
     listModel.addStateListener((newState) => {
@@ -66,7 +78,9 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
       .getScrollHelper()
       .getScrollEventMetrics();
     const timestamp = Date.now();
-    const offset = scrollMetrics.contentOffset.y;
+    const offset = listModel
+      .getSelectValue()
+      .selectOffset(scrollMetrics.contentOffset);
 
     const dOffset = offset - offsetRef.current;
     const dt = timestamp - tsRef.current;
@@ -92,7 +106,9 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
           (event: NativeSyntheticEvent<NativeScrollEvent>) => {
             const scrollMetrics = event.nativeEvent;
             const timestamp = Date.now();
-            const offset = scrollMetrics.contentOffset.y;
+            const offset = listModel
+              .getSelectValue()
+              .selectOffset(scrollMetrics.contentOffset);
 
             const dOffset = offset - offsetRef.current;
             const dt = timestamp - tsRef.current;
@@ -114,29 +130,64 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;
+
+    // return (
+    //   <>
+    //     {nextState.recycleState.map((data) => (
+    //       <RecycleItem
+    //         key={data.key}
+    //         data={data}
+    //         containerRef={containerRef}
+    //         renderItem={renderItem}
+    //         dimensions={listModel}
+    //         horizontal={!!horizontal}
+    //       />
+    //     ))}
+    //     {nextState.spaceState.map((data) => (
+    //       <SpaceItem
+    //         key={data.key}
+    //         data={data}
+    //         containerRef={containerRef}
+    //         renderItem={renderItem}
+    //         dimensions={listModel}
+    //         horizontal={!!horizontal}
+    //       />
+    //     ))}
+    //   </>
+    // );
+
+    // console.log('data ref ',dataRef.current)
+
+    // console.log('spaceState ', nextState)
+
     return (
       <View
         id={id}
         ref={listRef}
-        style={style.container}
+        style={containerStyle}
         onLayout={onLayoutHandler}
       >
+        {/* <View style={{ width: 50, height: 30, backgroundColor: 'pink'}}>33</View>
+        <View style={{ width: 50, height: 30, backgroundColor: 'pink'}}>33</View>
+        <View style={{ width: 50, height: 30, backgroundColor: 'pink'}}>33</View> */}
         {nextState.recycleState.map((data) => (
           <RecycleItem
             key={data.key}
             data={data}
-            containerRef={containerRef}
+            containerRef={listRef}
             renderItem={renderItem}
             dimensions={listModel}
+            horizontal={!!horizontal}
           />
         ))}
         {nextState.spaceState.map((data) => (
           <SpaceItem
             key={data.key}
             data={data}
-            containerRef={containerRef}
+            containerRef={listRef}
             renderItem={renderItem}
             dimensions={listModel}
+            horizontal={!!horizontal}
           />
         ))}
       </View>

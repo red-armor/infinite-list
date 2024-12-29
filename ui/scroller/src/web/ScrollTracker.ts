@@ -11,6 +11,7 @@ class ScrollTracker {
     velocity?: number;
   };
   private _deltaY: number;
+  private _horizontal: boolean;
   // private _lastScrollY: number
   // private _lastScrollTs: number
 
@@ -24,6 +25,7 @@ class ScrollTracker {
   readonly velocityTrackerTimeout: number;
 
   constructor(props: {
+    horizontal?: boolean;
     domNode: HTMLElement;
     velocityTrackerTimeout?: number;
     onScroll?: (e: Event) => void;
@@ -32,9 +34,11 @@ class ScrollTracker {
     const {
       domNode,
       onScroll,
+      horizontal,
       onScrollEnd,
       velocityTrackerTimeout = 16,
     } = props;
+    this._horizontal = horizontal;
     this._domNode = domNode;
     this._onScroll = onScroll;
     this._onScrollEnd = onScrollEnd;
@@ -71,8 +75,13 @@ class ScrollTracker {
     return this._scrollMetrics;
   }
 
+  selectOffset(dom: HTMLElement) {
+    if (this._horizontal) return dom.scrollLeft;
+    return dom.scrollTop;
+  }
+
   track() {
-    const currentOffset = this._domNode.scrollTop;
+    const currentOffset = this.selectOffset(this._domNode);
     const currentTs = Date.now();
 
     const deltaY = currentOffset - this._lastFrameScrollY;
@@ -86,7 +95,7 @@ class ScrollTracker {
   }
 
   onScroll(e: Event) {
-    const offset = this._domNode.scrollTop;
+    const offset = this.selectOffset(this._domNode);
     const visibleLength = this._domNode.clientHeight;
     const contentLength = this._domNode.scrollHeight;
 
@@ -119,7 +128,7 @@ class ScrollTracker {
     if (this._trackId) {
       clearInterval(this._trackId);
       this._trackId = undefined;
-      this._lastFrameScrollY = this._domNode.scrollTop;
+      this._lastFrameScrollY = this.selectOffset(this._domNode);
       this._lastFrameTimestamp = 0;
     }
   }

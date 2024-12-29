@@ -4,15 +4,19 @@ import { GenericItemT } from '@infinite-list/types';
 import { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
-  const { data, dimensions, renderItem: RenderItem, containerRef } = props;
+  const {
+    data,
+    dimensions,
+    renderItem: RenderItem,
+    containerRef,
+    horizontal,
+  } = props;
   const itemRef = useRef<View>(null);
   const { item, key, itemMeta, length, isSpace } = data;
-  const style = useMemo(
-    () => ({
-      height: length,
-    }),
-    [length]
-  );
+  const style = useMemo(() => {
+    if (horizontal) return { width: length };
+    return { height: length };
+  }, [length]);
 
   useEffect(() => {
     const onMeasureSuccess = (

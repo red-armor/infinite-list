@@ -8,8 +8,9 @@ import SpaceItem from './SpaceItem';
 import { ScrollTracker } from '@infinite-list/scroller/web';
 
 export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
-  const { renderItem, id, data, recycleEnabled = true } = props;
+  const { renderItem, id, data, recycleEnabled = true, horizontal } = props;
   const listModel = useMemo(() => new ListDimensions<ItemT>(props), []);
+
   const [state, setState] = useState(listModel.getStateResult());
   const scrollHandlerRef = useRef<ScrollTracker>();
 
@@ -21,19 +22,21 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   }
 
   const listRef = useRef<HTMLDivElement>(null);
-  const style: {
-    [key: string]: CSSProperties;
-  } = useMemo(
-    () => ({
-      container: {
-        width: '100%',
-        height: '100%',
-        overflowY: 'auto',
-        position: 'relative',
-      },
-    }),
-    []
-  );
+  const containerStyle = useMemo<CSSProperties>(() => {
+    const style = {
+      width: '100%',
+      height: '100%',
+      overflowY: 'auto',
+      position: 'relative',
+    } as CSSProperties;
+    if (horizontal)
+      return {
+        ...style,
+        display: 'flex',
+        flexDirection: 'column',
+      };
+    return style;
+  }, []);
 
   useEffect(
     () =>
@@ -46,6 +49,7 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   useEffect(() => {
     const scrollTracker = new ScrollTracker({
       domNode: listRef.current!,
+      horizontal: horizontal,
       onScroll: () => {
         listModel.updateScrollMetrics(
           scrollHandlerRef.current?.getScrollMetrics()
@@ -63,11 +67,12 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   if (recycleEnabled) {
     return (
-      <div id={id} ref={listRef} style={style.container}>
+      <div id={id} ref={listRef} style={containerStyle}>
         {(state as RecycleStateResult<ItemT>).spaceState.map((data) => (
           <SpaceItem
             key={data.key}
             data={data}
+            horizontal={!!horizontal}
             renderItem={renderItem}
             dimensions={listModel}
           />
@@ -76,6 +81,7 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
           <RecycleItem
             key={data.key}
             data={data}
+            horizontal={!!horizontal}
             renderItem={renderItem}
             dimensions={listModel}
           />

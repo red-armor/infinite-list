@@ -12,8 +12,6 @@ const ColumnStateRenderer = <ItemT extends GenericItemT>(
   const { state, columnIndex, columnDimensions, ...rest } = props;
   const current = state[0] as RecycleStateResult<ItemT>;
 
-  console.log('space ', current);
-
   return (
     <Fragment>
       {current.spaceState.map((data) => (

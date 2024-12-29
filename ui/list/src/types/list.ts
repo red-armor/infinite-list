@@ -2,6 +2,7 @@ import { GenericItemT } from '@infinite-list/types';
 import { ListDimensions } from '@infinite-list/list-dimensions';
 import { SpaceStateToken, RecycleStateToken } from '@infinite-list/strategies';
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
+
 import { ItemMeta } from '@infinite-list/item-meta';
 // import { IDefaultKeyExtra } from '@infinite-list/utils';
 
@@ -78,6 +79,7 @@ export interface ListProps<ItemT extends GenericItemT = GenericItemT>
 // };
 
 export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> = {
+  horizontal: boolean;
   data: RecycleStateToken<ItemT>;
   renderItem: RenderItem<ItemT>;
   dimensions: ListDimensions<ItemT>;
@@ -85,7 +87,7 @@ export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> = {
 
 export type SpaceItemProps<ItemT extends GenericItemT = GenericItemT> = {
   data: SpaceStateToken<ItemT>;
-  // key: string;
+  horizontal: boolean;
   renderItem: RenderItem<ItemT>;
   dimensions: ListDimensions<ItemT>;
 };

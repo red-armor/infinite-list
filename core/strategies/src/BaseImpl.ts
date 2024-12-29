@@ -15,7 +15,6 @@ import {
   StateListener,
   ListBaseDimensionsStore,
   GenericItemT,
-  // IndexInfo,
   IndexToOffsetMap,
   ListStateResult,
   ReducerResult,
@@ -32,13 +31,7 @@ import {
   ViewabilityConfigTuples,
 } from '@infinite-list/viewable';
 import { BaseLayout } from '@infinite-list/base-dimensions';
-// import ListSpyUtils from '../utils/ListSpyUtils';
-// import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
-// import EnabledSelector from '../utils/EnabledSelector';
-// import StillnessHelper from '../utils/StillnessHelper';
-// import ViewabilityConfigTuples from '../viewable/ViewabilityConfigTuples';
 
-// import BaseLayout from '../BaseLayout';
 import StateHub from './StateHub';
 
 /**

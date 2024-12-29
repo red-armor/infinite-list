@@ -17,7 +17,7 @@ const meta: Meta<typeof List> = {
     return (
       <div
         style={{
-          height: '400px',
+          height: '300px',
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
@@ -27,6 +27,7 @@ const meta: Meta<typeof List> = {
           id="basic"
           initialNumToRender={0}
           data={data}
+          horizontal
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
@@ -35,8 +36,8 @@ const meta: Meta<typeof List> = {
             return (
               <div
                 style={{
-                  height: '50px',
-                  width: '100%',
+                  height: '100%',
+                  width: '200px',
                   backgroundColor: '#efdbff',
                   paddingBottom: '5px',
                   boxSizing: 'border-box',
@@ -51,13 +52,13 @@ const meta: Meta<typeof List> = {
       </div>
     );
   },
-  title: 'List',
+  title: 'HorizontalList',
 };
 export default meta;
 
 export const SimpleList = {
   args: {
-    data: buildData(10000),
+    data: buildData(100),
     keyExtractor: defaultKeyExtractor,
   },
 };

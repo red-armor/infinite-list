@@ -3,22 +3,19 @@ import { SpaceItemProps } from '../types';
 import { GenericItemT } from '@infinite-list/strategies';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
-  const { data, dimensions, renderItem: RenderItem } = props;
+  const { data, dimensions, renderItem: RenderItem, horizontal } = props;
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, length, isSpace } = data;
-  const style = useMemo(
-    () => ({
-      height: length,
-    }),
-    [length]
-  );
+  const style = useMemo(() => {
+    if (horizontal) return { width: length };
+    return { height: length };
+  }, [length]);
 
   useEffect(() => {
     const rect = itemRef.current?.getBoundingClientRect();
 
     if (rect) {
-      const { height } = rect;
-      if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), height);
+      if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), rect);
     }
   }, [itemMeta]);
 
