@@ -27,13 +27,15 @@ const meta: Meta<typeof ListGroup> = {
           // overflowY: 'auto',
         }}
       >
-        <ListGroup id="basic">
+        <ListGroup
+          id="basic"
+          initialNumToRender={0}
+          recyclerBufferSize={100}
+          recyclerReservedBufferPerBatch={50}
+        >
           <GroupList
             id="first"
-            initialNumToRender={0}
             data={buildData(500)}
-            recyclerBufferSize={100}
-            recyclerReservedBufferPerBatch={50}
             renderItem={(props: RenderItemInfo<Item>) => {
               const { item } = props;
               return (
@@ -50,15 +52,12 @@ const meta: Meta<typeof ListGroup> = {
                 </div>
               );
             }}
-            keyExtractor={defaultKeyExtractor as KeyExtractor<Item>}
+            keyExtractor={defaultKeyExtractor}
           />
 
           <GroupList
             id="second"
-            initialNumToRender={0}
             data={buildData(500, 500)}
-            recyclerBufferSize={100}
-            recyclerReservedBufferPerBatch={50}
             renderItem={(props: RenderItemInfo<Item>) => {
               const { item } = props;
 
@@ -76,7 +75,7 @@ const meta: Meta<typeof ListGroup> = {
                 </div>
               );
             }}
-            keyExtractor={defaultKeyExtractor as KeyExtractor<Item>}
+            keyExtractor={defaultKeyExtractor}
           />
         </ListGroup>
       </div>

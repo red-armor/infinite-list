@@ -129,7 +129,8 @@ class RecycleStateImpl<
         .map((state) => {
           if (!state) return null;
           const copy = { ...state };
-          // @ts-expect-error
+
+          // @ts-expect-error [TODO]
           delete copy.viewable;
 
           return copy;

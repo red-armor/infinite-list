@@ -171,7 +171,7 @@ import Group from './Group';
 import HorizontalList from './HorizontalList';
 
 export default () => {
-  return <Group />;
+  // return <Group />;
   // return <MasonryList />;
   return <List />;
   return <HorizontalList />;

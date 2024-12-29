@@ -36,6 +36,7 @@ export interface ListItemProps<ItemT extends GenericItemT> {
 
   onMeasureLayout?: OnMeasureLayout;
   teleportItemProps?: TeleportItemProps<ItemT>;
+  // CellRendererComponent?: React.ComponentType<any> | undefined;
   CellRendererComponent?: React.ComponentType<any> | undefined;
   ListItemWrapper: ListItemWrapper<ItemT>;
   recycleItemContainerKey: string;

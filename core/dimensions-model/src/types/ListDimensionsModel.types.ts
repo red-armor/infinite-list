@@ -12,6 +12,7 @@ import {
   IMasonryDimensions,
   IMasonryDimensionsModel,
 } from '@infinite-list/types';
+import { RecyclerProps } from '@infinite-list/strategies';
 import { IDefaultKeyExtra } from '@infinite-list/utils';
 
 export type GetItemSeparatorLength<ItemT> = (
@@ -42,6 +43,7 @@ export type OnListDimensionsModelDataChanged<
 export interface ListDimensionsModelProps<
   ItemT extends GenericItemT = GenericItemT
 > extends ListBaseDimensionsProps,
+    RecyclerProps,
     BaseDimensionsProps {
   /**
    * @template ItemT the generic data item type
@@ -83,8 +85,6 @@ export interface ListDimensionsModelProps<
    * be initialized on construct . so add this param..
    */
   manuallyApplyInitialData?: boolean;
-
-  recyclerTypes?: Array<string>;
 
   onListDimensionsModelDataChanged?: OnListDimensionsModelDataChanged<ItemT>;
 }

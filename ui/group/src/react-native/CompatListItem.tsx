@@ -17,8 +17,6 @@ const CompatListItem = <ItemT extends GenericItemT>(
     style: _style = {},
     children,
     forwardRef,
-
-    dimensions,
     recycleItemContainerKey,
     CellRendererComponent,
     onMeasureLayout: _onMeasureLayout,
@@ -26,7 +24,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
     addItemChangedListener,
     containerRef,
     itemMeta,
-    ...rest
+    item,
   } = props;
   const containerStyle = useMemo(
     () => StyleSheet.flatten([_style, { elevation: 0 }]),
@@ -104,7 +102,6 @@ const CompatListItem = <ItemT extends GenericItemT>(
       onLayout={layoutHandler}
       key={recycleItemContainerKey}
       {...refProps}
-      {...rest}
       style={containerStyle}
     >
       {children}

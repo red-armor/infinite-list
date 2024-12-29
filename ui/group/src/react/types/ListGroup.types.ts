@@ -1,11 +1,7 @@
-import {
-  OnEndReachedHelperProps,
-  ViewabilityConfig,
-  OnViewableItemsChanged,
-  ViewabilityConfigCallbackPairs,
-} from '@infinite-list/viewable';
-import { ComponentType, PropsWithChildren, MutableRefObject } from 'react';
+import { MutableRefObject } from 'react';
 import { View, LayoutChangeEvent } from 'react-native';
+import { GenericItemT } from '@infinite-list/types';
+import { ListGroupProps as CommonListGroupProps } from '../../types';
 
 export type ScrollComponentUseMeasureLayout = (
   itemRef: MutableRefObject<View | null>,
@@ -20,18 +16,5 @@ export type ScrollComponentUseMeasureLayout = (
   layoutHandler: (e: LayoutChangeEvent) => void;
 };
 
-export type ListGroupProps = PropsWithChildren<{
-  GroupListSeparatorComponent?: ComponentType<any> | null | undefined;
-  id: string;
-  onViewableItemsChanged?: OnViewableItemsChanged;
-  viewabilityConfig?: ViewabilityConfig;
-  viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
-  initialNumToRender?: number;
-  windowSize?: number;
-  maxToRenderPerBatch?: number;
-  onRenderFinished?: () => void;
-  persistanceIndices?: number[];
-
-  scrollComponentContext: any;
-}> &
-  OnEndReachedHelperProps;
+export type ListGroupProps<ItemT extends GenericItemT> =
+  CommonListGroupProps<ItemT>;

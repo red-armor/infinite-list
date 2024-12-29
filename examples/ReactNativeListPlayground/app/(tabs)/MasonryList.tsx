@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { ScrollView as NativeScrollView } from 'react-native';
 import { MasonryList } from '@infinite-list/masonry';
 import { ScrollView } from '@infinite-list/scroller';
@@ -14,10 +14,24 @@ export default () => {
   const data = useMemo(() => buildData(10000), []);
   const scrollViewRef = useRef<NativeScrollView>(null);
 
-  const renderItem = useCallback((props: { item }) => {
+  const renderItem = useCallback((props) => {
     const { item, itemMeta } = props;
     const index = itemMeta.getIndexInfo().index;
     const totalIndex = itemMeta.getIndexInfo().indexInTotal;
+    const initRef = useRef(true);
+
+    useEffect(() => {
+      if (initRef.current) console.log('mount ', itemMeta.getKey());
+      else {
+        console.log('update to ', itemMeta.getKey());
+      }
+
+      initRef.current = false;
+
+      return () => {
+        console.log('unmount ', itemMeta.getKey());
+      };
+    }, [itemMeta]);
 
     return (
       <View

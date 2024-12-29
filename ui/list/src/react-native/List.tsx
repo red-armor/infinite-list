@@ -156,10 +156,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     //   </>
     // );
 
-    // console.log('data ref ',dataRef.current)
-
-    // console.log('spaceState ', nextState)
-
     return (
       <View
         id={id}
@@ -167,9 +163,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
         style={containerStyle}
         onLayout={onLayoutHandler}
       >
-        {/* <View style={{ width: 50, height: 30, backgroundColor: 'pink'}}>33</View>
-        <View style={{ width: 50, height: 30, backgroundColor: 'pink'}}>33</View>
-        <View style={{ width: 50, height: 30, backgroundColor: 'pink'}}>33</View> */}
         {nextState.recycleState.map((data) => (
           <RecycleItem
             key={data.key}

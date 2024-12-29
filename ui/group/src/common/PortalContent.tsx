@@ -112,7 +112,7 @@ const SpaceContent = <ItemT extends GenericItemT = GenericItemT>(
   return (
     <>
       {state.map((stateResult) => {
-        const { isSpace, key, item, length, isSticky, itemMeta } = stateResult;
+        const { isSpace, key, item, length, itemMeta } = stateResult;
 
         const metaOwner = itemMeta?.getOwner();
         const info = metaOwner?.extraInfo as ExtraInfo<ItemT>;
