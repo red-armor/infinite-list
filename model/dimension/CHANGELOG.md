@@ -1,5 +1,14 @@
 # @infinite-list/dimension
 
+## 0.0.4
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+- Updated dependencies [4db4c47]
+  - @infinite-list/container@0.0.4
+  - @infinite-list/item-meta@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

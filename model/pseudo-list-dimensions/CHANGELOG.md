@@ -1,5 +1,11 @@
 # @infinite-list/pseudo-list-dimensions
 
+## 0.0.4
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+
 ## 0.0.3
 
 ### Patch Changes

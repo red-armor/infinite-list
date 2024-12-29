@@ -1,5 +1,19 @@
 # @infinite-list/list
 
+## 1.1.3
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+- Updated dependencies [4db4c47]
+  - @infinite-list/dimensions-model@0.0.4
+  - @infinite-list/list-dimensions@0.0.4
+  - @infinite-list/strategies@0.0.4
+  - @infinite-list/item-meta@0.0.4
+  - @infinite-list/scroller@1.0.6
+  - @infinite-list/types@0.0.4
+  - @infinite-list/utils@0.0.4
+
 ## 1.1.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @infinite-list/scroller
 
+## 1.0.6
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+- Updated dependencies [4db4c47]
+  - @infinite-list/data-model@2.2.9
+
 ## 1.0.5
 
 ### Patch Changes

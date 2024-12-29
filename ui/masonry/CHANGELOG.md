@@ -1,5 +1,17 @@
 # @infinite-list/masonry
 
+## 0.1.3
+
+### Patch Changes
+
+- 4db4c47: support horizontal
+- Updated dependencies [4db4c47]
+  - @infinite-list/masonry-dimensions@0.0.4
+  - @infinite-list/strategies@0.0.4
+  - @infinite-list/item-meta@0.0.4
+  - @infinite-list/scroller@1.0.6
+  - @infinite-list/types@0.0.4
+
 ## 0.1.2
 
 ### Patch Changes
