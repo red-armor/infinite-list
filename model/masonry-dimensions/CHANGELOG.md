@@ -1,5 +1,17 @@
 # @infinite-list/masonry-dimensions
 
+## 0.0.5
+
+### Patch Changes
+
+- 90349d1: bump version
+- c3d9558: bump version
+- Updated dependencies [90349d1]
+- Updated dependencies [c3d9558]
+  - @infinite-list/dimensions-model@0.0.5
+  - @infinite-list/strategies@0.0.5
+  - @infinite-list/state@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

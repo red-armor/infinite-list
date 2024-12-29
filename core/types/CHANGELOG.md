@@ -1,5 +1,12 @@
 # @infinite-list/types
 
+## 0.0.5
+
+### Patch Changes
+
+- 90349d1: bump version
+- c3d9558: bump version
+
 ## 0.0.4
 
 ### Patch Changes
