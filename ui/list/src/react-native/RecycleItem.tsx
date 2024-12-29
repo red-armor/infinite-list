@@ -6,18 +6,43 @@ import { RecycleItemProps } from './types';
 const RecycleItem = <ItemT extends GenericItemT>(
   props: RecycleItemProps<ItemT>
 ) => {
-  const { data, dimensions, renderItem: RenderItem, containerRef } = props;
+  const {
+    data,
+    dimensions,
+    renderItem: RenderItem,
+    containerRef,
+    horizontal,
+  } = props;
   const itemRef = useRef<View>(null);
   const { item, key, itemMeta, offset } = data;
+
   const style: ViewStyle = useMemo(() => {
-    if (offset != null)
+    if (typeof offset !== 'number') return {};
+
+    if (horizontal) {
       return {
         position: 'absolute',
-        top: offset,
+        transform: [
+          {
+            translateX: offset,
+          },
+        ],
         left: 0,
-        right: 0,
+        top: 0,
+        bottom: 0,
       };
-    return {};
+    }
+    return {
+      position: 'absolute',
+      transform: [
+        {
+          translateY: offset,
+        },
+      ],
+      left: 0,
+      top: 0,
+      right: 0,
+    };
   }, [offset]);
 
   useEffect(() => {

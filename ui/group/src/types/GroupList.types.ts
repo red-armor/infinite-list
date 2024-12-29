@@ -8,4 +8,8 @@ export interface GroupListProps<ItemT extends DefaultItemT>
     OnEndReachedHelperProps {
   renderItem: RenderItem<ItemT>;
   teleportItemProps?: TeleportItemProps<ItemT>;
+  /**
+   * @type {string} id
+   */
+  id: string;
 }

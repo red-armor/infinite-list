@@ -11,6 +11,9 @@
       "@infinite-list/scroller": ["../../ui/scroller/src/react-native"],
       "@infinite-list/group": ["../../ui/group/src/react-native"],
       "@infinite-list/list": ["../../ui/list/src/react-native"],
+      "@infinite-list/utils": ["../../core/utils/src"],
+      "@infinite-list/dimensions-model": ["../../core/dimensions-model/src/react-native"],
+      "@infinite-list/types": ["../../core/types/src"],
     }
   },
   "include": [

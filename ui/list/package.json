@@ -7,6 +7,11 @@
   },
   "dependencies": {
     "@infinite-list/list-dimensions": "workspace:*",
+    "@infinite-list/strategies": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/types": "workspace:*",
+    "@infinite-list/dimensions-model": "workspace:*",
+    "@infinite-list/utils": "workspace:*",
     "@infinite-list/scroller": "workspace:*"
   },
   "exports": {

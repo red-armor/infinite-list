@@ -1,6 +1,5 @@
 import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import { ItemMeta } from '@infinite-list/item-meta';
-// import memoizeOne from 'memoize-one';
 import {
   buildStateTokenIndexKey,
   DEFAULT_RECYCLER_TYPE,
@@ -21,7 +20,6 @@ import { ListGroupIndexInfo } from '@infinite-list/types';
 import { resolveToken } from './utils';
 import BaseState from './BaseState';
 import { log } from '@infinite-list/utils';
-// import * as log from '../utils/logger';
 import defaultValue from '@x-oasis/default-value';
 /**
  * item should be first class data model; item's value reference change will

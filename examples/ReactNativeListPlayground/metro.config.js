@@ -123,19 +123,44 @@ config.resolver.extraNodeModules = {
     'src'
   ),
   '@infinite-list/data-model': path.join(root, 'packages', 'data-model', 'src'),
-  '@infinite-list/list': path.join(root, 'ui', 'list', 'src'),
-  '@infinite-list/group': path.join(root, 'ui', 'group', 'src'),
-  '@infinite-list/masonry': path.join(root, 'ui', 'masonry', 'src'),
+
+  /**
+   * core
+   */
+  '@infinite-list/base-dimensions': path.join(
+    root,
+    'core',
+    'base-dimensions',
+    'src'
+  ),
+  '@infinite-list/container': path.join(root, 'core', 'container', 'src'),
+  '@infinite-list/dimensions-model': path.join(
+    root,
+    'core',
+    'dimensions-model',
+    'src'
+  ),
+  '@infinite-list/item-meta': path.join(root, 'core', 'item-meta', 'src'),
+  '@infinite-list/state': path.join(root, 'core', 'state', 'src'),
+  '@infinite-list/strategies': path.join(root, 'core', 'strategies', 'src'),
+  '@infinite-list/types': path.join(root, 'core', 'types', 'src'),
+  '@infinite-list/utils': path.join(root, 'core', 'utils', 'src'),
+  '@infinite-list/viewable': path.join(root, 'core', 'viewable', 'src'),
+
+  /**
+   * model
+   */
+  '@infinite-list/dimension': path.join(root, 'model', 'dimension', 'src'),
   '@infinite-list/group-dimensions': path.join(
     root,
     'model',
     'group-dimensions',
     'src'
   ),
-  '@infinite-list/masonry-dimensions': path.join(
+  '@infinite-list/items-dimensions': path.join(
     root,
     'model',
-    'masonry-dimensions',
+    'items-dimensions',
     'src'
   ),
   '@infinite-list/list-dimensions': path.join(
@@ -144,25 +169,20 @@ config.resolver.extraNodeModules = {
     'list-dimensions',
     'src'
   ),
+  '@infinite-list/masonry-dimensions': path.join(
+    root,
+    'model',
+    'masonry-dimensions',
+    'src'
+  ),
+
+  /**
+   * ui
+   */
+  '@infinite-list/list': path.join(root, 'ui', 'list', 'src'),
+  '@infinite-list/group': path.join(root, 'ui', 'group', 'src'),
+  '@infinite-list/masonry': path.join(root, 'ui', 'masonry', 'src'),
   '@infinite-list/scroller': path.join(root, 'ui', 'scroller', 'src'),
-  '@infinite-list/viewable': path.join(root, 'core', 'viewable', 'src'),
-  '@infinite-list/base-dimensions': path.join(
-    root,
-    'core',
-    'base-dimensions',
-    'src'
-  ),
-  '@infinite-list/utils': path.join(root, 'core', 'utils', 'src'),
-  '@infinite-list/dimensions-model': path.join(
-    root,
-    'core',
-    'dimensions-model',
-    'src'
-  ),
-  '@infinite-list/container': path.join(root, 'core', 'container', 'src'),
-  '@infinite-list/strategies': path.join(root, 'core', 'strategies', 'src'),
-  '@infinite-list/state': path.join(root, 'core', 'state', 'src'),
-  '@infinite-list/item-meta': path.join(root, 'core', 'item-meta', 'src'),
 };
 
 config.watchFolders = [
@@ -170,6 +190,46 @@ config.watchFolders = [
   path.join(root, 'packages', 'react-native', 'node_modules'),
   path.join(root, 'packages', 'data-model', 'src'),
   path.join(root, 'packages', 'data-model', 'node_modules'),
+
+  /**
+   * core
+   */
+  path.join(root, 'core', 'base-dimensions', 'src'),
+  path.join(root, 'core', 'base-dimensions', 'node_modules'),
+  path.join(root, 'core', 'container', 'src'),
+  path.join(root, 'core', 'container', 'node_modules'),
+  path.join(root, 'core', 'dimensions-model', 'src'),
+  path.join(root, 'core', 'dimensions-model', 'node_modules'),
+  path.join(root, 'core', 'item-meta', 'src'),
+  path.join(root, 'core', 'item-meta', 'node_modules'),
+  path.join(root, 'core', 'state', 'src'),
+  path.join(root, 'core', 'state', 'node_modules'),
+  path.join(root, 'core', 'strategies', 'src'),
+  path.join(root, 'core', 'strategies', 'node_modules'),
+  path.join(root, 'core', 'types', 'src'),
+  path.join(root, 'core', 'types', 'node_modules'),
+  path.join(root, 'core', 'utils', 'src'),
+  path.join(root, 'core', 'utils', 'node_modules'),
+  path.join(root, 'core', 'viewable', 'src'),
+  path.join(root, 'core', 'viewable', 'node_modules'),
+
+  /**
+   * model
+   */
+  path.join(root, 'model', 'dimension', 'src'),
+  path.join(root, 'model', 'dimension', 'node_modules'),
+  path.join(root, 'model', 'group-dimensions', 'src'),
+  path.join(root, 'model', 'group-dimensions', 'node_modules'),
+  path.join(root, 'model', 'items-dimensions', 'src'),
+  path.join(root, 'model', 'items-dimensions', 'node_modules'),
+  path.join(root, 'model', 'list-dimensions', 'src'),
+  path.join(root, 'model', 'list-dimensions', 'node_modules'),
+  path.join(root, 'model', 'masonry-dimensions', 'src'),
+  path.join(root, 'model', 'masonry-dimensions', 'node_modules'),
+
+  /**
+   * ui
+   */
   path.join(root, 'ui', 'group', 'src'),
   path.join(root, 'ui', 'group', 'node_modules'),
   path.join(root, 'ui', 'list', 'src'),
@@ -178,28 +238,7 @@ config.watchFolders = [
   path.join(root, 'ui', 'masonry', 'node_modules'),
   path.join(root, 'ui', 'scroller', 'src'),
   path.join(root, 'ui', 'scroller', 'node_modules'),
-  path.join(root, 'model', 'masonry-dimensions', 'src'),
-  path.join(root, 'model', 'masonry-dimensions', 'node_modules'),
-  path.join(root, 'model', 'group-dimensions', 'src'),
-  path.join(root, 'model', 'group-dimensions', 'node_modules'),
-  path.join(root, 'model', 'list-dimensions', 'src'),
-  path.join(root, 'model', 'list-dimensions', 'node_modules'),
-  path.join(root, 'core', 'viewable', 'src'),
-  path.join(root, 'core', 'viewable', 'node_modules'),
-  path.join(root, 'core', 'base-dimensions', 'src'),
-  path.join(root, 'core', 'base-dimensions', 'node_modules'),
-  path.join(root, 'core', 'utils', 'src'),
-  path.join(root, 'core', 'utils', 'node_modules'),
-  path.join(root, 'core', 'dimensions-model', 'src'),
-  path.join(root, 'core', 'dimensions-model', 'node_modules'),
-  path.join(root, 'core', 'container', 'src'),
-  path.join(root, 'core', 'container', 'node_modules'),
-  path.join(root, 'core', 'strategies', 'src'),
-  path.join(root, 'core', 'strategies', 'node_modules'),
-  path.join(root, 'core', 'state', 'src'),
-  path.join(root, 'core', 'state', 'node_modules'),
-  path.join(root, 'core', 'item-meta', 'src'),
-  path.join(root, 'core', 'item-meta', 'node_modules'),
+
   path.join(root, 'node_modules'),
 ];
 // config.watchFolders = [

@@ -25,7 +25,6 @@ export type ScrollComponentUseMeasureLayout = (
 export type ContainerRef = RefObject<ScrollView | View | any>;
 
 export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<{
-  GroupListSeparatorComponent?: ComponentType<ItemT> | null | undefined;
   id: string;
   onViewableItemsChanged?: OnViewableItemsChanged;
   viewabilityConfig?: ViewabilityConfig;
@@ -36,7 +35,8 @@ export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<{
   onRenderFinished?: () => void;
   persistanceIndices?: number[];
 
-  scrollComponentContext?: any;
+  scrollComponentContext: any;
   containerRef: ContainerRef;
+  GroupListSeparatorComponent?: ComponentType<ItemT> | null | undefined;
 }> &
   OnEndReachedHelperProps;

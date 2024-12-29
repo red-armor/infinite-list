@@ -16,6 +16,9 @@
     }
   },
   "dependencies": {
+    "@infinite-list/strategies": "workspace:*",
+    "@infinite-list/types": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/scroller": "workspace:*",
     "@infinite-list/masonry-dimensions": "workspace:*"
   },

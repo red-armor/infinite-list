@@ -1,0 +1,58 @@
+import { useCallback, useMemo, useRef } from 'react';
+import { List } from '@infinite-list/list';
+import { ScrollView } from '@infinite-list/scroller';
+import {
+  Dimensions,
+  ScrollView as NativeScrollView,
+  Text,
+  View,
+} from 'react-native';
+
+const buildData = (count: number, startIndex = 0) =>
+  new Array(count).fill(1).map((v, index) => ({
+    key: `_key_${index + startIndex}`,
+    value: index + startIndex,
+  }));
+
+export default () => {
+  const data = useMemo(() => buildData(100), []);
+  const scrollViewRef = useRef<NativeScrollView>(null);
+
+  const renderItem = useCallback((props: { item }) => {
+    const { item } = props;
+    return (
+      <View style={{ height: '100%', width: 200, backgroundColor: 'yellow' }}>
+        <Text>{item.value}</Text>
+      </View>
+    );
+  }, []);
+
+  const keyExtractor = useCallback((item) => {
+    return item.key;
+  }, []);
+
+  return (
+    <View style={{ width: Dimensions.get('window').width }}>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{
+          backgroundColor: 'green',
+          height: 300,
+        }}
+        style={{
+          marginTop: 100,
+        }}
+        horizontal
+      >
+        <List
+          data={data}
+          id="basic"
+          horizontal
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          containerRef={scrollViewRef}
+        />
+      </ScrollView>
+    </View>
+  );
+};
