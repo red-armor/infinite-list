@@ -9,6 +9,13 @@ export type BaseStateImplProps<ItemT extends GenericItemT = GenericItemT> = {
 export type SpaceStateImplProps<ItemT extends GenericItemT = GenericItemT> =
   {} & BaseStateImplProps<ItemT>;
 
+export type RecyclerProps = {
+  recyclerTypes?: string[];
+  recyclerBufferSize?: number;
+  recyclerReservedBufferPerBatch?: number;
+  onRecyclerProcess?: (type?: string, index?: number) => boolean;
+};
+
 export type RecycleStateImplProps<ItemT extends GenericItemT = GenericItemT> = {
   recyclerTypes?: string[];
   recyclerBufferSize?: number;

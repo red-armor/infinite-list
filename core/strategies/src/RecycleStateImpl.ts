@@ -78,7 +78,6 @@ class RecycleStateImpl<
           (indexInfo as ListGroupIndexInfo<ItemT>)?.indexInGroup ||
           indexInfo?.index;
         if (typeof index !== 'number') {
-          console.log('meta ', meta);
           console.error(
             '[RecycleStateImpl error]: index should has a valid number ' +
               'or will cause recycler not work correctly'
