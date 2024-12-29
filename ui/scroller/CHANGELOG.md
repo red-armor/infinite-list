@@ -1,5 +1,15 @@
 # @infinite-list/scroller
 
+## 1.0.7
+
+### Patch Changes
+
+- 90349d1: bump version
+- c3d9558: bump version
+- Updated dependencies [90349d1]
+- Updated dependencies [c3d9558]
+  - @infinite-list/data-model@2.2.10
+
 ## 1.0.6
 
 ### Patch Changes

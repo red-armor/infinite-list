@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/items-dimensions",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/layout-equal": "^0.1.16",
