@@ -47,12 +47,12 @@ export default () => {
         >
           <GroupList
             id="first"
-            initialNumToRender={0}
             data={buildData(500)}
             recyclerBufferSize={100}
             recyclerReservedBufferPerBatch={50}
             renderItem={renderItem}
             keyExtractor={keyExtractor}
+            initialNumToRender={0}
           />
 
           <GroupList<Item>
