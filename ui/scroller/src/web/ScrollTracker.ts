@@ -38,7 +38,7 @@ class ScrollTracker {
       onScrollEnd,
       velocityTrackerTimeout = 16,
     } = props;
-    this._horizontal = horizontal;
+    this._horizontal = !!horizontal;
     this._domNode = domNode;
     this._onScroll = onScroll;
     this._onScrollEnd = onScrollEnd;

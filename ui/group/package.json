@@ -17,6 +17,12 @@
   },
   "dependencies": {
     "@infinite-list/scroller": "workspace:*",
+    "@infinite-list/dimensions-model": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/types": "workspace:*",
+    "@infinite-list/group-dimensions": "workspace:*",
+    "@infinite-list/strategies": "workspace:*",
+    "@infinite-list/utils": "workspace:*",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/shallow-equal": "^0.1.14"
   },

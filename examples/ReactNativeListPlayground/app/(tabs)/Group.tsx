@@ -7,11 +7,13 @@ import { ListGroup, GroupList } from '@infinite-list/group';
 
 type Item = {
   key: string;
+  value: string;
 };
 
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
-    key: `${index + startIndex}`,
+    key: `_key_${index + startIndex}`,
+    value: `${index + startIndex}`,
   }));
 
 export default () => {
@@ -31,37 +33,39 @@ export default () => {
   }, []);
 
   return (
-    <ScrollView
-      ref={scrollViewRef}
-      contentContainerStyle={{
-        backgroundColor: '#fff',
-      }}
-    >
-      <ListGroup
-        id="basic"
-        containerRef={scrollViewRef}
-        scrollComponentContext={ScrollViewContext}
+    <View>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{
+          backgroundColor: 'green',
+        }}
       >
-        <GroupList
-          id="first"
-          initialNumToRender={0}
-          data={buildData(500)}
-          recyclerBufferSize={100}
-          recyclerReservedBufferPerBatch={50}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-        />
+        <ListGroup
+          id="basic"
+          containerRef={scrollViewRef}
+          scrollComponentContext={ScrollViewContext}
+        >
+          <GroupList
+            id="first"
+            initialNumToRender={0}
+            data={buildData(500)}
+            recyclerBufferSize={100}
+            recyclerReservedBufferPerBatch={50}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+          />
 
-        {/* <GroupList
-          id="second"
-          initialNumToRender={0}
-          data={buildData(500, 500)}
-          recyclerBufferSize={100}
-          recyclerReservedBufferPerBatch={50}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-        /> */}
-      </ListGroup>
-    </ScrollView>
+          <GroupList<Item>
+            id="second"
+            initialNumToRender={0}
+            data={buildData(500, 500)}
+            recyclerBufferSize={100}
+            recyclerReservedBufferPerBatch={50}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+          />
+        </ListGroup>
+      </ScrollView>
+    </View>
   );
 };
