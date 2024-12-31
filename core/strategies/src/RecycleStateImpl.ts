@@ -31,8 +31,6 @@ class RecycleStateImpl<
 > extends BaseState<ItemT> {
   private _onRecyclerProcess?: OnRecyclerProcess;
   public stateListener?: StateListener<ItemT>;
-  readonly persistenceIndices: number[];
-  readonly initialNumToRender: number;
 
   private _recycler: Recycler<ItemMeta<ItemT>>;
 
@@ -51,8 +49,6 @@ class RecycleStateImpl<
       listContainer: props.listContainer,
     });
     const {
-      persistenceIndices = [],
-      initialNumToRender = 0,
       recyclerTypes = [DEFAULT_RECYCLER_TYPE],
       recyclerBufferSize = RECYCLER_BUFFER_SIZE,
       recyclerReservedBufferPerBatch = RECYCLER_RESERVED_BUFFER_PER_BATCH,
@@ -61,8 +57,7 @@ class RecycleStateImpl<
     } = props;
 
     this._onRecyclerProcess = onRecyclerProcess;
-    this.persistenceIndices = persistenceIndices;
-    this.initialNumToRender = initialNumToRender;
+
     // this._releaseSpaceStateItem = releaseSpaceStateItem;
 
     this._recycler = new Recycler<ItemMeta<ItemT>>({
@@ -294,13 +289,7 @@ class RecycleStateImpl<
       true
     );
 
-    log.info(
-      'target indices ',
-      { ...state },
-      targetIndices.slice(),
-      this.persistenceIndices,
-      this.initialNumToRender
-    );
+    log.info('target indices ', { ...state }, targetIndices.slice());
 
     targetIndices
       .filter((v) => v)
@@ -312,26 +301,17 @@ class RecycleStateImpl<
 
         if (indexToOffsetMap[targetIndex] != null) {
           if (itemMeta.isApproximateLayout) {
-            const indexInfo = itemMeta.getIndexInfo();
-            const { index = -1 } = indexInfo || {};
-            if (
-              this.persistenceIndices.indexOf(index) !== -1 ||
-              (this.initialNumToRender && this.initialNumToRender >= index)
-            ) {
-              const itemOffset = this.listContainer.getFinalIndexKeyOffset(
-                index,
-                true
+            const itemOffset = this.listContainer.getFinalIndexKeyOffset(
+              targetIndex,
+              true
+            );
+
+            itemMetaState =
+              this.listContainer._configTuple.resolveItemMetaState(
+                itemMeta,
+                this.listContainer._scrollMetrics,
+                () => itemOffset + this.listContainer.getContainerOffset()
               );
-
-              console.log('item offset ----', itemOffset);
-
-              itemMetaState =
-                this.listContainer._configTuple.resolveItemMetaState(
-                  itemMeta,
-                  this.listContainer._scrollMetrics,
-                  () => itemOffset + this.listContainer.getContainerOffset()
-                );
-            }
           }
           if (!itemMetaState) {
             itemMetaState =
@@ -344,15 +324,6 @@ class RecycleStateImpl<
               );
           }
 
-          console.log(
-            'key ',
-            itemMeta.getKey(),
-            { ...this.listContainer._scrollMetrics },
-            indexToOffsetMap[targetIndex] +
-              this.listContainer.getContainerOffset(),
-            itemMetaState
-          );
-
           itemMeta?.setItemMetaState(itemMetaState);
         }
 
@@ -361,7 +332,8 @@ class RecycleStateImpl<
           targetKey: itemMeta.getKey(),
           targetIndex,
           isSpace: false,
-          isSticky: false,
+          isSticky:
+            this.listContainer.stickyHeaderIndices.indexOf(targetIndex) !== -1,
           item,
           itemMeta,
 
@@ -415,46 +387,72 @@ class RecycleStateImpl<
         }
       }
     }
-    const afterTokens = resolveToken({
-      startIndex: this.listContainer.initialNumToRender,
-      endIndex: this.listContainer.getData().length - 1,
-      reservedIndices: this.listContainer.reservedIndices,
-      stickyHeaderIndices: this.listContainer.stickyHeaderIndices,
-      persistenceIndices: this.listContainer.persistenceIndices,
+
+    const startIndexOffset = this.listContainer.getFinalIndexKeyOffset(
+      this.listContainer.initialNumToRender
+    );
+    const endIndexOffset = this.listContainer.getTotalLength();
+
+    spaceState.push({
+      item: null,
+      isSpace: true,
+      isSticky: false,
+      isReserved: false,
+      length:
+        typeof endIndexOffset === 'number'
+          ? endIndexOffset - startIndexOffset
+          : startIndexOffset,
+      itemMeta: null,
+      key: buildStateTokenIndexKey(
+        this.listContainer.initialNumToRender,
+        this.listContainer.getData().length
+      ),
     });
 
-    afterTokens.forEach((token) => {
-      const { isSticky, isReserved, startIndex, endIndex } = token;
-      if (isSticky || isReserved) {
-        const item = this.listContainer.getData()[startIndex];
-        const itemMeta = this.listContainer.getFinalItemMeta(item);
-        spaceState.push({
-          item,
-          isSpace: false,
-          key: itemMeta?.getKey() || '',
-          itemMeta,
-          isSticky,
-          isReserved,
-          length: this.listContainer.getFinalIndexItemLength(startIndex),
-        });
-      } else {
-        const startIndexOffset =
-          this.listContainer.getFinalIndexKeyOffset(startIndex);
-        // should plus 1, use list total length
-        const endIndexOffset =
-          this.listContainer.getFinalIndexKeyBottomOffset(endIndex);
-        spaceState.push({
-          item: null,
-          isSpace: true,
-          isSticky: false,
-          isReserved: false,
-          length: endIndexOffset - startIndexOffset,
-          // endIndex is not included
-          itemMeta: null,
-          key: buildStateTokenIndexKey(startIndex, endIndex - 1),
-        });
-      }
-    });
+    // const afterTokens = resolveToken({
+    //   startIndex: this.listContainer.initialNumToRender,
+    //   endIndex: this.listContainer.getData().length - 1,
+    //   reservedIndices: this.listContainer.reservedIndices,
+    //   stickyHeaderIndices: this.listContainer.stickyHeaderIndices,
+    //   persistenceIndices: this.listContainer.persistenceIndices,
+    // });
+
+    // afterTokens.forEach((token) => {
+    //   const { isSticky, isReserved, startIndex, endIndex } = token;
+    //   if (isSticky || isReserved) {
+    //     const item = this.listContainer.getData()[startIndex];
+    //     const itemMeta = this.listContainer.getFinalItemMeta(item);
+    //     spaceState.push({
+    //       item,
+    //       isSpace: false,
+    //       key: itemMeta?.getKey() || '',
+    //       itemMeta,
+    //       isSticky,
+    //       isReserved,
+    //       length: this.listContainer.getFinalIndexItemLength(startIndex),
+    //     });
+    //   } else {
+    //     const startIndexOffset =
+    //       this.listContainer.getFinalIndexKeyOffset(startIndex);
+    //     // should plus 1, use list total length
+    //     const endIndexOffset =
+    //       // this.listContainer.getFinalIndexKeyOffset(endIndex);
+
+    // this.listContainer.getFinalIndexKeyBottomOffset(endIndex);
+
+    //     console.log('start =======', buildStateTokenIndexKey(startIndex, endIndex - 1), startIndexOffset, endIndexOffset, endIndexOffset - startIndexOffset)
+    //     spaceState.push({
+    //       item: null,
+    //       isSpace: true,
+    //       isSticky: false,
+    //       isReserved: false,
+    //       length: endIndexOffset - startIndexOffset,
+    //       // endIndex is not included
+    //       itemMeta: null,
+    //       key: buildStateTokenIndexKey(startIndex, endIndex - 1),
+    //     });
+    //   }
+    // });
     return spaceState;
   }
 }

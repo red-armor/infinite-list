@@ -88,8 +88,6 @@ abstract class BaseImpl<
     this._store = store;
     this._stateHub = new StateHub<ItemT>({
       listContainer: this,
-      persistenceIndices,
-      initialNumToRender,
       recyclerTypes: props.recyclerTypes,
       onRecyclerProcess: props.onRecyclerProcess,
       recyclerBufferSize: props.recyclerBufferSize,

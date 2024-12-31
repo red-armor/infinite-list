@@ -13,12 +13,12 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     () =>
       new ListDimensions<ItemT>({
         ...props,
-        getContainerLayout: () => ({
-          x: 0,
-          y: 300,
-          width: 600,
-          height: 300,
-        }),
+        // getContainerLayout: () => ({
+        //   x: 0,
+        //   y: 300,
+        //   width: 600,
+        //   height: 300,
+        // }),
       }),
     []
   );

@@ -27,14 +27,14 @@ const meta: Meta<typeof List> = {
           overflowY: 'auto',
         }}
       >
-        <div style={{ height: '300px' }}></div>
+        {/* <div style={{ height: '300px' }}></div> */}
         <List
           id="basic"
           initialNumToRender={0}
           data={data}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
-          persistenceIndices={[0, 1, 2]}
+          persistenceIndices={[0, 10, 2]}
           containerRef={containerRef}
           renderItem={(props) => {
             const { item, itemMeta } = props;
@@ -70,7 +70,7 @@ export default meta;
 
 export const SimpleList = {
   args: {
-    data: buildData(100),
+    data: buildData(500),
     keyExtractor: defaultKeyExtractor,
   },
 };
