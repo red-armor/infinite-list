@@ -3,12 +3,7 @@ import layoutEqual from '@x-oasis/layout-equal';
 import { ItemLayout } from '@infinite-list/dimensions-model';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 
-import {
-  GenericItemT,
-  // ItemLayout,
-  MasonryDimensionsModelProps,
-  // ListDimensionsModel,
-} from './types';
+import { GenericItemT, MasonryDimensionsModelProps } from './types';
 import MasonryDimensionStrategy from './MasonryDimensionStrategy';
 import defaultValue from '@x-oasis/default-value';
 import { KeyIndexManager } from '@infinite-list/utils';
@@ -26,14 +21,22 @@ class MasonryDimensionsModel<
   private _columnIntervalTree: PrefixIntervalTree[];
   private _columnKeyIndexManager: KeyIndexManager[];
   private _strategies: MasonryDimensionStrategy<ItemT>[];
+  readonly persistenceIndices: number[];
+  readonly initialNumToRender: number;
 
   constructor(props: MasonryDimensionsModelProps<ItemT>) {
     super(props);
-    const { column = 2 } = props;
+    const {
+      column = 2,
+      persistenceIndices = [],
+      initialNumToRender = 0,
+    } = props;
     const [strategies, dataSource, intervalTrees, keyIndexManagers] =
       this.initColumnValues(column, props);
     this.column = column;
     this._strategies = strategies;
+    this.persistenceIndices = persistenceIndices;
+    this.initialNumToRender = initialNumToRender;
     this._columnDataSource = dataSource;
     this._columnIntervalTree = intervalTrees;
     this._columnKeyIndexManager = keyIndexManagers;
@@ -74,6 +77,8 @@ class MasonryDimensionsModel<
           columnIndex: idx,
           dataModel: this,
           recycleEnabled: true,
+          initialNumToRender: this.initialNumToRender,
+          persistenceIndices: this.persistenceIndices,
           ...props,
         })
       );

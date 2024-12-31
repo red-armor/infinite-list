@@ -1,4 +1,4 @@
-// import { ListDimensionsModelContainer } from './ListDimensionsModel.types';
+import { TheHostProps } from '@infinite-list/types';
 import { GenericItemT } from './generic.types';
 import BaseImpl from '../BaseImpl';
 
@@ -22,7 +22,8 @@ export type RecycleStateImplProps<ItemT extends GenericItemT = GenericItemT> = {
   recyclerReservedBufferPerBatch?: number;
 
   onRecyclerProcess?: (type?: string, index?: number) => boolean;
-} & BaseStateImplProps<ItemT>;
+} & BaseStateImplProps<ItemT> &
+  TheHostProps;
 
 export type StateHubProps<ItemT extends GenericItemT = GenericItemT> = {
   recycleEnabled?: boolean;

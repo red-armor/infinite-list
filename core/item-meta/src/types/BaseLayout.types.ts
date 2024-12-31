@@ -26,7 +26,7 @@ export enum FillingMode {
 //   windowSize?: number;
 //   maxToRenderPerBatch?: number;
 //   initialNumToRender?: number;
-//   persistanceIndices?: Array<number>;
+//   persistenceIndices?: Array<number>;
 //   stickyHeaderIndices?: Array<number>;
 
 //   recycleThreshold?: number;

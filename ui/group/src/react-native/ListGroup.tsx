@@ -32,7 +32,7 @@ const ListGroup = <ItemT extends GenericItemT>(
     viewabilityConfig,
     viewabilityConfigCallbackPairs,
     initialNumToRender,
-    persistanceIndices,
+    persistenceIndices,
     scrollComponentContext,
     ...rest
   } = props;
@@ -88,7 +88,7 @@ const ListGroup = <ItemT extends GenericItemT>(
         viewabilityConfig,
         getContainerLayout,
         initialNumToRender,
-        persistanceIndices,
+        persistenceIndices,
         onViewableItemsChanged,
         viewabilityConfigCallbackPairs,
         canIUseRIC: Platform.OS !== 'ios',

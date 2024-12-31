@@ -27,7 +27,6 @@ import { KeysChangedType } from '@infinite-list/base-dimensions';
 import { OnEndReached } from '@infinite-list/viewable';
 import { ItemLayout, IndexToOffsetMap } from '@infinite-list/dimensions-model';
 
-// import BaseImpl from './strategies/BaseImpl';
 import Inspector from './Inspector';
 // import { info } from './utils/logger';
 // import createStore from './state/createStore';

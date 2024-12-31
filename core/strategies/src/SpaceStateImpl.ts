@@ -129,7 +129,7 @@
 //       const itemMeta = this.getFinalItemMeta(item);
 //       if (!itemMeta) return;
 //       const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
-//       const isReserved = this.persistanceIndices.indexOf(index) !== -1;
+//       const isReserved = this.persistenceIndices.indexOf(index) !== -1;
 
 //       const itemKey = itemMeta.getKey();
 

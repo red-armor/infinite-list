@@ -66,6 +66,8 @@ abstract class BaseImpl<
     super(props);
     const {
       store,
+      persistenceIndices,
+      initialNumToRender,
 
       viewabilityConfig,
       onViewableItemsChanged,
@@ -86,8 +88,9 @@ abstract class BaseImpl<
     this._store = store;
     this._stateHub = new StateHub<ItemT>({
       listContainer: this,
+      persistenceIndices,
+      initialNumToRender,
       recyclerTypes: props.recyclerTypes,
-      // recycleEnabled,
       onRecyclerProcess: props.onRecyclerProcess,
       recyclerBufferSize: props.recyclerBufferSize,
       recyclerReservedBufferPerBatch: props.recyclerReservedBufferPerBatch,

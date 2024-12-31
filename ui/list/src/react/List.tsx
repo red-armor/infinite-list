@@ -9,7 +9,19 @@ import { ScrollTracker } from '@infinite-list/scroller/web';
 
 export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const { renderItem, id, data, recycleEnabled = true, horizontal } = props;
-  const listModel = useMemo(() => new ListDimensions<ItemT>(props), []);
+  const listModel = useMemo(
+    () =>
+      new ListDimensions<ItemT>({
+        ...props,
+        getContainerLayout: () => ({
+          x: 0,
+          y: 300,
+          width: 600,
+          height: 300,
+        }),
+      }),
+    []
+  );
 
   const [state, setState] = useState(listModel.getStateResult());
   const scrollHandlerRef = useRef<ScrollTracker>();
@@ -24,9 +36,8 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const listRef = useRef<HTMLDivElement>(null);
   const containerStyle = useMemo<CSSProperties>(() => {
     const style = {
-      width: '100%',
-      height: '100%',
-      overflowY: 'auto',
+      // width: '100%',
+      // height: '100%',
       position: 'relative',
     } as CSSProperties;
     if (horizontal)
@@ -48,7 +59,8 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   useEffect(() => {
     const scrollTracker = new ScrollTracker({
-      domNode: listRef.current!,
+      // domNode: listRef.current!,
+      domNode: props.containerRef.current,
       horizontal: horizontal,
       onScroll: () => {
         listModel.updateScrollMetrics(
@@ -64,6 +76,8 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
     return () => scrollTracker.dispose();
   }, []);
+
+  console.log('state -----------', state);
 
   if (recycleEnabled) {
     return (

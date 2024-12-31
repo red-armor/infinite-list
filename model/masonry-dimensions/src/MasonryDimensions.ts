@@ -46,6 +46,8 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
     const {
       onEndReached,
       stateListener,
+      persistenceIndices,
+      initialNumToRender,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
@@ -75,7 +77,8 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
 
     this._dataModel = new MasonryDimensionsModel({
       column: DEFAULT_MASONRY_COLUMN,
-      // @ts-ignore [TODO]
+      persistenceIndices,
+
       container: this,
       recycleEnabled: true,
       manuallyApplyInitialData: true,

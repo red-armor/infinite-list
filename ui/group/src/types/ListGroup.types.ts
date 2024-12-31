@@ -19,7 +19,7 @@ export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<
     windowSize?: number;
     maxToRenderPerBatch?: number;
     onRenderFinished?: () => void;
-    persistanceIndices?: number[];
+    persistenceIndices?: number[];
 
     scrollComponentContext?: any;
     GroupListSeparatorComponent?: ComponentType<ItemT> | null | undefined;

@@ -15,6 +15,8 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
     const {
       listContainer,
 
+      persistenceIndices,
+      initialNumToRender,
       recyclerTypes,
       onRecyclerProcess,
       recyclerBufferSize,
@@ -24,6 +26,8 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
 
     this._handler = recycleEnabled
       ? new RecycleStateImpl<ItemT>({
+          persistenceIndices,
+          initialNumToRender,
           listContainer,
           recyclerTypes,
           onRecyclerProcess,

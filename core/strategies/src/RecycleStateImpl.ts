@@ -31,6 +31,8 @@ class RecycleStateImpl<
 > extends BaseState<ItemT> {
   private _onRecyclerProcess?: OnRecyclerProcess;
   public stateListener?: StateListener<ItemT>;
+  readonly persistenceIndices: number[];
+  readonly initialNumToRender: number;
 
   private _recycler: Recycler<ItemMeta<ItemT>>;
 
@@ -49,6 +51,8 @@ class RecycleStateImpl<
       listContainer: props.listContainer,
     });
     const {
+      persistenceIndices = [],
+      initialNumToRender = 0,
       recyclerTypes = [DEFAULT_RECYCLER_TYPE],
       recyclerBufferSize = RECYCLER_BUFFER_SIZE,
       recyclerReservedBufferPerBatch = RECYCLER_RESERVED_BUFFER_PER_BATCH,
@@ -57,6 +61,8 @@ class RecycleStateImpl<
     } = props;
 
     this._onRecyclerProcess = onRecyclerProcess;
+    this.persistenceIndices = persistenceIndices;
+    this.initialNumToRender = initialNumToRender;
     // this._releaseSpaceStateItem = releaseSpaceStateItem;
 
     this._recycler = new Recycler<ItemMeta<ItemT>>({
@@ -288,7 +294,13 @@ class RecycleStateImpl<
       true
     );
 
-    log.info('target indices ', { ...state }, targetIndices.slice());
+    log.info(
+      'target indices ',
+      { ...state },
+      targetIndices.slice(),
+      this.persistenceIndices,
+      this.initialNumToRender
+    );
 
     targetIndices
       .filter((v) => v)
@@ -296,13 +308,50 @@ class RecycleStateImpl<
         const { meta: itemMeta, targetIndex, recyclerKey } = info;
         const item = this.listContainer.getData()[targetIndex];
 
+        let itemMetaState = null;
+
         if (indexToOffsetMap[targetIndex] != null) {
-          const itemMetaState =
-            this.listContainer._configTuple.resolveItemMetaState(
-              itemMeta,
-              this.listContainer._scrollMetrics,
-              () => indexToOffsetMap[targetIndex]
-            );
+          if (itemMeta.isApproximateLayout) {
+            const indexInfo = itemMeta.getIndexInfo();
+            const { index = -1 } = indexInfo || {};
+            if (
+              this.persistenceIndices.indexOf(index) !== -1 ||
+              (this.initialNumToRender && this.initialNumToRender >= index)
+            ) {
+              const itemOffset = this.listContainer.getFinalIndexKeyOffset(
+                index,
+                true
+              );
+
+              console.log('item offset ----', itemOffset);
+
+              itemMetaState =
+                this.listContainer._configTuple.resolveItemMetaState(
+                  itemMeta,
+                  this.listContainer._scrollMetrics,
+                  () => itemOffset + this.listContainer.getContainerOffset()
+                );
+            }
+          }
+          if (!itemMetaState) {
+            itemMetaState =
+              this.listContainer._configTuple.resolveItemMetaState(
+                itemMeta,
+                this.listContainer._scrollMetrics,
+                () =>
+                  indexToOffsetMap[targetIndex] +
+                  this.listContainer.getContainerOffset()
+              );
+          }
+
+          console.log(
+            'key ',
+            itemMeta.getKey(),
+            { ...this.listContainer._scrollMetrics },
+            indexToOffsetMap[targetIndex] +
+              this.listContainer.getContainerOffset(),
+            itemMetaState
+          );
 
           itemMeta?.setItemMetaState(itemMetaState);
         }
@@ -358,7 +407,9 @@ class RecycleStateImpl<
             this.listContainer._configTuple.resolveItemMetaState(
               itemMeta,
               this.listContainer._scrollMetrics,
-              () => indexToOffsetMap[targetIndex]
+              () =>
+                indexToOffsetMap[targetIndex] +
+                this.listContainer.getContainerOffset()
             );
           itemMeta?.setItemMetaState(itemMetaState);
         }
@@ -369,7 +420,7 @@ class RecycleStateImpl<
       endIndex: this.listContainer.getData().length - 1,
       reservedIndices: this.listContainer.reservedIndices,
       stickyHeaderIndices: this.listContainer.stickyHeaderIndices,
-      persistanceIndices: this.listContainer.persistanceIndices,
+      persistenceIndices: this.listContainer.persistenceIndices,
     });
 
     afterTokens.forEach((token) => {

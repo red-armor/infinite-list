@@ -4,6 +4,7 @@ import {
   // type KeyExtractor,
 } from '@infinite-list/utils';
 import { List } from '@infinite-list/list/react';
+import { useRef } from 'react';
 
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
@@ -14,23 +15,35 @@ const meta: Meta<typeof List> = {
   component: List,
   render: (props) => {
     const { data, keyExtractor } = props;
+    const containerRef = useRef(null);
     return (
       <div
+        ref={containerRef}
         style={{
           height: '400px',
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
+          overflowY: 'auto',
         }}
       >
+        <div style={{ height: '300px' }}></div>
         <List
           id="basic"
           initialNumToRender={0}
           data={data}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
+          persistenceIndices={[0, 1, 2]}
+          containerRef={containerRef}
           renderItem={(props) => {
-            const { item } = props;
+            const { item, itemMeta } = props;
+            if (itemMeta.getState().viewable)
+              console.log(
+                'item meta ',
+                itemMeta.getKey(),
+                itemMeta.getState().viewable
+              );
 
             return (
               <div
@@ -57,7 +70,7 @@ export default meta;
 
 export const SimpleList = {
   args: {
-    data: buildData(10000),
+    data: buildData(100),
     keyExtractor: defaultKeyExtractor,
   },
 };

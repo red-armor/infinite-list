@@ -13,7 +13,7 @@ abstract class BaseLayout extends Container {
   readonly _windowSize: number;
   readonly _maxToRenderPerBatch: number;
   private _initialNumToRender: number;
-  private _persistanceIndices: number[] = [];
+  private _persistenceIndices: number[] = [];
   private _stickyHeaderIndices: number[] = [];
   private _reservedIndices: number[] = [];
   private _recycleThreshold: number;
@@ -26,7 +26,7 @@ abstract class BaseLayout extends Container {
     super(props);
     const {
       recycleThreshold,
-      persistanceIndices = [],
+      persistenceIndices = [],
       recycleEnabled = false,
       stickyHeaderIndices = [],
       windowSize = WINDOW_SIZE,
@@ -50,7 +50,7 @@ abstract class BaseLayout extends Container {
     this._stickyHeaderIndices = stickyHeaderIndices;
     this._maxToRenderPerBatch = maxToRenderPerBatch;
     this._initialNumToRender = initialNumToRender;
-    this.persistanceIndices = persistanceIndices;
+    this.persistenceIndices = persistenceIndices;
     this.stickyHeaderIndices = stickyHeaderIndices;
     this._lengthPrecision = lengthPrecision;
     this._itemOffsetBeforeLayoutReady = itemOffsetBeforeLayoutReady;
@@ -78,17 +78,17 @@ abstract class BaseLayout extends Container {
 
   updateReservedIndices() {
     const indices = new Set(
-      ([] as number[]).concat(this.persistanceIndices, this.stickyHeaderIndices)
+      ([] as number[]).concat(this.persistenceIndices, this.stickyHeaderIndices)
     );
     this._reservedIndices = Array.from(indices).sort((a, b) => a - b);
   }
 
-  get persistanceIndices() {
-    return this._persistanceIndices;
+  get persistenceIndices() {
+    return this._persistenceIndices;
   }
 
-  set persistanceIndices(indices: Array<number>) {
-    this._persistanceIndices = indices.sort((a, b) => a - b);
+  set persistenceIndices(indices: Array<number>) {
+    this._persistenceIndices = indices.sort((a, b) => a - b);
     this.updateReservedIndices();
   }
 
@@ -139,7 +139,7 @@ abstract class BaseLayout extends Container {
   ) {
     const containerOffset = this.getContainerOffset();
 
-    if (exclusive) return { minOffset, maxOffset };
+    if (!exclusive) return { minOffset, maxOffset };
     if (containerOffset > maxOffset) {
       return {
         minOffset: minOffset - containerOffset,

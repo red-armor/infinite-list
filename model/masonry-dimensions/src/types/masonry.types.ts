@@ -1,4 +1,5 @@
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
+import { TheHostProps } from '@infinite-list/types';
 
 import { GenericItemT } from './generic.types';
 import MasonryDimensionsModel from '../MasonryDimensionsModel';
@@ -18,9 +19,9 @@ export interface MasonryDimensionsProps<
 
 export interface MasonryDimensionsModelProps<
   ItemT extends GenericItemT = GenericItemT
-> extends Omit<ListDimensionsModelProps<ItemT>, 'store'> {
+> extends Omit<ListDimensionsModelProps<ItemT>, 'store'>,
+    TheHostProps {
   column?: number;
-  // container: MasonryDimensions<ItemT>
 }
 
 export type MasonryColumnStateResults<

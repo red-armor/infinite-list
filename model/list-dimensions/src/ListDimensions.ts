@@ -25,6 +25,9 @@ class ListDimensions<ItemT extends GenericItemT = GenericItemT>
       ...props,
       store: createStore<ReducerResult>(),
     });
+
+    console.log('props -----', props);
+
     this._dataModel = new ListDimensionsModel<ItemT>({
       recycleEnabled: true,
       ...props,
