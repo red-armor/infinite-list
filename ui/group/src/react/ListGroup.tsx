@@ -7,9 +7,10 @@ import {
   useMemo,
   useRef,
   useState,
+  RefObject,
 } from 'react';
 
-import { ListGroupProps } from '../types';
+import { ListGroupProps } from './types';
 import context from '../common/context';
 import PortalContent from '../common/PortalContent';
 import { ScrollTracker } from '@infinite-list/scroller/web';
@@ -24,8 +25,10 @@ const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>
 ) => {
   const {
-    children,
     id,
+    children,
+    horizontal,
+    scrollerRef,
     onViewableItemsChanged,
     viewabilityConfig,
     viewabilityConfigCallbackPairs,
@@ -35,29 +38,52 @@ const ListGroup = <ItemT extends GenericItemT>(
     ...rest
   } = props;
 
-  const layoutRef = useRef<{
+  /**
+   * passing with scrollerRef, use external scroller
+   */
+  const usingControlledScroller = useMemo(() => {
+    return !!scrollerRef;
+  }, [scrollerRef]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollerDomRef = useMemo<RefObject<HTMLDivElement>>(() => {
+    if (scrollerRef) return scrollerRef;
+    return containerRef as RefObject<HTMLDivElement>;
+  }, []);
+  const containerLayoutRef = useRef<{
     x: number;
     y: number;
     width: number;
     height: number;
-  }>();
+  }>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
 
-  const listRef = useRef<HTMLDivElement>(null);
+  // const listRef = useRef<HTMLDivElement>(null);
   const scrollHandlerRef = useRef<ScrollTracker>();
 
   useEffect(() => {
-    const rect = listRef.current?.getBoundingClientRect();
-    if (rect) {
-      const { width, height, x, y } = rect;
-      layoutRef.current = { x, y, width, height };
+    if (containerRef.current && usingControlledScroller) {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (rect) {
+        containerLayoutRef.current = rect;
+        // containerLayoutRef.current.x = rect.x;
+        // containerLayoutRef.current.y = rect.y;
+        // containerLayoutRef.current.width = rect.width;
+        // containerLayoutRef.current.height = rect.height;
+      }
     }
   }, []);
 
-  const getContainerLayout = useCallback(() => layoutRef.current!, []);
+  const getContainerLayout = useCallback(() => containerLayoutRef.current!, []);
   const listGroupDimensions = useMemo(
     () =>
       new ListGroupDimensions<ItemT>({
         id,
+        horizontal,
         ...rest,
         viewabilityConfig,
         getContainerLayout,
@@ -70,23 +96,44 @@ const ListGroup = <ItemT extends GenericItemT>(
     []
   );
 
-  const style: {
-    [key: string]: CSSProperties;
-  } = useMemo(
-    () => ({
-      container: {
-        width: '100%',
-        height: '100%',
-        overflowY: 'auto',
-        position: 'relative',
-      },
-    }),
-    []
-  );
+  const containerStyle = useMemo<CSSProperties>(() => {
+    const style: CSSProperties = { position: 'relative' };
+    if (horizontal) {
+      style.display = 'flex';
+      style.flexDirection = 'column';
+      style.height = '100%';
+    }
+
+    if (!usingControlledScroller) {
+      style.width = '100%';
+      style.height = '100%';
+      if (horizontal) {
+        style.overflowX = 'auto';
+      } else {
+        style.overflowY = 'auto';
+      }
+    }
+
+    return style;
+  }, [usingControlledScroller]);
+
+  // const style: {
+  //   [key: string]: CSSProperties;
+  // } = useMemo(
+  //   () => ({
+  //     container: {
+  //       width: '100%',
+  //       height: '100%',
+  //       overflowY: 'auto',
+  //       position: 'relative',
+  //     },
+  //   }),
+  //   []
+  // );
 
   useEffect(() => {
     const scrollTracker = new ScrollTracker({
-      domNode: listRef.current!,
+      domNode: scrollerDomRef.current!,
       onScroll: () => {
         listGroupDimensions.updateScrollMetrics(
           scrollHandlerRef.current?.getScrollMetrics()
@@ -117,7 +164,7 @@ const ListGroup = <ItemT extends GenericItemT>(
   }, []);
 
   return (
-    <div ref={listRef} style={style.container}>
+    <div ref={containerRef} style={containerStyle}>
       <ClockStart<ItemT>
         dimensions={listGroupDimensions}
         inspectingTimes={state.inspectingTimes}

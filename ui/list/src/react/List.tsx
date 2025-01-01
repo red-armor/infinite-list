@@ -62,10 +62,11 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   useEffect(() => {
     if (containerRef.current && usingControlledScroller) {
       const rect = containerRef.current.getBoundingClientRect();
-      containerLayoutRef.current.x = rect.x;
-      containerLayoutRef.current.y = rect.y;
-      containerLayoutRef.current.width = rect.width;
-      containerLayoutRef.current.height = rect.height;
+      containerLayoutRef.current = rect;
+      // containerLayoutRef.current.x = rect.x;
+      // containerLayoutRef.current.y = rect.y;
+      // containerLayoutRef.current.width = rect.width;
+      // containerLayoutRef.current.height = rect.height;
     }
   }, []);
 

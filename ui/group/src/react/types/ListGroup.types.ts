@@ -1,20 +1,23 @@
-import { MutableRefObject } from 'react';
-import { View, LayoutChangeEvent } from 'react-native';
+import { RefObject } from 'react';
 import { GenericItemT } from '@infinite-list/types';
 import { ListGroupProps as CommonListGroupProps } from '../../types';
 
-export type ScrollComponentUseMeasureLayout = (
-  itemRef: MutableRefObject<View | null>,
-  options: {
-    onLayout?: Function;
-    getCurrentKey?: () => string;
-    isIntervalTreeItem?: boolean;
-    onMeasureLayout?: Function;
-  }
-) => {
-  handler: Function;
-  layoutHandler: (e: LayoutChangeEvent) => void;
-};
+// export type ScrollComponentUseMeasureLayout = (
+//   itemRef: MutableRefObject<View | null>,
+//   options: {
+//     onLayout?: Function;
+//     getCurrentKey?: () => string;
+//     isIntervalTreeItem?: boolean;
+//     onMeasureLayout?: Function;
+//   }
+// ) => {
+//   handler: Function;
+//   layoutHandler: (e: LayoutChangeEvent) => void;
+// };
+
+export type ScrollerRef = RefObject<HTMLDivElement>;
 
 export type ListGroupProps<ItemT extends GenericItemT> =
-  CommonListGroupProps<ItemT>;
+  CommonListGroupProps<ItemT> & {
+    scrollerRef?: ScrollerRef;
+  };
