@@ -1,8 +1,6 @@
 import type { Meta } from '@storybook/react';
-import {
-  defaultKeyExtractor,
-  // type KeyExtractor,
-} from '@infinite-list/utils';
+import { useRef } from 'react';
+import { defaultKeyExtractor } from '@infinite-list/utils';
 import { List } from '@infinite-list/list/react';
 
 const buildData = (count: number) =>
@@ -14,13 +12,17 @@ const meta: Meta<typeof List> = {
   component: List,
   render: (props) => {
     const { data, keyExtractor } = props;
+    const scrollerRef = useRef<HTMLDivElement>(null);
+
     return (
       <div
+        ref={scrollerRef}
         style={{
           height: '300px',
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
+          overflowX: 'auto',
         }}
       >
         <List
@@ -28,6 +30,7 @@ const meta: Meta<typeof List> = {
           initialNumToRender={0}
           data={data}
           horizontal
+          scrollerRef={scrollerRef}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {

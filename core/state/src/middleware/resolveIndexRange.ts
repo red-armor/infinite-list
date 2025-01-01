@@ -39,7 +39,12 @@ export default <State extends ReducerResult = ReducerResult>(
     minOffset: offset,
     maxOffset: offset + visibleLength,
   });
-  log.info('visibleRange ', { visibleMinOffset, visibleMaxOffset });
+  log.info('visibleRange ', {
+    visibleMinOffset,
+    visibleMaxOffset,
+    offset,
+    visibleLength,
+  });
   log.info('visibleIndexRange ', visibleIndexRange);
   log.info('bufferedRange ', {
     bufferedMinOffset: minOffset,

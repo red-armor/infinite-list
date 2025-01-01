@@ -4,7 +4,6 @@ import { SpaceStateToken, RecycleStateToken } from '@infinite-list/strategies';
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
 
 import { ItemMeta } from '@infinite-list/item-meta';
-// import { IDefaultKeyExtra } from '@infinite-list/utils';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   /**

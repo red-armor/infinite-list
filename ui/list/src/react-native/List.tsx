@@ -130,32 +130,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;
-
-    // return (
-    //   <>
-    //     {nextState.recycleState.map((data) => (
-    //       <RecycleItem
-    //         key={data.key}
-    //         data={data}
-    //         containerRef={containerRef}
-    //         renderItem={renderItem}
-    //         dimensions={listModel}
-    //         horizontal={!!horizontal}
-    //       />
-    //     ))}
-    //     {nextState.spaceState.map((data) => (
-    //       <SpaceItem
-    //         key={data.key}
-    //         data={data}
-    //         containerRef={containerRef}
-    //         renderItem={renderItem}
-    //         dimensions={listModel}
-    //         horizontal={!!horizontal}
-    //       />
-    //     ))}
-    //   </>
-    // );
-
     return (
       <View
         id={id}

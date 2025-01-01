@@ -15,7 +15,7 @@ const meta: Meta<typeof List> = {
   component: List,
   render: (props) => {
     const { data, keyExtractor } = props;
-    const containerRef = useRef(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     return (
       <div
         ref={containerRef}
@@ -27,7 +27,7 @@ const meta: Meta<typeof List> = {
           overflowY: 'auto',
         }}
       >
-        {/* <div style={{ height: '300px' }}></div> */}
+        <div style={{ height: '300px' }}></div>
         <List
           id="basic"
           initialNumToRender={0}
@@ -35,7 +35,7 @@ const meta: Meta<typeof List> = {
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
           persistenceIndices={[0, 10, 2]}
-          containerRef={containerRef}
+          scrollerRef={containerRef}
           renderItem={(props) => {
             const { item, itemMeta } = props;
             if (itemMeta.getState().viewable)

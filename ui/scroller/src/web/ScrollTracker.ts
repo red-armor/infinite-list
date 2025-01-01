@@ -1,5 +1,7 @@
+import { ScrollTrackerProps, TDomNode } from './types';
+
 class ScrollTracker {
-  private _domNode: HTMLElement;
+  private _domNode: TDomNode;
   private _onScroll?: (e: Event) => void;
   private _onScrollEnd?: (e: Event) => void;
 
@@ -24,13 +26,7 @@ class ScrollTracker {
   private _velocity: number;
   readonly velocityTrackerTimeout: number;
 
-  constructor(props: {
-    horizontal?: boolean;
-    domNode: HTMLElement;
-    velocityTrackerTimeout?: number;
-    onScroll?: (e: Event) => void;
-    onScrollEnd?: (e: Event) => void;
-  }) {
+  constructor(props: ScrollTrackerProps) {
     const {
       domNode,
       onScroll,
@@ -47,7 +43,7 @@ class ScrollTracker {
     this.onScrollEnd = this.onScrollEnd.bind(this);
     this._scrollMetrics = {
       offset: 0,
-      visibleLength: this._domNode.clientHeight || 0,
+      visibleLength: this.domNode.clientHeight || 0,
       contentLength: 0,
     };
 
@@ -58,8 +54,18 @@ class ScrollTracker {
     this.velocityTrackerTimeout = velocityTrackerTimeout;
   }
 
+  get domNode(): HTMLDivElement {
+    console.log('dom ', this._domNode);
+
+    if (this._domNode instanceof HTMLDivElement) {
+      return this._domNode;
+    }
+    if (this._domNode?.current) return this._domNode.current;
+    return this._domNode as any as HTMLDivElement;
+  }
+
   dispose() {
-    this._domNode.removeEventListener('scroll', this.onScroll);
+    this.domNode.removeEventListener('scroll', this.onScroll);
   }
 
   addEventListeners() {
@@ -67,8 +73,8 @@ class ScrollTracker {
   }
 
   addListener() {
-    this._domNode.addEventListener('scroll', this.onScroll);
-    this._domNode.addEventListener('scrollend', this.onScrollEnd);
+    this.domNode.addEventListener('scroll', this.onScroll);
+    this.domNode.addEventListener('scrollend', this.onScrollEnd);
   }
 
   getScrollMetrics() {
@@ -81,7 +87,7 @@ class ScrollTracker {
   }
 
   track() {
-    const currentOffset = this.selectOffset(this._domNode);
+    const currentOffset = this.selectOffset(this.domNode);
     const currentTs = Date.now();
 
     const deltaY = currentOffset - this._lastFrameScrollY;
@@ -95,9 +101,9 @@ class ScrollTracker {
   }
 
   onScroll(e: Event) {
-    const offset = this.selectOffset(this._domNode);
-    const visibleLength = this._domNode.clientHeight;
-    const contentLength = this._domNode.scrollHeight;
+    const offset = this.selectOffset(this.domNode);
+    const visibleLength = this.domNode.clientHeight;
+    const contentLength = this.domNode.scrollHeight;
 
     if (!this._lastFrameTimestamp) {
       this._lastFrameScrollY = offset;
@@ -128,7 +134,7 @@ class ScrollTracker {
     if (this._trackId) {
       clearInterval(this._trackId);
       this._trackId = undefined;
-      this._lastFrameScrollY = this.selectOffset(this._domNode);
+      this._lastFrameScrollY = this.selectOffset(this.domNode);
       this._lastFrameTimestamp = 0;
     }
   }

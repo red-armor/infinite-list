@@ -1,24 +1,52 @@
-import { useEffect, useMemo, useState, useRef, CSSProperties } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  CSSProperties,
+  RefObject,
+} from 'react';
 import { ListDimensions } from '@infinite-list/list-dimensions';
 import { RecycleStateResult } from '@infinite-list/strategies';
 import { GenericItemT } from '@infinite-list/item-meta';
-import { ListProps } from '../types';
+import { ListProps } from './types';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
 import { ScrollTracker } from '@infinite-list/scroller/web';
+import { ItemLayout } from '@infinite-list/types';
 
 export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
-  const { renderItem, id, data, recycleEnabled = true, horizontal } = props;
+  const {
+    renderItem,
+    id,
+    data,
+    recycleEnabled = true,
+    horizontal,
+    scrollerRef,
+    getContainerLayout,
+  } = props;
+  const usingControlledScroller = useMemo(() => {
+    return !scrollerRef;
+  }, [scrollerRef]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollerDomRef = useMemo<RefObject<HTMLDivElement>>(() => {
+    if (scrollerRef) return scrollerRef;
+    return containerRef as RefObject<HTMLDivElement>;
+  }, []);
+  const containerLayoutRef = useRef<ItemLayout>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
+
   const listModel = useMemo(
     () =>
       new ListDimensions<ItemT>({
         ...props,
-        // getContainerLayout: () => ({
-        //   x: 0,
-        //   y: 300,
-        //   width: 600,
-        //   height: 300,
-        // }),
+        getContainerLayout:
+          getContainerLayout || (() => containerLayoutRef.current),
       }),
     []
   );
@@ -28,26 +56,41 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   const dataRef = useRef(data);
 
+  useEffect(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      containerLayoutRef.current.x = rect.x;
+      containerLayoutRef.current.y = rect.y;
+      containerLayoutRef.current.width = rect.width;
+      containerLayoutRef.current.height = rect.height;
+    }
+  }, []);
+
   if (dataRef.current !== data) {
     dataRef.current = data;
     listModel.setData(dataRef.current);
   }
 
-  const listRef = useRef<HTMLDivElement>(null);
   const containerStyle = useMemo<CSSProperties>(() => {
-    const style = {
-      // width: '100%',
-      // height: '100%',
-      position: 'relative',
-    } as CSSProperties;
-    if (horizontal)
-      return {
-        ...style,
-        display: 'flex',
-        flexDirection: 'column',
-      };
+    const style: CSSProperties = { position: 'relative' };
+    if (horizontal) {
+      style.display = 'flex';
+      style.flexDirection = 'column';
+      style.height = '100%';
+    }
+
+    if (usingControlledScroller) {
+      style.width = '100%';
+      style.height = '100%';
+      if (horizontal) {
+        style.overflowX = 'auto';
+      } else {
+        style.overflowY = 'auto';
+      }
+    }
+
     return style;
-  }, []);
+  }, [usingControlledScroller]);
 
   useEffect(
     () =>
@@ -59,9 +102,8 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   useEffect(() => {
     const scrollTracker = new ScrollTracker({
-      // domNode: listRef.current!,
-      domNode: props.containerRef.current,
-      horizontal: horizontal,
+      domNode: scrollerDomRef,
+      horizontal,
       onScroll: () => {
         listModel.updateScrollMetrics(
           scrollHandlerRef.current?.getScrollMetrics()
@@ -77,11 +119,9 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     return () => scrollTracker.dispose();
   }, []);
 
-  console.log('state -----------', state);
-
   if (recycleEnabled) {
     return (
-      <div id={id} ref={listRef} style={containerStyle}>
+      <div id={id} ref={containerRef} style={containerStyle}>
         {(state as RecycleStateResult<ItemT>).spaceState.map((data) => (
           <SpaceItem
             key={data.key}

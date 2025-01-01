@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { SpaceItemProps } from '../types';
+import { SpaceItemProps } from './types';
 import { GenericItemT } from '@infinite-list/strategies';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
@@ -18,6 +18,8 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
       if (itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), rect);
     }
   }, [itemMeta]);
+
+  console.log('style ', props);
 
   if (isSpace) {
     return <div style={style} />;

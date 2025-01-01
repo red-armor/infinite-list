@@ -388,10 +388,18 @@ class RecycleStateImpl<
       }
     }
 
-    const startIndexOffset = this.listContainer.getFinalIndexKeyOffset(
+    console.log(
+      'this.listContainer.initialNumToRender ',
       this.listContainer.initialNumToRender
     );
+
+    const startIndexOffset = this.listContainer.getFinalIndexKeyOffset(
+      this.listContainer.initialNumToRender || 0,
+      true
+    );
     const endIndexOffset = this.listContainer.getTotalLength();
+
+    console.log('totla ', endIndexOffset, startIndexOffset);
 
     spaceState.push({
       item: null,

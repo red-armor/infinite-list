@@ -16,11 +16,12 @@
     }
   },
   "dependencies": {
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/masonry-dimensions": "workspace:*",
+    "@infinite-list/scroller": "workspace:*",
     "@infinite-list/strategies": "workspace:*",
     "@infinite-list/types": "workspace:*",
-    "@infinite-list/item-meta": "workspace:*",
-    "@infinite-list/scroller": "workspace:*",
-    "@infinite-list/masonry-dimensions": "workspace:*"
+    "@x-oasis/select-value": "^0.1.14"
   },
   "publishConfig": {
     "access": "public"
