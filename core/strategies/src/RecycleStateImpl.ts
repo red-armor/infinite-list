@@ -392,11 +392,6 @@ class RecycleStateImpl<
       }
     }
 
-    console.log(
-      'this.listContainer.initialNumToRender ',
-      this.listContainer.initialNumToRender
-    );
-
     const startIndexOffset = this.listContainer.getFinalIndexKeyOffset(
       this.listContainer.initialNumToRender || 0,
       true

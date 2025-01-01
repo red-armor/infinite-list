@@ -53,7 +53,7 @@ class ScrollTracker {
     this.onScrollEnd = this.onScrollEnd.bind(this);
     this._scrollMetrics = {
       offset: 0,
-      visibleLength: this.domNode.clientHeight || 0,
+      visibleLength: this.selectVisibleLength() || 0,
       contentLength: 0,
     };
 
@@ -96,6 +96,21 @@ class ScrollTracker {
     return dom.scrollTop;
   }
 
+  selectVisibleLength(dom: HTMLElement = this.domNode) {
+    if (this._horizontal) return dom.clientWidth;
+    return dom.clientHeight;
+  }
+
+  /**
+   *
+   * @param dom
+   * @returns
+   */
+  selectContentLength(dom: HTMLElement = this.domNode) {
+    if (this._horizontal) return dom.scrollWidth;
+    return dom.scrollHeight;
+  }
+
   track() {
     const currentOffset = this.selectOffset(this.domNode);
     const currentTs = Date.now();
@@ -112,8 +127,8 @@ class ScrollTracker {
 
   onScroll(e: Event) {
     const offset = this.selectOffset(this.domNode);
-    const visibleLength = this.domNode.clientHeight;
-    const contentLength = this.domNode.scrollHeight;
+    const visibleLength = this.selectVisibleLength();
+    const contentLength = this.selectContentLength();
 
     if (!this._lastFrameTimestamp) {
       this._lastFrameScrollY = offset;
