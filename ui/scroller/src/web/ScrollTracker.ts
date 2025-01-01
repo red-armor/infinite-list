@@ -12,6 +12,7 @@ class ScrollTracker {
 
     velocity?: number;
   };
+  private domNode: HTMLDivElement;
   private _deltaY: number;
   private _horizontal: boolean;
   // private _lastScrollY: number
@@ -36,8 +37,17 @@ class ScrollTracker {
     } = props;
     this._horizontal = !!horizontal;
     this._domNode = domNode;
+
     this._onScroll = onScroll;
     this._onScrollEnd = onScrollEnd;
+
+    this.domNode = this._domNode as HTMLDivElement;
+
+    if (this._domNode instanceof HTMLDivElement) {
+      this.domNode = this._domNode;
+    } else if (this._domNode?.current) {
+      this.domNode = this._domNode?.current;
+    }
 
     this.onScroll = this.onScroll.bind(this);
     this.onScrollEnd = this.onScrollEnd.bind(this);
@@ -54,15 +64,15 @@ class ScrollTracker {
     this.velocityTrackerTimeout = velocityTrackerTimeout;
   }
 
-  get domNode(): HTMLDivElement {
-    console.log('dom ', this._domNode);
+  // get domNode(): HTMLDivElement {
+  //   console.log('dom ', this._domNode);
 
-    if (this._domNode instanceof HTMLDivElement) {
-      return this._domNode;
-    }
-    if (this._domNode?.current) return this._domNode.current;
-    return this._domNode as any as HTMLDivElement;
-  }
+  //   if (this._domNode instanceof HTMLDivElement) {
+  //     return this._domNode;
+  //   }
+  //   if (this._domNode?.current) return this._domNode.current;
+  //   return this._domNode as any as HTMLDivElement;
+  // }
 
   dispose() {
     this.domNode.removeEventListener('scroll', this.onScroll);

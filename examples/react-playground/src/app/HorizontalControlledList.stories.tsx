@@ -34,7 +34,13 @@ const meta: Meta<typeof List> = {
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
           renderItem={(props) => {
-            const { item } = props;
+            const { item, itemMeta } = props;
+            if (itemMeta.getState().viewable)
+              console.log(
+                'item meta ',
+                itemMeta.getKey(),
+                itemMeta.getState().viewable
+              );
 
             return (
               <div
@@ -55,11 +61,11 @@ const meta: Meta<typeof List> = {
       </div>
     );
   },
-  title: 'HorizontalList',
+  title: 'List',
 };
 export default meta;
 
-export const SimpleList = {
+export const HorizontalControlledList = {
   args: {
     data: buildData(100),
     keyExtractor: defaultKeyExtractor,

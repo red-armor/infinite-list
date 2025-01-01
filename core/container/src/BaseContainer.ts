@@ -53,8 +53,6 @@ class BaseContainer {
   getContainerOffset() {
     const layout = this.getContainerLayout();
 
-    console.log('layout ', layout, this._getContainerLayout);
-
     if (!layout) return 0;
     return this._selectValue.selectOffset(layout) || 0;
   }

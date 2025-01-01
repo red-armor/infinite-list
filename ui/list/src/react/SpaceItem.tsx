@@ -19,8 +19,6 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
     }
   }, [itemMeta]);
 
-  console.log('style ', props);
-
   if (isSpace) {
     return <div style={style} />;
   }

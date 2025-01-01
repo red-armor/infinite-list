@@ -1,10 +1,7 @@
 import type { Meta } from '@storybook/react';
-import {
-  defaultKeyExtractor,
-  // type KeyExtractor,
-} from '@infinite-list/utils';
-import { List } from '@infinite-list/list/react';
 import { useRef } from 'react';
+import { defaultKeyExtractor } from '@infinite-list/utils';
+import { List } from '@infinite-list/list/react';
 
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
@@ -15,27 +12,25 @@ const meta: Meta<typeof List> = {
   component: List,
   render: (props) => {
     const { data, keyExtractor } = props;
-    const containerRef = useRef<HTMLDivElement>(null);
+    const scrollerRef = useRef<HTMLDivElement>(null);
+
     return (
       <div
-        ref={containerRef}
+        ref={scrollerRef}
         style={{
-          height: '400px',
+          height: '300px',
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
-          overflowY: 'auto',
         }}
       >
-        <div style={{ height: '300px' }}></div>
         <List
           id="basic"
           initialNumToRender={0}
           data={data}
+          horizontal
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
-          persistenceIndices={[0, 10, 2]}
-          scrollerRef={containerRef}
           renderItem={(props) => {
             const { item, itemMeta } = props;
             if (itemMeta.getState().viewable)
@@ -44,12 +39,11 @@ const meta: Meta<typeof List> = {
                 itemMeta.getKey(),
                 itemMeta.getState().viewable
               );
-
             return (
               <div
                 style={{
-                  height: '50px',
-                  width: '100%',
+                  height: '100%',
+                  width: '200px',
                   backgroundColor: '#efdbff',
                   paddingBottom: '5px',
                   boxSizing: 'border-box',
@@ -68,9 +62,9 @@ const meta: Meta<typeof List> = {
 };
 export default meta;
 
-export const SimpleList = {
+export const HorizontalUncontrolledList = {
   args: {
-    data: buildData(500),
+    data: buildData(100),
     keyExtractor: defaultKeyExtractor,
   },
 };

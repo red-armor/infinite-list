@@ -25,8 +25,11 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     scrollerRef,
     getContainerLayout,
   } = props;
+  /**
+   * passing with scrollerRef, use external scroller
+   */
   const usingControlledScroller = useMemo(() => {
-    return !scrollerRef;
+    return !!scrollerRef;
   }, [scrollerRef]);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,7 +60,7 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const dataRef = useRef(data);
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && usingControlledScroller) {
       const rect = containerRef.current.getBoundingClientRect();
       containerLayoutRef.current.x = rect.x;
       containerLayoutRef.current.y = rect.y;
@@ -79,7 +82,7 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
       style.height = '100%';
     }
 
-    if (usingControlledScroller) {
+    if (!usingControlledScroller) {
       style.width = '100%';
       style.height = '100%';
       if (horizontal) {
