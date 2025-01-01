@@ -27,7 +27,6 @@ const meta: Meta<typeof List> = {
           overflowY: 'auto',
         }}
       >
-        <div style={{ height: '300px' }}></div>
         <List
           id="basic"
           initialNumToRender={0}

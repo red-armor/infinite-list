@@ -26,6 +26,7 @@ const meta: Meta<typeof List> = {
           position: 'relative',
         }}
       >
+        <div style={{ height: '150px' }}></div>
         <List
           id="basic"
           initialNumToRender={0}
@@ -65,7 +66,7 @@ const meta: Meta<typeof List> = {
 };
 export default meta;
 
-export const SimpleUncontrolledList = {
+export const SimpleUncontrolledListWithContainer = {
   args: {
     data: buildData(500),
     keyExtractor: defaultKeyExtractor,

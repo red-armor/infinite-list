@@ -24,8 +24,10 @@ const meta: Meta<typeof List> = {
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
+          overflowY: 'auto',
         }}
       >
+        <div style={{ height: '300px' }}></div>
         <List
           id="basic"
           initialNumToRender={0}
@@ -33,6 +35,7 @@ const meta: Meta<typeof List> = {
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
           persistenceIndices={[0, 10, 2]}
+          scrollerRef={containerRef}
           renderItem={(props) => {
             const { item, itemMeta } = props;
             if (itemMeta.getState().viewable)
@@ -65,7 +68,7 @@ const meta: Meta<typeof List> = {
 };
 export default meta;
 
-export const SimpleUncontrolledList = {
+export const SimpleControlledListWithContainer = {
   args: {
     data: buildData(500),
     keyExtractor: defaultKeyExtractor,

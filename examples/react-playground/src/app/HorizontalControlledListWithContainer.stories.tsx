@@ -22,17 +22,31 @@ const meta: Meta<typeof List> = {
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
-          overflowX: 'auto',
-          display: 'flex',
-          flexDirection: 'row',
+          overflowX: 'scroll',
+          // display: 'inline-block',
+          // flexWrap: 'nowrap',
+          // display: 'flex',
+          // flexDirection: 'row',
         }}
       >
         <div
-          style={{ width: '310px', height: '100%', backgroundColor: 'red' }}
+          style={{
+            width: '310px',
+            height: '100%',
+            backgroundColor: 'red',
+            display: 'inline-block',
+          }}
         ></div>
-        {/* <div style={{ width: '270px', height: '100%', backgroundColor: 'red'}}></div> */}
+        <div
+          style={{
+            width: '1000px',
+            height: '100%',
+            backgroundColor: 'green',
+            display: 'inline-block',
+          }}
+        ></div>
 
-        <List
+        {/* <List
           id="basic"
           initialNumToRender={0}
           data={data}
@@ -64,7 +78,7 @@ const meta: Meta<typeof List> = {
             );
           }}
           keyExtractor={keyExtractor}
-        />
+        /> */}
       </div>
     );
   },
