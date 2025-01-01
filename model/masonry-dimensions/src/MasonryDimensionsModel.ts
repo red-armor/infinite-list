@@ -21,8 +21,8 @@ class MasonryDimensionsModel<
   private _columnIntervalTree: PrefixIntervalTree[];
   private _columnKeyIndexManager: KeyIndexManager[];
   private _strategies: MasonryDimensionStrategy<ItemT>[];
-  readonly persistenceIndices: number[];
-  readonly initialNumToRender: number;
+  // readonly persistenceIndices: number[];
+  // readonly initialNumToRender: number;
 
   constructor(props: MasonryDimensionsModelProps<ItemT>) {
     super(props);
