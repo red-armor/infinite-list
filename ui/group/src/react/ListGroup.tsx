@@ -69,7 +69,17 @@ const ListGroup = <ItemT extends GenericItemT>(
     if (containerRef.current && usingControlledScroller) {
       const rect = containerRef.current?.getBoundingClientRect();
       if (rect) {
-        containerLayoutRef.current = rect;
+        /**
+         * relative position offset to parent.. getBoundingClientRect is not correct.
+         * https://stackoverflow.com/questions/11634770/get-position-offset-of-element-relative-to-a-parent-container
+         * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+         */
+        containerLayoutRef.current = {
+          x: containerRef.current.offsetLeft,
+          y: containerRef.current.offsetTop,
+          width: rect.width,
+          height: rect.height,
+        };
         // containerLayoutRef.current.x = rect.x;
         // containerLayoutRef.current.y = rect.y;
         // containerLayoutRef.current.width = rect.width;

@@ -19,6 +19,7 @@ const renderItem = (props: RenderItemInfo<Item>) => {
   const { item, itemMeta } = props;
   if (itemMeta.getState().viewable)
     console.log('item meta ', itemMeta.getKey(), itemMeta.getState().viewable);
+
   return (
     <div
       style={{

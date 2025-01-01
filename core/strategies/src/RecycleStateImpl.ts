@@ -17,7 +17,7 @@ import {
 } from './types';
 import { ListGroupIndexInfo } from '@infinite-list/types';
 
-import { resolveToken } from './utils';
+// import { resolveToken } from './utils';
 import BaseState from './BaseState';
 import { log } from '@infinite-list/utils';
 import defaultValue from '@x-oasis/default-value';
@@ -300,6 +300,9 @@ class RecycleStateImpl<
         let itemMetaState = null;
 
         if (indexToOffsetMap[targetIndex] != null) {
+          /**
+           * [TODO]: maybe only sensitive item should calculate...
+           */
           if (itemMeta.isApproximateLayout) {
             const itemOffset = this.listContainer.getFinalIndexKeyOffset(
               targetIndex,
