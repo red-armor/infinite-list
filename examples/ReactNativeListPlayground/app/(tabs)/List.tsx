@@ -14,7 +14,14 @@ export default () => {
   const scrollViewRef = useRef<NativeScrollView>(null);
 
   const renderItem = useCallback((props: { item }) => {
-    const { item } = props;
+    const { item, itemMeta } = props;
+    if (itemMeta.getState().viewable)
+      console.log(
+        'item meta ',
+        itemMeta.getKey(),
+        itemMeta.getState().viewable
+      );
+
     return (
       <View style={{ height: 80, width: '100%', backgroundColor: '#fff' }}>
         <Text>{item.value}</Text>
@@ -33,10 +40,16 @@ export default () => {
         backgroundColor: '#fff',
       }}
     >
+      <View
+        style={{
+          height: 300,
+        }}
+      />
       <List
         data={data}
         renderItem={renderItem}
         id="basic"
+        scrollerRef={scrollViewRef}
         keyExtractor={keyExtractor}
         containerRef={scrollViewRef}
       />

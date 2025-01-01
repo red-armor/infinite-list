@@ -164,15 +164,16 @@
 //   );
 // };
 
-import List from './List';
-import MasonryList from './MasonryList';
 import { Text } from 'react-native';
-import Group from './Group';
-import HorizontalList from './HorizontalList';
+// import List from './List';
+// import MasonryList from './MasonryList';
+// import Group from './Group';
+// import HorizontalList from './HorizontalList';
+import HorizontalListWithContainer from './HorizontalListWithContainer';
 
 export default () => {
   // return <Group />;
   // return <MasonryList />;
-  return <List />;
-  return <HorizontalList />;
+  // return <List />;
+  return <HorizontalListWithContainer />;
 };

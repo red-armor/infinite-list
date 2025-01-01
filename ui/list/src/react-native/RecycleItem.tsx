@@ -10,7 +10,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
     data,
     dimensions,
     renderItem: RenderItem,
-    containerRef,
+    scrollerRef,
     horizontal,
   } = props;
   const itemRef = useRef<View>(null);
@@ -68,7 +68,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
-        containerRef.current,
+        scrollerRef.current,
         onMeasureSuccess,
         onMeasureFailed
       );

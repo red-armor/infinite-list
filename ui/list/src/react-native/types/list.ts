@@ -7,19 +7,19 @@ import {
   SpaceItemProps as CommonSpaceItemProps,
 } from '../../types';
 
-export type ContainerRef = RefObject<ScrollView | View | any>;
+export type ScrollerRef = RefObject<HTMLDivElement>;
 
 export type ListProps<ItemT extends GenericItemT = GenericItemT> =
   CommonListProps<ItemT> & {
-    containerRef: ContainerRef;
+    scrollerRef: ScrollerRef;
   };
 
 export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> =
   CommonRecycleItemProps<ItemT> & {
-    containerRef: ContainerRef;
+    scrollerRef: ScrollerRef;
   };
 
 export type SpaceItemProps<ItemT extends GenericItemT = GenericItemT> =
   CommonSpaceItemProps<ItemT> & {
-    containerRef: ContainerRef;
+    scrollerRef: ScrollerRef;
   };

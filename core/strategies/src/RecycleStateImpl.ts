@@ -314,10 +314,6 @@ class RecycleStateImpl<
               );
           }
           if (!itemMetaState) {
-            console.log(
-              'this.listContainer.getContainerOffset() ',
-              this.listContainer.getContainerOffset()
-            );
             itemMetaState =
               this.listContainer._configTuple.resolveItemMetaState(
                 itemMeta,
@@ -397,8 +393,6 @@ class RecycleStateImpl<
       true
     );
     const endIndexOffset = this.listContainer.getTotalLength();
-
-    console.log('totla ', endIndexOffset, startIndexOffset);
 
     spaceState.push({
       item: null,

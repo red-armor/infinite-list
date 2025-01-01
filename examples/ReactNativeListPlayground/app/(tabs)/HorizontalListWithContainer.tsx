@@ -50,6 +50,7 @@ export default () => {
         }}
         horizontal
       >
+        <View style={{ width: 400 }} />
         <List
           data={data}
           id="basic"

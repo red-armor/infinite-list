@@ -8,7 +8,7 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
     data,
     dimensions,
     renderItem: RenderItem,
-    containerRef,
+    scrollerRef,
     horizontal,
   } = props;
   const itemRef = useRef<View>(null);
@@ -41,7 +41,7 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
-        containerRef.current,
+        scrollerRef.current,
         onMeasureSuccess,
         onMeasureFailed
       );

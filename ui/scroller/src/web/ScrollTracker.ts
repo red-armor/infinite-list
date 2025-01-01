@@ -96,6 +96,13 @@ class ScrollTracker {
     return dom.scrollTop;
   }
 
+  /**
+   *
+   * @param dom
+   * @returns
+   *
+   * visibleLength should be direction sensitive
+   */
   selectVisibleLength(dom: HTMLElement = this.domNode) {
     if (this._horizontal) return dom.clientWidth;
     return dom.clientHeight;
