@@ -8,6 +8,7 @@ import {
   ForwardedRef,
   useContext,
 } from 'react';
+import { ItemLayout } from '@infinite-list/types';
 import {
   View,
   ViewStyle,
@@ -31,7 +32,16 @@ const MasonryList = <ItemT extends GenericItemT>(
   props: MasonryListProps<ItemT>
 ) => {
   const [state, setState] = useState<MasonryStateResults<ItemT>>();
-  const { id, data, column = 2, getColumnWidth, forwardRef, ...rest } = props;
+  const {
+    id,
+    data,
+    column = 2,
+    getColumnWidth,
+    horizontal = false,
+    getContainerLayout,
+    forwardRef,
+    ...rest
+  } = props;
   const contextValues = useContext(ScrollViewContext);
 
   const listId = useMemo(() => id || `__masonry_list${count++}__`, []);
@@ -50,29 +60,34 @@ const MasonryList = <ItemT extends GenericItemT>(
     nextResolveColumnInfo()
   );
 
+  const containerLayoutRef = useRef<ItemLayout>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   const listRef = useRef<View>(null);
+  const containerStyle = useMemo<ViewStyle>(() => {
+    const style: ViewStyle = {
+      position: 'relative',
+      display: 'flex',
+      /**
+       * to make the backdrop div to render in column style
+       */
+      flexDirection: 'row',
+    };
 
-  const style: {
-    [key: string]: ViewStyle;
-  } = useMemo(
-    () => ({
-      container: {
-        width: '100%',
-        height: '100%',
-        overflowY: 'auto',
-        position: 'relative',
-        display: 'flex',
-        /**
-         * to make the backdrop div to render in column style
-         */
-        flexDirection: 'row',
-      },
-    }),
-    []
-  );
+    return style;
+  }, []);
 
-  const onLayoutHandler = useCallback((event: LayoutChangeEvent) => {
-    const { width } = event.nativeEvent.layout;
+  const onLayoutHandler = useCallback((e: LayoutChangeEvent) => {
+    const scrollMetrics = contextValues.getScrollHelper().getScrollMetrics();
+    dimensionsModel.updateScrollMetrics(scrollMetrics);
+
+    const rect = e.nativeEvent.layout;
+    containerLayoutRef.current = rect;
+
+    const { width } = e.nativeEvent.layout;
     if (!getColumnWidth) {
       setColumnDimensions(nextResolveColumnInfo(width));
     }
@@ -92,6 +107,8 @@ const MasonryList = <ItemT extends GenericItemT>(
         data,
         column,
         ...rest,
+        getContainerLayout:
+          getContainerLayout || (() => containerLayoutRef.current),
         stateListener,
       }),
     []
@@ -146,7 +163,7 @@ const MasonryList = <ItemT extends GenericItemT>(
     <View
       id={listId}
       onLayout={onLayoutHandler}
-      style={style.container}
+      style={containerStyle}
       ref={forwardRef || listRef}
     >
       {state?.map((columnState, index) => (

@@ -64,7 +64,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
         display: 'flex',
         height: '100%',
         flexDirection: 'row',
-        backgroundColor: 'blue',
+        // backgroundColor: 'blue',
         position: 'relative',
       };
     return style;

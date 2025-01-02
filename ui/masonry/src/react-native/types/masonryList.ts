@@ -11,24 +11,24 @@ import {
 
 export { ColumnDimensionInfo };
 
-export type ContainerRef = RefObject<ScrollView | View | any>;
+export type ScrollerRef = RefObject<ScrollView | View | any>;
 export type MasonryListProps<ItemT extends GenericItemT = GenericItemT> =
   CommonMasonryListProps<ItemT> & {
-    containerRef: ContainerRef;
+    scrollerRef: ScrollerRef;
     forwardRef?: ForwardedRef<View>;
   };
 
 export type RecycleItemProps<ItemT extends GenericItemT = GenericItemT> =
   CommonRecycleItemProps<ItemT> & {
-    containerRef: ContainerRef;
+    scrollerRef: ScrollerRef;
   };
 
 export type SpaceItemProps<ItemT extends GenericItemT = GenericItemT> =
   CommonSpaceItemProps<ItemT> & {
-    containerRef: ContainerRef;
+    scrollerRef: ScrollerRef;
   };
 export type ColumnStateRendererProps<
   ItemT extends GenericItemT = GenericItemT
 > = CommonColumnStateRendererProps<ItemT> & {
-  containerRef: ContainerRef;
+  scrollerRef: ScrollerRef;
 };

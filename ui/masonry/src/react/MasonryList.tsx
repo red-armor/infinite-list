@@ -76,12 +76,19 @@ export const MasonryList = <ItemT extends GenericItemT>(
   });
 
   const containerStyle = useMemo<CSSProperties>(() => {
-    const style: CSSProperties = { position: 'relative' };
-    if (horizontal) {
-      style.display = 'flex';
-      style.flexDirection = 'column';
-      style.height = '100%';
-    }
+    const style: CSSProperties = {
+      position: 'relative',
+      display: 'flex',
+      /**
+       * to make the backdrop div to render in column style
+       */
+      flexDirection: 'row',
+    };
+    // if (horizontal) {
+    //   style.display = 'flex';
+    //   style.flexDirection = 'column';
+    //   style.height = '100%';
+    // }
 
     if (!usingControlledScroller) {
       style.width = '100%';
