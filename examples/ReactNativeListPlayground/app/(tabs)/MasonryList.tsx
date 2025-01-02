@@ -11,7 +11,7 @@ const buildData = (count: number, startIndex = 0) =>
   }));
 
 export default () => {
-  const data = useMemo(() => buildData(10000), []);
+  const data = useMemo(() => buildData(1500), []);
   const scrollViewRef = useRef<NativeScrollView>(null);
 
   const renderItem = useCallback((props) => {
