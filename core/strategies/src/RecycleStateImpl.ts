@@ -325,6 +325,8 @@ class RecycleStateImpl<
                   indexToOffsetMap[targetIndex] +
                   this.listContainer.getContainerOffset()
               );
+
+            // console.log('update =====', this.listContainer._scrollMetrics, indexToOffsetMap[targetIndex], itemMetaState)
           }
 
           itemMeta?.setItemMetaState(itemMetaState);

@@ -22,7 +22,7 @@ export type ColumnStateRendererProps<
   ItemT extends GenericItemT = GenericItemT
 > = Omit<MasonryListProps<ItemT>, 'id' | 'column' | 'data' | 'forwardRef'> & {
   columnIndex: number;
-  horizontal: boolean;
+  horizontal?: boolean;
   dimensions: MasonryDimension<ItemT>;
   state: MasonryColumnStateResults<ItemT>;
   columnDimensions: ColumnDimensionInfo[];

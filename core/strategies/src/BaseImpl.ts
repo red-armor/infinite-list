@@ -271,9 +271,22 @@ abstract class BaseImpl<
     }
   }
 
+  /**
+   *
+   * @param scrollMetrics
+   * @returns
+   *
+   *
+   */
   dispatchMetrics(
     scrollMetrics: ScrollMetrics | undefined = this._scrollMetrics
   ): [ListStateResult<ItemT>, ListStateResult<ItemT>] {
+    /**
+     * due to masonryList use dispatchMetrics...this._scrollMetrics
+     * is null
+     */
+    this._scrollMetrics = scrollMetrics;
+
     if (!scrollMetrics)
       return [this._stateHub.getStateResult(), this._stateHub.getStateResult()];
     const state = this._store.dispatchMetrics({

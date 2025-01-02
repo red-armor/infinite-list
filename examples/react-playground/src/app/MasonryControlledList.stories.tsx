@@ -26,12 +26,12 @@ const meta: Meta<typeof MasonryList> = {
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
-          // overflowY: 'auto',
+          overflowY: 'auto',
         }}
       >
         <MasonryList
           id="basic"
-          // scrollerRef={containerRef}
+          scrollerRef={containerRef}
           data={buildData(10000)}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}

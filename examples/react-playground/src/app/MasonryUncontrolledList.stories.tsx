@@ -33,7 +33,12 @@ const meta: Meta<typeof MasonryList> = {
             const { item, itemMeta } = props;
             const indexInfo = itemMeta.getIndexInfo();
             const index = indexInfo?.index || 0;
-
+            if (itemMeta.getState().viewable)
+              console.log(
+                'item meta ',
+                itemMeta.getKey(),
+                itemMeta.getState().viewable
+              );
             return (
               <div
                 style={{

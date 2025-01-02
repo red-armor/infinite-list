@@ -181,6 +181,8 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
   ) {
     if (!scrollMetrics) return;
 
+    console.log('scrollMetrics ', scrollMetrics);
+
     if (typeof this.stateListener === 'function') {
       const stateResults = this._dataModel.getStrategies().map((strategy) => {
         const stateResult = strategy.dispatchMetrics(scrollMetrics);

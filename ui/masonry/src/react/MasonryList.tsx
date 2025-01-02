@@ -33,6 +33,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
     getColumnWidth,
     scrollerRef,
     forwardRef,
+    horizontal,
     getContainerLayout,
     ...rest
   } = props;
@@ -74,24 +75,26 @@ export const MasonryList = <ItemT extends GenericItemT>(
     height: 0,
   });
 
-  const style: {
-    [key: string]: CSSProperties;
-  } = useMemo(
-    () => ({
-      container: {
-        width: '100%',
-        height: '100%',
-        overflowY: 'auto',
-        position: 'relative',
-        display: 'flex',
-        /**
-         * to make the backdrop div to render in column style
-         */
-        flexDirection: 'row',
-      },
-    }),
-    []
-  );
+  const containerStyle = useMemo<CSSProperties>(() => {
+    const style: CSSProperties = { position: 'relative' };
+    if (horizontal) {
+      style.display = 'flex';
+      style.flexDirection = 'column';
+      style.height = '100%';
+    }
+
+    if (!usingControlledScroller) {
+      style.width = '100%';
+      style.height = '100%';
+      if (horizontal) {
+        style.overflowX = 'auto';
+      } else {
+        style.overflowY = 'auto';
+      }
+    }
+
+    return style;
+  }, [usingControlledScroller]);
 
   useEffect(() => {
     if (containerRef.current && usingControlledScroller) {
@@ -167,7 +170,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
   return (
     <div
       id={listId}
-      style={style.container}
+      style={containerStyle}
       ref={forwardRef || containerRef}
       className="masonry-list-container"
     >
@@ -175,6 +178,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
         <ColumnStateRenderer
           {...rest}
           key={index}
+          horizontal={horizontal}
           state={columnState}
           columnIndex={index}
           dimensions={dimensionsModel}

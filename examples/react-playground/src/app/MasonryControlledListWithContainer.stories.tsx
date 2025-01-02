@@ -2,6 +2,7 @@ import type { Meta } from '@storybook/react';
 import { defaultKeyExtractor } from '@infinite-list/utils';
 import { MasonryList } from '@infinite-list/masonry/react';
 import { KeyExtractor } from '@infinite-list/dimensions-model';
+import { useRef } from 'react';
 
 type Item = {
   key: string;
@@ -15,17 +16,24 @@ const buildData = (count: number) =>
 const meta: Meta<typeof MasonryList> = {
   component: MasonryList,
   render: () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+
     return (
       <div
+        ref={containerRef}
         style={{
           height: '400px',
           width: '600px',
           backgroundColor: '#efefef',
           position: 'relative',
+          overflowY: 'auto',
         }}
       >
+        <div style={{ height: '300px' }}></div>
+
         <MasonryList
           id="basic"
+          scrollerRef={containerRef}
           data={buildData(10000)}
           recyclerBufferSize={100}
           recyclerReservedBufferPerBatch={50}
@@ -33,7 +41,12 @@ const meta: Meta<typeof MasonryList> = {
             const { item, itemMeta } = props;
             const indexInfo = itemMeta.getIndexInfo();
             const index = indexInfo?.index || 0;
-
+            if (itemMeta.getState().viewable)
+              console.log(
+                'item meta ',
+                itemMeta.getKey(),
+                itemMeta.getState().viewable
+              );
             return (
               <div
                 style={{
