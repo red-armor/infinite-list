@@ -57,7 +57,7 @@ const meta: Meta<typeof MasonryList> = {
 };
 export default meta;
 
-export const SimpleMasonryList = {
+export const MasonryUncontrolledList = {
   args: {
     data: buildData(100),
     keyExtractor: defaultKeyExtractor,

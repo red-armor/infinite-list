@@ -51,7 +51,6 @@ export default () => {
         id="basic"
         scrollerRef={scrollViewRef}
         keyExtractor={keyExtractor}
-        containerRef={scrollViewRef}
       />
     </ScrollView>
   );

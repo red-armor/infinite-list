@@ -167,13 +167,13 @@
 import { Text } from 'react-native';
 // import List from './List';
 // import MasonryList from './MasonryList';
-// import Group from './Group';
+import Group from './Group';
 // import HorizontalList from './HorizontalList';
-import HorizontalListWithContainer from './HorizontalListWithContainer';
+// import HorizontalListWithContainer from './HorizontalListWithContainer';
 
 export default () => {
-  // return <Group />;
+  return <Group />;
   // return <MasonryList />;
   // return <List />;
-  return <HorizontalListWithContainer />;
+  // return <HorizontalListWithContainer />;
 };

@@ -29,13 +29,18 @@ export default () => {
       itemMetaRef.current = itemMeta;
     }
 
+    if (itemMeta.getState().viewable)
+      console.log(
+        'item meta ',
+        itemMeta.getKey(),
+        itemMeta.getState().viewable
+      );
+
     useEffect(() => {
       return () => {
         console.log('unmount ------------------');
       };
     }, []);
-
-    console.log('rest ---- ', rest);
 
     useEffect(() => {
       if (initRef.current) console.log('mount ', itemMeta.getKey());

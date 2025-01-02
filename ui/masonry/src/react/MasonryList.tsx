@@ -7,6 +7,7 @@ import {
   forwardRef as ReactForwardRef,
   ForwardedRef,
   CSSProperties,
+  RefObject,
 } from 'react';
 import {
   GenericItemT,
@@ -17,6 +18,7 @@ import { MasonryListProps } from './types';
 import ColumnStateRenderer from './ColumnStateRender';
 import { ScrollTracker } from '@infinite-list/scroller/web';
 import { resolveColumnInfo } from '../common/utils';
+import { ItemLayout } from '@infinite-list/types';
 
 let count = 0;
 
@@ -24,7 +26,16 @@ export const MasonryList = <ItemT extends GenericItemT>(
   props: MasonryListProps<ItemT>
 ) => {
   const [state, setState] = useState<MasonryStateResults<ItemT>>();
-  const { id, data, column = 2, getColumnWidth, forwardRef, ...rest } = props;
+  const {
+    id,
+    data,
+    column = 2,
+    getColumnWidth,
+    scrollerRef,
+    forwardRef,
+    getContainerLayout,
+    ...rest
+  } = props;
 
   const scrollHandlerRef = useRef<ScrollTracker>();
 
@@ -44,7 +55,24 @@ export const MasonryList = <ItemT extends GenericItemT>(
     nextResolveColumnInfo()
   );
 
-  const listRef = useRef<HTMLDivElement>(null);
+  /**
+   * passing with scrollerRef, use external scroller
+   */
+  const usingControlledScroller = useMemo(() => {
+    return !!scrollerRef;
+  }, [scrollerRef]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollerDomRef = useMemo<RefObject<HTMLDivElement>>(() => {
+    if (scrollerRef) return scrollerRef;
+    return containerRef as RefObject<HTMLDivElement>;
+  }, []);
+  const containerLayoutRef = useRef<ItemLayout>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
 
   const style: {
     [key: string]: CSSProperties;
@@ -66,8 +94,23 @@ export const MasonryList = <ItemT extends GenericItemT>(
   );
 
   useEffect(() => {
+    if (containerRef.current && usingControlledScroller) {
+      const rect = containerRef.current.getBoundingClientRect();
+      /**
+       * relative position offset to parent.. getBoundingClientRect is not correct.
+       * https://stackoverflow.com/questions/11634770/get-position-offset-of-element-relative-to-a-parent-container
+       * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+       */
+      containerLayoutRef.current = {
+        x: containerRef.current.offsetLeft,
+        y: containerRef.current.offsetTop,
+        width: rect.width,
+        height: rect.height,
+      };
+    }
+
     if (!getColumnWidth) {
-      const boundingRect = listRef.current?.getBoundingClientRect();
+      const boundingRect = containerRef.current?.getBoundingClientRect();
       if (boundingRect) {
         const { width } = boundingRect;
         setColumnDimensions(nextResolveColumnInfo(width));
@@ -84,7 +127,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
 
   useEffect(() => {
     scrollHandlerRef.current = new ScrollTracker({
-      domNode: listRef.current!,
+      domNode: scrollerDomRef,
       onScroll: () => {
         dimensionsModel.updateScrollMetrics(
           scrollHandlerRef.current?.getScrollMetrics()
@@ -107,6 +150,8 @@ export const MasonryList = <ItemT extends GenericItemT>(
         data,
         column,
         ...rest,
+        getContainerLayout:
+          getContainerLayout || (() => containerLayoutRef.current),
         stateListener,
       }),
     []
@@ -123,7 +168,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
     <div
       id={listId}
       style={style.container}
-      ref={forwardRef || listRef}
+      ref={forwardRef || containerRef}
       className="masonry-list-container"
     >
       {state?.map((columnState, index) => (
