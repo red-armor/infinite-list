@@ -1,4 +1,3 @@
-import throttle from '@x-oasis/throttle';
 import React, {
   FC,
   ForwardedRef,
@@ -12,6 +11,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
+import throttle from '@x-oasis/throttle';
 
 import useScrollEnabled from '../hooks/useScrollEnabled';
 import {

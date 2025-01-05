@@ -1,27 +1,19 @@
 import { MutableRefObject } from 'react';
-import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
-  View,
-} from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import ScrollHelper from './ScrollHelper';
-import {
-  ContentSizeChangeHandler,
-  DataModelDimensions,
-  EventHandler,
-  ScrollHandlerName,
-  SetScrollUpdating,
-  SpectrumScrollViewRef,
-} from './types';
+import { DataModelDimensions, SpectrumScrollViewRef } from './types';
 
+/**
+ * Marshal is bound to ScrollView which means every ScrollView will has its own
+ * marshal, and you can get marshal value through `ScrollViewContext`
+ */
 class Marshal {
   readonly _horizontal: boolean;
 
   readonly _animated: boolean;
 
-  readonly _rootScrollHelper: ScrollHelper;
+  readonly _rootScrollHelper?: ScrollHelper;
 
   readonly _id: string;
 
@@ -41,19 +33,17 @@ class Marshal {
 
   private _scrollUpdating: boolean;
 
-  private _setScrollUpdating: SetScrollUpdating;
+  // private _onScroll: EventHandler;
 
-  private _onScroll: EventHandler;
+  // private _onScrollEndDrag: EventHandler;
 
-  private _onScrollEndDrag: EventHandler;
+  // private _onScrollBeginDrag: EventHandler;
 
-  private _onScrollBeginDrag: EventHandler;
+  // private _onMomentumScrollEnd: EventHandler;
 
-  private _onMomentumScrollEnd: EventHandler;
+  // private _onMomentumScrollBegin: EventHandler;
 
-  private _onMomentumScrollBegin: EventHandler;
-
-  private _onContentSizeChange: ContentSizeChangeHandler;
+  // private _onContentSizeChange: ContentSizeChangeHandler;
 
   private _outerMostVerticalMarshal: Marshal;
 
@@ -69,7 +59,6 @@ class Marshal {
     parentMarshal: Marshal;
     scrollUpdating?: boolean;
     scrollHelper?: ScrollHelper;
-    setScrollUpdating: SetScrollUpdating;
     outerMostVerticalMarshal: Marshal;
     outerMostHorizontalMarshal: Marshal;
     removeClippedSubviews: boolean;
@@ -87,7 +76,6 @@ class Marshal {
       removeClippedSubviews,
       outerMostVerticalMarshal,
       outerMostHorizontalMarshal,
-      setScrollUpdating,
     } = props;
     this._ref = ref;
     this._id = id;
@@ -96,13 +84,12 @@ class Marshal {
     this._dimensions = dimensions;
 
     this._parentMarshal = parentMarshal;
-    this._setScrollUpdating = setScrollUpdating;
     this._outerMostVerticalMarshal = outerMostVerticalMarshal;
     this._outerMostHorizontalMarshal = outerMostHorizontalMarshal;
 
     this.register();
     this._scrollUpdating = scrollUpdating;
-    this._rootScrollHelper = scrollHelper!;
+    this._rootScrollHelper = scrollHelper;
     this._removeClippedSubviews = removeClippedSubviews;
   }
 
@@ -112,12 +99,10 @@ class Marshal {
 
   enableScrollUpdating() {
     this._scrollUpdating = true;
-    this._setScrollUpdating(true);
   }
 
   disableScrollUpdating() {
     this._scrollUpdating = false;
-    this._setScrollUpdating(false);
   }
 
   get scrollUpdateEnabled() {
@@ -186,7 +171,7 @@ class Marshal {
   }
 
   getRootRef() {
-    return this._rootScrollHelper.getRef();
+    return this._rootScrollHelper?.getRef();
   }
 
   getAnimated() {
@@ -219,43 +204,43 @@ class Marshal {
     if (index !== -1) children.splice(index, 1);
   }
 
-  setContentSizeChangeHandler(handler: ContentSizeChangeHandler) {
-    this._onContentSizeChange = handler;
-  }
+  // setContentSizeChangeHandler(handler: ContentSizeChangeHandler) {
+  //   this._onContentSizeChange = handler;
+  // }
 
-  setScrollHandler(handler: EventHandler) {
-    this._onScroll = handler;
-  }
+  // setScrollHandler(handler: EventHandler) {
+  //   this._onScroll = handler;
+  // }
 
-  setMomentumScrollBeginHandler(handler: EventHandler) {
-    this._onMomentumScrollBegin = handler;
-  }
+  // setMomentumScrollBeginHandler(handler: EventHandler) {
+  //   this._onMomentumScrollBegin = handler;
+  // }
 
-  setMomentumScrollEndHandler(handler: EventHandler) {
-    this._onMomentumScrollEnd = handler;
-  }
+  // setMomentumScrollEndHandler(handler: EventHandler) {
+  //   this._onMomentumScrollEnd = handler;
+  // }
 
-  setScrollBeginDragHandler(handler: EventHandler) {
-    this._onScrollBeginDrag = handler;
-  }
+  // setScrollBeginDragHandler(handler: EventHandler) {
+  //   this._onScrollBeginDrag = handler;
+  // }
 
-  setScrollEndDragHandler(handler: EventHandler) {
-    this._onScrollEndDrag = handler;
-  }
+  // setScrollEndDragHandler(handler: EventHandler) {
+  //   this._onScrollEndDrag = handler;
+  // }
 
-  handleSizeChange(w: number, h: number) {
-    if (this._onContentSizeChange) this._onContentSizeChange(w, h);
-    this._children.forEach((marshal) => marshal.handleSizeChange(w, h));
-  }
+  // handleSizeChange(w: number, h: number) {
+  //   if (this._onContentSizeChange) this._onContentSizeChange(w, h);
+  //   this._children.forEach((marshal) => marshal.handleSizeChange(w, h));
+  // }
 
-  handleEvent(
-    eventName: ScrollHandlerName,
-    event: NativeSyntheticEvent<NativeScrollEvent>
-  ) {
-    const handler = this[`_${eventName}`];
-    if (handler) handler(event);
-    this._children.forEach((marshal) => marshal.handleEvent(eventName, event));
-  }
+  // handleEvent(
+  //   eventName: ScrollHandlerName,
+  //   event: NativeSyntheticEvent<NativeScrollEvent>
+  // ) {
+  //   const handler = this[`_${eventName}`];
+  //   if (handler) handler(event);
+  //   this._children.forEach((marshal) => marshal.handleEvent(eventName, event));
+  // }
 }
 
 export default Marshal;

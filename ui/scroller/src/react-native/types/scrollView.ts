@@ -16,17 +16,20 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
-// @ts-ignore
-import PagerView from 'react-native-pager-view';
+
 import {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
-} from '@infinite-list/data-model';
+} from '@infinite-list/viewable';
 
 import Marshal from '../Marshal';
 import ScrollEventHelper from '../ScrollEventHelper';
 import ScrollHelper from '../ScrollHelper';
 import { StickyMode } from './stickyMarshal';
+
+// import PagerView from 'react-native-pager-view';
+// TODO
+type PagerView = any;
 
 export interface ViewRendererProps extends ViewProps {
   ref?: ForwardedRef<View>;
@@ -35,9 +38,10 @@ export interface ViewRendererProps extends ViewProps {
 
 export type GetScrollHelper = () => ScrollHelper;
 
-export type SpectrumScrollViewRef = MutableRefObject<
-  ScrollView | View | undefined
->;
+export type SpectrumScrollViewRef = MutableRefObject<ScrollView>;
+// export type SpectrumScrollViewRef = MutableRefObject<
+//   ScrollView | View | undefined
+// >;
 
 export interface ViewRendererPropsWithForwardRef extends ScrollViewProps {
   forwardRef?: ForwardedRef<View>;
@@ -134,7 +138,17 @@ export type SpectrumScrollViewProps = ScrollViewProps &
      */
     pagerPositionRef?: MutableRefObject<Animated.Value>;
 
+    /**
+     * enable / disable trigger scroll event in current ScrollView
+     */
     scrollUpdating?: boolean;
+    /**
+     *
+     * @param marshal
+     * @returns
+     *
+     * to get scroller marshal from passing props, just like `setRef`
+     */
     setMarshal?: (marshal: Marshal) => void;
 
     animatedX?: MutableRefObject<Animated.Value>;
@@ -175,9 +189,10 @@ export enum ScrollHandlerName {
   onMomentumScrollBegin = 'onMomentumScrollBegin',
 }
 
-export type SyntheticEventHandler = (
-  event: NativeSyntheticEvent<NativeScrollEvent>
-) => void;
+export type SyntheticEventHandlerEvent =
+  NativeSyntheticEvent<NativeScrollEvent>;
+
+export type SyntheticEventHandler = (event: SyntheticEventHandlerEvent) => void;
 
 export type ContentSizeChangeHandler = (w: number, h: number) => void;
 export type EventHandler = SyntheticEventHandler;
@@ -201,3 +216,11 @@ export type OnViewableItemChangedInfo = {
 export type OnViewableItemsChanged =
   | ((info: OnViewableItemChangedInfo) => void)
   | null;
+
+export type ScrollToOption =
+  | number
+  | {
+      x?: number | undefined;
+      y?: number | undefined;
+      animated?: boolean | undefined;
+    };

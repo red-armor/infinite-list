@@ -1,4 +1,4 @@
-import { ItemMeta } from '@infinite-list/data-model';
+import { ItemMeta } from '@infinite-list/item-meta';
 import React, { PropsWithChildren, memo } from 'react';
 
 const Item = memo<

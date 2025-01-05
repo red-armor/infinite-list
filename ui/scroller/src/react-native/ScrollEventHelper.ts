@@ -1,6 +1,5 @@
 import noop from '@x-oasis/noop';
 
-import Marshal from './Marshal';
 import ScrollHelper from './ScrollHelper';
 import {
   ContentSizeChangeHandler,
@@ -8,10 +7,17 @@ import {
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventHandlerSubscriptions,
   SyntheticEventHandler,
+  SyntheticEventHandlerEvent,
 } from './types';
+import Marshal from './Marshal';
 
+/**
+ * ScrollEventHelper is bound to ScrollView, Every ScrollView will has its own
+ * `ScrollEventHelper`. then ScrollEventHelper will register to ScrollHelper,
+ * the ScrollEventHelper event is actually triggered by root ScrollHelper.
+ *
+ */
 class ScrollEventHelper {
-  public marshal: Marshal;
   private _disposer: Function;
   private _scrollHelper: ScrollHelper;
   private _onScroll: SyntheticEventHandler | undefined;
@@ -23,6 +29,7 @@ class ScrollEventHelper {
   private _onScrollToTop: SyntheticEventHandler | undefined;
   private _subscriptions: ScrollEventHandlerSubscriptions;
   private _onEndReached: (props: { distanceFromEnd: number }) => void;
+  public marshal: Marshal;
 
   constructor(props: {
     marshal: Marshal;
@@ -49,7 +56,6 @@ class ScrollEventHelper {
       onMomentumScrollBegin,
     } = props;
 
-    this.marshal = marshal;
     this._onEndReached = onEndReached;
     this._onScroll = onScroll;
     this._scrollHelper = scrollHelper;
@@ -59,6 +65,7 @@ class ScrollEventHelper {
     this._onMomentumScrollEnd = onMomentumScrollEnd;
     this._onMomentumScrollBegin = onMomentumScrollBegin;
     this._onScrollToTop = onScrollToTop;
+    this.marshal = marshal;
 
     this._subscriptions = {
       onScroll: [],
@@ -100,21 +107,22 @@ class ScrollEventHelper {
 
     handlers.forEach((handler) => {
       if (typeof handler === 'function') handler.apply(this, rest);
+      // if (typeof handler === 'function') handler.apply(this, rest);
     });
   }
 
-  onScroll(e) {
+  onScroll(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScroll === 'function') this._onScroll(e);
     this._dispatchEvent('onScroll', e);
   }
 
-  onScrollBeginDrag(e) {
+  onScrollBeginDrag(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScrollBeginDrag === 'function')
       this._onScrollBeginDrag(e);
     this._dispatchEvent('onScrollBeginDrag', e);
   }
 
-  onScrollEndDrag(e) {
+  onScrollEndDrag(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScrollEndDrag === 'function') this._onScrollEndDrag(e);
     this._dispatchEvent('onScrollEndDrag', e);
   }
@@ -125,19 +133,19 @@ class ScrollEventHelper {
     this._dispatchEvent('onContentSizeChange', w, h);
   }
 
-  onMomentumScrollBegin(e) {
+  onMomentumScrollBegin(e: SyntheticEventHandlerEvent) {
     if (typeof this._onMomentumScrollBegin === 'function')
       this._onMomentumScrollBegin(e);
     this._dispatchEvent('onMomentumScrollBegin', e);
   }
 
-  onMomentumScrollEnd(e) {
+  onMomentumScrollEnd(e: SyntheticEventHandlerEvent) {
     if (typeof this._onMomentumScrollEnd === 'function')
       this._onMomentumScrollEnd(e);
     this._dispatchEvent('onMomentumScrollEnd', e);
   }
 
-  onScrollToTop(e) {
+  onScrollToTop(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScrollToTop === 'function') this._onScrollToTop(e);
     this._dispatchEvent('onScrollToTop', e);
   }

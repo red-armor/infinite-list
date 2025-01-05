@@ -1,4 +1,5 @@
-import { ItemMeta, ItemsDimensions } from '@infinite-list/data-model';
+import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import { ItemMeta } from '@infinite-list/item-meta';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
@@ -35,6 +36,9 @@ import {
 } from './types';
 
 /**
+ * The same direction ScrollView only has one ScrollHelper, it only belong to the root
+ * ScrollView. The usage of ScrollHelper is to trigger registered ScrollEventHelper
+ *
  * - nested scroller 对于嵌套的scrollHelper，处理视窗逻辑主要是分两种情况
  *   - 初始化
  *     - onContentSizeChanged: 解没有parentScrollHelper的情况，也就是自己就是顶层
@@ -112,7 +116,7 @@ class ScrollHelper {
     horizontal: boolean;
     animatedValue: MutableRefObject<Animated.Value>;
     parentScrollHelper?: ScrollHelper;
-    ref: MutableRefObject<ScrollView | View | undefined>;
+    ref: SpectrumScrollViewRef;
   }) {
     const {
       id,
@@ -312,7 +316,10 @@ class ScrollHelper {
     return this.selectValue;
   }
 
-  triggerScrollEventHelpers(handlerName: string, ...rest) {
+  triggerScrollEventHelpers(
+    handlerName: ScrollEventHandlerSubscriptionKeys,
+    ...rest
+  ) {
     this._scrollEventHelpers.forEach((helper) => {
       if (helper.marshal.scrollUpdateEnabled) {
         helper[handlerName](...rest);
@@ -453,12 +460,14 @@ class ScrollHelper {
 
   scrollTo(options: { x?: number; y?: number; animated?: boolean }) {
     const ref = this.getRef();
-    if (ref.current?.getNode) {
-      if (ref.current.scrollTo) {
-        ref.current.scrollTo(options);
-      } else {
-        ref.current.getNode().scrollTo(options);
-      }
+    if (ref.current.scrollTo) {
+      ref.current.scrollTo(options);
+    } else if (
+      // @ts-expect-error
+      ref.current?.getNode
+    ) {
+      // @ts-expect-error
+      ref.current.getNode().scrollTo(options);
     } else {
       (ref as MutableRefObject<ScrollView>).current.scrollTo(options);
     }
