@@ -1,11 +1,7 @@
-// @ts-ignore
-// import LottieView from '@xhs/lottie-react-native';
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-// @ts-ignore
 import sourceRed from './loading-red.json';
-// @ts-ignore
 import sourceGray from './loading.json';
 
 const styles = StyleSheet.create({
@@ -16,7 +12,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// @ts-ignore
 const LoadingIcon = (props) => {
   const { style, loading = true, progress, type = 'gray' } = props;
   const source = type === 'gray' ? sourceGray : sourceRed;
@@ -25,9 +20,7 @@ const LoadingIcon = (props) => {
   // 如果有progress，则通过props控制旋转
   useEffect(() => {
     if (loading && progress === undefined) {
-      // @ts-ignore
       animation?.current?.play();
-      // @ts-ignore
       return animation.current.stop;
     }
   }, [animation, progress]);

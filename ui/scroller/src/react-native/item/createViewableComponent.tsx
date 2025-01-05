@@ -8,7 +8,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef, // useState,
+  useRef,
 } from 'react';
 
 import ScrollViewContext from '../context/ScrollViewContext';
@@ -48,7 +48,6 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
     const containerStyle = useMemo(
       () =>
         [].concat(_style, {
-          // @ts-ignore
           elevation: 0,
         }),
       [_style]
@@ -68,8 +67,6 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
         if (typeof _onMeasureLayout === 'function') {
           _onMeasureLayout(x, y, width, height);
         }
-        // TODO
-        // @ts-ignore
         const meta = dimensions.ensureKeyMeta(
           viewableItemHelperKeyRef.current,
           ownerId
@@ -90,7 +87,6 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
               }
             );
           } else {
-            // @ts-ignore
             dimensions.setKeyItemLayout(viewableItemHelperKeyRef.current, {
               x,
               y,
@@ -110,7 +106,6 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
 
     const { handler, layoutHandler } = useMeasureLayout(
       viewRef,
-      // @ts-ignore
       marshal.getRootRef(),
       {
         onLayout,
@@ -124,7 +119,6 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
       // ignore first time
       if (viewableItemHelperKeyRef.current !== viewableItemHelperKey) {
         viewableItemHelperKeyRef.current = viewableItemHelperKey;
-        // @ts-ignore
         const meta = dimensions.ensureKeyMeta(
           viewableItemHelperKeyRef.current,
           ownerId
@@ -151,7 +145,6 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
 
     const viewableItemContextValue = useMemo(() => {
       return {
-        // @ts-ignore
         itemMeta: dimensions.getKeyMeta(viewableItemHelperKey, ownerId),
       };
     }, [viewableItemHelperKey]);

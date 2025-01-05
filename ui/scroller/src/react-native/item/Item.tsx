@@ -14,7 +14,7 @@ const Item = memo<
     });
   }
 
-  return <React.Fragment>{children}</React.Fragment>;
+  return children;
 });
 
 export default Item;

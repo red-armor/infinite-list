@@ -68,6 +68,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
+        // @ts-expect-error
         scrollerRef.current,
         onMeasureSuccess,
         onMeasureFailed

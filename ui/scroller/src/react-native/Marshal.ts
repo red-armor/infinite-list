@@ -43,22 +43,16 @@ class Marshal {
 
   private _setScrollUpdating: SetScrollUpdating;
 
-  // @ts-ignore
   private _onScroll: EventHandler;
 
-  // @ts-ignore
   private _onScrollEndDrag: EventHandler;
 
-  // @ts-ignore
   private _onScrollBeginDrag: EventHandler;
 
-  // @ts-ignore
   private _onMomentumScrollEnd: EventHandler;
 
-  // @ts-ignore
   private _onMomentumScrollBegin: EventHandler;
 
-  // @ts-ignore
   private _onContentSizeChange: ContentSizeChangeHandler;
 
   private _outerMostVerticalMarshal: Marshal;
@@ -195,7 +189,6 @@ class Marshal {
     return this._rootScrollHelper.getRef();
   }
 
-  // @ts-ignore
   getAnimated() {
     const marshal = this.getOuterMostSameOrientationMarshal();
     if (this === marshal) return this._animated;

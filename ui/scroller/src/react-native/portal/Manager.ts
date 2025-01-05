@@ -3,9 +3,7 @@ class Manager {
   private _setFooterInfo: Function;
 
   constructor() {
-    // @ts-ignore
     this._setHeaderInfo = null;
-    // @ts-ignore
     this._setFooterInfo = null;
   }
 

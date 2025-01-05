@@ -35,5 +35,5 @@ export const DEFAULT_SCROLL_EVENT_METRICS = {
   zoomScale: 1,
 };
 
-export const DEFAULT_LIST_KEY_PREFIX = '__spectrum_list__';
-export const DEFAULT_ITEM_KEY_PREFIX = '__spectrum_item__';
+export const DEFAULT_LIST_KEY_PREFIX = '__react_native_list__';
+export const DEFAULT_ITEM_KEY_PREFIX = '__react_native_item__';

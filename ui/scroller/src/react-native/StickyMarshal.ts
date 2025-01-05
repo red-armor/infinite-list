@@ -6,6 +6,7 @@ import {
   StickyMarshalProps,
   StickyMode,
 } from './types';
+import { GenericItemT } from '@infinite-list/types';
 
 export function checkValidInputRange(arr: Array<number>) {
   if (arr.length < 2) {
@@ -22,7 +23,7 @@ export function checkValidInputRange(arr: Array<number>) {
   return true;
 }
 
-class StickyMarshal<ItemT> {
+class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
   private stickyItemsQueue: Array<StickyItemInfo<ItemT>> = [];
   private mode?: StickyMode;
   private _calculateRangeValuesBatchinator: Batchinator;
@@ -43,11 +44,9 @@ class StickyMarshal<ItemT> {
     const index = this.findIndex(itemKey);
     const nextInfo = info || {};
     if (index === -1)
-      // @ts-ignore
       this.stickyItemsQueue.push({
         itemKey,
         startOffset: 0,
-        // @ts-ignore
         startCorrection: 0,
         ...nextInfo,
       });
@@ -78,7 +77,6 @@ class StickyMarshal<ItemT> {
     for (let idx = 0; idx < len; idx++) {
       const current = this.stickyItemsQueue[idx];
       const { itemKey, dimensions } = current;
-      // @ts-ignore
       const helper = dimensions.getKeyMeta(itemKey, ownerId);
       const selectValue = dimensions.getSelectValue();
       const itemOffsetLengthRelativeToContainer =
@@ -106,7 +104,6 @@ class StickyMarshal<ItemT> {
             const currentDimensions = prevItem.dimensions;
             const prevItemKey = prevItem.itemKey;
             const prevItemLayout = currentDimensions
-              //@ts-ignore
               .getKeyMeta(prevItemKey, ownerId)
               ?.getLayout();
 
@@ -156,9 +153,7 @@ class StickyMarshal<ItemT> {
             const prevItems = this.stickyItemsQueue.slice(0, idx);
             prevItemsLength = prevItems.reduce((acc, cur) => {
               const { itemKey } = cur;
-              // @ts-ignore
               const layout = dimensions
-                // @ts-ignore
                 .getKeyMeta(itemKey, ownerId)
                 ?.getLayout();
               const itemLength = layout ? selectValue.selectLength(layout) : 0;
@@ -207,7 +202,6 @@ class StickyMarshal<ItemT> {
       } = {};
 
       if (checkValidInputRange(nextConfig.inputRange)) {
-        // @ts-ignore
         if (!this.interpolatedConfigEqual(prevConfig, nextConfig)) {
           current.interpolationConfig = nextConfig;
           config.interpolationConfig = nextConfig;
@@ -217,7 +211,6 @@ class StickyMarshal<ItemT> {
       if (checkValidInputRange(nextAnimatedValueConfig.inputRange)) {
         if (
           !this.interpolatedConfigEqual(
-            // @ts-ignore
             prevAnimatedValueConfig,
             nextAnimatedValueConfig
           )

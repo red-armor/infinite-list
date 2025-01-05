@@ -40,7 +40,6 @@ const createStickyComponent = <
       viewableItemHelperKey,
       setMeasureLayoutHandler,
       isIntervalTreeItem = false,
-      // getMetaOnViewableItemsChanged,
       viewAbilityPropsSensitive = true,
       onMeasureLayout: _onMeasureLayout,
       ...rest
@@ -67,7 +66,6 @@ const createStickyComponent = <
     }>();
 
     const nextSetConfig = useCallback((_config = {}) => {
-      // @ts-ignore
       setConfig((config) => ({
         ...config,
         ..._config,
@@ -76,7 +74,7 @@ const createStickyComponent = <
 
     if (initialRef.current) {
       if (Platform.OS === 'android') {
-        if (scrollHelper.getMarshal()._removeClippedSubviews) {
+        if (scrollHelper.getMarshal()?._removeClippedSubviews) {
           console.error(
             'StickyComponent should be wrapped in `ScrollView`' +
               ' with `removeClippedSubviews = true` in Android.'
@@ -105,7 +103,6 @@ const createStickyComponent = <
 
     useEffect(() => {
       if (config?.animatedValueConfig) {
-        // @ts-ignore
         stickyAnimatedValueRef.current =
           selectedAnimatedValue.current.interpolate(config.animatedValueConfig);
       }
@@ -119,7 +116,6 @@ const createStickyComponent = <
           _onMeasureLayout(x, y, width, height);
         }
 
-        // @ts-ignore
         const meta = dimensions.ensureKeyMeta(
           viewableItemHelperKeyRef.current,
           ownerId
@@ -130,7 +126,6 @@ const createStickyComponent = <
           if (dimensions instanceof ListGroupDimensions) {
             dimensions.setKeyItemLayout(
               viewableItemHelperKeyRef.current,
-              // @ts-ignore
               ownerId,
               {
                 x,
@@ -140,7 +135,6 @@ const createStickyComponent = <
               }
             );
           } else {
-            // @ts-ignore
             dimensions.setKeyItemLayout(viewableItemHelperKeyRef.current, {
               x,
               y,
@@ -178,7 +172,6 @@ const createStickyComponent = <
     );
 
     const { handler, layoutHandler } = useMeasureLayout(
-      // @ts-ignore
       viewRef,
       marshal.getRootRef(),
       {
@@ -207,7 +200,6 @@ const createStickyComponent = <
     });
 
     const containerStyle = useMemo<ViewStyle[]>(() => {
-      // @ts-ignore
       const meta = dimensions.ensureKeyMeta(
         viewableItemHelperKeyRef.current,
         ownerId
@@ -269,7 +261,6 @@ const createStickyComponent = <
 
     const viewableItemContextValue = useMemo(() => {
       return {
-        // @ts-ignore
         itemMeta: dimensions.getKeyMeta(viewableItemHelperKey, ownerId),
       };
     }, [viewableItemHelperKey]);
@@ -290,8 +281,7 @@ const createStickyComponent = <
             itemMeta={viewableItemContextValue.itemMeta}
           >
             {typeof children === 'function'
-              ? // @ts-ignore
-                children({
+              ? children({
                   stickyAnimatedValueRef,
                 })
               : children}

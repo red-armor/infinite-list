@@ -13,7 +13,6 @@ const Container = () => {
     initialRef.current = false;
     portalManager.registerHeaderInfoSetter(setInfo);
   }
-  // @ts-ignore
   return <>{info.group.map((i) => i.c)}</>;
 };
 

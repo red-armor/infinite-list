@@ -14,7 +14,6 @@ const FooterContainer = () => {
     portalManager.registerFooterInfoSetter(setInfo);
   }
 
-  // @ts-ignore
   return <>{info.group.map((i) => i.c)}</>;
 };
 

@@ -64,7 +64,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
         display: 'flex',
         height: '100%',
         flexDirection: 'row',
-        // backgroundColor: 'blue',
         position: 'relative',
       };
     return style;
@@ -77,9 +76,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     });
   }, []);
 
-  // const offsetRef = useRef(0);
-  // const tsRef = useRef(Date.now());
-
   /**
    * Trigger list render after initialization or content will be blank
    */
@@ -89,25 +85,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
     const rect = e.nativeEvent.layout;
     containerLayoutRef.current = rect;
-
-    // const timestamp = Date.now();
-    // const offset = listModel
-    //   .getSelectValue()
-    //   .selectOffset(scrollMetrics.contentOffset);
-
-    // const dOffset = offset - offsetRef.current;
-    // const dt = timestamp - tsRef.current;
-    // const velocity = dOffset / dt;
-
-    // offsetRef.current = offset;
-    // tsRef.current = timestamp;
-
-    // listModel.updateScrollMetrics({
-    //   offset,
-    //   visibleLength: selectValue.selectLength(scrollMetrics.layoutMeasurement),
-    //   contentLength: selectValue.selectLength(scrollMetrics.contentSize),
-    //   velocity,
-    // });
   }, []);
 
   useEffect(

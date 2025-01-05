@@ -62,8 +62,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     height: 0,
   });
   const [_scrollEnabled] = useScrollEnabled({
-    // @ts-ignore
-    scrollEnabled,
+    scrollEnabled: !!scrollEnabled,
     scrollHelper,
   });
 
@@ -85,7 +84,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   }, [onScroll, scrollEventThrottle, scrollHelper]);
 
   useEffect(() => {
-    // @ts-ignore
     return scrollEventHelper.subscribeEventHandler('onScrollEndDrag', (e) => {
       const { nativeEvent } = e;
       const contentOffset = nativeEvent.contentOffset;
@@ -102,7 +100,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   }, []);
 
   const layoutHandler = useCallback((e: LayoutChangeEvent) => {
-    // @ts-ignore
     layoutRef.current = e.nativeEvent.layout;
     if (typeof onLayout === 'function') {
       onLayout(e);
@@ -112,18 +109,15 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     } = e;
 
     scrollHelper.setLayout(layout);
-    // scrollHelper.setLayoutMeasurement(layout);
   }, []);
 
   const contentOffset = useMemo(() => {
     if (horizontal)
       return {
-        // @ts-ignore
         x: animatedValue.current,
       };
 
     return {
-      // @ts-ignore
       y: animatedValue.current,
     };
   }, [horizontal]);
@@ -141,7 +135,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
                         inputRange: [0, triggerOnRefreshThresholdValue],
                         outputRange: [0, triggerOnRefreshThresholdValue],
                       }),
-                      // @ts-ignore
                       animatedValue.current.interpolate({
                         inputRange: [
                           triggerOnRefreshThresholdValue - 2,
@@ -168,7 +161,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
           setLoading={setLoading}
           loading={loading}
           layoutRef={layoutRef}
-          // @ts-ignore
           animatedValue={animatedValue}
           lottieAnimatedValueRef={lottieAnimatedValueRef}
           refreshControlStartCorrection={refreshControlStartCorrection}
@@ -189,7 +181,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
         onScroll={Animated.event(
           [
             {
-              // @ts-ignore
               nativeEvent: { contentOffset },
             },
           ],

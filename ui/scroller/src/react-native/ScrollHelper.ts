@@ -57,18 +57,14 @@ class ScrollHelper {
 
   private _animatedValue: MutableRefObject<Animated.Value>;
 
-  // @ts-ignore
   private _stickyMarshal: StickyMarshal;
 
-  // @ts-ignore
   private _scrollMetrics: ScrollMetrics;
 
   private _contentSize: ContentSize;
 
   private _scrollEventMetrics: ScrollEventMetrics =
     DEFAULT_SCROLL_EVENT_METRICS;
-
-  // private _throttledMaybeCallOnEndReached: Function;
 
   private _layoutMeasurement: ScrollSize;
 
@@ -78,26 +74,17 @@ class ScrollHelper {
 
   private _scrollEventHelpers: ScrollEventHelper[] = [];
 
-  // @ts-ignore
   private _scrollEventHelper: ScrollEventHelper;
 
   private _ref: SpectrumScrollViewRef;
 
   readonly _horizontal: boolean;
 
-  // @ts-ignore
-  readonly _onEndReachedThreshold: number;
-
-  // @ts-ignore
-  readonly _onEndReachedTimeoutThreshold: number;
-
   public viewable: boolean;
 
-  // @ts-ignore
-  private _marshal: Marshal;
+  private _marshal?: Marshal;
 
-  // @ts-ignore
-  private _scrollEnabledHandler: { (falsy: boolean): void };
+  private _scrollEnabledHandler?: { (falsy: boolean): void };
 
   public hasInteraction: boolean;
 
@@ -125,8 +112,6 @@ class ScrollHelper {
     horizontal: boolean;
     animatedValue: MutableRefObject<Animated.Value>;
     parentScrollHelper?: ScrollHelper;
-    // onEndReachedThreshold: number;
-    // onEndReachedTimeoutThreshold?: number;
     ref: MutableRefObject<ScrollView | View | undefined>;
   }) {
     const {
@@ -136,8 +121,6 @@ class ScrollHelper {
       animatedValue,
       horizontal = false,
       parentScrollHelper,
-      // onEndReachedThreshold,
-      // onEndReachedTimeoutThreshold,
     } = props;
 
     this.id = id;
@@ -152,11 +135,6 @@ class ScrollHelper {
     this._layoutMeasurement = DEFAULT_LAYOUT_MEASUREMENT;
     this._contentSize = DEFAULT_SCROLL_EVENT_METRICS.contentSize;
     this.resolveScrollMetrics();
-    // this._onEndReachedThreshold = onEndReachedThreshold;
-    // this._throttledMaybeCallOnEndReached = throttle(
-    //   this.maybeCallOnEndReached.bind(this),
-    //   onEndReachedTimeoutThreshold
-    // );
 
     this.hasInteraction = false;
     this.viewable = !this._parentScrollHelper;
@@ -241,7 +219,6 @@ class ScrollHelper {
     return this._contentSize;
   }
 
-  // @ts-ignore
   addScrollEnabledHandler(handler) {
     this._scrollEnabledHandler = handler;
   }
@@ -289,15 +266,12 @@ class ScrollHelper {
   }
 
   onViewableHandler() {
-    // @ts-ignore
     this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   prepareNested() {
     const dimensions = this.getItemsDimensions();
     if (!dimensions) return null;
-    // TODO
-    // @ts-ignore
     const meta = dimensions.ensureKeyMeta(this.id, this.id);
     meta.addStateEventListener('viewable', this.onViewableHandler);
     return meta;
@@ -338,11 +312,9 @@ class ScrollHelper {
     return this.selectValue;
   }
 
-  // @ts-ignore
   triggerScrollEventHelpers(handlerName: string, ...rest) {
     this._scrollEventHelpers.forEach((helper) => {
       if (helper.marshal.scrollUpdateEnabled) {
-        // @ts-ignore
         helper[handlerName](...rest);
       }
     });
@@ -385,7 +357,6 @@ class ScrollHelper {
   setScrollEventMetrics(metrics: ScrollEventMetrics) {
     const { layoutMeasurement } = metrics;
     this.setLayout(layoutMeasurement);
-    // this.setLayoutMeasurement(layoutMeasurement);
     this._scrollEventMetrics = metrics;
   }
 
@@ -411,9 +382,7 @@ class ScrollHelper {
         ...e.nativeEvent,
       },
     });
-    // this._throttledMaybeCallOnEndReached();
-    // @ts-ignore
-    this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
+    this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   _onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -444,19 +413,16 @@ class ScrollHelper {
     this.setScrollEventMetrics(e.nativeEvent);
     this.resolveScrollMetrics();
     this.triggerScrollEventHelpers('onMomentumScrollEnd', e);
-    // @ts-ignore
-    this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
+    this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   _onContentSizeChange(width: number, height: number) {
     this._contentSize = { width, height };
     this.resolveScrollMetrics();
-    // this._throttledMaybeCallOnEndReached();
     this.triggerScrollEventHelpers('onContentSizeChange', width, height);
 
     if (!this._horizontal)
-      // @ts-ignore
-      this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
+      this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   _onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -487,14 +453,10 @@ class ScrollHelper {
 
   scrollTo(options: { x?: number; y?: number; animated?: boolean }) {
     const ref = this.getRef();
-    // @ts-ignore
     if (ref.current?.getNode) {
-      // @ts-ignore
       if (ref.current.scrollTo) {
-        // @ts-ignore
         ref.current.scrollTo(options);
       } else {
-        // @ts-ignore
         ref.current.getNode().scrollTo(options);
       }
     } else {

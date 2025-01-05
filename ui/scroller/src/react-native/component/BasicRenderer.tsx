@@ -33,8 +33,7 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   const scrollHelper = getScrollHelper();
 
   const [_scrollEnabled] = useScrollEnabled({
-    // @ts-ignore
-    scrollEnabled,
+    scrollEnabled: !!scrollEnabled,
     scrollHelper,
   });
 

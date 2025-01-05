@@ -26,7 +26,6 @@ import ScrollHelper from './ScrollHelper';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
 import AnimatedRenderer from './component/AnimatedRenderer';
-// import AnimatedViewPagerRenderer from './component/AnimatedViewPagerRenderer';
 import BasicRenderer from './component/BasicRenderer';
 import ViewRenderer from './component/ViewRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';
@@ -80,7 +79,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     viewabilityConfigCallbackPairs = defaultViewabilityConfigCallbackPairs,
     onEndReachedTimeoutThreshold = 200,
     scrollUpdating: _scrollUpdating = true,
-    // @ts-ignore
     removeClippedSubviews: _removeClippedSubviews,
     scrollEventThrottle = DEFAULT_SCROLL_EVENT_THROTTLE,
     children,
@@ -217,7 +215,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     // The top most vertical scroll helper
     if (!_outerMostVerticalScrollHelper && !horizontal) {
       isARootContainer = true;
-      _rootScrollHelper = new ScrollHelper({
+      _rootScrollHelper = new ScrollHelper<ItemT>({
         id: scrollViewKey,
         stickyMode,
         horizontal: !!horizontal,
@@ -440,17 +438,12 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       outerMostHorizontalPortalManager:
         outerMostHorizontalPortalManager || (horizontal ? portalManager : null),
 
-      // @ts-ignore
       scrollTo: (options) => {
         const ref = rootScrollHelper.getRef();
-        // @ts-ignore
         if (ref.current?.getNode) {
-          // @ts-ignore
           if (ref.current.scrollTo) {
-            // @ts-ignore
             ref.current.scrollTo(options);
           } else {
-            // @ts-ignore
             ref.current.getNode().scrollTo(options);
           }
         } else {
@@ -471,14 +464,12 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const nextChildren = useMemo(() => {
     if (shouldBeView)
       return (
-        // @ts-ignore
         <ScrollViewContext.Provider value={nextScrollViewContextValues}>
           {children}
         </ScrollViewContext.Provider>
       );
 
     return (
-      // @ts-ignore
       <ScrollViewContext.Provider value={nextScrollViewContextValues}>
         <ViewabilityContext.Provider value={viewabilityContextValues}>
           <ScrollUpdatingContext.Provider
@@ -494,7 +485,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   const PortalHeader = useCallback(
     () => (
-      // @ts-ignore
       <ScrollViewContext.Provider value={nextScrollViewContextValues}>
         <HeaderPortalContainer />
       </ScrollViewContext.Provider>
@@ -503,7 +493,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   );
   const PortalFooter = useCallback(
     () => (
-      // @ts-ignore
       <ScrollViewContext.Provider value={nextScrollViewContextValues}>
         <FooterPortalContainer />
       </ScrollViewContext.Provider>
@@ -559,26 +548,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         <PortalFooter />
       </>
     );
-
-  // if (enableViewPager)
-  //   return (
-  //     <>
-  //       <PortalHeader />
-
-  //       <AnimatedViewPagerRenderer
-  //         ref={scrollViewRef as MutableRefObject<RNScrollView>}
-  //         {...rest}
-  //         {...commonProps}
-  //         {...commonScrollViewProps}
-  //         {...refreshControlProps}
-  //         pagerOffsetRef={pagerOffsetRef}
-  //         pagerPositionRef={pagerPositionRef}
-  //       >
-  //         {nextChildren}
-  //       </AnimatedViewPagerRenderer>
-  //       <PortalFooter />
-  //     </>
-  //   );
 
   if (!enableViewPager && !shouldBeView && !!animated)
     return (

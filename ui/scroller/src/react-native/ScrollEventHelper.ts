@@ -50,7 +50,6 @@ class ScrollEventHelper {
     } = props;
 
     this.marshal = marshal;
-    // @ts-ignore
     this._onEndReached = onEndReached;
     this._onScroll = onScroll;
     this._scrollHelper = scrollHelper;
@@ -89,59 +88,55 @@ class ScrollEventHelper {
     handler: SyntheticEventHandler | ContentSizeChangeHandler
   ) {
     const internalName = `_${fnName}`;
-    // @ts-ignore
     if (this[internalName] !== handler) {
-      // @ts-ignore
       this[internalName] = handler;
       return true;
     }
     return false;
   }
 
-  // @ts-ignore
   _dispatchEvent(eventName: ScrollEventHandlerSubscriptionKeys, ...rest) {
     const handlers = this._subscriptions[eventName];
 
     handlers.forEach((handler) => {
-      // @ts-ignore
       if (typeof handler === 'function') handler.apply(this, rest);
     });
   }
 
-  // @ts-ignore
   onScroll(e) {
     if (typeof this._onScroll === 'function') this._onScroll(e);
     this._dispatchEvent('onScroll', e);
   }
-  // @ts-ignore
+
   onScrollBeginDrag(e) {
     if (typeof this._onScrollBeginDrag === 'function')
       this._onScrollBeginDrag(e);
     this._dispatchEvent('onScrollBeginDrag', e);
   }
-  // @ts-ignore
+
   onScrollEndDrag(e) {
     if (typeof this._onScrollEndDrag === 'function') this._onScrollEndDrag(e);
     this._dispatchEvent('onScrollEndDrag', e);
   }
+
   onContentSizeChange(w: number, h: number) {
     if (typeof this._onContentSizeChange === 'function')
       this._onContentSizeChange(w, h);
     this._dispatchEvent('onContentSizeChange', w, h);
   }
-  // @ts-ignore
+
   onMomentumScrollBegin(e) {
     if (typeof this._onMomentumScrollBegin === 'function')
       this._onMomentumScrollBegin(e);
     this._dispatchEvent('onMomentumScrollBegin', e);
   }
-  // @ts-ignore
+
   onMomentumScrollEnd(e) {
     if (typeof this._onMomentumScrollEnd === 'function')
       this._onMomentumScrollEnd(e);
     this._dispatchEvent('onMomentumScrollEnd', e);
   }
-  // @ts-ignore
+
   onScrollToTop(e) {
     if (typeof this._onScrollToTop === 'function') this._onScrollToTop(e);
     this._dispatchEvent('onScrollToTop', e);
