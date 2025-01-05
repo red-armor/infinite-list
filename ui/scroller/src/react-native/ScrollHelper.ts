@@ -273,6 +273,16 @@ class ScrollHelper {
     this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
+  /**
+   *
+   * @returns
+   *
+   * To ensure the nested reverse direction ScrollView should be in considered..
+   * for example, vertical ScrollView include a horizontal ScrollView, when scrolling
+   * on vertical ScrollView, the horizontal ScrollView should be checked whether it
+   * is in viewport as well...
+   *
+   */
   prepareNested() {
     const dimensions = this.getItemsDimensions();
     if (!dimensions) return null;

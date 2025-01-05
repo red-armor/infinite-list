@@ -62,7 +62,7 @@ class Marshal {
     outerMostVerticalMarshal: Marshal;
     outerMostHorizontalMarshal: Marshal;
     removeClippedSubviews: boolean;
-    ref: MutableRefObject<ScrollView | View | undefined>;
+    ref: SpectrumScrollViewRef;
   }) {
     const {
       id,

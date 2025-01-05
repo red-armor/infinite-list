@@ -15,7 +15,6 @@ import Marshal from './Marshal';
  * ScrollEventHelper is bound to ScrollView, Every ScrollView will has its own
  * `ScrollEventHelper`. then ScrollEventHelper will register to ScrollHelper,
  * the ScrollEventHelper event is actually triggered by root ScrollHelper.
- *
  */
 class ScrollEventHelper {
   private _disposer: Function;
@@ -28,7 +27,7 @@ class ScrollEventHelper {
   private _onMomentumScrollBegin: SyntheticEventHandler | undefined;
   private _onScrollToTop: SyntheticEventHandler | undefined;
   private _subscriptions: ScrollEventHandlerSubscriptions;
-  private _onEndReached: (props: { distanceFromEnd: number }) => void;
+  private _onEndReached?: (props: { distanceFromEnd: number }) => void;
   public marshal: Marshal;
 
   constructor(props: {
