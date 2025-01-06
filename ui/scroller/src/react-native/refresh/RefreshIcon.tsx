@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { PropsWithChildren, useEffect, useRef, FC } from 'react';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 import sourceRed from './loading-red.json';
 import sourceGray from './loading.json';
@@ -12,7 +12,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const LoadingIcon = (props) => {
+const LoadingIcon: FC<
+  PropsWithChildren<{
+    loading?: boolean;
+    progress?: number;
+    style?: ViewStyle;
+    type?: 'gray' | 'red';
+  }>
+> = (props) => {
   const { style, loading = true, progress, type = 'gray' } = props;
   const source = type === 'gray' ? sourceGray : sourceRed;
   const animation = useRef(null);

@@ -94,25 +94,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
           .getScrollHelper()
           .getScrollMetrics();
         listModel.updateScrollMetrics(scrollMetrics);
-        // const scrollMetrics = event.nativeEvent;
-        // const timestamp = Date.now();
-        // const offset = listModel
-        //   .getSelectValue()
-        //   .selectOffset(scrollMetrics.contentOffset);
-
-        // const dOffset = offset - offsetRef.current;
-        // const dt = timestamp - tsRef.current;
-        // const velocity = dOffset / dt;
-
-        // offsetRef.current = offset;
-        // tsRef.current = timestamp;
-
-        // listModel.updateScrollMetrics({
-        //   offset,
-        //   visibleLength: scrollMetrics.layoutMeasurement.height,
-        //   contentLength: scrollMetrics.contentSize.height,
-        //   velocity,
-        // });
       }),
     []
   );

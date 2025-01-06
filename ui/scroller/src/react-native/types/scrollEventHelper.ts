@@ -11,10 +11,15 @@ export type EventHandlerName =
   | 'onMomentumScrollEnd'
   | 'onMomentumScrollBegin'
   | 'onScrollToTop';
+
+export type InternalEventHandlerName = `_${EventHandlerName}`;
+
 export type ScrollEventHandlerSubscriptionKeys =
   | EventHandlerName
   | 'onContentSizeChange'
   | 'onEndReached';
+export type InternalScrollEventHandlerSubscriptionKeys =
+  `_${ScrollEventHandlerSubscriptionKeys}`;
 
 export type ScrollEventHandlerSubscriptions = {
   onScroll: Array<SyntheticEventHandler>;

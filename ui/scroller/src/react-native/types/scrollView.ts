@@ -53,7 +53,7 @@ export type RefreshControlProps = {
   useSmoothControl?: boolean;
   onRefresh?: (() => void) | undefined;
   refreshControlStartCorrection?: number;
-  triggerOnRefreshThresholdValue?: number;
+  triggerOnRefreshThresholdValue: number;
   refreshControlContentContainerStyle?: ViewStyle;
 };
 
@@ -96,7 +96,7 @@ export interface ScrollRendererPropsWithForwardRef
 
 export interface AnimatedScrollRendererPropsWithForwardRef
   extends ScrollRendererPropsWithForwardRef {
-  animatedValue?: MutableRefObject<Animated.Value>;
+  animatedValue: MutableRefObject<Animated.Value>;
 }
 
 export interface AnimatedViewPagerRenderProps extends ViewPagerAndroidProps {
@@ -181,13 +181,13 @@ export type SpectrumScrollViewPropsWithForwardRef = SpectrumScrollViewProps & {
   forwardRef?: ForwardedRef<ScrollView>;
 };
 
-export enum ScrollHandlerName {
-  onScroll = 'onScroll',
-  onScrollEndDrag = 'onScrollEndDrag',
-  onScrollBeginDrag = 'onScrollBeginDrag',
-  onMomentumScrollEnd = 'onMomentumScrollEnd',
-  onMomentumScrollBegin = 'onMomentumScrollBegin',
-}
+// export enum ScrollHandlerName {
+//   onScroll = 'onScroll',
+//   onScrollEndDrag = 'onScrollEndDrag',
+//   onScrollBeginDrag = 'onScrollBeginDrag',
+//   onMomentumScrollEnd = 'onMomentumScrollEnd',
+//   onMomentumScrollBegin = 'onMomentumScrollBegin',
+// }
 
 export type SyntheticEventHandlerEvent =
   NativeSyntheticEvent<NativeScrollEvent>;

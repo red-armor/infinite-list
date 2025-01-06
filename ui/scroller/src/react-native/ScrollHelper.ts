@@ -10,7 +10,6 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
-  View,
 } from 'react-native';
 
 import Marshal from './Marshal';

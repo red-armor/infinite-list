@@ -1,6 +1,3 @@
-import { MutableRefObject } from 'react';
-import { ScrollView, View } from 'react-native';
-
 import ScrollHelper from './ScrollHelper';
 import { DataModelDimensions, SpectrumScrollViewRef } from './types';
 
@@ -13,7 +10,7 @@ class Marshal {
 
   readonly _animated: boolean;
 
-  readonly _rootScrollHelper?: ScrollHelper;
+  readonly _rootScrollHelper: ScrollHelper;
 
   readonly _id: string;
 
@@ -58,7 +55,7 @@ class Marshal {
     horizontal?: boolean;
     parentMarshal: Marshal;
     scrollUpdating?: boolean;
-    scrollHelper?: ScrollHelper;
+    scrollHelper: ScrollHelper;
     outerMostVerticalMarshal: Marshal;
     outerMostHorizontalMarshal: Marshal;
     removeClippedSubviews: boolean;
@@ -171,10 +168,10 @@ class Marshal {
   }
 
   getRootRef() {
-    return this._rootScrollHelper?.getRef();
+    return this._rootScrollHelper.getRef();
   }
 
-  getAnimated() {
+  getAnimated(): boolean {
     const marshal = this.getOuterMostSameOrientationMarshal();
     if (this === marshal) return this._animated;
     return marshal.getAnimated();

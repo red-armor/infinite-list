@@ -8,6 +8,9 @@ import {
   ScrollEventHandlerSubscriptions,
   SyntheticEventHandler,
   SyntheticEventHandlerEvent,
+  EventHandlerName,
+  InternalScrollEventHandlerSubscriptionKeys,
+  InternalEventHandlerName,
 } from './types';
 import Marshal from './Marshal';
 
@@ -90,10 +93,11 @@ class ScrollEventHelper {
   }
 
   updateInternalHandler(
-    fnName: string,
+    fnName: ScrollEventHandlerSubscriptionKeys,
     handler: SyntheticEventHandler | ContentSizeChangeHandler
   ) {
-    const internalName = `_${fnName}`;
+    const internalName =
+      `_${fnName}` as InternalScrollEventHandlerSubscriptionKeys;
     if (this[internalName] !== handler) {
       this[internalName] = handler;
       return true;
