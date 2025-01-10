@@ -133,30 +133,28 @@ const MasonryList = <ItemT extends GenericItemT>(
       velocity: 0,
     });
 
-    return contextValues
-      .getScrollHelper()
-      .addListener(
-        'onScroll',
-        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          const scrollMetrics = event.nativeEvent;
-          const timestamp = Date.now();
-          const offset = scrollMetrics.contentOffset.y;
+    return contextValues.scrollEventHelper.subscribeEventHandler(
+      'onScroll',
+      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const scrollMetrics = event.nativeEvent;
+        const timestamp = Date.now();
+        const offset = scrollMetrics.contentOffset.y;
 
-          const dOffset = offset - offsetRef.current;
-          const dt = timestamp - tsRef.current;
-          const velocity = dOffset / dt;
+        const dOffset = offset - offsetRef.current;
+        const dt = timestamp - tsRef.current;
+        const velocity = dOffset / dt;
 
-          offsetRef.current = offset;
-          tsRef.current = timestamp;
+        offsetRef.current = offset;
+        tsRef.current = timestamp;
 
-          dimensionsModel.updateScrollMetrics({
-            offset,
-            visibleLength: scrollMetrics.layoutMeasurement.height,
-            contentLength: scrollMetrics.contentSize.height,
-            velocity,
-          });
-        }
-      );
+        dimensionsModel.updateScrollMetrics({
+          offset,
+          visibleLength: scrollMetrics.layoutMeasurement.height,
+          contentLength: scrollMetrics.contentSize.height,
+          velocity,
+        });
+      }
+    );
   }, []);
 
   return (

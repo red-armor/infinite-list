@@ -16,24 +16,3 @@ export type ItemLayout = {
   width: number;
   height: number;
 };
-
-export enum FillingMode {
-  SPACE = 'space',
-  RECYCLE = 'recycle',
-}
-
-// export interface BaseLayoutProps extends BaseContainerProps {
-//   windowSize?: number;
-//   maxToRenderPerBatch?: number;
-//   initialNumToRender?: number;
-//   persistenceIndices?: Array<number>;
-//   stickyHeaderIndices?: Array<number>;
-
-//   recycleThreshold?: number;
-//   recycleBufferedCount?: number;
-//   recycleEnabled?: boolean;
-
-//   lengthPrecision?: number;
-
-//   itemOffsetBeforeLayoutReady?: number;
-// }

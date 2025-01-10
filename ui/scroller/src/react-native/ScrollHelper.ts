@@ -161,10 +161,11 @@ class ScrollHelper {
     eventName: ScrollEventHandlerSubscriptionKeys,
     handler: Function
   ) {
-    if (!this._scrollEventHelper) {
+    const marshal = this.getMarshal();
+    if (!this._scrollEventHelper && marshal) {
       this._scrollEventHelper = new ScrollEventHelper({
         scrollHelper: this,
-        marshal: this.getMarshal(),
+        marshal,
       });
     }
 
@@ -222,7 +223,7 @@ class ScrollHelper {
     return this._contentSize;
   }
 
-  addScrollEnabledHandler(handler) {
+  addScrollEnabledHandler(handler: { (falsy: boolean): void }) {
     this._scrollEnabledHandler = handler;
   }
 
@@ -269,7 +270,7 @@ class ScrollHelper {
   }
 
   onViewableHandler() {
-    this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
+    this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   /**

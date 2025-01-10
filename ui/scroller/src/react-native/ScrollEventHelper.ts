@@ -8,9 +8,7 @@ import {
   ScrollEventHandlerSubscriptions,
   SyntheticEventHandler,
   SyntheticEventHandlerEvent,
-  EventHandlerName,
   InternalScrollEventHandlerSubscriptionKeys,
-  InternalEventHandlerName,
 } from './types';
 import Marshal from './Marshal';
 

@@ -66,9 +66,6 @@ abstract class BaseImpl<
     super(props);
     const {
       store,
-      persistenceIndices,
-      initialNumToRender,
-
       viewabilityConfig,
       onViewableItemsChanged,
       viewabilityConfigCallbackPairs,

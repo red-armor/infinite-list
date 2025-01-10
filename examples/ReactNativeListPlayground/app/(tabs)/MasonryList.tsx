@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useEffect } from 'react';
+import { useColorScheme } from 'react-native';
 import { ScrollView as NativeScrollView } from 'react-native';
 import { MasonryList } from '@infinite-list/masonry';
 import { ScrollView } from '@infinite-list/scroller';
