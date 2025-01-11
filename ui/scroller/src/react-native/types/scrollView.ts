@@ -33,7 +33,7 @@ type PagerView = any;
 
 export interface ViewRendererProps extends ViewProps {
   ref?: ForwardedRef<View>;
-  scrollViewKey: string;
+  // scrollViewKey: string;
 }
 
 export type GetScrollHelper = () => ScrollHelper;
@@ -45,7 +45,7 @@ export type SpectrumScrollViewRef = MutableRefObject<ScrollView>;
 
 export interface ViewRendererPropsWithForwardRef extends ScrollViewProps {
   forwardRef?: ForwardedRef<View>;
-  scrollViewKey: string;
+  // scrollViewKey: string;
 }
 
 export type RefreshControlProps = {
@@ -88,15 +88,15 @@ export interface ScrollRendererPropsWithForwardRef
   extends RefreshControlProps,
     ScrollViewProps {
   forwardRef?: ForwardedRef<ScrollView>;
-  scrollViewKey: string;
-  getScrollHelper: GetScrollHelper;
+  // scrollViewKey: string;
+  // getScrollHelper: GetScrollHelper;
 
-  scrollEventHelper: ScrollEventHelper;
+  // scrollEventHelper: ScrollEventHelper;
 }
 
 export interface AnimatedScrollRendererPropsWithForwardRef
   extends ScrollRendererPropsWithForwardRef {
-  animatedValue: MutableRefObject<Animated.Value>;
+  forwardRef?: ForwardedRef<ScrollView>;
 }
 
 export interface AnimatedViewPagerRenderProps extends ViewPagerAndroidProps {

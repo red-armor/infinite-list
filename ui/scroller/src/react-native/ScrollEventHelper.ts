@@ -10,7 +10,6 @@ import {
   SyntheticEventHandlerEvent,
   InternalScrollEventHandlerSubscriptionKeys,
 } from './types';
-import Marshal from './Marshal';
 
 /**
  * ScrollEventHelper is bound to ScrollView, Every ScrollView will has its own
@@ -29,10 +28,8 @@ class ScrollEventHelper {
   private _onScrollToTop: SyntheticEventHandler | undefined;
   private _subscriptions: ScrollEventHandlerSubscriptions;
   private _onEndReached?: (props: { distanceFromEnd: number }) => void;
-  public marshal: Marshal;
 
   constructor(props: {
-    marshal: Marshal;
     scrollHelper: ScrollHelper;
     onEndReached?: OnEndReachedHandler;
     onScroll?: SyntheticEventHandler;
@@ -44,7 +41,6 @@ class ScrollEventHelper {
     onScrollToTop?: SyntheticEventHandler;
   }) {
     const {
-      marshal,
       onScroll,
       scrollHelper,
       onEndReached,
@@ -65,7 +61,6 @@ class ScrollEventHelper {
     this._onMomentumScrollEnd = onMomentumScrollEnd;
     this._onMomentumScrollBegin = onMomentumScrollBegin;
     this._onScrollToTop = onScrollToTop;
-    this.marshal = marshal;
 
     this._subscriptions = {
       onScroll: [],
@@ -90,9 +85,19 @@ class ScrollEventHelper {
     if (typeof this._disposer === 'function') this._disposer();
   }
 
+  /**
+   *
+   * @param fnName
+   * @param handler
+   * @returns
+   *
+   * Usage for the updating condition.
+   * Internal handler is passing from ScrollView Props, it may change any time.
+   *
+   */
   updateInternalHandler(
     fnName: ScrollEventHandlerSubscriptionKeys,
-    handler: SyntheticEventHandler | ContentSizeChangeHandler
+    handler?: SyntheticEventHandler | ContentSizeChangeHandler
   ) {
     const internalName =
       `_${fnName}` as InternalScrollEventHandlerSubscriptionKeys;

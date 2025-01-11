@@ -19,6 +19,7 @@ import {
   DEFAULT_LAYOUT_MEASUREMENT,
   DEFAULT_SCROLL_EVENT_METRICS,
   DEFAULT_SCROLL_HELPER_LAYOUT,
+  DEFAULT_SCROLL_METRICS,
 } from './commons/constants';
 import { isIos } from './commons/platform';
 import {
@@ -56,13 +57,19 @@ class ScrollHelper {
 
   private _reverseOrientationRootChildren: ScrollHelper[] = [];
 
-  readonly _parentScrollHelper: ScrollHelper;
+  // readonly _parentScrollHelper: ScrollHelper;
+
+  /**
+   * Inspired from https://github.com/GoogleChromeLabs/intersection-observer/blob/main/intersection-observer.js#L424
+   * more info refer to https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
+   */
+  public ownerScrollHelper: ScrollHelper | null | undefined;
 
   private _animatedValue: MutableRefObject<Animated.Value>;
 
   private _stickyMarshal: StickyMarshal;
 
-  private _scrollMetrics: ScrollMetrics;
+  private _scrollMetrics: ScrollMetrics = DEFAULT_SCROLL_METRICS;
 
   private _contentSize: ContentSize;
 
@@ -83,7 +90,7 @@ class ScrollHelper {
 
   readonly _horizontal: boolean;
 
-  public viewable: boolean;
+  // public viewable: boolean;
 
   private _marshal?: Marshal;
 
@@ -114,7 +121,7 @@ class ScrollHelper {
     stickyMode?: StickyMode;
     horizontal: boolean;
     animatedValue: MutableRefObject<Animated.Value>;
-    parentScrollHelper?: ScrollHelper;
+    ownerScrollHelper: ScrollHelper | null | undefined;
     ref: SpectrumScrollViewRef;
   }) {
     const {
@@ -122,25 +129,25 @@ class ScrollHelper {
       ref,
       stickyMode,
       animatedValue,
-      horizontal = false,
-      parentScrollHelper,
+      horizontal,
+      ownerScrollHelper,
     } = props;
 
     this.id = id;
     this._ref = ref;
+    this.ownerScrollHelper = ownerScrollHelper;
     this._stickyMarshal = new StickyMarshal({
       stickyMode,
     });
     this._animatedValue = animatedValue;
     this._horizontal = horizontal;
-    this._parentScrollHelper = parentScrollHelper!;
+    // this._parentScrollHelper = parentScrollHelper!;
     this.selectValue = horizontal ? selectHorizontalValue : selectVerticalValue;
     this._layoutMeasurement = DEFAULT_LAYOUT_MEASUREMENT;
     this._contentSize = DEFAULT_SCROLL_EVENT_METRICS.contentSize;
     this.resolveScrollMetrics();
 
     this.hasInteraction = false;
-    this.viewable = !this._parentScrollHelper;
 
     this.onContentSizeChange = this._onContentSizeChange.bind(this);
     this.onScroll = this._onScroll.bind(this);
@@ -291,13 +298,15 @@ class ScrollHelper {
     return meta;
   }
 
+  // TODO
   getItemsDimensions() {
-    if (!this._parentScrollHelper) return null;
+    return null;
+    // if (!this._parentScrollHelper) return null;
 
-    const rootMarshal = this._parentScrollHelper.getMarshal();
+    // const rootMarshal = this._parentScrollHelper.getMarshal();
 
-    // 这个肯定是ItemsDimensions
-    return rootMarshal.dimensions;
+    // // 这个肯定是ItemsDimensions
+    // return rootMarshal.dimensions;
   }
 
   setLayout(layout: ViewableItemLayout | ScrollSize) {

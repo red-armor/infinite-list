@@ -40,8 +40,7 @@ import {
   SpectrumScrollViewPropsWithForwardRef,
   SpectrumScrollViewPropsWithRef,
 } from './types';
-
-let count = 0;
+import { resolveScrollViewKey } from './commons/utils';
 
 const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const {
@@ -82,30 +81,16 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     ...rest
   } = props;
   const horizontal = useMemo(() => !!_horizontal, []);
-  const scrollViewKey = useMemo(() => {
-    const key =
-      id || `scrollView_${horizontal ? 'horizontal' : 'vertical'}_${count}`;
-    count += 1;
-    return key;
-  }, []);
+  const scrollViewKey = useMemo(() => resolveScrollViewKey(horizontal), []);
 
+  /**
+   * In android device, `removeClippedSubviews` used with zIndex will crash.
+   */
   const scrollViewContextValues = useContext(ScrollViewContext);
-  // removeClippedSubviews 在安卓上，如果有zIndex，但是removeClippedSubviews为true
-  // 的话，会crash
 
   const removeClippedSubviews = false;
   const scrollHelperDisposerRef = useRef<Function>();
-  const {
-    marshal: parentMarshal,
-    outerMostVerticalMarshal,
-    outerMostHorizontalMarshal,
-
-    outerMostVerticalScrollHelper,
-    outerMostHorizontalScrollHelper,
-
-    outerMostVerticalPortalManager,
-    outerMostHorizontalPortalManager,
-  } = scrollViewContextValues;
+  const { marshal: parentMarshal } = scrollViewContextValues;
   const defaultScrollViewRef = useRef<RNScrollView | RNView>();
   const scrollViewRef = (
     isRefObject(forwardRef) ? forwardRef : defaultScrollViewRef
@@ -122,122 +107,98 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     () => (horizontal ? animatedValueX : animatedValueY),
     []
   );
+  let rootScrollHelper: ScrollHelper | undefined =
+    parentMarshal?.getScrollHelper();
+  let isRootScrollView = false;
 
-  useEffect(() => () => {
-    if (typeof scrollHelperDisposerRef.current === 'function') {
-      scrollHelperDisposerRef.current();
-    }
+  if (
+    !rootScrollHelper ||
+    (rootScrollHelper && rootScrollHelper.getHorizontal() !== horizontal)
+  ) {
+    rootScrollHelper = new ScrollHelper({
+      id: scrollViewKey,
+      stickyMode,
+      horizontal,
+      animatedValue,
+      ref: scrollViewRef,
+      ownerScrollHelper: rootScrollHelper,
+    });
+    isRootScrollView = true;
+  }
 
-    if (typeof forwardRef === 'function') {
-      forwardRef(scrollViewRef.current);
-    }
-  });
+  const scrollEventHelper = useMemo(
+    () =>
+      new ScrollEventHelper({
+        onScroll,
+        onScrollEndDrag,
+        onScrollBeginDrag,
+        onContentSizeChange,
+        onMomentumScrollEnd,
+        onMomentumScrollBegin,
+        scrollHelper: rootScrollHelper,
+      }),
+    []
+  );
 
-  const [
-    nextOuterMostVerticalScrollHelper,
-    nextOuterMostHorizontalScrollHelper,
-    rootScrollHelper,
-    shouldBeView,
-    isARootContainer,
-  ] = useMemo(() => {
-    let isARootContainer = false;
-    let _outerMostVerticalScrollHelper;
-    let _outerMostHorizontalScrollHelper;
-    let _rootScrollHelper: ScrollHelper | undefined = undefined;
+  useEffect(() => {
+    scrollEventHelper.updateInternalHandler('onScroll', onScroll);
+    scrollEventHelper.updateInternalHandler('onScrollEndDrag', onScrollEndDrag);
+    scrollEventHelper.updateInternalHandler(
+      'onScrollBeginDrag',
+      onScrollBeginDrag
+    );
+    scrollEventHelper.updateInternalHandler(
+      'onContentSizeChange',
+      onContentSizeChange
+    );
+    scrollEventHelper.updateInternalHandler(
+      'onMomentumScrollEnd',
+      onMomentumScrollEnd
+    );
+    scrollEventHelper.updateInternalHandler(
+      'onMomentumScrollBegin',
+      onMomentumScrollBegin
+    );
+  }, [
+    onScroll,
+    onScrollEndDrag,
+    onScrollBeginDrag,
+    onContentSizeChange,
+    onMomentumScrollEnd,
+    onMomentumScrollBegin,
+  ]);
 
-    if (outerMostVerticalScrollHelper) {
-      _outerMostVerticalScrollHelper = outerMostVerticalScrollHelper;
-    }
-
-    if (outerMostHorizontalScrollHelper) {
-      _outerMostHorizontalScrollHelper = outerMostHorizontalScrollHelper;
-    }
-
-    // TODO: 可能会存在问题！！！！目前这个看起来会存在指向了一个scrollHelper；
-    // 感觉这个是不是要拿reverse orientation的 scrollHelper
-
-    let reverseOrientationParentMarshal = parentMarshal;
-    while (reverseOrientationParentMarshal?.isHorizontal() === horizontal) {
-      reverseOrientationParentMarshal =
-        reverseOrientationParentMarshal.getParentMarshal();
-    }
-
-    const parentScrollHelper =
-      reverseOrientationParentMarshal?.getRootScrollHelper();
-
-    // The top most horizontal scroll helper
-    if (!_outerMostHorizontalScrollHelper && horizontal) {
-      isARootContainer = true;
-      _rootScrollHelper = new ScrollHelper({
-        id: scrollViewKey,
-        stickyMode,
-        horizontal,
-        animatedValue,
-        ref: scrollViewRef,
-        parentScrollHelper,
-      });
-      if (parentScrollHelper) {
-        scrollHelperDisposerRef.current =
-          parentScrollHelper.registerReverseOrientationChild(_rootScrollHelper);
-      }
-
-      _outerMostHorizontalScrollHelper = _rootScrollHelper;
-    }
-
-    // The top most vertical scroll helper
-    if (!_outerMostVerticalScrollHelper && !horizontal) {
-      isARootContainer = true;
-      _rootScrollHelper = new ScrollHelper({
-        id: scrollViewKey,
-        stickyMode,
-        horizontal,
-        animatedValue,
-        ref: scrollViewRef,
-        parentScrollHelper,
-      });
-      if (parentScrollHelper) {
-        scrollHelperDisposerRef.current =
-          parentScrollHelper.registerReverseOrientationChild(_rootScrollHelper);
-      }
-      _outerMostVerticalScrollHelper = _rootScrollHelper;
-    }
-
-    // 如果说不是顶层的话，这个时候开始自身查找问题；
-    if (!_rootScrollHelper) {
-      const marshal = parentMarshal;
-
-      /**
-       * if in same direction with parent marshal then get parent's root scroll helper.
-       */
-      if (horizontal === marshal.isHorizontal()) {
-        _rootScrollHelper = marshal.getRootScrollHelper();
-      } else {
-        isARootContainer = true;
-        _rootScrollHelper = new ScrollHelper({
-          id: scrollViewKey,
-          stickyMode,
-          horizontal,
-          animatedValue,
-          ref: scrollViewRef,
-          parentScrollHelper,
-        });
-        if (parentScrollHelper) {
-          scrollHelperDisposerRef.current =
-            parentScrollHelper.registerReverseOrientationChild(
-              _rootScrollHelper
-            );
-        }
-      }
-    }
-
-    return [
-      _outerMostVerticalScrollHelper,
-      _outerMostHorizontalScrollHelper,
-      _rootScrollHelper as ScrollHelper,
-      !isARootContainer,
-      isARootContainer,
-    ];
+  /**
+   * Every scrollView has a marshal
+   */
+  const marshal = useMemo(() => {
+    return new Marshal({
+      id: scrollViewKey,
+      animated,
+      parentMarshal,
+      scrollUpdating,
+      ref: scrollViewRef,
+      horizontal,
+      outerMostVerticalMarshal,
+      outerMostHorizontalMarshal,
+      scrollHelper: rootScrollHelper,
+      scrollEventHelper: scrollEventHelper,
+      dimensions: viewabilityContextValues.dimensions,
+    });
   }, []);
+
+  useEffect(
+    () => () => {
+      if (typeof scrollHelperDisposerRef.current === 'function') {
+        scrollHelperDisposerRef.current();
+      }
+
+      if (typeof forwardRef === 'function') {
+        forwardRef(scrollViewRef.current);
+      }
+    },
+    []
+  );
 
   const nextOnRefresh = useMemo(() => {
     if (!onRefresh) return null;
@@ -265,95 +226,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     return { dimensions };
   }, []);
 
-  /**
-   * marshal和ScrollView是一一映射
-   */
-  const marshal = useMemo(() => {
-    const marshal = new Marshal({
-      id: scrollViewKey,
-      animated,
-      parentMarshal,
-      scrollUpdating,
-      ref: scrollViewRef,
-      horizontal,
-      outerMostVerticalMarshal,
-      outerMostHorizontalMarshal,
-      scrollHelper: rootScrollHelper,
-      removeClippedSubviews,
-      dimensions: viewabilityContextValues.dimensions,
-    });
-
-    if (isARootContainer) {
-      rootScrollHelper.setMarshal(marshal);
-    }
-
-    if (typeof setMarshal === 'function') setMarshal(marshal);
-    return marshal;
-  }, [isARootContainer]);
-
-  const nextOuterMostVerticalMarshal = useMemo(
-    () => outerMostVerticalMarshal || (horizontal ? null : marshal),
-    []
-  );
-  const nextOuterMostHorizontalMarshal = useMemo(
-    () => outerMostHorizontalMarshal || (horizontal ? marshal : null),
-    []
-  );
-
-  const scrollEventHelper = useMemo(
-    () =>
-      new ScrollEventHelper({
-        marshal,
-        onScroll,
-        onScrollEndDrag,
-        onScrollBeginDrag,
-        onContentSizeChange,
-        onMomentumScrollEnd,
-        onMomentumScrollBegin,
-        scrollHelper: rootScrollHelper,
-      }),
-    []
-  );
-
-  useEffect(() => {
-    if (onScroll) scrollEventHelper.updateInternalHandler('onScroll', onScroll);
-  }, [onScroll]);
-  useEffect(() => {
-    if (onScrollEndDrag)
-      scrollEventHelper.updateInternalHandler(
-        'onScrollEndDrag',
-        onScrollEndDrag
-      );
-  }, [onScrollEndDrag]);
-  useEffect(() => {
-    if (onScrollBeginDrag)
-      scrollEventHelper.updateInternalHandler(
-        'onScrollBeginDrag',
-        onScrollBeginDrag
-      );
-  }, [onScrollBeginDrag]);
-  useEffect(() => {
-    if (onContentSizeChange)
-      scrollEventHelper.updateInternalHandler(
-        'onContentSizeChange',
-        onContentSizeChange
-      );
-  }, [onContentSizeChange]);
-  useEffect(() => {
-    if (onMomentumScrollEnd)
-      scrollEventHelper.updateInternalHandler(
-        'onMomentumScrollEnd',
-        onMomentumScrollEnd
-      );
-  }, [onMomentumScrollEnd]);
-  useEffect(() => {
-    if (onMomentumScrollBegin)
-      scrollEventHelper.updateInternalHandler(
-        'onMomentumScrollBegin',
-        onMomentumScrollBegin
-      );
-  }, [onMomentumScrollBegin]);
-
   useEffect(
     () => () => {
       marshal.dispose();
@@ -376,43 +248,10 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     return {};
   }, []);
 
-  const getScrollHelper = useCallback(() => rootScrollHelper, []);
+  // const getScrollHelper = useCallback(() => rootScrollHelper, []);
   const getParentMarshal = useCallback(() => parentMarshal, []);
 
-  const nextScrollViewContextValues = useMemo(
-    () => ({
-      marshal,
-      portalManager,
-      scrollEventHelper,
-
-      getScrollHelper,
-      getParentMarshal,
-
-      outerMostHorizontalScrollHelper: nextOuterMostHorizontalScrollHelper,
-      outerMostVerticalScrollHelper: nextOuterMostVerticalScrollHelper,
-
-      outerMostVerticalMarshal: nextOuterMostVerticalMarshal,
-      outerMostHorizontalMarshal: nextOuterMostHorizontalMarshal,
-
-      outerMostVerticalPortalManager:
-        outerMostVerticalPortalManager || (horizontal ? null : portalManager),
-      outerMostHorizontalPortalManager:
-        outerMostHorizontalPortalManager || (horizontal ? portalManager : null),
-
-      scrollTo: (options: ScrollToOption) => {
-        const ref = rootScrollHelper.getRef();
-        if (ref.current.scrollTo) {
-          ref.current.scrollTo(options);
-          // @ts-expect-error
-        } else if (ref.current?.getNode) {
-          // @ts-expect-error
-          ref.current.getNode().scrollTo(options);
-        }
-      },
-      getScrollViewRef: () => scrollViewRef,
-    }),
-    []
-  );
+  const nextScrollViewContextValues = useMemo(() => ({ marshal }), []);
   const nextScrollUpdatingContextValues = useMemo(
     () => ({
       scrollUpdating,
@@ -459,25 +298,25 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const commonProps = useMemo(
-    () => ({
-      scrollViewKey,
-      getScrollHelper,
-      horizontal,
-      scrollEventHelper,
-    }),
-    []
-  );
+  // const commonProps = useMemo(
+  //   () => ({
+  //     scrollViewKey,
+  //     getScrollHelper,
+  //     horizontal,
+  //     scrollEventHelper,
+  //   }),
+  //   []
+  // );
 
-  const commonScrollViewProps = useMemo(
-    () => ({
-      ...eventHandlers,
-      scrollEnabled,
-      removeClippedSubviews,
-      scrollEventThrottle,
-    }),
-    []
-  );
+  // const commonScrollViewProps = useMemo(
+  //   () => ({
+  //     ...eventHandlers,
+  //     scrollEnabled,
+  //     removeClippedSubviews,
+  //     scrollEventThrottle,
+  //   }),
+  //   []
+  // );
 
   const _refreshControl = useMemo(() => {
     if (!nextOnRefresh) return null;
@@ -500,7 +339,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         <ViewRenderer
           ref={scrollViewRef as any as MutableRefObject<RNView>}
           {...rest}
-          {...commonProps}
+          // {...commonProps}
         >
           {nextChildren}
         </ViewRenderer>
@@ -515,9 +354,9 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         <AnimatedRenderer
           ref={scrollViewRef as MutableRefObject<RNScrollView>}
           {...rest}
-          {...commonProps}
+          // {...commonProps}
           {...refreshControlProps}
-          {...commonScrollViewProps}
+          // {...commonScrollViewProps}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
           scrollEventHelper={scrollEventHelper}
@@ -536,9 +375,9 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       <BasicRenderer
         ref={scrollViewRef as MutableRefObject<RNScrollView>}
         {...rest}
-        {...commonProps}
+        // {...commonProps}
         {...refreshControlProps}
-        {...commonScrollViewProps}
+        // {...commonScrollViewProps}
       >
         {nextChildren}
       </BasicRenderer>

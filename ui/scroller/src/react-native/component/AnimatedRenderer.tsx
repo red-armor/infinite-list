@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useRef,
   useState,
+  useContext,
 } from 'react';
 import {
   Animated,
@@ -16,6 +17,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
+import ScrollViewContext from '../context/ScrollViewContext';
 
 import { useNativeRefreshControl } from '../commons/platform';
 import useScrollEnabled from '../hooks/useScrollEnabled';
@@ -49,6 +51,9 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     refreshControlContentContainerStyle,
     ...restProps
   } = props;
+  const { marshal } = useContext(ScrollViewContext);
+
+  const animatedValue = useMemo(() => marshal.getAnimatedValue(), [marshal]);
 
   const [loading, setLoading] = useState(false);
   const scrollHelper = getScrollHelper();
