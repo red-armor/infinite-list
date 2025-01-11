@@ -228,37 +228,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
             );
         }
       }
-
-      // if (!horizontal) {
-      //   // hasOwnScrollHelper = false;
-      //   // 如果它的parent也是vertical，那么就用parent的root scroll helper.
-      //   if (!marshal.isHorizontal()) {
-      //     _rootScrollHelper = marshal.getRootScrollHelper();
-      //   } else {
-      //     // 假如说
-      //     marshal = marshal.getParentMarshal();
-      //     while (marshal.isHorizontal() !== horizontal) {
-      //       marshal = marshal.getParentMarshal();
-      //     }
-      //     _rootScrollHelper = marshal.getRootScrollHelper();
-      //   }
-      // } else {
-      //   isARootContainer = true;
-      //   _rootScrollHelper = new ScrollHelper({
-      //     id: scrollViewKey,
-      //     stickyMode,
-      //     horizontal,
-      //     animatedValue,
-      //     ref: scrollViewRef,
-      //     parentScrollHelper,
-      //   });
-      //   if (parentScrollHelper) {
-      //     scrollHelperDisposerRef.current =
-      //       parentScrollHelper.registerReverseOrientationChild(
-      //         _rootScrollHelper
-      //       );
-      //   }
-      // }
     }
 
     return [
