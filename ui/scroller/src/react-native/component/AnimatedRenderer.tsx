@@ -83,19 +83,24 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   }, [onScroll, scrollEventThrottle, scrollHelper]);
 
   useEffect(() => {
-    return scrollEventHelper.subscribeEventHandler('onScrollEndDrag', (e) => {
-      const { nativeEvent } = e;
-      const contentOffset = nativeEvent.contentOffset;
+    return scrollEventHelper.subscribeEventHandler(
+      'onScrollEndDrag',
+      (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const { nativeEvent } = e;
+        const contentOffset = nativeEvent.contentOffset;
 
-      const { y } = contentOffset;
-      if (y < -triggerOnRefreshThresholdValue) {
-        setLoading(true);
-        lottieAnimatedValueRef.current.setValue(triggerOnRefreshThresholdValue);
-        if (typeof onRefresh === 'function') {
-          onRefresh();
+        const { y } = contentOffset;
+        if (y < -triggerOnRefreshThresholdValue) {
+          setLoading(true);
+          lottieAnimatedValueRef.current.setValue(
+            triggerOnRefreshThresholdValue
+          );
+          if (typeof onRefresh === 'function') {
+            onRefresh();
+          }
         }
       }
-    });
+    );
   }, []);
 
   const layoutHandler = useCallback((e: LayoutChangeEvent) => {
