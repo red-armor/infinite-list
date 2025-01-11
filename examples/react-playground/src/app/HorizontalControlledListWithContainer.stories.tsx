@@ -23,10 +23,8 @@ const meta: Meta<typeof List> = {
           backgroundColor: '#efefef',
           position: 'relative',
           overflowX: 'scroll',
-          // display: 'inline-block',
-          // flexWrap: 'nowrap',
-          // display: 'flex',
-          // flexDirection: 'row',
+          // https://stackoverflow.com/a/443720
+          whiteSpace: 'nowrap',
         }}
       >
         <div
@@ -46,7 +44,7 @@ const meta: Meta<typeof List> = {
           }}
         ></div>
 
-        {/* <List
+        <List
           id="basic"
           initialNumToRender={0}
           data={data}
@@ -78,7 +76,7 @@ const meta: Meta<typeof List> = {
             );
           }}
           keyExtractor={keyExtractor}
-        /> */}
+        />
       </div>
     );
   },

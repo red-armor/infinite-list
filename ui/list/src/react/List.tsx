@@ -60,6 +60,10 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const dataRef = useRef(data);
 
   useEffect(() => {
+    /**
+     * only with controlled scroller should consider container offset value.
+     * The uncontrolled scroller condition the offset value always be 0.
+     */
     if (containerRef.current && usingControlledScroller) {
       const rect = containerRef.current.getBoundingClientRect();
       /**
@@ -85,7 +89,6 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     const style: CSSProperties = { position: 'relative' };
     if (horizontal) {
       style.display = 'flex';
-      style.flexDirection = 'column';
       style.height = '100%';
     }
 
@@ -93,10 +96,14 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
       style.width = '100%';
       style.height = '100%';
       if (horizontal) {
+        style.flexDirection = 'column';
         style.overflowX = 'auto';
       } else {
         style.overflowY = 'auto';
       }
+    } else if (horizontal) {
+      // https://stackoverflow.com/a/9277377
+      style.display = 'inline-block';
     }
 
     return style;
