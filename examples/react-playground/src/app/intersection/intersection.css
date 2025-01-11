@@ -8,6 +8,10 @@
 
 .wrapper {
   position: relative;
+  width: 1200px;
+  /* height: 500px;
+  width: 400px;
+  overflow-x: auto; */
   /* top: 600px; */
 }
 

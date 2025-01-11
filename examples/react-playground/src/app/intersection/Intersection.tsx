@@ -7,13 +7,6 @@ export const Intersection = () => {
   useEffect(() => {
     const observers = [];
 
-    // let wrapper = document.querySelector(".wrapper");
-    //      let template = document
-    //       .querySelector("#boxTemplate")
-    //       .content.cloneNode(true);
-    //       wrapper.appendChild(document.importNode(template, true));
-    // console.log('temp ', template.querySelector('.sampleBox'));
-
     const startup = () => {
       const wrapper = document.querySelector('.wrapper');
 

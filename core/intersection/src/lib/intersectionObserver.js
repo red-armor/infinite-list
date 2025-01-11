@@ -44,10 +44,10 @@
    */
   function getFrameElement(doc) {
     try {
-      console.log(
-        'get frame ',
-        doc.defaultView && doc.defaultView.frameElement
-      );
+      // console.log(
+      //   'get frame ',
+      //   doc.defaultView && doc.defaultView.frameElement
+      // );
       return (doc.defaultView && doc.defaultView.frameElement) || null;
     } catch (e) {
       // Ignore the error.
@@ -1016,6 +1016,4 @@
   // Exposes the constructors globally.
   window.IntersectionObserver2 = IntersectionObserver;
   window.IntersectionObserverEntry = IntersectionObserverEntry;
-
-  console.log('window ', window.IntersectionObserver2);
 })();
