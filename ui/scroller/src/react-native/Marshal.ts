@@ -1,3 +1,5 @@
+import { MutableRefObject } from 'react';
+import { Animated } from 'react-native';
 import ScrollHelper from './ScrollHelper';
 import { DataModelDimensions, SpectrumScrollViewRef } from './types';
 import ScrollEventHelper from './ScrollEventHelper';
@@ -8,6 +10,10 @@ import ScrollEventHelper from './ScrollEventHelper';
  */
 class Marshal {
   readonly _horizontal: boolean;
+
+  readonly _animatedValueX: MutableRefObject<Animated.Value>;
+
+  readonly _animatedValueY: MutableRefObject<Animated.Value>;
 
   readonly _animated: boolean;
 
@@ -31,10 +37,6 @@ class Marshal {
 
   private _scrollUpdating: boolean;
 
-  // private _outerMostVerticalMarshal: Marshal;
-
-  // private _outerMostHorizontalMarshal: Marshal;
-
   private _dimensions: DataModelDimensions;
 
   constructor(props: {
@@ -42,14 +44,16 @@ class Marshal {
     dimensions: DataModelDimensions;
     animated?: boolean;
     horizontal?: boolean;
-    parentMarshal: Marshal;
+    parentMarshal: Marshal | null;
     scrollUpdating?: boolean;
     scrollHelper: ScrollHelper;
     scrollEventHelper: ScrollEventHelper;
-    outerMostVerticalMarshal?: Marshal;
-    outerMostHorizontalMarshal?: Marshal;
+    // outerMostVerticalMarshal?: Marshal;
+    // outerMostHorizontalMarshal?: Marshal;
     removeClippedSubviews: boolean;
     ref: SpectrumScrollViewRef;
+    animatedValueX: MutableRefObject<Animated.Value>;
+    animatedValueY: MutableRefObject<Animated.Value>;
   }) {
     const {
       id,
@@ -62,20 +66,19 @@ class Marshal {
       scrollUpdating = true,
       scrollEventHelper,
       removeClippedSubviews,
-      // outerMostVerticalMarshal,
-      // outerMostHorizontalMarshal,
+      animatedValueX,
+      animatedValueY,
     } = props;
     this._ref = ref;
     this._id = id;
     this._scrollEventHelper = scrollEventHelper;
-
     this._animated = animated;
+    this._animatedValueX = animatedValueX;
+    this._animatedValueY = animatedValueY;
     this._horizontal = horizontal;
     this._dimensions = dimensions;
 
     this._parentMarshal = parentMarshal;
-    // this._outerMostVerticalMarshal = outerMostVerticalMarshal;
-    // this._outerMostHorizontalMarshal = outerMostHorizontalMarshal;
 
     this.register();
     this._scrollUpdating = scrollUpdating;
@@ -179,7 +182,7 @@ class Marshal {
   }
 
   getAnimatedValue() {
-    return this._animatedValue;
+    return this._horizontal ? this._animatedValueX : this._animatedValueY;
   }
 
   isHorizontal() {

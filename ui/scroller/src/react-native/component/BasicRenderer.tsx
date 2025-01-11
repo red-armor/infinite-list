@@ -4,6 +4,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useMemo,
+  useContext,
 } from 'react';
 import {
   LayoutChangeEvent,
@@ -11,6 +12,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
+import ScrollViewContext from '../context/ScrollViewContext';
 import throttle from '@x-oasis/throttle';
 
 import useScrollEnabled from '../hooks/useScrollEnabled';
@@ -26,11 +28,12 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
     forwardRef,
     onLayout,
     scrollEventThrottle,
-    getScrollHelper,
     scrollEnabled,
     ...restProps
   } = props;
-  const scrollHelper = getScrollHelper();
+  const contextValues = useContext(ScrollViewContext);
+  const marshal = contextValues.marshal!;
+  const scrollHelper = marshal.getScrollHelper();
 
   const [_scrollEnabled] = useScrollEnabled({
     scrollEnabled: !!scrollEnabled,
@@ -70,6 +73,7 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
 
   return (
     <ScrollView
+      {...scrollHelper.getEventHandlers()}
       {...restProps}
       ref={forwardRef}
       onLayout={layoutHandler}

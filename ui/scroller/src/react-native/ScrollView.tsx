@@ -103,10 +103,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const animatedValueY = animatedY || defaultAnimatedValueY;
   const animatedValueX = animatedX || defaultAnimatedValueX;
 
-  const animatedValue = useMemo(
-    () => (horizontal ? animatedValueX : animatedValueY),
-    []
-  );
   let rootScrollHelper: ScrollHelper | undefined =
     parentMarshal?.getScrollHelper();
   let isRootScrollView = false;
@@ -119,7 +115,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       id: scrollViewKey,
       stickyMode,
       horizontal,
-      animatedValue,
       ref: scrollViewRef,
       ownerScrollHelper: rootScrollHelper,
     });
@@ -175,12 +170,14 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     return new Marshal({
       id: scrollViewKey,
       animated,
+      animatedValueY,
+      animatedValueX,
       parentMarshal,
       scrollUpdating,
       ref: scrollViewRef,
       horizontal,
-      outerMostVerticalMarshal,
-      outerMostHorizontalMarshal,
+      // outerMostVerticalMarshal,
+      // outerMostHorizontalMarshal,
       scrollHelper: rootScrollHelper,
       scrollEventHelper: scrollEventHelper,
       dimensions: viewabilityContextValues.dimensions,
@@ -234,22 +231,22 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  useEffect(() => {
-    if (shouldBeView && !marshal.hasParent()) {
-      throw new Error(
-        '`shouldBeView` props should be used in `ScrollView`' +
-          'wrapped with same orientation `ScrollView` Component'
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (shouldBeView && !marshal.hasParent()) {
+  //     throw new Error(
+  //       '`shouldBeView` props should be used in `ScrollView`' +
+  //         'wrapped with same orientation `ScrollView` Component'
+  //     );
+  //   }
+  // }, []);
 
-  const eventHandlers = useMemo(() => {
-    if (isARootContainer) return rootScrollHelper.getEventHandlers();
-    return {};
-  }, []);
+  // const eventHandlers = useMemo(() => {
+  //   if (isARootContainer) return rootScrollHelper.getEventHandlers();
+  //   return {};
+  // }, []);
 
   // const getScrollHelper = useCallback(() => rootScrollHelper, []);
-  const getParentMarshal = useCallback(() => parentMarshal, []);
+  // const getParentMarshal = useCallback(() => parentMarshal, []);
 
   const nextScrollViewContextValues = useMemo(() => ({ marshal }), []);
   const nextScrollUpdatingContextValues = useMemo(

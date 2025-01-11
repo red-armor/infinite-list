@@ -18,7 +18,7 @@ import {
   ScrollView,
 } from 'react-native';
 import ScrollViewContext from '../context/ScrollViewContext';
-
+import { DEFAULT_VIEW_LAYOUT } from '../commons/constants';
 import { useNativeRefreshControl } from '../commons/platform';
 import useScrollEnabled from '../hooks/useScrollEnabled';
 import SmoothControl from '../refresh/SmoothControl';
@@ -35,37 +35,31 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     onScroll,
     children,
     forwardRef,
-    animatedValue,
     onLayout,
-    horizontal,
     scrollEventThrottle,
-    getScrollHelper,
     style = {},
     onRefresh,
     refreshing,
     scrollEnabled,
     useSmoothControl,
-    scrollEventHelper,
     refreshControlStartCorrection,
     triggerOnRefreshThresholdValue = TRIGGER_ON_REFRESH_THRESHOLD_VALUE,
     refreshControlContentContainerStyle,
     ...restProps
   } = props;
-  const { marshal } = useContext(ScrollViewContext);
+  const [loading, setLoading] = useState(false);
+  const contextValues = useContext(ScrollViewContext);
+  const marshal = contextValues.marshal!;
 
   const animatedValue = useMemo(() => marshal.getAnimatedValue(), [marshal]);
+  const scrollHelper = marshal.getScrollHelper();
+  const scrollEventHelper = marshal.getScrollEventHelper();
+  const horizontal = marshal.isHorizontal();
 
-  const [loading, setLoading] = useState(false);
-  const scrollHelper = getScrollHelper();
   const lottieAnimatedValueRef = useRef(
     new Animated.Value(triggerOnRefreshThresholdValue)
   );
-  const layoutRef = useRef({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  const layoutRef = useRef(DEFAULT_VIEW_LAYOUT);
   const [_scrollEnabled] = useScrollEnabled({
     scrollEnabled: !!scrollEnabled,
     scrollHelper,
@@ -180,6 +174,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
         style={scrollViewStyle}
         horizontal={horizontal}
         {...restProps}
+        {...scrollHelper.getEventHandlers()}
         scrollEnabled={_scrollEnabled}
         scrollEventThrottle={1}
         onLayout={layoutHandler}

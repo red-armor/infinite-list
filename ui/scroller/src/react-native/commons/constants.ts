@@ -16,6 +16,13 @@ export const DEFAULT_SCROLL_HELPER_LAYOUT = {
   height: deviceHeight,
 };
 
+export const DEFAULT_VIEW_LAYOUT = {
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+};
+
 export const DEFAULT_SCROLL_EVENT_METRICS = {
   contentInset: {
     left: 0,

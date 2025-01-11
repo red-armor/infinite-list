@@ -81,7 +81,9 @@ const MasonryList = <ItemT extends GenericItemT>(
   }, []);
 
   const onLayoutHandler = useCallback((e: LayoutChangeEvent) => {
-    const scrollMetrics = contextValues.getScrollHelper().getScrollMetrics();
+    const scrollMetrics = contextValues.marshal
+      ?.getScrollHelper()
+      .getScrollMetrics();
     dimensionsModel.updateScrollMetrics(scrollMetrics);
 
     const rect = e.nativeEvent.layout;
@@ -125,36 +127,41 @@ const MasonryList = <ItemT extends GenericItemT>(
   const tsRef = useRef(Date.now());
 
   useEffect(() => {
-    const scrollMetrics = contextValues.getScrollHelper().getScrollMetrics();
-    dimensionsModel.updateScrollMetrics({
-      offset: scrollMetrics.offset || 0,
-      visibleLength: scrollMetrics?.visibleLength || 750,
-      contentLength: scrollMetrics.contentLength,
-      velocity: 0,
-    });
+    const scrollMetrics = contextValues.marshal
+      ?.getScrollHelper()
+      .getScrollMetrics();
+    if (scrollMetrics) {
+      dimensionsModel.updateScrollMetrics({
+        offset: scrollMetrics.offset || 0,
+        visibleLength: scrollMetrics?.visibleLength || 750,
+        contentLength: scrollMetrics.contentLength,
+        velocity: 0,
+      });
+    }
+    return contextValues.marshal
+      ?.getScrollEventHelper()
+      .subscribeEventHandler(
+        'onScroll',
+        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          const scrollMetrics = event.nativeEvent;
+          const timestamp = Date.now();
+          const offset = scrollMetrics.contentOffset.y;
 
-    return contextValues.scrollEventHelper.subscribeEventHandler(
-      'onScroll',
-      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const scrollMetrics = event.nativeEvent;
-        const timestamp = Date.now();
-        const offset = scrollMetrics.contentOffset.y;
+          const dOffset = offset - offsetRef.current;
+          const dt = timestamp - tsRef.current;
+          const velocity = dOffset / dt;
 
-        const dOffset = offset - offsetRef.current;
-        const dt = timestamp - tsRef.current;
-        const velocity = dOffset / dt;
+          offsetRef.current = offset;
+          tsRef.current = timestamp;
 
-        offsetRef.current = offset;
-        tsRef.current = timestamp;
-
-        dimensionsModel.updateScrollMetrics({
-          offset,
-          visibleLength: scrollMetrics.layoutMeasurement.height,
-          contentLength: scrollMetrics.contentSize.height,
-          velocity,
-        });
-      }
-    );
+          dimensionsModel.updateScrollMetrics({
+            offset,
+            visibleLength: scrollMetrics.layoutMeasurement.height,
+            contentLength: scrollMetrics.contentSize.height,
+            velocity,
+          });
+        }
+      );
   }, []);
 
   return (

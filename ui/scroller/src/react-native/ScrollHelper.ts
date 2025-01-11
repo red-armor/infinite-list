@@ -6,7 +6,6 @@ import SelectValue, {
 } from '@x-oasis/select-value';
 import { MutableRefObject } from 'react';
 import {
-  Animated,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
@@ -24,10 +23,8 @@ import {
 import { isIos } from './commons/platform';
 import {
   ContentSize,
-  ContentSizeChangeHandler,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventMetrics,
-  ScrollHandler,
   ScrollMetrics,
   ScrollSize,
   SpectrumScrollViewRef,
@@ -65,8 +62,6 @@ class ScrollHelper {
    */
   public ownerScrollHelper: ScrollHelper | null | undefined;
 
-  private _animatedValue: MutableRefObject<Animated.Value>;
-
   private _stickyMarshal: StickyMarshal;
 
   private _scrollMetrics: ScrollMetrics = DEFAULT_SCROLL_METRICS;
@@ -90,27 +85,11 @@ class ScrollHelper {
 
   readonly _horizontal: boolean;
 
-  // public viewable: boolean;
-
   private _marshal?: Marshal;
 
   private _scrollEnabledHandler?: { (falsy: boolean): void };
 
   public hasInteraction: boolean;
-
-  public onScroll: ScrollHandler;
-
-  public onScrollBeginDrag: ScrollHandler;
-
-  public onScrollEndDrag: ScrollHandler;
-
-  public onContentSizeChange: ContentSizeChangeHandler;
-
-  public onMomentumScrollEnd: ScrollHandler;
-
-  public onMomentumScrollBegin: ScrollHandler;
-
-  public onScrollToTop: ScrollHandler;
 
   public setMarshal: (marshal: Marshal) => void;
 
@@ -120,18 +99,10 @@ class ScrollHelper {
     id: string;
     stickyMode?: StickyMode;
     horizontal: boolean;
-    animatedValue: MutableRefObject<Animated.Value>;
     ownerScrollHelper: ScrollHelper | null | undefined;
     ref: SpectrumScrollViewRef;
   }) {
-    const {
-      id,
-      ref,
-      stickyMode,
-      animatedValue,
-      horizontal,
-      ownerScrollHelper,
-    } = props;
+    const { id, ref, stickyMode, horizontal, ownerScrollHelper } = props;
 
     this.id = id;
     this._ref = ref;
@@ -139,23 +110,13 @@ class ScrollHelper {
     this._stickyMarshal = new StickyMarshal({
       stickyMode,
     });
-    this._animatedValue = animatedValue;
     this._horizontal = horizontal;
-    // this._parentScrollHelper = parentScrollHelper!;
     this.selectValue = horizontal ? selectHorizontalValue : selectVerticalValue;
     this._layoutMeasurement = DEFAULT_LAYOUT_MEASUREMENT;
     this._contentSize = DEFAULT_SCROLL_EVENT_METRICS.contentSize;
     this.resolveScrollMetrics();
 
     this.hasInteraction = false;
-
-    this.onContentSizeChange = this._onContentSizeChange.bind(this);
-    this.onScroll = this._onScroll.bind(this);
-    this.onMomentumScrollEnd = this._onMomentumScrollEnd.bind(this);
-    this.onScrollEndDrag = this._onScrollEndDrag.bind(this);
-    this.onScrollBeginDrag = this._onScrollBeginDrag.bind(this);
-    this.onMomentumScrollBegin = this._onMomentumScrollBegin.bind(this);
-    this.onScrollToTop = this._onScrollToTop.bind(this);
 
     this.onViewableHandler = this.onViewableHandler.bind(this);
 
@@ -172,7 +133,6 @@ class ScrollHelper {
     if (!this._scrollEventHelper && marshal) {
       this._scrollEventHelper = new ScrollEventHelper({
         scrollHelper: this,
-        marshal,
       });
     }
 
@@ -220,10 +180,6 @@ class ScrollHelper {
 
   getHorizontal() {
     return this._horizontal;
-  }
-
-  getAnimatedValue() {
-    return this._animatedValue;
   }
 
   get contentSize() {
@@ -397,7 +353,7 @@ class ScrollHelper {
     this.hasInteraction = true;
   }
 
-  _onScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.recordInteraction();
 
     this.setScrollEventMetrics(e.nativeEvent);
@@ -411,7 +367,7 @@ class ScrollHelper {
     this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
-  _onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.triggerScrollEventHelpers('onScrollBeginDrag', {
       nativeEvent: {
         ...e.nativeEvent,
@@ -419,7 +375,7 @@ class ScrollHelper {
     });
   }
 
-  _onScrollEndDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onScrollEndDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.triggerScrollEventHelpers('onScrollEndDrag', {
       nativeEvent: {
         ...e.nativeEvent,
@@ -427,7 +383,7 @@ class ScrollHelper {
     });
   }
 
-  _onMomentumScrollBegin(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onMomentumScrollBegin(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.triggerScrollEventHelpers('onMomentumScrollBegin', {
       nativeEvent: {
         ...e.nativeEvent,
@@ -435,14 +391,14 @@ class ScrollHelper {
     });
   }
 
-  _onMomentumScrollEnd(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onMomentumScrollEnd(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.setScrollEventMetrics(e.nativeEvent);
     this.resolveScrollMetrics();
     this.triggerScrollEventHelpers('onMomentumScrollEnd', e);
     this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
-  _onContentSizeChange(width: number, height: number) {
+  onContentSizeChange(width: number, height: number) {
     this._contentSize = { width, height };
     this.resolveScrollMetrics();
     this.triggerScrollEventHelpers('onContentSizeChange', width, height);
@@ -451,7 +407,7 @@ class ScrollHelper {
       this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
-  _onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.triggerScrollEventHelpers('onScrollToTop', {
       nativeEvent: {
         ...e.nativeEvent,
