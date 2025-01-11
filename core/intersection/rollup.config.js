@@ -4,7 +4,8 @@ module.exports = withNx(
   {
     main: './src/index.ts',
     outputPath: '../../dist/core/intersection',
-    tsConfig: './tsconfig.lib.json',
+    // tsConfig: './tsconfig.lib.json',
+    tsConfig: '../../tsconfig.json',
     compiler: 'swc',
     format: ['cjs', 'esm'],
     assets: [{ input: '.', output: '.', glob: '*.md' }],
