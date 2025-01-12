@@ -17,5 +17,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@infinite-list/items-dimensions": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*"
   }
 }

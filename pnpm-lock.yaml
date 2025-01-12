@@ -302,6 +302,12 @@ importers:
 
   core/intersection-observer:
     dependencies:
+      '@infinite-list/item-meta':
+        specifier: workspace:*
+        version: link:../item-meta
+      '@infinite-list/items-dimensions':
+        specifier: workspace:*
+        version: link:../../model/items-dimensions
       react:
         specifier: 18.2.0
         version: 18.2.0

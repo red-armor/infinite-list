@@ -1,12 +1,21 @@
-import { View, ScrollView } from 'react-native';
-import { IntersectionObserverProps } from './types';
+import { View, ScrollView, Platform } from 'react-native';
+import { ClientRect, IntersectionObserverProps } from './types';
+import {
+  defaultViewabilityConfigCallbackPairs,
+  getEmptyRect,
+  parseRootMargin,
+  viewabilityConfig,
+} from './utils';
+import IntersectionObserverEntry from './IntersectionObserverEntry';
+import { ItemsDimensions } from '@infinite-list/items-dimensions';
 
 class IntersectionObserver {
   private monitoringScrollViews: ScrollView[] = [];
   private callback: IntersectionObserverCallback;
   private root: ScrollView;
-  private rootMargin?: string;
+  private rootMargin: string;
   private threshold?: number | number[];
+  private dimensions: ItemsDimensions;
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -15,12 +24,31 @@ class IntersectionObserver {
     const { root, rootMargin, threshold } = props;
     this.callback = callback;
     this.root = root;
-    this.rootMargin = rootMargin;
     this.threshold = threshold;
+    this.dimensions = new ItemsDimensions({
+      id: 'intersection-observer',
+      horizontal: false,
+      viewabilityConfig,
+      viewabilityConfigCallbackPairs: defaultViewabilityConfigCallbackPairs,
+      canIUseRIC: Platform.OS !== 'ios',
+    });
+
+    const marginValues = parseRootMargin(rootMargin);
+    this.rootMargin = marginValues
+      .map(function (margin) {
+        return margin.value + margin.unit;
+      })
+      .join(' ');
   }
 
-  observe(el: View) {
-    // TODO: implement
+  observe(el: View, key?: string) {
+    const entry = new IntersectionObserverEntry({
+      target: el,
+      time: Date.now(),
+      boundingClientRect: getEmptyRect(),
+      intersectionRect: getEmptyRect(),
+      rootBounds: null,
+    });
   }
 
   unobserve() {
@@ -32,6 +60,26 @@ class IntersectionObserver {
   }
 
   takeRecords() {
+    // TODO: implement
+  }
+
+  monitorIntersections() {
+    // TODO: implement
+  }
+
+  unmonitorIntersections() {
+    // TODO: implement
+  }
+
+  updateIntersections() {
+    // TODO: implement
+  }
+
+  getClientRect(key: string) {
+    // TODO: implement
+  }
+
+  setClientRect(key: string, rect: ClientRect) {
     // TODO: implement
   }
 }

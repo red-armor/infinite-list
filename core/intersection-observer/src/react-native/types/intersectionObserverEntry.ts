@@ -1,7 +1,11 @@
 import { View } from 'react-native';
 
 export type IntersectionObserverEntryProps = {
+  time: number;
   target: View;
+  boundingClientRect: IRectReadOnly;
+  intersectionRect: IRectReadOnly;
+  rootBounds: IRectReadOnly | null;
 };
 
 /**
