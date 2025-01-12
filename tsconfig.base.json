@@ -16,6 +16,9 @@
       ],
       "@infinite-list/group/react": ["ui/group/src/react/index.ts"],
       "@infinite-list/intersection": ["core/intersection/src/index.ts"],
+      "@infinite-list/intersection-observer": [
+        "core/intersection-observer/src/index.ts"
+      ],
       "@infinite-list/item-meta": ["core/item-meta/src/index.ts"],
       "@infinite-list/items-dimensions": [
         "model/items-dimensions/src/index.ts"
