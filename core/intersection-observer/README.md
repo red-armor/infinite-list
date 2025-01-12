@@ -1,7 +1,6 @@
 # intersection-observer
 
-This library was generated with [Nx](https://nx.dev).
+## References
 
-## Running unit tests
+- https://github.com/GoogleChromeLabs/intersection-observer
 
-Run `nx test intersection-observer` to execute the unit tests via [Jest](https://jestjs.io).

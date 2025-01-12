@@ -1,1 +1,1 @@
-export const sum = (a: number, b: number) => a + b;
+export { default as IntersectionObserver } from './IntersectionObserver';

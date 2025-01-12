@@ -28,6 +28,7 @@
     "@x-oasis/shallow-equal": "^0.1.14",
     "@x-oasis/throttle": "^0.1.35",
     "@infinite-list/item-meta": "workspace:*",
-    "@infinite-list/items-dimensions": "workspace:*"
+    "@infinite-list/items-dimensions": "workspace:*",
+    "@infinite-list/intersection-observer": "workspace:*"
   }
 }
