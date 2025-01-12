@@ -16,6 +16,7 @@ class IntersectionObserver {
   private rootMargin: string;
   private threshold?: number | number[];
   private dimensions: ItemsDimensions;
+  private entryMap: WeakMap<View, IntersectionObserverEntry> = new WeakMap();
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -41,14 +42,25 @@ class IntersectionObserver {
       .join(' ');
   }
 
-  observe(el: View, key?: string) {
+  observe(el: View, entryKey?: string) {
     const entry = new IntersectionObserverEntry({
+      root: this.root,
       target: el,
+      entryKey,
       time: Date.now(),
       boundingClientRect: getEmptyRect(),
       intersectionRect: getEmptyRect(),
       rootBounds: null,
+      dimensions: this.dimensions,
     });
+    this.entryMap.set(el, entry);
+  }
+
+  updateClientRect(el: View) {
+    const entry = this.entryMap.get(el);
+    if (entry) {
+      entry.updateClientRect();
+    }
   }
 
   unobserve() {

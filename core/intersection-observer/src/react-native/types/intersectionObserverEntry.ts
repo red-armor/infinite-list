@@ -1,11 +1,14 @@
-import { View } from 'react-native';
-
+import { View, ScrollView } from 'react-native';
+import { ItemsDimensions } from '@infinite-list/items-dimensions';
 export type IntersectionObserverEntryProps = {
+  root: ScrollView;
   time: number;
   target: View;
+  entryKey?: string;
   boundingClientRect: IRectReadOnly;
   intersectionRect: IRectReadOnly;
   rootBounds: IRectReadOnly | null;
+  dimensions: ItemsDimensions;
 };
 
 /**

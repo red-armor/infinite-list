@@ -112,6 +112,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   let rootScrollHelper: ScrollHelper | undefined =
     parentMarshal?.getScrollHelper();
   let isRootScrollView = false;
+  let nextIntersectionObserver = intersectionObserver;
 
   if (
     !rootScrollHelper ||
@@ -125,6 +126,13 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       ownerScrollHelper: rootScrollHelper,
     });
     isRootScrollView = true;
+    const callback = (entries: IntersectionObserverEntry[]) => {
+      console.log(entries);
+    };
+
+    nextIntersectionObserver = new IntersectionObserver(callback, {
+      root: scrollViewRef.current,
+    });
   }
 
   const scrollEventHelper = useMemo(
@@ -151,17 +159,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     onMomentumScrollBegin,
   });
 
-  const nextIntersectionObserver = useMemo(() => {
-    if (intersectionObserver) return intersectionObserver;
-    const callback = (entries: IntersectionObserverEntry[]) => {
-      console.log(entries);
-    };
-
-    return new IntersectionObserver(callback, {
-      root: scrollViewRef.current,
-    });
-  }, []);
-
   /**
    * Every scrollView has a marshal
    */
@@ -177,7 +174,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       horizontal,
       scrollHelper: rootScrollHelper,
       scrollEventHelper: scrollEventHelper,
-      intersectionObserver: nextIntersectionObserver,
+      intersectionObserver: nextIntersectionObserver!,
     });
   }, []);
 
