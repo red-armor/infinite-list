@@ -23,7 +23,7 @@ class Marshal {
 
   readonly _id: string;
 
-  readonly _removeClippedSubviews: boolean;
+  // readonly _removeClippedSubviews: boolean;
 
   private _parentMarshal: Marshal;
 
@@ -50,7 +50,7 @@ class Marshal {
     scrollEventHelper: ScrollEventHelper;
     // outerMostVerticalMarshal?: Marshal;
     // outerMostHorizontalMarshal?: Marshal;
-    removeClippedSubviews: boolean;
+    // removeClippedSubviews: boolean;
     ref: SpectrumScrollViewRef;
     animatedValueX: MutableRefObject<Animated.Value>;
     animatedValueY: MutableRefObject<Animated.Value>;
@@ -65,7 +65,7 @@ class Marshal {
       horizontal = false,
       scrollUpdating = true,
       scrollEventHelper,
-      removeClippedSubviews,
+      // removeClippedSubviews,
       animatedValueX,
       animatedValueY,
     } = props;
@@ -83,7 +83,7 @@ class Marshal {
     this.register();
     this._scrollUpdating = scrollUpdating;
     this._rootScrollHelper = scrollHelper;
-    this._removeClippedSubviews = removeClippedSubviews;
+    // this._removeClippedSubviews = removeClippedSubviews;
   }
 
   get dimensions() {

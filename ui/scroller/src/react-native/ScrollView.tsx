@@ -18,6 +18,7 @@ import {
   View as RNView,
   Platform,
 } from 'react-native';
+import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 
 import Marshal from './Marshal';
 import ScrollEventHelper from './ScrollEventHelper';
@@ -30,7 +31,6 @@ import ViewRenderer from './component/ViewRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';
 import ScrollUpdatingContext from './context/ScrollUpdatingContext';
 import ScrollViewContext from './context/ScrollViewContext';
-import ViewabilityContext from './context/ViewabilityContext';
 import FooterPortalContainer from './portal/FooterContainer';
 import HeaderPortalContainer from './portal/HeaderContainer';
 import PortalManager from './portal/Manager';
@@ -96,13 +96,15 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   const removeClippedSubviews = false;
   const scrollHelperDisposerRef = useRef<Function>();
-  const { marshal: parentMarshal } = scrollViewContextValues;
+  const { marshal: parentMarshal, intersectionObserver } =
+    scrollViewContextValues;
   const defaultScrollViewRef = useRef<RNScrollView | RNView>();
   const scrollViewRef = (
     isRefObject(forwardRef) ? forwardRef : defaultScrollViewRef
   ) as MutableRefObject<RNScrollView>;
 
   const portalManager = useMemo(() => new PortalManager(), []);
+  const shouldBeView = false;
 
   const defaultAnimatedValueX = useRef(new Animated.Value(0));
   const defaultAnimatedValueY = useRef(new Animated.Value(0));
@@ -217,7 +219,19 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const nextScrollViewContextValues = useMemo(() => ({ marshal }), []);
+  const nextIntersectionObserver = useMemo(() => {
+    if (!intersectionObserver) return intersectionObserver;
+    return new IntersectionObserver();
+  }, []);
+
+  const nextScrollViewContextValues = useMemo(
+    () => ({
+      marshal,
+      intersectionObserver: nextIntersectionObserver,
+    }),
+    []
+  );
+
   const nextScrollUpdatingContextValues = useMemo(
     () => ({
       scrollUpdating,
@@ -226,43 +240,14 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   );
 
   const nextChildren = useMemo(() => {
-    if (shouldBeView)
-      return (
-        <ScrollViewContext.Provider value={nextScrollViewContextValues}>
-          {children}
-        </ScrollViewContext.Provider>
-      );
-
+    if (shouldBeView) return children;
     return (
-      <ScrollViewContext.Provider value={nextScrollViewContextValues}>
-        <ViewabilityContext.Provider value={viewabilityContextValues}>
-          <ScrollUpdatingContext.Provider
-            value={nextScrollUpdatingContextValues}
-          >
-            {isIos && !useSmoothControl ? refreshControl : null}
-            {children}
-          </ScrollUpdatingContext.Provider>
-        </ViewabilityContext.Provider>
-      </ScrollViewContext.Provider>
+      <ScrollUpdatingContext.Provider value={nextScrollUpdatingContextValues}>
+        {isIos && !useSmoothControl ? refreshControl : null}
+        {children}
+      </ScrollUpdatingContext.Provider>
     );
   }, [children, shouldBeView]);
-
-  const PortalHeader = useCallback(
-    () => (
-      <ScrollViewContext.Provider value={nextScrollViewContextValues}>
-        <HeaderPortalContainer />
-      </ScrollViewContext.Provider>
-    ),
-    []
-  );
-  const PortalFooter = useCallback(
-    () => (
-      <ScrollViewContext.Provider value={nextScrollViewContextValues}>
-        <FooterPortalContainer />
-      </ScrollViewContext.Provider>
-    ),
-    []
-  );
 
   const _refreshControl = useMemo(() => {
     if (!nextOnRefresh) return null;
@@ -280,22 +265,22 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   if (!enableViewPager && !!shouldBeView)
     return (
-      <>
-        <PortalHeader />
+      <ScrollViewContext.Provider value={nextScrollViewContextValues}>
+        <HeaderPortalContainer />
         <ViewRenderer
           ref={scrollViewRef as any as MutableRefObject<RNView>}
           {...rest}
         >
           {nextChildren}
         </ViewRenderer>
-        <PortalFooter />
-      </>
+        <FooterPortalContainer />
+      </ScrollViewContext.Provider>
     );
 
   if (!enableViewPager && !shouldBeView && !!animated)
     return (
-      <>
-        <PortalHeader />
+      <ScrollViewContext.Provider value={nextScrollViewContextValues}>
+        <HeaderPortalContainer />
         <AnimatedRenderer
           ref={scrollViewRef as MutableRefObject<RNScrollView>}
           {...rest}
@@ -304,17 +289,16 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
           refreshing={refreshing}
           scrollEventHelper={scrollEventHelper}
           useSmoothControl={useSmoothControl}
-          animatedValue={animatedValue}
         >
           {nextChildren}
         </AnimatedRenderer>
-        <PortalFooter />
-      </>
+        <FooterPortalContainer />
+      </ScrollViewContext.Provider>
     );
 
   return (
-    <>
-      <PortalHeader />
+    <ScrollViewContext.Provider value={nextScrollViewContextValues}>
+      <HeaderPortalContainer />
       <BasicRenderer
         ref={scrollViewRef as MutableRefObject<RNScrollView>}
         {...rest}
@@ -322,8 +306,8 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       >
         {nextChildren}
       </BasicRenderer>
-      <PortalFooter />
-    </>
+      <FooterPortalContainer />
+    </ScrollViewContext.Provider>
   );
 };
 
