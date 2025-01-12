@@ -3,7 +3,7 @@ import {
   IntersectionObserverEntryProps,
   IIntersectionObserverEntry,
 } from './types';
-import { getEmptyRect } from './utilts';
+import { getEmptyRect } from './utils';
 
 class IntersectionObserverEntry {
   private target: View;
