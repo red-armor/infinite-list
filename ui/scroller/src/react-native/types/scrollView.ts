@@ -46,7 +46,7 @@ export interface ViewRendererPropsWithForwardRef extends ScrollViewProps {
 export type RefreshControlProps = {
   refreshing?: boolean;
   useSmoothControl?: boolean;
-  onRefresh?: (() => void) | undefined;
+  onRefresh?: (() => void) | undefined | null;
   refreshControlStartCorrection?: number;
   triggerOnRefreshThresholdValue: number;
   refreshControlContentContainerStyle?: ViewStyle;

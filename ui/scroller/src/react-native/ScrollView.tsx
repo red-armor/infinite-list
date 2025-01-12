@@ -3,7 +3,6 @@ import React, {
   ForwardedRef,
   MutableRefObject,
   PropsWithChildren,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -17,7 +16,6 @@ import {
   Platform,
 } from 'react-native';
 import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import isRefObject from '@x-oasis/is-ref';
 
 import Marshal from './Marshal';
@@ -153,6 +151,17 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     onMomentumScrollBegin,
   });
 
+  const nextIntersectionObserver = useMemo(() => {
+    if (intersectionObserver) return intersectionObserver;
+    const callback = (entries: IntersectionObserverEntry[]) => {
+      console.log(entries);
+    };
+
+    return new IntersectionObserver(callback, {
+      root: scrollViewRef.current,
+    });
+  }, []);
+
   /**
    * Every scrollView has a marshal
    */
@@ -168,7 +177,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       horizontal,
       scrollHelper: rootScrollHelper,
       scrollEventHelper: scrollEventHelper,
-      dimensions: viewabilityContextValues.dimensions,
+      intersectionObserver: nextIntersectionObserver,
     });
   }, []);
 
@@ -200,17 +209,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const viewabilityContextValues = useMemo(() => {
-    const dimensions = new ItemsDimensions({
-      id: scrollViewKey,
-      horizontal,
-      viewabilityConfig,
-      viewabilityConfigCallbackPairs,
-      canIUseRIC: Platform.OS !== 'ios',
-    });
-    return { dimensions };
-  }, []);
-
   useEffect(
     () => () => {
       marshal.dispose();
@@ -218,11 +216,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     },
     []
   );
-
-  const nextIntersectionObserver = useMemo(() => {
-    if (!intersectionObserver) return intersectionObserver;
-    return new IntersectionObserver();
-  }, []);
 
   const nextScrollViewContextValues = useMemo(
     () => ({

@@ -1,7 +1,8 @@
 import { MutableRefObject } from 'react';
 import { Animated } from 'react-native';
 import ScrollHelper from './ScrollHelper';
-import { DataModelDimensions, SpectrumScrollViewRef } from './types';
+import { SpectrumScrollViewRef } from './types';
+import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import ScrollEventHelper from './ScrollEventHelper';
 
 /**
@@ -21,9 +22,9 @@ class Marshal {
 
   readonly _scrollEventHelper: ScrollEventHelper;
 
-  readonly _id: string;
+  readonly intersectionObserver: IntersectionObserver;
 
-  // readonly _removeClippedSubviews: boolean;
+  readonly _id: string;
 
   private _parentMarshal: Marshal;
 
@@ -37,37 +38,31 @@ class Marshal {
 
   private _scrollUpdating: boolean;
 
-  private _dimensions: DataModelDimensions;
-
   constructor(props: {
     id: string;
-    dimensions: DataModelDimensions;
     animated?: boolean;
     horizontal?: boolean;
     parentMarshal: Marshal | null;
     scrollUpdating?: boolean;
     scrollHelper: ScrollHelper;
     scrollEventHelper: ScrollEventHelper;
-    // outerMostVerticalMarshal?: Marshal;
-    // outerMostHorizontalMarshal?: Marshal;
-    // removeClippedSubviews: boolean;
     ref: SpectrumScrollViewRef;
+    intersectionObserver: IntersectionObserver;
     animatedValueX: MutableRefObject<Animated.Value>;
     animatedValueY: MutableRefObject<Animated.Value>;
   }) {
     const {
       id,
       ref,
-      dimensions,
       scrollHelper,
       parentMarshal,
       animated = false,
       horizontal = false,
       scrollUpdating = true,
       scrollEventHelper,
-      // removeClippedSubviews,
       animatedValueX,
       animatedValueY,
+      intersectionObserver,
     } = props;
     this._ref = ref;
     this._id = id;
@@ -76,18 +71,13 @@ class Marshal {
     this._animatedValueX = animatedValueX;
     this._animatedValueY = animatedValueY;
     this._horizontal = horizontal;
-    this._dimensions = dimensions;
+    this.intersectionObserver = intersectionObserver;
 
     this._parentMarshal = parentMarshal;
 
     this.register();
     this._scrollUpdating = scrollUpdating;
     this._rootScrollHelper = scrollHelper;
-    // this._removeClippedSubviews = removeClippedSubviews;
-  }
-
-  get dimensions() {
-    return this._dimensions;
   }
 
   enableScrollUpdating() {
