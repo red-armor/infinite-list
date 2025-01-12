@@ -164,16 +164,17 @@
 //   );
 // };
 
-import { Text } from 'react-native';
-// import List from './List';
-import MasonryList from './MasonryList';
-// import Group from './Group';
-// import HorizontalList from './HorizontalList';
-// import HorizontalListWithContainer from './HorizontalListWithContainer';
+// import List from '../../components/play/List';
+// import MasonryList from '../../components/play/MasonryList';
+// import Group from '../../components/play/Group';
+// import HorizontalList from '../../components/play/HorizontalList';
+// import HorizontalListWithContainer from '../../components/play/HorizontalListWithContainer';
+import MeasureInWindowSimple from '../../components/play/MeasureInWindowSimple';
 
 export default () => {
+  return <MeasureInWindowSimple />;
   // return <Group />;
-  return <MasonryList />;
+  // return <MasonryList />;
   // return <List />;
   // return <HorizontalListWithContainer />;
 };
