@@ -8,15 +8,10 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { ViewStyle, StyleSheet } from 'react-native';
+import { ViewStyle, StyleSheet, LayoutChangeEvent } from 'react-native';
 
 import ScrollViewContext from '../context/ScrollViewContext';
-// import ViewabilityContext from '../context/ViewabilityContext';
-// import ViewableItemContext from '../context/ViewableItemContext';
-// import useBindGeneral from '../hooks/useBindGeneral';
-// import useMeasureLayout from '../hooks/useMeasureLayout';
 import { ViewableItemProps } from '../types';
-// import MemoedViewableItem from './Item';
 
 const createViewableComponent = <T extends React.ComponentType<any>>(
   Component: T
@@ -34,13 +29,6 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
       containerKey,
       CellRendererComponent,
       viewableItemHelperKey,
-      isIntervalTreeItem = false,
-      setMeasureLayoutHandler,
-      onMeasureLayout: _onMeasureLayout,
-      measureLayoutHandlerOnDemand,
-      getMetaOnViewableItemsChanged,
-      viewAbilityPropsSensitive = true,
-      itemKey,
       ...rest
     } = props;
     const containerStyle = useMemo<ViewStyle>(
@@ -64,11 +52,15 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
       }
     }, [intersectionObserver]);
 
-    const layoutHandler = useCallback(() => {
-      if (intersectionObserver) {
-        intersectionObserver.updateClientRect(viewRef.current);
-      }
-    }, [intersectionObserver]);
+    const layoutHandler = useCallback(
+      (e: LayoutChangeEvent) => {
+        onLayout(e);
+        if (intersectionObserver) {
+          intersectionObserver.updateClientRect(viewRef.current);
+        }
+      },
+      [intersectionObserver]
+    );
 
     const RenderComponent = useMemo(
       () => CellRendererComponent || Component,
