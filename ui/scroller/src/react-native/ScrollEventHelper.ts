@@ -108,6 +108,20 @@ class ScrollEventHelper {
     return false;
   }
 
+  updateInternalHandlers(handlersMap: {
+    [key in ScrollEventHandlerSubscriptionKeys]:
+      | SyntheticEventHandler
+      | ContentSizeChangeHandler
+      | undefined;
+  }) {
+    Object.keys(handlersMap).forEach((key) => {
+      const handler = handlersMap[key as ScrollEventHandlerSubscriptionKeys];
+      if (handler) {
+        this.updateInternalHandler(key, handler);
+      }
+    });
+  }
+
   _dispatchEvent(eventName: ScrollEventHandlerSubscriptionKeys, ...rest) {
     const handlers = this._subscriptions[eventName];
 

@@ -135,33 +135,14 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  useEffect(() => {
-    scrollEventHelper.updateInternalHandler('onScroll', onScroll);
-    scrollEventHelper.updateInternalHandler('onScrollEndDrag', onScrollEndDrag);
-    scrollEventHelper.updateInternalHandler(
-      'onScrollBeginDrag',
-      onScrollBeginDrag
-    );
-    scrollEventHelper.updateInternalHandler(
-      'onContentSizeChange',
-      onContentSizeChange
-    );
-    scrollEventHelper.updateInternalHandler(
-      'onMomentumScrollEnd',
-      onMomentumScrollEnd
-    );
-    scrollEventHelper.updateInternalHandler(
-      'onMomentumScrollBegin',
-      onMomentumScrollBegin
-    );
-  }, [
+  scrollEventHelper.updateInternalHandlers({
     onScroll,
     onScrollEndDrag,
     onScrollBeginDrag,
     onContentSizeChange,
     onMomentumScrollEnd,
     onMomentumScrollBegin,
-  ]);
+  });
 
   /**
    * Every scrollView has a marshal
