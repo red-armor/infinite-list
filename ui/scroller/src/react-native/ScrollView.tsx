@@ -1,5 +1,3 @@
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
-import isRefObject from '@x-oasis/is-ref';
 import React, {
   FC,
   ForwardedRef,
@@ -19,6 +17,8 @@ import {
   Platform,
 } from 'react-native';
 import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
+import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import isRefObject from '@x-oasis/is-ref';
 
 import Marshal from './Marshal';
 import ScrollEventHelper from './ScrollEventHelper';
