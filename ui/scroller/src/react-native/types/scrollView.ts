@@ -33,19 +33,14 @@ type PagerView = any;
 
 export interface ViewRendererProps extends ViewProps {
   ref?: ForwardedRef<View>;
-  // scrollViewKey: string;
 }
 
 export type GetScrollHelper = () => ScrollHelper;
 
 export type SpectrumScrollViewRef = MutableRefObject<ScrollView>;
-// export type SpectrumScrollViewRef = MutableRefObject<
-//   ScrollView | View | undefined
-// >;
 
 export interface ViewRendererPropsWithForwardRef extends ScrollViewProps {
   forwardRef?: ForwardedRef<View>;
-  // scrollViewKey: string;
 }
 
 export type RefreshControlProps = {
@@ -153,8 +148,6 @@ export type SpectrumScrollViewProps = ScrollViewProps &
 
     animatedX?: MutableRefObject<Animated.Value>;
     animatedY?: MutableRefObject<Animated.Value>;
-    onEndReachedThreshold?: number;
-    onEndReachedTimeoutThreshold?: number;
     viewabilityConfig?: ViewabilityConfig;
     viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
 
@@ -180,14 +173,6 @@ export type SpectrumScrollViewPropsWithRef = SpectrumScrollViewProps & {
 export type SpectrumScrollViewPropsWithForwardRef = SpectrumScrollViewProps & {
   forwardRef?: ForwardedRef<ScrollView>;
 };
-
-// export enum ScrollHandlerName {
-//   onScroll = 'onScroll',
-//   onScrollEndDrag = 'onScrollEndDrag',
-//   onScrollBeginDrag = 'onScrollBeginDrag',
-//   onMomentumScrollEnd = 'onMomentumScrollEnd',
-//   onMomentumScrollBegin = 'onMomentumScrollBegin',
-// }
 
 export type SyntheticEventHandlerEvent =
   NativeSyntheticEvent<NativeScrollEvent>;

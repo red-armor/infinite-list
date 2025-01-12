@@ -3,7 +3,6 @@ import noop from '@x-oasis/noop';
 import ScrollHelper from './ScrollHelper';
 import {
   ContentSizeChangeHandler,
-  OnEndReachedHandler,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventHandlerSubscriptions,
   SyntheticEventHandler,
@@ -27,11 +26,9 @@ class ScrollEventHelper {
   private _onMomentumScrollBegin: SyntheticEventHandler | undefined;
   private _onScrollToTop: SyntheticEventHandler | undefined;
   private _subscriptions: ScrollEventHandlerSubscriptions;
-  private _onEndReached?: (props: { distanceFromEnd: number }) => void;
 
   constructor(props: {
     scrollHelper: ScrollHelper;
-    onEndReached?: OnEndReachedHandler;
     onScroll?: SyntheticEventHandler;
     onScrollEndDrag?: SyntheticEventHandler;
     onScrollBeginDrag?: SyntheticEventHandler;
@@ -43,7 +40,6 @@ class ScrollEventHelper {
     const {
       onScroll,
       scrollHelper,
-      onEndReached,
       onScrollToTop,
       onScrollEndDrag,
       onScrollBeginDrag,
@@ -52,7 +48,6 @@ class ScrollEventHelper {
       onMomentumScrollBegin,
     } = props;
 
-    this._onEndReached = onEndReached;
     this._onScroll = onScroll;
     this._scrollHelper = scrollHelper;
     this._onScrollBeginDrag = onScrollBeginDrag;
@@ -69,7 +64,6 @@ class ScrollEventHelper {
       onMomentumScrollEnd: [],
       onMomentumScrollBegin: [],
       onContentSizeChange: [],
-      onEndReached: [],
       onScrollToTop: [],
     };
 
@@ -99,10 +93,9 @@ class ScrollEventHelper {
     fnName: ScrollEventHandlerSubscriptionKeys,
     handler?: SyntheticEventHandler | ContentSizeChangeHandler
   ) {
-    const internalName =
-      `_${fnName}` as InternalScrollEventHandlerSubscriptionKeys;
-    if (this[internalName] !== handler) {
-      this[internalName] = handler;
+    const key = `_${fnName}` as InternalScrollEventHandlerSubscriptionKeys;
+    if (this[key] !== handler) {
+      this[key] = handler as any;
       return true;
     }
     return false;
@@ -115,10 +108,9 @@ class ScrollEventHelper {
       | undefined;
   }) {
     Object.keys(handlersMap).forEach((key) => {
-      const handler = handlersMap[key as ScrollEventHandlerSubscriptionKeys];
-      if (handler) {
-        this.updateInternalHandler(key, handler);
-      }
+      const typedKey = key as ScrollEventHandlerSubscriptionKeys;
+      const handler = handlersMap[typedKey];
+      this.updateInternalHandler(typedKey, handler);
     });
   }
 
@@ -168,16 +160,6 @@ class ScrollEventHelper {
   onScrollToTop(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScrollToTop === 'function') this._onScrollToTop(e);
     this._dispatchEvent('onScrollToTop', e);
-  }
-
-  onEndReached(props: {
-    distanceFromEnd: number;
-    contentLength: number;
-    visibleLength: number;
-    offset: number;
-  }) {
-    if (typeof this._onEndReached === 'function') this._onEndReached(props);
-    this._dispatchEvent('onEndReached', props);
   }
 
   subscribeEventHandler(

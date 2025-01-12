@@ -45,7 +45,6 @@ import { resolveScrollViewKey } from './commons/utils';
 const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const {
     id,
-    onScroll,
     forwardRef,
 
     animatedY,
@@ -58,21 +57,28 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     refreshing,
     refreshControl,
 
-    onScrollEndDrag,
     animated = false,
     viewabilityConfig,
-    onScrollBeginDrag,
     horizontal: _horizontal,
+    enableViewPager = false,
+
+    /**
+     * event handlers begin
+     */
+    onScroll,
+    onScrollBeginDrag,
+    onScrollEndDrag,
+    onMomentumScrollBegin,
     onMomentumScrollEnd,
     onContentSizeChange,
-    onMomentumScrollBegin,
-    enableViewPager = false,
+    onScrollToTop,
+    /**
+     * event handlers end
+     */
 
     pagerOffsetRef: _pagerOffsetRef,
     pagerPositionRef: _pagerPositionRef,
-    onEndReachedThreshold = 1,
     viewabilityConfigCallbackPairs = defaultViewabilityConfigCallbackPairs,
-    onEndReachedTimeoutThreshold = 200,
     scrollUpdating = true,
     removeClippedSubviews: _removeClippedSubviews,
     scrollEventThrottle = DEFAULT_SCROLL_EVENT_THROTTLE,
@@ -137,6 +143,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   scrollEventHelper.updateInternalHandlers({
     onScroll,
+    onScrollToTop,
     onScrollEndDrag,
     onScrollBeginDrag,
     onContentSizeChange,
@@ -157,8 +164,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       scrollUpdating,
       ref: scrollViewRef,
       horizontal,
-      // outerMostVerticalMarshal,
-      // outerMostHorizontalMarshal,
       scrollHelper: rootScrollHelper,
       scrollEventHelper: scrollEventHelper,
       dimensions: viewabilityContextValues.dimensions,
@@ -212,23 +217,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  // useEffect(() => {
-  //   if (shouldBeView && !marshal.hasParent()) {
-  //     throw new Error(
-  //       '`shouldBeView` props should be used in `ScrollView`' +
-  //         'wrapped with same orientation `ScrollView` Component'
-  //     );
-  //   }
-  // }, []);
-
-  // const eventHandlers = useMemo(() => {
-  //   if (isARootContainer) return rootScrollHelper.getEventHandlers();
-  //   return {};
-  // }, []);
-
-  // const getScrollHelper = useCallback(() => rootScrollHelper, []);
-  // const getParentMarshal = useCallback(() => parentMarshal, []);
-
   const nextScrollViewContextValues = useMemo(() => ({ marshal }), []);
   const nextScrollUpdatingContextValues = useMemo(
     () => ({
@@ -276,26 +264,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  // const commonProps = useMemo(
-  //   () => ({
-  //     scrollViewKey,
-  //     getScrollHelper,
-  //     horizontal,
-  //     scrollEventHelper,
-  //   }),
-  //   []
-  // );
-
-  // const commonScrollViewProps = useMemo(
-  //   () => ({
-  //     ...eventHandlers,
-  //     scrollEnabled,
-  //     removeClippedSubviews,
-  //     scrollEventThrottle,
-  //   }),
-  //   []
-  // );
-
   const _refreshControl = useMemo(() => {
     if (!nextOnRefresh) return null;
     if (isIos) return null;
@@ -317,7 +285,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         <ViewRenderer
           ref={scrollViewRef as any as MutableRefObject<RNView>}
           {...rest}
-          // {...commonProps}
         >
           {nextChildren}
         </ViewRenderer>
@@ -332,9 +299,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         <AnimatedRenderer
           ref={scrollViewRef as MutableRefObject<RNScrollView>}
           {...rest}
-          // {...commonProps}
           {...refreshControlProps}
-          // {...commonScrollViewProps}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
           scrollEventHelper={scrollEventHelper}
@@ -353,9 +318,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       <BasicRenderer
         ref={scrollViewRef as MutableRefObject<RNScrollView>}
         {...rest}
-        // {...commonProps}
         {...refreshControlProps}
-        // {...commonScrollViewProps}
       >
         {nextChildren}
       </BasicRenderer>
