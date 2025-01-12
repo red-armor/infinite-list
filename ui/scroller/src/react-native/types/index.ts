@@ -1,9 +1,8 @@
-export * from './scrollHelper';
+// export * from './scrollHelper';
 export * from './scrollView';
 export * from './item';
 export * from './viewableItemHelper';
 export * from './viewability';
-export * from './viewable';
 export * from './scrollEventHelper';
 export * from './marshal';
 export * from './control';

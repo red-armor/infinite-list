@@ -21,11 +21,10 @@ import {
   DEFAULT_SCROLL_METRICS,
 } from './commons/constants';
 import { isIos } from './commons/platform';
+import { ScrollMetrics, ContentSize } from '@infinite-list/types';
 import {
-  ContentSize,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventMetrics,
-  ScrollMetrics,
   ScrollSize,
   SpectrumScrollViewRef,
   StickyMode,

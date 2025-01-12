@@ -1,8 +1,4 @@
-import {
-  ContentSizeChangeHandler,
-  // OnEndReachedHandler,
-  SyntheticEventHandler,
-} from './scrollView';
+import { ContentSizeChangeHandler, SyntheticEventHandler } from './scrollView';
 
 export type EventHandlerName =
   | 'onScroll'
@@ -17,7 +13,6 @@ export type InternalEventHandlerName = `_${EventHandlerName}`;
 export type ScrollEventHandlerSubscriptionKeys =
   | EventHandlerName
   | 'onContentSizeChange';
-// | 'onEndReached';
 export type InternalScrollEventHandlerSubscriptionKeys =
   `_${ScrollEventHandlerSubscriptionKeys}`;
 
@@ -28,6 +23,5 @@ export type ScrollEventHandlerSubscriptions = {
   onMomentumScrollEnd: Array<SyntheticEventHandler>;
   onMomentumScrollBegin: Array<SyntheticEventHandler>;
   onContentSizeChange: Array<ContentSizeChangeHandler>;
-  // onEndReached: Array<OnEndReachedHandler>;
   onScrollToTop: Array<SyntheticEventHandler>;
 };
