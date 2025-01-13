@@ -8,6 +8,7 @@ import {
 } from './utils';
 import IntersectionObserverEntry from './IntersectionObserverEntry';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import Observer from './Observer';
 
 class IntersectionObserver {
   private monitoringScrollViews: ScrollView[] = [];
@@ -16,7 +17,7 @@ class IntersectionObserver {
   private rootMargin: string;
   private threshold?: number | number[];
   private dimensions: ItemsDimensions;
-  private entryMap: WeakMap<View, IntersectionObserverEntry> = new WeakMap();
+  private observerMap: WeakMap<View, Observer> = new WeakMap();
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -42,18 +43,24 @@ class IntersectionObserver {
       .join(' ');
   }
 
-  observe(el: View, entryKey?: string) {
-    const entry = new IntersectionObserverEntry({
+  observe(el: View, observerKey?: string) {
+    const observer = new Observer({
       root: this.root,
       target: el,
-      entryKey,
-      time: Date.now(),
-      boundingClientRect: getEmptyRect(),
-      intersectionRect: getEmptyRect(),
-      rootBounds: null,
-      dimensions: this.dimensions,
+      observerKey,
     });
-    this.entryMap.set(el, entry);
+    this.observerMap.set(el, observer);
+
+    // const entry = new IntersectionObserverEntry({
+    //   root: this.root,
+    //   target: el,
+    //   entryKey,
+    //   boundingClientRect: getEmptyRect(),
+    //   intersectionRect: getEmptyRect(),
+    //   rootBounds: null,
+    //   dimensions: this.dimensions,
+    // });
+    // this.entryMap.set(el, entry);
   }
 
   updateClientRect(el: View) {

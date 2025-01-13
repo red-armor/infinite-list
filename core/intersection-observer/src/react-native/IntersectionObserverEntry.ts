@@ -14,10 +14,12 @@ class IntersectionObserverEntry {
   private root: ScrollView;
   private clientRect: IRectReadOnly;
   private dimensions: ItemsDimensions;
+  private time: number;
 
   constructor(props: IntersectionObserverEntryProps) {
     const { target, root, dimensions, entryKey = generateRandomKey() } = props;
     this.root = root;
+    this.time = Date.now();
     this.target = target;
     this.entryKey = entryKey;
     this.clientRect = getEmptyRect();

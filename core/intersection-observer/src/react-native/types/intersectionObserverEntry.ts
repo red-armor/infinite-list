@@ -2,7 +2,7 @@ import { View, ScrollView } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 export type IntersectionObserverEntryProps = {
   root: ScrollView;
-  time: number;
+  // time: number;
   target: View;
   entryKey?: string;
   boundingClientRect: IRectReadOnly;
