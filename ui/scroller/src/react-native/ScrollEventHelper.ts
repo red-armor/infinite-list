@@ -20,7 +20,7 @@ import Marshal from './Marshal';
 class ScrollEventHelper {
   private _disposer: Function;
   // private _scrollHelper: ScrollHelper;
-  private _marshal: Marshal;
+  readonly marshal: Marshal;
   private _onScroll: SyntheticEventHandler | undefined;
   private _onScrollEndDrag: SyntheticEventHandler | undefined;
   private _onScrollBeginDrag: SyntheticEventHandler | undefined;
@@ -42,7 +42,7 @@ class ScrollEventHelper {
       onMomentumScrollBegin,
     } = props;
 
-    this._marshal = marshal;
+    this.marshal = marshal;
     this._onScroll = onScroll;
     // this._scrollHelper = scrollHelper;
     this._onScrollBeginDrag = onScrollBeginDrag;
@@ -67,7 +67,7 @@ class ScrollEventHelper {
   }
 
   register() {
-    this._disposer = this._marshal
+    this._disposer = this.marshal
       .getScrollHelper()
       .registerScrollEventHelper(this);
   }

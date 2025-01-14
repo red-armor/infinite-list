@@ -14,11 +14,9 @@ import {
   ScrollView as RNScrollView,
   View as RNView,
 } from 'react-native';
-import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import isRefObject from '@x-oasis/is-ref';
 
 import Marshal from './Marshal';
-import ScrollEventHelper from './ScrollEventHelper';
 import ScrollHelper from './ScrollHelper';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
@@ -93,8 +91,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   const removeClippedSubviews = false;
   const scrollHelperDisposerRef = useRef<Function>();
-  const { marshal: parentMarshal, intersectionObserver } =
-    scrollViewContextValues;
+  const { marshal: parentMarshal } = scrollViewContextValues;
   const defaultScrollViewRef = useRef<RNScrollView | RNView>();
   const scrollViewRef = (
     isRefObject(forwardRef) ? forwardRef : defaultScrollViewRef

@@ -83,7 +83,7 @@ class ScrollHelper {
 
   readonly _horizontal: boolean;
 
-  private _marshal?: Marshal;
+  private _marshal: Marshal;
 
   private _scrollEnabledHandler?: { (falsy: boolean): void };
 
@@ -131,7 +131,7 @@ class ScrollHelper {
     // }
 
     return this._marshal
-      ?.getScrollEventHelper()
+      .getScrollEventHelper()
       .subscribeEventHandler(eventName, handler);
   }
 
@@ -156,13 +156,6 @@ class ScrollHelper {
   cleanup() {
     if (this._dimensionsMeta) {
       // do nothing, waiting for InfiniteList update..
-    }
-  }
-
-  _setMarshal(marshal: Marshal) {
-    if (!this._marshal) {
-      // set marshal only if this._marshal is null
-      this._marshal = marshal;
     }
   }
 
