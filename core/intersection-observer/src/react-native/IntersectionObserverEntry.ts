@@ -26,24 +26,6 @@ class IntersectionObserverEntry {
     this.dimensions = dimensions;
   }
 
-  updateClientRect() {
-    measureLayout(this.target, this.root, (x, y, width, height) => {
-      this.clientRect = {
-        ...this.clientRect,
-        x,
-        y,
-        width,
-        height,
-      };
-      this.dimensions.setKeyItemLayout(this.entryKey, {
-        x,
-        y,
-        width,
-        height,
-      });
-    });
-  }
-
   getEntry(): IIntersectionObserverEntry {
     return {
       time: 0,

@@ -162,21 +162,23 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   /**
    * Every scrollView has a marshal
    */
-  const marshal = useMemo(() => {
-    return new Marshal({
-      id: scrollViewKey,
-      animated,
-      animatedValueY,
-      animatedValueX,
-      parentMarshal,
-      scrollUpdating,
-      ref: scrollViewRef,
-      horizontal,
-      scrollHelper: rootScrollHelper,
-      scrollEventHelper: scrollEventHelper,
-      intersectionObserver: nextIntersectionObserver!,
-    });
-  }, []);
+  const marshal = useMemo(
+    () =>
+      new Marshal({
+        id: scrollViewKey,
+        animated,
+        animatedValueY,
+        animatedValueX,
+        parentMarshal,
+        scrollUpdating,
+        ref: scrollViewRef,
+        horizontal,
+        scrollHelper: rootScrollHelper,
+        scrollEventHelper: scrollEventHelper,
+        intersectionObserver: nextIntersectionObserver!,
+      }),
+    []
+  );
 
   useEffect(
     () => () => {

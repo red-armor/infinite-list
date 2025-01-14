@@ -48,6 +48,7 @@ class IntersectionObserver {
       root: this.root,
       target: el,
       observerKey,
+      dimensions: this.dimensions,
     });
     this.observerMap.set(el, observer);
 
@@ -64,7 +65,7 @@ class IntersectionObserver {
   }
 
   updateClientRect(el: View) {
-    const entry = this.entryMap.get(el);
+    const entry = this.observerMap.get(el);
     if (entry) {
       entry.updateClientRect();
     }
@@ -82,7 +83,7 @@ class IntersectionObserver {
     // TODO: implement
   }
 
-  monitorIntersections() {
+  monitorIntersections(scrollView: ScrollView) {
     // TODO: implement
   }
 
