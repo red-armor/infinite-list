@@ -1,7 +1,7 @@
 import { MutableRefObject } from 'react';
 import { Animated } from 'react-native';
 import ScrollHelper from './ScrollHelper';
-import { SpectrumScrollViewRef } from './types';
+import { SpectrumScrollViewRef, MarshalProps } from './types';
 import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import ScrollEventHelper from './ScrollEventHelper';
 
@@ -20,7 +20,7 @@ class Marshal {
 
   readonly _rootScrollHelper: ScrollHelper;
 
-  readonly _scrollEventHelper: ScrollEventHelper;
+  readonly scrollEventHelper: ScrollEventHelper;
 
   readonly intersectionObserver: IntersectionObserver;
 
@@ -38,46 +38,70 @@ class Marshal {
 
   private _scrollUpdating: boolean;
 
-  constructor(props: {
-    id: string;
-    animated?: boolean;
-    horizontal?: boolean;
-    parentMarshal: Marshal | null;
-    scrollUpdating?: boolean;
-    scrollHelper: ScrollHelper;
-    scrollEventHelper: ScrollEventHelper;
-    ref: SpectrumScrollViewRef;
-    intersectionObserver: IntersectionObserver;
-    animatedValueX: MutableRefObject<Animated.Value>;
-    animatedValueY: MutableRefObject<Animated.Value>;
-  }) {
+  constructor(props: MarshalProps) {
     const {
       id,
       ref,
-      scrollHelper,
       parentMarshal,
       animated = false,
       horizontal = false,
       scrollUpdating = true,
-      scrollEventHelper,
       animatedValueX,
       animatedValueY,
-      intersectionObserver,
+      // intersectionObserver,
+      ownerScrollHelper,
+
+      onScroll,
+      onScrollToTop,
+      onScrollEndDrag,
+      onScrollBeginDrag,
+      onContentSizeChange,
+      onMomentumScrollEnd,
+      onMomentumScrollBegin,
+
+      stickyMode,
     } = props;
     this._ref = ref;
     this._id = id;
-    this._scrollEventHelper = scrollEventHelper;
+
     this._animated = animated;
     this._animatedValueX = animatedValueX;
     this._animatedValueY = animatedValueY;
     this._horizontal = horizontal;
-    this.intersectionObserver = intersectionObserver;
+    // this.intersectionObserver = intersectionObserver;
 
-    this._parentMarshal = parentMarshal;
+    // this._parentMarshal = parentMarshal;
 
     this.register();
     this._scrollUpdating = scrollUpdating;
-    this._rootScrollHelper = scrollHelper;
+    // this._rootScrollHelper = scrollHelper;
+
+    this.scrollEventHelper = new ScrollEventHelper({
+      marshal: this,
+      onScroll,
+      onScrollToTop,
+      onScrollEndDrag,
+      onScrollBeginDrag,
+      onContentSizeChange,
+      onMomentumScrollEnd,
+      onMomentumScrollBegin,
+    });
+
+    if (
+      !ownerScrollHelper ||
+      (ownerScrollHelper && ownerScrollHelper.getHorizontal() !== horizontal)
+    ) {
+      this._rootScrollHelper = new ScrollHelper({
+        marshal: this,
+        id,
+        stickyMode,
+        horizontal,
+        ref,
+        ownerScrollHelper,
+      });
+    } else {
+      this._rootScrollHelper = ownerScrollHelper;
+    }
   }
 
   enableScrollUpdating() {
@@ -89,7 +113,7 @@ class Marshal {
   }
 
   getScrollEventHelper() {
-    return this._scrollEventHelper;
+    return this.scrollEventHelper;
   }
 
   getScrollHelper() {

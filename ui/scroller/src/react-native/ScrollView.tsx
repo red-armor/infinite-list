@@ -13,7 +13,6 @@ import {
   RefreshControl as RNRefreshControl,
   ScrollView as RNScrollView,
   View as RNView,
-  Platform,
 } from 'react-native';
 import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import isRefObject from '@x-oasis/is-ref';
@@ -109,55 +108,32 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const animatedValueY = animatedY || defaultAnimatedValueY;
   const animatedValueX = animatedX || defaultAnimatedValueX;
 
-  let rootScrollHelper: ScrollHelper | undefined =
+  const rootScrollHelper: ScrollHelper | undefined =
     parentMarshal?.getScrollHelper();
-  let isRootScrollView = false;
-  let nextIntersectionObserver = intersectionObserver;
+  // let isRootScrollView = false;
+  // let nextIntersectionObserver = intersectionObserver;
 
-  if (
-    !rootScrollHelper ||
-    (rootScrollHelper && rootScrollHelper.getHorizontal() !== horizontal)
-  ) {
-    rootScrollHelper = new ScrollHelper({
-      id: scrollViewKey,
-      stickyMode,
-      horizontal,
-      ref: scrollViewRef,
-      ownerScrollHelper: rootScrollHelper,
-    });
-    isRootScrollView = true;
-    const callback = (entries: IntersectionObserverEntry[]) => {
-      console.log(entries);
-    };
+  // if (
+  //   !rootScrollHelper ||
+  //   (rootScrollHelper && rootScrollHelper.getHorizontal() !== horizontal)
+  // ) {
+  //   rootScrollHelper = new ScrollHelper({
+  //     marshal: this,
+  //     id: scrollViewKey,
+  //     stickyMode,
+  //     horizontal,
+  //     ref: scrollViewRef,
+  //     ownerScrollHelper: rootScrollHelper,
+  //   });
+  //   isRootScrollView = true;
+  //   const callback = (entries: IntersectionObserverEntry[]) => {
+  //     console.log(entries);
+  //   };
 
-    nextIntersectionObserver = new IntersectionObserver(callback, {
-      root: scrollViewRef.current,
-    });
-  }
-
-  const scrollEventHelper = useMemo(
-    () =>
-      new ScrollEventHelper({
-        onScroll,
-        onScrollEndDrag,
-        onScrollBeginDrag,
-        onContentSizeChange,
-        onMomentumScrollEnd,
-        onMomentumScrollBegin,
-        scrollHelper: rootScrollHelper,
-      }),
-    []
-  );
-
-  scrollEventHelper.updateInternalHandlers({
-    onScroll,
-    onScrollToTop,
-    onScrollEndDrag,
-    onScrollBeginDrag,
-    onContentSizeChange,
-    onMomentumScrollEnd,
-    onMomentumScrollBegin,
-  });
+  //   nextIntersectionObserver = new IntersectionObserver(callback, {
+  //     root: scrollViewRef.current,
+  //   });
+  // }
 
   /**
    * Every scrollView has a marshal
@@ -173,12 +149,36 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         scrollUpdating,
         ref: scrollViewRef,
         horizontal,
-        scrollHelper: rootScrollHelper,
-        scrollEventHelper: scrollEventHelper,
-        intersectionObserver: nextIntersectionObserver!,
+        ownerScrollHelper: rootScrollHelper,
+
+        /**
+         * ScrollHelper props
+         *
+         */
+        stickyMode,
+
+        /**
+         * ScrollEventHelper props
+         */
+        onScroll,
+        onScrollEndDrag,
+        onScrollBeginDrag,
+        onContentSizeChange,
+        onMomentumScrollEnd,
+        onMomentumScrollBegin,
       }),
     []
   );
+
+  marshal.scrollEventHelper.updateInternalHandlers({
+    onScroll,
+    onScrollToTop,
+    onScrollEndDrag,
+    onScrollBeginDrag,
+    onContentSizeChange,
+    onMomentumScrollEnd,
+    onMomentumScrollBegin,
+  });
 
   useEffect(
     () => () => {
@@ -198,7 +198,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     if (typeof onRefresh === 'function')
       return () => {
         onRefresh();
-        rootScrollHelper.invokeOnRefreshListener();
+        marshal.getScrollHelper().invokeOnRefreshListener();
       };
     return null;
   }, [onRefresh]);
@@ -211,7 +211,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   useEffect(
     () => () => {
       marshal.dispose();
-      scrollEventHelper.dispose();
+      // scrollEventHelper.dispose();
     },
     []
   );
@@ -219,7 +219,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const nextScrollViewContextValues = useMemo(
     () => ({
       marshal,
-      intersectionObserver: nextIntersectionObserver,
+      // intersectionObserver: nextIntersectionObserver,
     }),
     []
   );
@@ -279,7 +279,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
           {...refreshControlProps}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
-          scrollEventHelper={scrollEventHelper}
+          // scrollEventHelper={scrollEventHelper}
           useSmoothControl={useSmoothControl}
         >
           {nextChildren}

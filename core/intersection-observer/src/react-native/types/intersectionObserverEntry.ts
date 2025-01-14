@@ -1,8 +1,8 @@
 import { View, ScrollView } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import { IRectReadOnly } from '../../types';
 export type IntersectionObserverEntryProps = {
   root: ScrollView;
-  // time: number;
   target: View;
   entryKey?: string;
   boundingClientRect: IRectReadOnly;
@@ -10,20 +10,6 @@ export type IntersectionObserverEntryProps = {
   rootBounds: IRectReadOnly | null;
   dimensions: ItemsDimensions;
 };
-
-/**
- * refer to DOMRectReadOnly
- */
-export interface IRectReadOnly {
-  readonly bottom: number;
-  readonly height: number;
-  readonly left: number;
-  readonly right: number;
-  readonly top: number;
-  readonly width: number;
-  readonly x: number;
-  readonly y: number;
-}
 
 /**
  * refer to DOM IntersectionObserverEntry

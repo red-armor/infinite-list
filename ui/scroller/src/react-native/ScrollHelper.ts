@@ -25,6 +25,7 @@ import { ScrollMetrics, ContentSize } from '@infinite-list/types';
 import {
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventMetrics,
+  ScrollHelperProps,
   ScrollSize,
   SpectrumScrollViewRef,
   StickyMode,
@@ -78,8 +79,6 @@ class ScrollHelper {
 
   private _scrollEventHelpers: ScrollEventHelper[] = [];
 
-  private _scrollEventHelper: ScrollEventHelper;
-
   private _ref: SpectrumScrollViewRef;
 
   readonly _horizontal: boolean;
@@ -94,14 +93,10 @@ class ScrollHelper {
 
   private onRefreshListeners: Function[] = [];
 
-  constructor(props: {
-    id: string;
-    stickyMode?: StickyMode;
-    horizontal: boolean;
-    ownerScrollHelper: ScrollHelper | null | undefined;
-    ref: SpectrumScrollViewRef;
-  }) {
-    const { id, ref, stickyMode, horizontal, ownerScrollHelper } = props;
+  constructor(props: ScrollHelperProps) {
+    const { id, ref, stickyMode, horizontal, ownerScrollHelper, marshal } =
+      props;
+    this._marshal = marshal;
 
     this.id = id;
     this._ref = ref;
@@ -128,14 +123,16 @@ class ScrollHelper {
     eventName: ScrollEventHandlerSubscriptionKeys,
     handler: Function
   ) {
-    const marshal = this.getMarshal();
-    if (!this._scrollEventHelper && marshal) {
-      this._scrollEventHelper = new ScrollEventHelper({
-        scrollHelper: this,
-      });
-    }
+    // const marshal = this.getMarshal();
+    // if (!this._scrollEventHelper && marshal) {
+    //   this._scrollEventHelper = new ScrollEventHelper({
+    //     scrollHelper: this,
+    //   });
+    // }
 
-    return this._scrollEventHelper.subscribeEventHandler(eventName, handler);
+    return this._marshal
+      ?.getScrollEventHelper()
+      .subscribeEventHandler(eventName, handler);
   }
 
   addOnRefreshListener(fn: Function) {
@@ -292,7 +289,7 @@ class ScrollHelper {
 
   triggerScrollEventHelpers(
     handlerName: ScrollEventHandlerSubscriptionKeys,
-    ...rest
+    ...rest: any[]
   ) {
     this._scrollEventHelpers.forEach((helper) => {
       if (helper.marshal.scrollUpdateEnabled) {
@@ -363,7 +360,7 @@ class ScrollHelper {
         ...e.nativeEvent,
       },
     });
-    this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
+    // this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -394,7 +391,7 @@ class ScrollHelper {
     this.setScrollEventMetrics(e.nativeEvent);
     this.resolveScrollMetrics();
     this.triggerScrollEventHelpers('onMomentumScrollEnd', e);
-    this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
+    // this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   onContentSizeChange(width: number, height: number) {
@@ -402,8 +399,8 @@ class ScrollHelper {
     this.resolveScrollMetrics();
     this.triggerScrollEventHelpers('onContentSizeChange', width, height);
 
-    if (!this._horizontal)
-      this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
+    // if (!this._horizontal)
+    //   this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {

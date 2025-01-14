@@ -8,7 +8,9 @@ import {
   SyntheticEventHandler,
   SyntheticEventHandlerEvent,
   InternalScrollEventHandlerSubscriptionKeys,
+  ScrollEventHelperProps,
 } from './types';
+import Marshal from './Marshal';
 
 /**
  * ScrollEventHelper is bound to ScrollView, Every ScrollView will has its own
@@ -17,7 +19,8 @@ import {
  */
 class ScrollEventHelper {
   private _disposer: Function;
-  private _scrollHelper: ScrollHelper;
+  // private _scrollHelper: ScrollHelper;
+  private _marshal: Marshal;
   private _onScroll: SyntheticEventHandler | undefined;
   private _onScrollEndDrag: SyntheticEventHandler | undefined;
   private _onScrollBeginDrag: SyntheticEventHandler | undefined;
@@ -27,19 +30,10 @@ class ScrollEventHelper {
   private _onScrollToTop: SyntheticEventHandler | undefined;
   private _subscriptions: ScrollEventHandlerSubscriptions;
 
-  constructor(props: {
-    scrollHelper: ScrollHelper;
-    onScroll?: SyntheticEventHandler;
-    onScrollEndDrag?: SyntheticEventHandler;
-    onScrollBeginDrag?: SyntheticEventHandler;
-    onContentSizeChange?: ContentSizeChangeHandler;
-    onMomentumScrollEnd?: SyntheticEventHandler;
-    onMomentumScrollBegin?: SyntheticEventHandler;
-    onScrollToTop?: SyntheticEventHandler;
-  }) {
+  constructor(props: ScrollEventHelperProps) {
     const {
+      marshal,
       onScroll,
-      scrollHelper,
       onScrollToTop,
       onScrollEndDrag,
       onScrollBeginDrag,
@@ -48,8 +42,9 @@ class ScrollEventHelper {
       onMomentumScrollBegin,
     } = props;
 
+    this._marshal = marshal;
     this._onScroll = onScroll;
-    this._scrollHelper = scrollHelper;
+    // this._scrollHelper = scrollHelper;
     this._onScrollBeginDrag = onScrollBeginDrag;
     this._onScrollEndDrag = onScrollEndDrag;
     this._onContentSizeChange = onContentSizeChange;
@@ -72,7 +67,9 @@ class ScrollEventHelper {
   }
 
   register() {
-    this._disposer = this._scrollHelper.registerScrollEventHelper(this);
+    this._disposer = this._marshal
+      .getScrollHelper()
+      .registerScrollEventHelper(this);
   }
 
   dispose() {

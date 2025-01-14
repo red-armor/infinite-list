@@ -2,11 +2,9 @@ import { View, ScrollView, Platform } from 'react-native';
 import { ClientRect, IntersectionObserverProps } from './types';
 import {
   defaultViewabilityConfigCallbackPairs,
-  getEmptyRect,
   parseRootMargin,
   viewabilityConfig,
 } from './utils';
-import IntersectionObserverEntry from './IntersectionObserverEntry';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import Observer from './Observer';
 
@@ -51,17 +49,6 @@ class IntersectionObserver {
       dimensions: this.dimensions,
     });
     this.observerMap.set(el, observer);
-
-    // const entry = new IntersectionObserverEntry({
-    //   root: this.root,
-    //   target: el,
-    //   entryKey,
-    //   boundingClientRect: getEmptyRect(),
-    //   intersectionRect: getEmptyRect(),
-    //   rootBounds: null,
-    //   dimensions: this.dimensions,
-    // });
-    // this.entryMap.set(el, entry);
   }
 
   updateClientRect(el: View) {

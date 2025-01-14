@@ -186,22 +186,6 @@ export type ScrollHandler = SyntheticEventHandler;
 export type MomentumScrollEndHandler = () => void;
 export type OnEndReachedHandler = (opts: { distanceFromEnd: number }) => void;
 
-// export interface ViewToken {
-//   item: any;
-//   key: string;
-//   index: number | null;
-//   isViewable: boolean;
-//   section?: any;
-// }
-// export type OnViewableItemChangedInfo = {
-//   viewableItems: ViewToken[];
-//   changed: ViewToken[];
-// };
-
-// export type OnViewableItemsChanged =
-//   | ((info: OnViewableItemChangedInfo) => void)
-//   | null;
-
 export type ScrollToOption =
   | number
   | {
