@@ -107,30 +107,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   const rootScrollHelper: ScrollHelper | undefined =
     parentMarshal?.getScrollHelper();
-  // let isRootScrollView = false;
-  // let nextIntersectionObserver = intersectionObserver;
-
-  // if (
-  //   !rootScrollHelper ||
-  //   (rootScrollHelper && rootScrollHelper.getHorizontal() !== horizontal)
-  // ) {
-  //   rootScrollHelper = new ScrollHelper({
-  //     marshal: this,
-  //     id: scrollViewKey,
-  //     stickyMode,
-  //     horizontal,
-  //     ref: scrollViewRef,
-  //     ownerScrollHelper: rootScrollHelper,
-  //   });
-  //   isRootScrollView = true;
-  //   const callback = (entries: IntersectionObserverEntry[]) => {
-  //     console.log(entries);
-  //   };
-
-  //   nextIntersectionObserver = new IntersectionObserver(callback, {
-  //     root: scrollViewRef.current,
-  //   });
-  // }
 
   /**
    * Every scrollView has a marshal
