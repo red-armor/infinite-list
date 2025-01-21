@@ -1,8 +1,10 @@
 import {
   UIManager,
+  View,
   MeasureLayoutOnSuccessCallback,
   NativeMethods,
   HostComponent,
+  ScrollView,
 } from 'react-native';
 
 // https://github.com/facebook/react-native/blob/main/packages/react-native/Libraries/ReactNative/UIManager.d.ts#L17
@@ -44,10 +46,8 @@ export type findNodeHandle = (
  * @param onFail
  */
 export const measureLayout = (
-  node: React.ElementRef<HostComponent<unknown>> | number,
-  relativeToNativeComponentRef:
-    | React.ElementRef<HostComponent<unknown>>
-    | number,
+  node: React.ElementRef<HostComponent<any>> | number,
+  relativeToNativeComponentRef: React.ElementRef<HostComponent<any>> | number,
   onSuccess: MeasureLayoutOnSuccessCallback,
   onFail?: OnFail
 ) => {

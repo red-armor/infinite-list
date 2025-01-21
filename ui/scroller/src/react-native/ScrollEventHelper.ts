@@ -1,6 +1,6 @@
 import noop from '@x-oasis/noop';
 
-import ScrollHelper from './ScrollHelper';
+// import ScrollHelper from './ScrollHelper';
 import {
   ContentSizeChangeHandler,
   ScrollEventHandlerSubscriptionKeys,

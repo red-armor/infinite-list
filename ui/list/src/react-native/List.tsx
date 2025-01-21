@@ -80,7 +80,9 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
    * Trigger list render after initialization or content will be blank
    */
   const onLayoutHandler = useCallback((e: LayoutChangeEvent) => {
-    const scrollMetrics = contextValues.getScrollHelper().getScrollMetrics();
+    const scrollMetrics = contextValues.marshal
+      ?.getScrollHelper()
+      .getScrollMetrics();
     listModel.updateScrollMetrics(scrollMetrics);
 
     const rect = e.nativeEvent.layout;
@@ -89,9 +91,9 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   useEffect(
     () =>
-      contextValues.getScrollHelper().addListener('onScroll', () => {
-        const scrollMetrics = contextValues
-          .getScrollHelper()
+      contextValues.marshal?.getScrollHelper().addListener('onScroll', () => {
+        const scrollMetrics = contextValues.marshal
+          ?.getScrollHelper()
           .getScrollMetrics();
         listModel.updateScrollMetrics(scrollMetrics);
       }),

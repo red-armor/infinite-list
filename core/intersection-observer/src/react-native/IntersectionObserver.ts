@@ -7,6 +7,7 @@ import {
 } from './utils';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import Observer from './Observer';
+import ReactNativeDocument from './Document';
 
 class IntersectionObserver {
   private monitoringScrollViews: ScrollView[] = [];
@@ -16,15 +17,18 @@ class IntersectionObserver {
   private threshold?: number | number[];
   private dimensions: ItemsDimensions;
   private observerMap: WeakMap<View, Observer> = new WeakMap();
+  private ownerDocument: ReactNativeDocument;
 
   constructor(
     callback: IntersectionObserverCallback,
     props: IntersectionObserverProps
   ) {
-    const { root, rootMargin, threshold } = props;
+    const { root, rootMargin, threshold, document } = props;
     this.callback = callback;
     this.root = root;
     this.threshold = threshold;
+
+    this.ownerDocument = document;
     this.dimensions = new ItemsDimensions({
       id: 'intersection-observer',
       horizontal: false,
@@ -49,6 +53,13 @@ class IntersectionObserver {
       dimensions: this.dimensions,
     });
     this.observerMap.set(el, observer);
+  }
+
+  checkIntersection(el: View) {
+    const entry = this.observerMap.get(el);
+    if (entry) {
+      // entry.checkIntersection();
+    }
   }
 
   updateClientRect(el: View) {
