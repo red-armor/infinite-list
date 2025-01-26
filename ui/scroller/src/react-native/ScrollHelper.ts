@@ -56,11 +56,7 @@ class ScrollHelper {
 
   // readonly _parentScrollHelper: ScrollHelper;
 
-  /**
-   * Inspired from https://github.com/GoogleChromeLabs/intersection-observer/blob/main/intersection-observer.js#L424
-   * more info refer to https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
-   */
-  public ownerScrollHelper: ScrollHelper | null | undefined;
+  // public ownerScrollHelper: ScrollHelper | null | undefined;
 
   private _stickyMarshal: StickyMarshal;
 
@@ -116,6 +112,10 @@ class ScrollHelper {
     // this.setMarshal = this._setMarshal.bind(this);
 
     this._dimensionsMeta = this.prepareNested();
+  }
+
+  get ownerScrollHelper() {
+    return this._marshal.ownerScrollHelper;
   }
 
   addEventListener(

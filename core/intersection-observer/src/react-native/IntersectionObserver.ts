@@ -9,7 +9,7 @@ import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import Observer from './Observer';
 import ReactNativeDocument from './Document';
 import { generateRandomKey } from './generateRandom';
-import { IScrollViewMarshal } from '@infinite-list/types';
+import { IScrollHelper, IScrollViewMarshal } from '@infinite-list/types';
 
 class IntersectionObserver {
   private monitoringScrollViews: ScrollView[] = [];
@@ -21,6 +21,7 @@ class IntersectionObserver {
   private observerMap: WeakMap<View, Observer> = new WeakMap();
   private ownerDocument: ReactNativeDocument;
   private keyToObserverMap: Map<string, Observer> = new Map();
+  private subscribedInstances: IScrollHelper[] = [];
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -109,7 +110,19 @@ class IntersectionObserver {
   }
 
   monitorIntersections(marshal: IScrollViewMarshal) {
-    // TODO: implement
+    let scrollHelper: IScrollHelper | null | undefined = marshal.scrollHelper;
+
+    if (
+      !scrollHelper ||
+      this.subscribedInstances.indexOf(scrollHelper) !== -1
+    ) {
+      return;
+    }
+
+    while (scrollHelper) {
+      scrollHelper.addEventListener('onScroll', this.updateIntersections);
+      scrollHelper = marshal.ownerScrollHelper;
+    }
   }
 
   unmonitorIntersections() {

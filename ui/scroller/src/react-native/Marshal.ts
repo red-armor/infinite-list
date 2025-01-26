@@ -38,6 +38,12 @@ class Marshal {
 
   private _scrollUpdating: boolean;
 
+  /**
+   * Inspired from https://github.com/GoogleChromeLabs/intersection-observer/blob/main/intersection-observer.js#L424
+   * more info refer to https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
+   */
+  public ownerScrollHelper: ScrollHelper | null | undefined;
+
   constructor(props: MarshalProps) {
     const {
       id,
@@ -97,11 +103,16 @@ class Marshal {
         stickyMode,
         horizontal,
         ref,
-        // ownerScrollHelper,
       });
+      this.ownerScrollHelper = ownerScrollHelper;
     } else {
       this._rootScrollHelper = ownerScrollHelper;
+      this.ownerScrollHelper = ownerScrollHelper.ownerScrollHelper;
     }
+  }
+
+  get scrollHelper() {
+    return this._rootScrollHelper;
   }
 
   enableScrollUpdating() {

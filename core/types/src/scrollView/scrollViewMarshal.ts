@@ -1,5 +1,7 @@
 import { IScrollHelper } from './scrollHelper';
 
 export interface IScrollViewMarshal {
-  ownerScrollHelper: IScrollHelper;
+  ownerScrollHelper: IScrollHelper | null | undefined;
+
+  scrollHelper: IScrollHelper;
 }
