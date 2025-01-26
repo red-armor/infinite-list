@@ -97,7 +97,7 @@ class Marshal {
         stickyMode,
         horizontal,
         ref,
-        ownerScrollHelper,
+        // ownerScrollHelper,
       });
     } else {
       this._rootScrollHelper = ownerScrollHelper;

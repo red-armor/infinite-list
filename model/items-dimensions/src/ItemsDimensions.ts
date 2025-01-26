@@ -33,6 +33,13 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
     );
   }
 
+  dispose(metaKey: string) {
+    const meta = this.getKeyMeta(metaKey);
+    if (meta) {
+      this._sortedItems.remove(meta);
+    }
+  }
+
   _setKeyItemLayout(key: string, info: ItemLayout | number) {
     const meta = this.getKeyMeta(key);
     if (!meta) return false;

@@ -89,18 +89,17 @@ class ScrollHelper {
 
   public hasInteraction: boolean;
 
-  public setMarshal: (marshal: Marshal) => void;
+  // public setMarshal: (marshal: Marshal) => void;
 
   private onRefreshListeners: Function[] = [];
 
   constructor(props: ScrollHelperProps) {
-    const { id, ref, stickyMode, horizontal, ownerScrollHelper, marshal } =
-      props;
+    const { id, ref, stickyMode, horizontal, marshal } = props;
     this._marshal = marshal;
 
     this.id = id;
     this._ref = ref;
-    this.ownerScrollHelper = ownerScrollHelper;
+    // this.ownerScrollHelper = ownerScrollHelper;
     this._stickyMarshal = new StickyMarshal({
       stickyMode,
     });
@@ -114,9 +113,18 @@ class ScrollHelper {
 
     this.onViewableHandler = this.onViewableHandler.bind(this);
 
-    this.setMarshal = this._setMarshal.bind(this);
+    // this.setMarshal = this._setMarshal.bind(this);
 
     this._dimensionsMeta = this.prepareNested();
+  }
+
+  addEventListener(
+    eventName: ScrollEventHandlerSubscriptionKeys,
+    handler: Function
+  ) {
+    return this._marshal
+      .getScrollEventHelper()
+      .subscribeEventHandler(eventName, handler);
   }
 
   addListener(

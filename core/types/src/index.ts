@@ -12,3 +12,4 @@ export * from './itemDimensions';
 export * from './baseDimensions';
 export * from './layout';
 export * from './strategies';
+export * from './scrollView';

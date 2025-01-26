@@ -27,6 +27,10 @@ class Observer {
     this.dimensions = dimensions;
   }
 
+  dispose() {
+    this.dimensions.dispose(this.observerKey);
+  }
+
   /**
    * callback will be invoked after layout measured
    */

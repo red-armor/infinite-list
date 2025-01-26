@@ -27,7 +27,7 @@ export type ScrollHelperProps = {
   id: string;
   stickyMode?: StickyMode;
   horizontal: boolean;
-  ownerScrollHelper: ScrollHelper | null | undefined;
+  // ownerScrollHelper: ScrollHelper | null | undefined;
   ref: SpectrumScrollViewRef;
 };
 
