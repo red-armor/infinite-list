@@ -54,18 +54,18 @@ export const viewabilityConfig = {
   viewAreaCoveragePercentThreshold: 0,
 };
 
-const seenKeys: { [key: string]: boolean } = {};
-const MULTIPLIER = Math.pow(2, 24);
+// const seenKeys: { [key: string]: boolean } = {};
+// const MULTIPLIER = Math.pow(2, 24);
 
-export const generateRandomKey = (prefix = '') => {
-  let key;
+// export const generateRandomKey = (prefix = '') => {
+//   let key;
 
-  while (key === undefined || seenKeys[key] || !isNaN(+key)) {
-    key = Math.floor(Math.random() * MULTIPLIER).toString(32);
-  }
+//   while (key === undefined || seenKeys[key] || !isNaN(+key)) {
+//     key = Math.floor(Math.random() * MULTIPLIER).toString(32);
+//   }
 
-  const nextKey = `${prefix}${key}`;
+//   const nextKey = `${prefix}${key}`;
 
-  seenKeys[nextKey] = true;
-  return nextKey;
-};
+//   seenKeys[nextKey] = true;
+//   return nextKey;
+// };

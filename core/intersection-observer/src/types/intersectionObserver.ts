@@ -1,7 +1,7 @@
 /**
  * refer to DOMRectReadOnly
  */
-export interface IRectReadOnly {
+export interface IVerboseRectReadOnly {
   readonly bottom: number;
   readonly height: number;
   readonly left: number;

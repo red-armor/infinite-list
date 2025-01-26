@@ -1,8 +1,8 @@
-import { IRectReadOnly } from '../types';
+import { IVerboseRectReadOnly } from '../types';
 
 export const computeIntersection = (
-  rect1: IRectReadOnly,
-  rect2: IRectReadOnly
+  rect1: IVerboseRectReadOnly,
+  rect2: IVerboseRectReadOnly
 ) => {
   const top = Math.max(rect1.top, rect2.top);
   const right = Math.min(rect1.right, rect2.right);

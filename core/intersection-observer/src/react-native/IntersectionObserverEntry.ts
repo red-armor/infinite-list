@@ -1,10 +1,11 @@
 import { ScrollView, View } from 'react-native';
 import {
-  IRectReadOnly,
+  IVerboseRectReadOnly,
   IntersectionObserverEntryProps,
   IIntersectionObserverEntry,
 } from './types';
-import { getEmptyRect, generateRandomKey } from './utils';
+import { getEmptyRect } from './utils';
+import { generateRandomKey } from './generateRandom';
 import { measureLayout } from './measure';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 
@@ -12,7 +13,7 @@ class IntersectionObserverEntry {
   private target: View;
   readonly entryKey: string;
   private root: ScrollView;
-  private clientRect: IRectReadOnly;
+  private clientRect: IVerboseRectReadOnly;
   private dimensions: ItemsDimensions;
   private time: number;
 

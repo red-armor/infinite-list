@@ -8,6 +8,7 @@ import {
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import Observer from './Observer';
 import ReactNativeDocument from './Document';
+import { generateRandomKey } from './generateRandom';
 
 class IntersectionObserver {
   private monitoringScrollViews: ScrollView[] = [];
@@ -18,6 +19,7 @@ class IntersectionObserver {
   private dimensions: ItemsDimensions;
   private observerMap: WeakMap<View, Observer> = new WeakMap();
   private ownerDocument: ReactNativeDocument;
+  private keyToObserverMap: Map<string, Observer> = new Map();
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -45,14 +47,28 @@ class IntersectionObserver {
       .join(' ');
   }
 
+  /**
+   *
+   * @param el
+   * @param observerKey
+   *
+   * How to process recycle item
+   *
+   * When to dynamically update item layout
+   *
+   * el may be reused...
+   */
   observe(el: View, observerKey?: string) {
+    const nextObserverKey = observerKey || generateRandomKey();
     const observer = new Observer({
       root: this.root,
       target: el,
-      observerKey,
+      observerKey: nextObserverKey,
       dimensions: this.dimensions,
     });
     this.observerMap.set(el, observer);
+    this.keyToObserverMap.set(nextObserverKey, observer);
+    this.checkIntersection(el);
   }
 
   checkIntersection(el: View) {
@@ -65,7 +81,9 @@ class IntersectionObserver {
   updateClientRect(el: View) {
     const entry = this.observerMap.get(el);
     if (entry) {
-      entry.updateClientRect();
+      entry.updateClientRect(() => {
+        this.checkIntersection(el);
+      });
     }
   }
 

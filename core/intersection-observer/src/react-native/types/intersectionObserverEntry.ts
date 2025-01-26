@@ -1,13 +1,13 @@
 import { View, ScrollView } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
-import { IRectReadOnly } from '../../types';
+import { IVerboseRectReadOnly } from '../../types';
 export type IntersectionObserverEntryProps = {
   root: ScrollView;
   target: View;
   entryKey?: string;
-  boundingClientRect: IRectReadOnly;
-  intersectionRect: IRectReadOnly;
-  rootBounds: IRectReadOnly | null;
+  boundingClientRect: IVerboseRectReadOnly;
+  intersectionRect: IVerboseRectReadOnly;
+  rootBounds: IVerboseRectReadOnly | null;
   dimensions: ItemsDimensions;
 };
 
@@ -15,11 +15,11 @@ export type IntersectionObserverEntryProps = {
  * refer to DOM IntersectionObserverEntry
  */
 export interface IIntersectionObserverEntry {
-  readonly boundingClientRect: IRectReadOnly;
+  readonly boundingClientRect: IVerboseRectReadOnly;
   readonly intersectionRatio: number;
-  readonly intersectionRect: IRectReadOnly;
+  readonly intersectionRect: IVerboseRectReadOnly;
   readonly isIntersecting: boolean;
-  readonly rootBounds: IRectReadOnly | null;
+  readonly rootBounds: IVerboseRectReadOnly | null;
   readonly target: View;
   readonly time: DOMHighResTimeStamp;
 }
