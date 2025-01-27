@@ -1,8 +1,11 @@
 import { View, ScrollView, Platform } from 'react-native';
 import {
   ClientRect,
+  ItemLayout,
   IntersectionObserverProps,
   MonitorDisposer,
+  IIntersectionObserver,
+  ObserveOptions,
 } from './types';
 import {
   defaultViewabilityConfigCallbackPairs,
@@ -13,10 +16,11 @@ import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import Observer from './Observer';
 import ReactNativeDocument from './Document';
 import { generateRandomKey } from './generateRandom';
+import ContainerObserver from './ContainerObserver';
 import { IScrollHelper, IScrollViewMarshal } from '@infinite-list/types';
 
-class IntersectionObserver {
-  private monitoringScrollViews: ScrollView[] = [];
+class IntersectionObserver implements IIntersectionObserver {
+  private monitoringScrollViews: IScrollHelper[] = [];
   private callback: IntersectionObserverCallback;
   private root: ScrollView;
   private rootMargin: string;
@@ -27,6 +31,10 @@ class IntersectionObserver {
   private keyToObserverMap: Map<string, Observer> = new Map();
   private subscribedInstances: IScrollHelper[] = [];
   private monitorDisposers: MonitorDisposer[] = [];
+  private ScrollViewToContainerObserverMap: WeakMap<
+    ScrollView,
+    ContainerObserver
+  > = new WeakMap();
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -65,10 +73,11 @@ class IntersectionObserver {
    *
    * el may be reused...
    */
-  observe(el: View, observerKey?: string) {
+  observe(el: View, options: ObserveOptions) {
+    const { observerKey = '', root } = options || {};
     const nextObserverKey = observerKey || generateRandomKey();
     const observer = new Observer({
-      root: this.root,
+      root: root || this.root,
       target: el,
       observerKey: nextObserverKey,
       dimensions: this.dimensions,
@@ -125,6 +134,8 @@ class IntersectionObserver {
     }
 
     while (scrollHelper) {
+      this.monitoringScrollViews.push(scrollHelper);
+
       const disposer = scrollHelper.addEventListener(
         'onScroll',
         this.updateIntersections
@@ -144,8 +155,11 @@ class IntersectionObserver {
     // TODO: implement
   }
 
+  updateContainerIntersections() {
+    // todo
+  }
+
   getClientRect(key: string) {
-    // TODO: implement
     const observer = this.keyToObserverMap.get(key);
     if (observer) {
       return observer.getClientRect();
@@ -153,8 +167,12 @@ class IntersectionObserver {
     return null;
   }
 
-  setClientRect(key: string, rect: ClientRect) {
-    // TODO: implement
+  setClientRect(key: string, rect: ClientRect | ItemLayout) {
+    const observer = this.keyToObserverMap.get(key);
+    if (observer) {
+      return observer.setClientRect(rect);
+    }
+    return null;
   }
 }
 

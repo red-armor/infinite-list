@@ -1,4 +1,4 @@
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import ReactNativeDocument from '../Document';
 import { IClientRectReadOnly } from '../../types';
 
@@ -29,3 +29,16 @@ export interface ClientRect extends IClientRectReadOnly {
 export type ClientRectVerbose = {};
 
 export type MonitorDisposer = () => void;
+
+/**
+ * @param root original from https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver#options
+ * In react native condition,
+ */
+export type ObserveOptions = {
+  observerKey: string;
+  root: ScrollView;
+};
+
+export interface IIntersectionObserver {
+  observe: (el: View, options: ObserveOptions) => void;
+}
