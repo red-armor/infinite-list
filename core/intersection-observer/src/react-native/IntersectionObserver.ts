@@ -1,5 +1,9 @@
 import { View, ScrollView, Platform } from 'react-native';
-import { ClientRect, IntersectionObserverProps } from './types';
+import {
+  ClientRect,
+  IntersectionObserverProps,
+  MonitorDisposer,
+} from './types';
 import {
   defaultViewabilityConfigCallbackPairs,
   parseRootMargin,
@@ -22,6 +26,7 @@ class IntersectionObserver {
   private ownerDocument: ReactNativeDocument;
   private keyToObserverMap: Map<string, Observer> = new Map();
   private subscribedInstances: IScrollHelper[] = [];
+  private monitorDisposers: MonitorDisposer[] = [];
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -120,13 +125,19 @@ class IntersectionObserver {
     }
 
     while (scrollHelper) {
-      scrollHelper.addEventListener('onScroll', this.updateIntersections);
+      const disposer = scrollHelper.addEventListener(
+        'onScroll',
+        this.updateIntersections
+      );
+      this.monitorDisposers.push(disposer);
       scrollHelper = marshal.ownerScrollHelper;
     }
   }
 
   unmonitorIntersections() {
-    // TODO: implement
+    this.monitorDisposers.forEach((disposer) => {
+      if (typeof disposer === 'function') disposer();
+    });
   }
 
   updateIntersections() {
@@ -135,6 +146,11 @@ class IntersectionObserver {
 
   getClientRect(key: string) {
     // TODO: implement
+    const observer = this.keyToObserverMap.get(key);
+    if (observer) {
+      return observer.getClientRect();
+    }
+    return null;
   }
 
   setClientRect(key: string, rect: ClientRect) {

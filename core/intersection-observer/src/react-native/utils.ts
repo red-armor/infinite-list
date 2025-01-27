@@ -1,3 +1,5 @@
+import { ClientRect, ItemLayout } from './types';
+
 export function getEmptyRect() {
   return {
     x: 0,
@@ -69,3 +71,17 @@ export const viewabilityConfig = {
 //   seenKeys[nextKey] = true;
 //   return nextKey;
 // };
+
+export const convertLayoutToClientRect = (layout: ItemLayout): ClientRect => {
+  const { x, y, height, width } = layout;
+  return {
+    x,
+    y,
+    top: y,
+    right: x + width,
+    bottom: y + height,
+    left: x,
+    width,
+    height,
+  };
+};

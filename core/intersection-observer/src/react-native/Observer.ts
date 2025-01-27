@@ -1,7 +1,7 @@
 import { ScrollView, View } from 'react-native';
-import { ObserverProps } from './types';
-import { IVerboseRectReadOnly } from './types';
-import { getEmptyRect } from './utils';
+import { ClientRect, ObserverProps, ItemLayout } from './types';
+import { IClientRectReadOnly } from './types';
+import { getEmptyRect, convertLayoutToClientRect } from './utils';
 import { generateRandomKey } from './generateRandom';
 import { measureLayout } from './measure';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
@@ -10,7 +10,7 @@ class Observer {
   private root: ScrollView;
   private target: View;
   private observerKey: string;
-  private clientRect: IVerboseRectReadOnly;
+  private clientRect: IClientRectReadOnly;
   private dimensions: ItemsDimensions;
 
   constructor(props: ObserverProps) {
@@ -34,7 +34,7 @@ class Observer {
   /**
    * callback will be invoked after layout measured
    */
-  updateClientRect(cb?: (rect: IVerboseRectReadOnly) => void) {
+  updateClientRect(cb?: (rect: IClientRectReadOnly) => void) {
     measureLayout(this.target, this.root, (x, y, width, height) => {
       this.clientRect = {
         ...this.clientRect,
@@ -50,6 +50,18 @@ class Observer {
         height,
       });
     });
+  }
+
+  getClientRect() {
+    return this.clientRect;
+  }
+
+  setClientRect(layout: IClientRectReadOnly | ItemLayout) {
+    if ((layout as IClientRectReadOnly).bottom != null) {
+      this.clientRect = layout as IClientRectReadOnly;
+    } else {
+      this.clientRect = convertLayoutToClientRect(layout as ClientRect);
+    }
   }
 }
 

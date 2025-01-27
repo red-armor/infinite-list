@@ -1,6 +1,6 @@
 import { ScrollView, View } from 'react-native';
 import {
-  IVerboseRectReadOnly,
+  IClientRectReadOnly,
   IntersectionObserverEntryProps,
   IIntersectionObserverEntry,
 } from './types';
@@ -13,7 +13,7 @@ class IntersectionObserverEntry {
   private target: View;
   readonly entryKey: string;
   private root: ScrollView;
-  private clientRect: IVerboseRectReadOnly;
+  private clientRect: IClientRectReadOnly;
   private dimensions: ItemsDimensions;
   private time: number;
 
