@@ -184,7 +184,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   useEffect(
     () => () => {
       marshal.dispose();
-      // scrollEventHelper.dispose();
     },
     []
   );
@@ -192,7 +191,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const nextScrollViewContextValues = useMemo(
     () => ({
       marshal,
-      // intersectionObserver: nextIntersectionObserver,
     }),
     []
   );
@@ -252,7 +250,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
           {...refreshControlProps}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
-          // scrollEventHelper={scrollEventHelper}
           useSmoothControl={useSmoothControl}
         >
           {nextChildren}

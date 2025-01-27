@@ -7,7 +7,7 @@ import {
 } from './utils';
 import {
   ContainerObserverProps,
-  OwnerScrollView,
+  OwnerContainerObserver,
   IClientRectReadOnly,
 } from './types';
 import { computeIntersection } from '../common/intersection';
@@ -15,12 +15,12 @@ import { computeIntersection } from '../common/intersection';
 class ContainerObserver {
   private dimensions: ItemsDimensions;
   private rootScrollView: ScrollView;
-  private ownerScrollView: OwnerScrollView;
+  private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
   private intersection: IClientRectReadOnly = getEmptyRect();
 
   constructor(props: ContainerObserverProps) {
-    this.ownerScrollView = props.ownerScrollView;
+    this.ownerContainerObserver = props.ownerContainerObserver;
     this.rootScrollView = props.rootScrollView;
 
     this.dimensions = new ItemsDimensions({
@@ -38,15 +38,14 @@ class ContainerObserver {
 
   updateIntersection() {
     let intersection = this.rect;
-    let ownerScrollView = this.ownerScrollView;
+    let ownerContainerObserver = this.ownerContainerObserver;
 
-    if (ownerScrollView) {
-      while (ownerScrollView) {
-        intersection = computeIntersection(
-          intersection,
-          ownerScrollView.getRect()
-        );
-        ownerScrollView = ownerScrollView.ownerScrollView;
+    if (ownerContainerObserver) {
+      while (ownerContainerObserver) {
+        intersection =
+          computeIntersection(intersection, ownerContainerObserver.getRect()) ||
+          getEmptyRect();
+        ownerContainerObserver = ownerContainerObserver.ownerContainerObserver;
       }
 
       this.intersection = intersection;

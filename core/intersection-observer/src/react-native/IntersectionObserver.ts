@@ -14,7 +14,7 @@ import {
 } from './utils';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import Observer from './Observer';
-import ReactNativeDocument from './Document';
+import ReactNativeDocument from './ReactNativeDocument';
 import { generateRandomKey } from './generateRandom';
 import ContainerObserver from './ContainerObserver';
 import { IScrollHelper, IScrollViewMarshal } from '@infinite-list/types';
@@ -31,7 +31,7 @@ class IntersectionObserver implements IIntersectionObserver {
   private keyToObserverMap: Map<string, Observer> = new Map();
   private subscribedInstances: IScrollHelper[] = [];
   private monitorDisposers: MonitorDisposer[] = [];
-  private ScrollViewToContainerObserverMap: WeakMap<
+  private scrollViewToContainerObserverMap: WeakMap<
     ScrollView,
     ContainerObserver
   > = new WeakMap();
@@ -62,6 +62,24 @@ class IntersectionObserver implements IIntersectionObserver {
       .join(' ');
   }
 
+  ensureContainerObserver(doc: ReactNativeDocument) {
+    const scrollView = doc.dom;
+    const ownerDocument = doc.ownerDocument;
+
+    if (this.scrollViewToContainerObserverMap.has(scrollView))
+      return this.scrollViewToContainerObserverMap.get(scrollView);
+
+    const ownerContainerObserver = this.ensureContainerObserver(ownerDocument);
+
+    const container = new ContainerObserver({
+      rootScrollView: scrollView,
+      ownerContainerObserver,
+    });
+
+    this.scrollViewToContainerObserverMap.set(scrollView, container);
+    return this.scrollViewToContainerObserverMap.get(scrollView);
+  }
+
   /**
    *
    * @param el
@@ -76,12 +94,47 @@ class IntersectionObserver implements IIntersectionObserver {
   observe(el: View, options: ObserveOptions) {
     const { observerKey = '', root } = options || {};
     const nextObserverKey = observerKey || generateRandomKey();
-    const observer = new Observer({
-      root: root || this.root,
-      target: el,
-      observerKey: nextObserverKey,
-      dimensions: this.dimensions,
-    });
+    let observer = null;
+    let scrollView = null;
+    let container = null;
+
+    if (root instanceof ReactNativeDocument) {
+      scrollView = root.dom;
+    } else {
+      scrollView = root;
+    }
+
+    if (!this.scrollViewToContainerObserverMap.has(scrollView)) {
+      if (root instanceof ReactNativeDocument) {
+        const ownerContainerObserver = this.ensureContainerObserver(root);
+        container = new ContainerObserver({
+          rootScrollView: scrollView,
+          ownerContainerObserver,
+        });
+      } else {
+        container = new ContainerObserver({
+          rootScrollView: scrollView,
+          ownerContainerObserver: null,
+        });
+      }
+    }
+
+    if (root instanceof ReactNativeDocument) {
+      observer = new Observer({
+        root: root || this.root,
+        target: el,
+        observerKey: nextObserverKey,
+        dimensions: this.dimensions,
+      });
+    } else {
+      observer = new Observer({
+        root: root || this.root,
+        target: el,
+        observerKey: nextObserverKey,
+        dimensions: this.dimensions,
+      });
+    }
+
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);
     this.checkIntersection(el);

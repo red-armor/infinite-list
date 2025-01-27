@@ -1,5 +1,5 @@
 import { ScrollView, View } from 'react-native';
-import ReactNativeDocument from '../Document';
+import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
 
 export type IntersectionObserverProps = {
@@ -36,7 +36,7 @@ export type MonitorDisposer = () => void;
  */
 export type ObserveOptions = {
   observerKey: string;
-  root: ScrollView;
+  root: ScrollView | ReactNativeDocument;
 };
 
 export interface IIntersectionObserver {

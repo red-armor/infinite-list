@@ -1,6 +1,8 @@
+import { ScrollView } from 'react-native';
+
 abstract class ReactNativeDocument {
   abstract ownerDocument: ReactNativeDocument;
-  // abstract onChange: (() => void) | null;
+  abstract dom: ScrollView;
 
   abstract addEventListener(
     type: string,
