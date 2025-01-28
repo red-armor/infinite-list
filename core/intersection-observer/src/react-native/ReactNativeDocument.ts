@@ -1,5 +1,8 @@
 import { ScrollView } from 'react-native';
 
+/**
+ * root should implement ReactNativeDocument
+ */
 abstract class ReactNativeDocument {
   abstract ownerDocument: ReactNativeDocument;
   abstract node: ScrollView;
@@ -8,7 +11,9 @@ abstract class ReactNativeDocument {
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions
-  ): void;
+  ): {
+    (): void;
+  };
 }
 
 export default ReactNativeDocument;

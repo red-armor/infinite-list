@@ -71,6 +71,13 @@ class Observer {
       this.clientRect = convertLayoutToClientRect(layout as ClientRect);
     }
   }
+
+  updateIntersection() {
+    const containerRect = this.containerObserver.getRect();
+    const containerScrollOffset = this.containerObserver.scrollOffset;
+
+    const itemRect = this.clientRect;
+  }
 }
 
 export default Observer;

@@ -18,6 +18,7 @@ class ContainerObserver {
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
   private intersection: IClientRectReadOnly = getEmptyRect();
+  public scrollOffset = 0;
 
   constructor(props: ContainerObserverProps) {
     this.ownerContainerObserver = props.ownerContainerObserver;

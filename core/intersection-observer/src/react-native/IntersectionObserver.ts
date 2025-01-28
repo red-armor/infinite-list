@@ -17,19 +17,17 @@ import Observer from './Observer';
 import ReactNativeDocument from './ReactNativeDocument';
 import { generateRandomKey } from './generateRandom';
 import ContainerObserver from './ContainerObserver';
-import { IScrollHelper, IScrollViewMarshal } from '@infinite-list/types';
 
 class IntersectionObserver implements IIntersectionObserver {
-  private monitoringScrollViews: IScrollHelper[] = [];
+  private monitoringDocuments: ReactNativeDocument[] = [];
   private callback: IntersectionObserverCallback;
-  private root: ScrollView;
+  private root: ReactNativeDocument;
   private rootMargin: string;
   private threshold?: number | number[];
   private dimensions: ItemsDimensions;
   private observerMap: WeakMap<View, Observer> = new WeakMap();
   private ownerDocument: ReactNativeDocument;
   private keyToObserverMap: Map<string, Observer> = new Map();
-  private subscribedInstances: IScrollHelper[] = [];
   private monitorDisposers: MonitorDisposer[] = [];
   private scrollViewToContainerObserverMap: WeakMap<
     ScrollView,
@@ -72,7 +70,7 @@ class IntersectionObserver implements IIntersectionObserver {
     const ownerContainerObserver = this.ensureContainerObserver(ownerDocument);
 
     const container = new ContainerObserver({
-      rootScrollView: scrollView,
+      root: scrollView,
       ownerContainerObserver,
     });
 
@@ -131,6 +129,7 @@ class IntersectionObserver implements IIntersectionObserver {
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);
     this.checkIntersection(el);
+    this.monitorIntersections(root);
     return () => {
       this.unobserve(nextObserverKey);
     };
@@ -169,25 +168,20 @@ class IntersectionObserver implements IIntersectionObserver {
     // TODO: implement
   }
 
-  monitorIntersections(marshal: IScrollViewMarshal) {
-    let scrollHelper: IScrollHelper | null | undefined = marshal.scrollHelper;
-
-    if (
-      !scrollHelper ||
-      this.subscribedInstances.indexOf(scrollHelper) !== -1
-    ) {
+  monitorIntersections(doc: ReactNativeDocument) {
+    if (!doc || this.monitoringDocuments.indexOf(doc) !== -1) {
       return;
     }
 
-    while (scrollHelper) {
-      this.monitoringScrollViews.push(scrollHelper);
+    while (doc) {
+      this.monitoringDocuments.push(doc);
 
-      const disposer = scrollHelper.addEventListener(
+      const disposer = doc.addEventListener(
         'onScroll',
         this.updateIntersections
       );
       this.monitorDisposers.push(disposer);
-      scrollHelper = marshal.ownerScrollHelper;
+      doc = doc.ownerDocument;
     }
   }
 

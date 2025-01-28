@@ -3,7 +3,7 @@ import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
 
 export type IntersectionObserverProps = {
-  root: ScrollView;
+  root: ReactNativeDocument;
   document: ReactNativeDocument;
   rootMargin?: string;
   threshold?: number | number[];
@@ -36,7 +36,7 @@ export type MonitorDisposer = () => void;
  */
 export type ObserveOptions = {
   observerKey: string;
-  root: ScrollView | ReactNativeDocument;
+  root: ReactNativeDocument;
 };
 
 export interface IIntersectionObserver {

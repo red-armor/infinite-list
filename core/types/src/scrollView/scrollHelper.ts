@@ -5,5 +5,5 @@ export interface IScrollHelper {
   ) => {
     (): void;
   };
-  removeEventListener: (eventName: string, listener: Function) => void;
+  // removeEventListener: (eventName: string, listener: Function) => void;
 }
