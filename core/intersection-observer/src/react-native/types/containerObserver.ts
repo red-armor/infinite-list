@@ -5,5 +5,5 @@ export type OwnerContainerObserver = ContainerObserver | null | undefined;
 
 export type ContainerObserverProps = {
   ownerContainerObserver: OwnerContainerObserver;
-  rootScrollView: ScrollView;
+  root: ScrollView;
 };

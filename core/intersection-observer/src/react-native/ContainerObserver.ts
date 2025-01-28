@@ -14,14 +14,14 @@ import { computeIntersection } from '../common/intersection';
 
 class ContainerObserver {
   private dimensions: ItemsDimensions;
-  private rootScrollView: ScrollView;
+  public root: ScrollView;
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
   private intersection: IClientRectReadOnly = getEmptyRect();
 
   constructor(props: ContainerObserverProps) {
     this.ownerContainerObserver = props.ownerContainerObserver;
-    this.rootScrollView = props.rootScrollView;
+    this.root = props.root;
 
     this.dimensions = new ItemsDimensions({
       id: 'intersection-observer',
@@ -52,7 +52,7 @@ class ContainerObserver {
       return;
     }
 
-    this.rootScrollView.measureInWindow((x, y, width, height) => {
+    this.root.measureInWindow((x, y, width, height) => {
       console.log('x ', x, y, width, height);
     });
   }

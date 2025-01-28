@@ -63,7 +63,7 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   ensureContainerObserver(doc: ReactNativeDocument) {
-    const scrollView = doc.dom;
+    const scrollView = doc.node;
     const ownerDocument = doc.ownerDocument;
 
     if (this.scrollViewToContainerObserverMap.has(scrollView))
@@ -92,48 +92,41 @@ class IntersectionObserver implements IIntersectionObserver {
    * el may be reused...
    */
   observe(el: View, options: ObserveOptions) {
-    const { observerKey = '', root } = options || {};
+    const { observerKey = '', root = this.root } = options || {};
     const nextObserverKey = observerKey || generateRandomKey();
     let observer = null;
     let scrollView = null;
-    let container = null;
 
     if (root instanceof ReactNativeDocument) {
-      scrollView = root.dom;
+      scrollView = root.node;
     } else {
       scrollView = root;
     }
 
-    if (!this.scrollViewToContainerObserverMap.has(scrollView)) {
+    let container = this.scrollViewToContainerObserverMap.get(scrollView);
+
+    if (!container) {
       if (root instanceof ReactNativeDocument) {
         const ownerContainerObserver = this.ensureContainerObserver(root);
         container = new ContainerObserver({
-          rootScrollView: scrollView,
+          root: scrollView,
           ownerContainerObserver,
         });
       } else {
         container = new ContainerObserver({
-          rootScrollView: scrollView,
+          root: scrollView,
           ownerContainerObserver: null,
         });
       }
     }
 
-    if (root instanceof ReactNativeDocument) {
-      observer = new Observer({
-        root: root || this.root,
-        target: el,
-        observerKey: nextObserverKey,
-        dimensions: this.dimensions,
-      });
-    } else {
-      observer = new Observer({
-        root: root || this.root,
-        target: el,
-        observerKey: nextObserverKey,
-        dimensions: this.dimensions,
-      });
-    }
+    observer = new Observer({
+      root: root || this.root,
+      target: el,
+      observerKey: nextObserverKey,
+      dimensions: this.dimensions,
+      containerObserver: container,
+    });
 
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);

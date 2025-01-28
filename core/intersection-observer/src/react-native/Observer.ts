@@ -1,30 +1,38 @@
 import { ScrollView, View } from 'react-native';
-import { ClientRect, ObserverProps, ItemLayout } from './types';
+import { ClientRect, ObserverProps, ItemLayout, ObserverRoot } from './types';
 import { IClientRectReadOnly } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
 import { generateRandomKey } from './generateRandom';
 import { measureLayout } from './measure';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import ContainerObserver from './ContainerObserver';
 
 class Observer {
-  private root: ScrollView;
+  // private root: ObserverRoot;
   private target: View;
   private observerKey: string;
   private clientRect: IClientRectReadOnly;
   private dimensions: ItemsDimensions;
+  private containerObserver: ContainerObserver;
 
   constructor(props: ObserverProps) {
     const {
-      root,
+      // root,
       target,
-      observerKey = generateRandomKey(),
       dimensions,
+      containerObserver,
+      observerKey = generateRandomKey(),
     } = props;
-    this.root = root;
+    // this.root = root;
     this.target = target;
     this.observerKey = observerKey;
     this.clientRect = getEmptyRect();
     this.dimensions = dimensions;
+    this.containerObserver = containerObserver;
+  }
+
+  get root() {
+    return this.containerObserver.root;
   }
 
   dispose() {

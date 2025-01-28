@@ -2,7 +2,7 @@ import { ScrollView } from 'react-native';
 
 abstract class ReactNativeDocument {
   abstract ownerDocument: ReactNativeDocument;
-  abstract dom: ScrollView;
+  abstract node: ScrollView;
 
   abstract addEventListener(
     type: string,
