@@ -1,9 +1,19 @@
-import { ClientRect, ItemLayout } from './types';
+import { ClientRect, IClientRectReadOnly, ItemLayout } from './types';
 
 export function getEmptyRect() {
   return {
     x: 0,
     y: 0,
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: 0,
+    height: 0,
+  };
+}
+export function getEmptyIntersection() {
+  return {
     top: 0,
     bottom: 0,
     left: 0,
@@ -84,4 +94,9 @@ export const convertLayoutToClientRect = (layout: ItemLayout): ClientRect => {
     width,
     height,
   };
+};
+
+export const convertRectToIntersection = (info: IClientRectReadOnly) => {
+  const { x, y, ...rest } = info;
+  return rest;
 };

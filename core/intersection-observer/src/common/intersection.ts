@@ -1,8 +1,8 @@
-import { IClientRectReadOnly } from '../types';
+import { IClientRectReadOnly, IRectIntersection } from '../types';
 
 export const computeIntersection = (
-  rect1: IClientRectReadOnly,
-  rect2: IClientRectReadOnly
+  rect1: IClientRectReadOnly | IRectIntersection,
+  rect2: IClientRectReadOnly | IRectIntersection
 ) => {
   const top = Math.max(rect1.top, rect2.top);
   const right = Math.min(rect1.right, rect2.right);

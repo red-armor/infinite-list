@@ -5,11 +5,15 @@ import {
 } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import {
+  convertLayoutToClientRect,
+  convertRectToIntersection,
   defaultViewabilityConfigCallbackPairs,
+  getEmptyIntersection,
   getEmptyRect,
   viewabilityConfig,
 } from './utils';
 import {
+  IRectIntersection,
   ContainerObserverProps,
   OwnerContainerObserver,
   IClientRectReadOnly,
@@ -20,10 +24,9 @@ import ReactNativeDocument from './ReactNativeDocument';
 class ContainerObserver {
   readonly doc: ReactNativeDocument;
   private dimensions: ItemsDimensions;
-  // public root: ScrollView;
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
-  private intersection: IClientRectReadOnly = getEmptyRect();
+  private intersection: IRectIntersection = getEmptyIntersection();
   public scrollOffsetX = 0;
   public scrollOffsetY = 0;
 
@@ -60,24 +63,34 @@ class ContainerObserver {
     return this.rect;
   }
 
-  updateIntersection() {
-    let intersection = this.rect;
-    let ownerContainerObserver = this.ownerContainerObserver;
+  getIntersection() {
+    return this.intersection;
+  }
 
-    if (ownerContainerObserver) {
-      while (ownerContainerObserver) {
-        intersection =
-          computeIntersection(intersection, ownerContainerObserver.getRect()) ||
-          getEmptyRect();
-        ownerContainerObserver = ownerContainerObserver.ownerContainerObserver;
+  updateIntersection() {
+    return new Promise((resolve) => {
+      let intersection = convertRectToIntersection(this.rect);
+      let ownerContainerObserver = this.ownerContainerObserver;
+
+      if (ownerContainerObserver) {
+        while (ownerContainerObserver) {
+          intersection =
+            computeIntersection(
+              intersection,
+              ownerContainerObserver.getRect()
+            ) || getEmptyIntersection();
+          ownerContainerObserver =
+            ownerContainerObserver.ownerContainerObserver;
+        }
+
+        this.intersection = intersection;
+        return;
       }
 
-      this.intersection = intersection;
-      return;
-    }
-
-    this.root.measureInWindow((x, y, width, height) => {
-      console.log('x ', x, y, width, height);
+      this.root.measureInWindow((x, y, width, height) => {
+        console.log('x ', x, y, width, height);
+        this.intersection = convertLayoutToClientRect({ x, y, width, height });
+      });
     });
   }
 }
