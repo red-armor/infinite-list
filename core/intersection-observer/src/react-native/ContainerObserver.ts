@@ -1,4 +1,8 @@
-import { Platform, ScrollView, View } from 'react-native';
+import {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Platform,
+} from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import {
   defaultViewabilityConfigCallbackPairs,
@@ -11,18 +15,22 @@ import {
   IClientRectReadOnly,
 } from './types';
 import { computeIntersection } from '../common/intersection';
+import ReactNativeDocument from './ReactNativeDocument';
 
 class ContainerObserver {
+  readonly doc: ReactNativeDocument;
   private dimensions: ItemsDimensions;
-  public root: ScrollView;
+  // public root: ScrollView;
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
   private intersection: IClientRectReadOnly = getEmptyRect();
-  public scrollOffset = 0;
+  public scrollOffsetX = 0;
+  public scrollOffsetY = 0;
 
   constructor(props: ContainerObserverProps) {
+    this.doc = props.doc;
     this.ownerContainerObserver = props.ownerContainerObserver;
-    this.root = props.root;
+    // this.root = props.root;
 
     this.dimensions = new ItemsDimensions({
       id: 'intersection-observer',
@@ -31,6 +39,21 @@ class ContainerObserver {
       viewabilityConfigCallbackPairs: defaultViewabilityConfigCallbackPairs,
       canIUseRIC: Platform.OS !== 'ios',
     });
+
+    this.doc.addEventListener(
+      'onScroll',
+      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const {
+          contentOffset: { x, y },
+        } = event.nativeEvent;
+        this.scrollOffsetX = x;
+        this.scrollOffsetY = y;
+      }
+    );
+  }
+
+  get root() {
+    return this.doc.node;
   }
 
   getRect() {

@@ -70,7 +70,7 @@ class IntersectionObserver implements IIntersectionObserver {
     const ownerContainerObserver = this.ensureContainerObserver(ownerDocument);
 
     const container = new ContainerObserver({
-      root: scrollView,
+      doc,
       ownerContainerObserver,
     });
 
@@ -107,12 +107,12 @@ class IntersectionObserver implements IIntersectionObserver {
       if (root instanceof ReactNativeDocument) {
         const ownerContainerObserver = this.ensureContainerObserver(root);
         container = new ContainerObserver({
-          root: scrollView,
+          doc: this.root,
           ownerContainerObserver,
         });
       } else {
         container = new ContainerObserver({
-          root: scrollView,
+          doc: this.root,
           ownerContainerObserver: null,
         });
       }

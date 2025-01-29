@@ -1,11 +1,12 @@
-import { ScrollView, View } from 'react-native';
-import { ClientRect, ObserverProps, ItemLayout, ObserverRoot } from './types';
+import { View } from 'react-native';
+import { ClientRect, ObserverProps, ItemLayout } from './types';
 import { IClientRectReadOnly } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
 import { generateRandomKey } from './generateRandom';
 import { measureLayout } from './measure';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import ContainerObserver from './ContainerObserver';
+import { computeIntersection } from '../common/intersection';
 
 class Observer {
   // private root: ObserverRoot;
@@ -74,9 +75,34 @@ class Observer {
 
   updateIntersection() {
     const containerRect = this.containerObserver.getRect();
-    const containerScrollOffset = this.containerObserver.scrollOffset;
+    const scrollOffsetX = this.containerObserver.scrollOffsetX;
+    const scrollOffsetY = this.containerObserver.scrollOffsetY;
 
     const itemRect = this.clientRect;
+
+    const { top, left, x, y, width, height } = itemRect;
+
+    /**
+     * get item rect relative to container
+     */
+    const nextTop = top - scrollOffsetY + containerRect.top;
+    const nextLeft = left - scrollOffsetX + containerRect.left;
+    const nextX = x - scrollOffsetX + containerRect.x;
+    const nextY = y - scrollOffsetY + containerRect.y;
+
+    const nextItemReact = {
+      x: nextX,
+      y: nextY,
+      top: nextTop,
+      right: nextLeft + width,
+      bottom: nextTop + height,
+      left: nextLeft,
+      width,
+      height,
+    };
+    const intersection = computeIntersection(nextItemReact, containerRect);
+
+    console.log('intersection ', intersection);
   }
 }
 
