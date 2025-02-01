@@ -20,6 +20,6 @@
   "dependencies": {
     "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/items-dimensions": "workspace:*",
-    "@x-oasis/default-boolean-value": "^0.1.14"
+    "@infinite-list/scheduler": "workspace:*"
   }
 }
