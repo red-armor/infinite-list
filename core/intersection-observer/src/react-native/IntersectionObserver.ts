@@ -1,4 +1,6 @@
 import { View, ScrollView, Platform } from 'react-native';
+import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import { Scheduler } from '@infinite-list/scheduler';
 import {
   ClientRect,
   ItemLayout,
@@ -12,7 +14,6 @@ import {
   parseRootMargin,
   viewabilityConfig,
 } from './utils';
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import Observer from './Observer';
 import ReactNativeDocument from './ReactNativeDocument';
 import { generateRandomKey } from './generateRandom';
@@ -29,9 +30,9 @@ class IntersectionObserver implements IIntersectionObserver {
   private ownerDocument: ReactNativeDocument;
   private keyToObserverMap: Map<string, Observer> = new Map();
   private monitorDisposers: MonitorDisposer[] = [];
+  private updateDocumentIntersectionsTask: Scheduler;
   private scrollViewToContainerObserverMap: Map<ScrollView, ContainerObserver> =
     new Map();
-  // private shouldUpdateDocumentIntersection = false;
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -52,6 +53,10 @@ class IntersectionObserver implements IIntersectionObserver {
     });
 
     const marginValues = parseRootMargin(rootMargin);
+    this.updateDocumentIntersectionsTask = new Scheduler(
+      this._updateDocumentIntersectionsTask.bind(this),
+      50
+    );
     this.rootMargin = marginValues
       .map(function (margin) {
         return margin.value + margin.unit;
@@ -195,6 +200,10 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   updateDocumentIntersections() {
+    this.updateDocumentIntersectionsTask.schedule();
+  }
+
+  _updateDocumentIntersectionsTask() {
     this.updateContainerIntersections().then(() => {
       this.updateIntersections();
     });

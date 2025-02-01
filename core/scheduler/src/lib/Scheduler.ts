@@ -15,7 +15,6 @@ class Scheduler {
   private _lastCallTime: number | null = null;
   private _lastInvokeTime: number | null = null;
   private timerId: NodeJS.Timer | null = null;
-  private _isInvoking = false;
   private _result: any = null;
 
   constructor(
@@ -48,8 +47,8 @@ class Scheduler {
     }
   }
 
-  inSchedule() {
-    return !!this._isInvoking;
+  get result() {
+    return this._result;
   }
 
   flush(...args: any[]) {

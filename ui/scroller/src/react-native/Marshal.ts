@@ -27,7 +27,7 @@ class Marshal {
 
   readonly scrollEventHelper: ScrollEventHelper;
 
-  readonly intersectionObserver: IntersectionObserver;
+  // readonly intersectionObserver: IntersectionObserver;
 
   readonly _id: string;
 
@@ -91,7 +91,7 @@ class Marshal {
 
     // this._parentMarshal = parentMarshal;
 
-    this.register();
+    // this.register();
     this._scrollUpdating = scrollUpdating;
     // this._rootScrollHelper = scrollHelper;
 
@@ -148,9 +148,9 @@ class Marshal {
     return !!this._scrollUpdating;
   }
 
-  getParentMarshal() {
-    return this._parentMarshal;
-  }
+  // getParentMarshal() {
+  //   return this._parentMarshal;
+  // }
 
   // getOuterMostHorizontalMarshal() {
   //   return this._outerMostHorizontalMarshal;
@@ -166,15 +166,15 @@ class Marshal {
     return this._rootScrollHelper;
   }
 
-  register() {
-    if (this._parentMarshal) {
-      const isSameOrientation =
-        this._parentMarshal.isHorizontal() === this.isHorizontal();
-      this._disposers.push(
-        this._parentMarshal.registerAsNestedChild(this, !isSameOrientation)
-      );
-    }
-  }
+  // register() {
+  //   if (this._parentMarshal) {
+  //     const isSameOrientation =
+  //       this._parentMarshal.isHorizontal() === this.isHorizontal();
+  //     this._disposers.push(
+  //       this._parentMarshal.registerAsNestedChild(this, !isSameOrientation)
+  //     );
+  //   }
+  // }
 
   dispose() {
     this._disposers.forEach((disposer) => {
@@ -213,11 +213,11 @@ class Marshal {
     return this._rootScrollHelper.getRef();
   }
 
-  getAnimated(): boolean {
-    const marshal = this.getOuterMostSameOrientationMarshal();
-    if (this === marshal) return this._animated;
-    return marshal.getAnimated();
-  }
+  // getAnimated(): boolean {
+  //   const marshal = this.getOuterMostSameOrientationMarshal();
+  //   if (this === marshal) return this._animated;
+  //   return marshal.getAnimated();
+  // }
 
   addEventListener(
     type: ScrollEventHandlerSubscriptionKeys,
