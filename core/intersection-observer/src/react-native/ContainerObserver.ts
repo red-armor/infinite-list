@@ -72,6 +72,8 @@ class ContainerObserver {
       let intersection = convertRectToIntersection(this.rect);
       let ownerContainerObserver = this.ownerContainerObserver;
 
+      console.log('inter--- ', intersection, ownerContainerObserver);
+
       if (ownerContainerObserver) {
         while (ownerContainerObserver) {
           intersection =
@@ -87,8 +89,9 @@ class ContainerObserver {
         resolve(this.intersection);
         return;
       }
+      console.log('b-----');
 
-      this.root.measureInWindow(
+      this.root.current.measureInWindow(
         (x: number, y: number, width: number, height: number) => {
           this.intersection = convertLayoutToClientRect({
             x,
@@ -96,6 +99,17 @@ class ContainerObserver {
             width,
             height,
           });
+
+          this.rect = this.intersection;
+          console.log(
+            'hell00000',
+            this,
+            this.intersection,
+            x,
+            y,
+            width,
+            height
+          );
           resolve(this.intersection);
         }
       );

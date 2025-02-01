@@ -4,7 +4,7 @@ import { IClientRectReadOnly } from '../../types';
 
 export type IntersectionObserverProps = {
   root: ReactNativeDocument;
-  document: ReactNativeDocument;
+  document?: ReactNativeDocument;
   rootMargin?: string;
   threshold?: number | number[];
 };

@@ -47,9 +47,10 @@ export const measureLayout = (
   onSuccess: MeasureLayoutOnSuccessCallback,
   onFail?: OnFail
 ) => {
+  console.log('node ----', node, relativeToNativeComponentRef);
   if (node) {
     (node as any as NativeMethods).measureLayout(
-      relativeToNativeComponentRef,
+      relativeToNativeComponentRef.current,
       onSuccess,
       onFail
     );

@@ -1,11 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { ScrollView, View, Text } from 'react-native';
-import { IntersectionObserver } from '@infinite-list/intersection-observer';
+import {
+  IntersectionObserver,
+  ReactNativeDocumentBase,
+} from '@infinite-list/intersection-observer';
 
 const MeasureInWindowSimple = () => {
   const greenRef = useRef<View>(null);
   const nestRef = useRef<View>(null);
+  const outsideRef = useRef<ScrollView>(null);
   const nestScrollViewRef = useRef<ScrollView>(null);
+
+  const root = useMemo(() => {
+    return new ReactNativeDocumentBase({
+      node: outsideRef,
+    });
+  }, []);
 
   const observer = useMemo<IntersectionObserver>(() => {
     return new IntersectionObserver(
@@ -13,10 +23,27 @@ const MeasureInWindowSimple = () => {
         console.log('hello');
       },
       {
-        root: null,
-        document: null,
+        root: root,
+        document: root,
       }
     );
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      observer.observe(greenRef.current, {
+        root,
+        observerKey: 'green',
+      });
+    }, 40);
+    return () => {
+      observer.unobserve(greenRef);
+    };
+  }, []);
+
+  const onContentSizeChange = useCallback(() => {
+    console.log('cconte----');
+    observer.updateDocumentIntersections();
   }, []);
 
   console.log('hello ----', observer);
@@ -31,6 +58,7 @@ const MeasureInWindowSimple = () => {
   }, []);
 
   const scrollHandler = useCallback(() => {
+    onContentSizeChange();
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
@@ -54,9 +82,11 @@ const MeasureInWindowSimple = () => {
 
   return (
     <ScrollView
+      ref={outsideRef}
       style={{ flex: 1 }}
       onScroll={scrollHandler}
       scrollEventThrottle={50}
+      onContentSizeChange={onContentSizeChange}
     >
       <View style={{ height: 300, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>

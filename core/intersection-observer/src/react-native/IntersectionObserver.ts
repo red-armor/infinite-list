@@ -18,6 +18,7 @@ import Observer from './Observer';
 import ReactNativeDocument from './ReactNativeDocument';
 import { generateRandomKey } from './generateRandom';
 import ContainerObserver from './ContainerObserver';
+import { RefObject } from 'react';
 
 class IntersectionObserver implements IIntersectionObserver {
   private monitoringDocuments: ReactNativeDocument[] = [];
@@ -64,19 +65,32 @@ class IntersectionObserver implements IIntersectionObserver {
       .join(' ');
   }
 
+  getNode(doc: ReactNativeDocument) {
+    if (!doc) return null;
+    const node = doc.node;
+    return (node as RefObject<ScrollView>).current || (node as ScrollView);
+  }
+
   ensureContainerObserver(doc: ReactNativeDocument) {
-    const scrollView = doc.node;
+    if (!doc) return null;
+    const scrollView = this.getNode(doc);
     const ownerDocument = doc.ownerDocument;
+
+    console.log('doc ----', doc, scrollView, ownerDocument);
 
     if (this.scrollViewToContainerObserverMap.has(scrollView))
       return this.scrollViewToContainerObserverMap.get(scrollView);
 
-    const ownerContainerObserver = this.ensureContainerObserver(ownerDocument);
+    const ownerContainerObserver = ownerDocument
+      ? this.ensureContainerObserver(ownerDocument)
+      : null;
 
     const container = new ContainerObserver({
       doc,
       ownerContainerObserver,
     });
+
+    console.log('container ---', container);
 
     this.scrollViewToContainerObserverMap.set(scrollView, container);
     return this.scrollViewToContainerObserverMap.get(scrollView);
@@ -107,9 +121,13 @@ class IntersectionObserver implements IIntersectionObserver {
 
     let container = this.scrollViewToContainerObserverMap.get(scrollView);
 
+    console.log('x----', root);
+
     if (!container) {
       if (root instanceof ReactNativeDocument) {
-        const ownerContainerObserver = this.ensureContainerObserver(root);
+        const ownerContainerObserver = this.ensureContainerObserver(
+          root.ownerDocument
+        );
         container = new ContainerObserver({
           doc: this.root,
           ownerContainerObserver,
@@ -120,6 +138,7 @@ class IntersectionObserver implements IIntersectionObserver {
           ownerContainerObserver: null,
         });
       }
+      this.scrollViewToContainerObserverMap.set(scrollView, container);
     }
 
     observer = new Observer({
@@ -134,15 +153,21 @@ class IntersectionObserver implements IIntersectionObserver {
     this.keyToObserverMap.set(nextObserverKey, observer);
     this.checkIntersection(el);
     this.monitorIntersections(root);
+
+    console.log(
+      'scrollViewToContainerObserverMap ',
+      this.scrollViewToContainerObserverMap
+    );
+
     return () => {
       this.unobserve(nextObserverKey);
     };
   }
 
   checkIntersection(el: View) {
-    const entry = this.observerMap.get(el);
-    if (entry) {
-      // entry.checkIntersection();
+    const observer = this.observerMap.get(el);
+    if (observer) {
+      observer.updateClientRect(this.callback);
     }
   }
 
@@ -196,7 +221,10 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   updateIntersections() {
-    // TODO: implement
+    for (const observer of this.keyToObserverMap.values()) {
+      console.log('testing ----');
+      observer.updateIntersection();
+    }
   }
 
   updateDocumentIntersections() {
@@ -204,7 +232,9 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   _updateDocumentIntersectionsTask() {
+    console.log('updateContainerIntersections ----fdakfasfakf');
     this.updateContainerIntersections().then(() => {
+      console.log('updateIntersections ----');
       this.updateIntersections();
     });
   }

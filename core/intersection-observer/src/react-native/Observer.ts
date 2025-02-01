@@ -52,6 +52,9 @@ class Observer {
         width,
         height,
       };
+
+      console.log('this ----', this.clientRect);
+
       this.dimensions.setKeyItemLayout(this.observerKey, {
         x,
         y,
@@ -74,6 +77,7 @@ class Observer {
   }
 
   updateIntersection() {
+    console.log('containerObserver ', this.containerObserver);
     const containerRect = this.containerObserver.getRect();
     const scrollOffsetX = this.containerObserver.scrollOffsetX;
     const scrollOffsetY = this.containerObserver.scrollOffsetY;
@@ -102,7 +106,12 @@ class Observer {
     };
     const intersection = computeIntersection(nextItemReact, containerRect);
 
-    console.log('intersection ', intersection);
+    console.log(
+      'intersection in observer',
+      nextItemReact,
+      containerRect,
+      intersection
+    );
   }
 }
 
