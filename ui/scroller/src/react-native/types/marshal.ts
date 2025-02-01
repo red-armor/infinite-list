@@ -1,5 +1,9 @@
 import { MutableRefObject } from 'react';
-import { Animated } from 'react-native';
+import {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from 'react-native';
 import { StickyMode } from './stickyMarshal';
 import { SyntheticEventHandler, ContentSizeChangeHandler } from './scrollView';
 import Marshal from '../Marshal';
@@ -41,3 +45,7 @@ export type ScrollEventHelperProps = {
   onMomentumScrollBegin?: SyntheticEventHandler;
   onScrollToTop?: SyntheticEventHandler;
 };
+
+export type ScrollEventHandler = (
+  e: NativeSyntheticEvent<NativeScrollEvent>
+) => void;

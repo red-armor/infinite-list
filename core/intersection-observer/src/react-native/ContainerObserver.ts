@@ -84,13 +84,21 @@ class ContainerObserver {
         }
 
         this.intersection = intersection;
+        resolve(this.intersection);
         return;
       }
 
-      this.root.measureInWindow((x, y, width, height) => {
-        console.log('x ', x, y, width, height);
-        this.intersection = convertLayoutToClientRect({ x, y, width, height });
-      });
+      this.root.measureInWindow(
+        (x: number, y: number, width: number, height: number) => {
+          this.intersection = convertLayoutToClientRect({
+            x,
+            y,
+            width,
+            height,
+          });
+          resolve(this.intersection);
+        }
+      );
     });
   }
 }

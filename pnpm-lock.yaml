@@ -308,12 +308,12 @@ importers:
       '@infinite-list/items-dimensions':
         specifier: workspace:*
         version: link:../../model/items-dimensions
+      '@x-oasis/default-boolean-value':
+        specifier: ^0.1.14
+        version: 0.1.35
       react:
         specifier: 18.2.0
         version: 18.2.0
-      react-native:
-        specifier: 0.74.1
-        version: 0.74.1(@babel/core@7.26.0)(@babel/preset-env@7.26.0)(@types/react@18.3.1)(react@18.2.0)
 
   core/item-meta:
     dependencies:
@@ -5898,7 +5898,9 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
+      - bufferutil
       - supports-color
+      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:

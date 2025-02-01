@@ -29,10 +29,9 @@ class IntersectionObserver implements IIntersectionObserver {
   private ownerDocument: ReactNativeDocument;
   private keyToObserverMap: Map<string, Observer> = new Map();
   private monitorDisposers: MonitorDisposer[] = [];
-  private scrollViewToContainerObserverMap: WeakMap<
-    ScrollView,
-    ContainerObserver
-  > = new WeakMap();
+  private scrollViewToContainerObserverMap: Map<ScrollView, ContainerObserver> =
+    new Map();
+  // private shouldUpdateDocumentIntersection = false;
 
   constructor(
     callback: IntersectionObserverCallback,
@@ -195,8 +194,20 @@ class IntersectionObserver implements IIntersectionObserver {
     // TODO: implement
   }
 
+  updateDocumentIntersections() {
+    this.updateContainerIntersections().then(() => {
+      this.updateIntersections();
+    });
+  }
+
   updateContainerIntersections() {
-    // todo
+    const tasks = [];
+
+    for (const container of this.scrollViewToContainerObserverMap.values()) {
+      tasks.push(container.updateIntersection());
+    }
+
+    return Promise.all(tasks);
   }
 
   getClientRect(key: string) {

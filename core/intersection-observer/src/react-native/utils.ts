@@ -66,22 +66,6 @@ export const viewabilityConfig = {
   viewAreaCoveragePercentThreshold: 0,
 };
 
-// const seenKeys: { [key: string]: boolean } = {};
-// const MULTIPLIER = Math.pow(2, 24);
-
-// export const generateRandomKey = (prefix = '') => {
-//   let key;
-
-//   while (key === undefined || seenKeys[key] || !isNaN(+key)) {
-//     key = Math.floor(Math.random() * MULTIPLIER).toString(32);
-//   }
-
-//   const nextKey = `${prefix}${key}`;
-
-//   seenKeys[nextKey] = true;
-//   return nextKey;
-// };
-
 export const convertLayoutToClientRect = (layout: ItemLayout): ClientRect => {
   const { x, y, height, width } = layout;
   return {

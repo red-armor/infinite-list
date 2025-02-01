@@ -1,7 +1,12 @@
 import { MutableRefObject } from 'react';
-import { Animated } from 'react-native';
+import { Animated, ScrollView } from 'react-native';
 import ScrollHelper from './ScrollHelper';
-import { SpectrumScrollViewRef, MarshalProps } from './types';
+import {
+  SpectrumScrollViewRef,
+  MarshalProps,
+  ScrollEventHandler,
+  ScrollEventHandlerSubscriptionKeys,
+} from './types';
 import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import ScrollEventHelper from './ScrollEventHelper';
 
@@ -26,7 +31,7 @@ class Marshal {
 
   readonly _id: string;
 
-  private _parentMarshal: Marshal;
+  // private _parentMarshal: Marshal;
 
   private _children: Marshal[] = [];
 
@@ -44,11 +49,17 @@ class Marshal {
    */
   public ownerScrollHelper: ScrollHelper | null | undefined;
 
+  /**
+   * implement ReactNativeDocument
+   */
+  public ownerDocument: ScrollHelper | null | undefined;
+  public node: ScrollView;
+
   constructor(props: MarshalProps) {
     const {
       id,
       ref,
-      parentMarshal,
+      // parentMarshal,
       animated = false,
       horizontal = false,
       scrollUpdating = true,
@@ -68,6 +79,8 @@ class Marshal {
       stickyMode,
     } = props;
     this._ref = ref;
+    this.node = ref.current;
+
     this._id = id;
 
     this._animated = animated;
@@ -204,6 +217,14 @@ class Marshal {
     const marshal = this.getOuterMostSameOrientationMarshal();
     if (this === marshal) return this._animated;
     return marshal.getAnimated();
+  }
+
+  addEventListener(
+    type: ScrollEventHandlerSubscriptionKeys,
+    listener: ScrollEventHandler,
+    options?: boolean | AddEventListenerOptions
+  ) {
+    return this.scrollEventHelper.subscribeEventHandler(type, listener);
   }
 
   getAnimatedValue() {
