@@ -4,10 +4,14 @@ import { ScrollView, View, Text } from 'react-native';
 const MeasureInWindowSimple = () => {
   const greenRef = useRef<View>(null);
   const nestRef = useRef<View>(null);
+  const nestScrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
+    });
+    nestScrollViewRef.current?.measureInWindow((x, y, width, height) => {
+      console.log('nestScrollViewRef ref ', x, y, width, height);
     });
   }, []);
 
@@ -46,6 +50,7 @@ const MeasureInWindowSimple = () => {
         horizontal
         onScroll={horizontalScrollHandler}
         scrollEventThrottle={50}
+        ref={nestScrollViewRef}
       >
         <View style={{ height: 300, width: 200, backgroundColor: 'blue' }}>
           <Text>blue</Text>
