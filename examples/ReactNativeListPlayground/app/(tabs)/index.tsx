@@ -170,9 +170,11 @@
 // import HorizontalList from '../../components/play/HorizontalList';
 // import HorizontalListWithContainer from '../../components/play/HorizontalListWithContainer';
 import MeasureInWindowSimple from '../../components/play/MeasureInWindowSimple';
+import MeasureInWindowSimpleIntersection from '../../components/play/MeasureInWindowSimpleIntersection';
 
 export default () => {
-  return <MeasureInWindowSimple />;
+  return <MeasureInWindowSimpleIntersection />;
+  // return <MeasureInWindowSimple />;
   // return <Group />;
   // return <MasonryList />;
   // return <List />;

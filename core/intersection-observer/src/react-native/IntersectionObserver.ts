@@ -59,7 +59,7 @@ class IntersectionObserver implements IIntersectionObserver {
     );
     this.rootMargin = marginValues
       .map(function (margin) {
-        return margin.value + margin.unit;
+        return margin.value + (margin.unit || '');
       })
       .join(' ');
   }

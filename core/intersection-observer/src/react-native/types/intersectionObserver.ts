@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
 
