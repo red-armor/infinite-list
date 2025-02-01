@@ -2,16 +2,21 @@ import defaultBooleanValue from '@x-oasis/default-boolean-value';
 
 // https://github.com/facebook/react-native/blob/main/Libraries/Interaction/Batchinator.js
 
+const getNow = () => Date.now();
+
 class Scheduler {
   readonly _delayMS: number;
   private _args: Array<any>;
 
   private _callback: Function;
-  private _taskHandle: {
-    cancel: () => void;
-  } | null;
-  private _leading: boolean;
-  private _trailing: boolean;
+
+  readonly _leading: boolean;
+  readonly _trailing: boolean;
+  private _lastCallTime: number | null = null;
+  private _lastInvokeTime: number | null = null;
+  private timerId: NodeJS.Timer | null = null;
+  private _isInvoking = false;
+  private _result: any = null;
 
   constructor(
     cb: Function,
@@ -23,7 +28,6 @@ class Scheduler {
   ) {
     this._callback = cb;
     this._delayMS = delayMS;
-    this._taskHandle = null;
     this._args = [];
     this._leading = defaultBooleanValue(options?.leading, true);
     this._trailing = defaultBooleanValue(options?.trailing, true);
@@ -33,59 +37,95 @@ class Scheduler {
     options: {
       abort: boolean;
     } = {
-      abort: false,
+      abort: true,
     }
   ) {
     const { abort } = options;
-    if (this._taskHandle) {
-      this._taskHandle.cancel();
-      this._taskHandle = null;
-    }
+    this.cancel();
     if (typeof this._callback === 'function' && !abort) {
-      this._callback(...this._args);
+      this._result = this._callback(...this._args);
+      return this._result;
     }
   }
 
   inSchedule() {
-    return !!this._taskHandle;
+    return !!this._isInvoking;
   }
 
   flush(...args: any[]) {
     if (args.length) this._args = args;
-    if (this._taskHandle) {
-      this._taskHandle.cancel();
-      this._taskHandle = null;
+    this.cancel();
+    this._lastInvokeTime = null;
+    return this.invoke();
+  }
+
+  reset() {
+    this.timerId = null;
+    this._lastCallTime = null;
+  }
+
+  invoke() {
+    this._result = this._callback(...this._args);
+    return this._result;
+  }
+
+  leadingEdge(time: number) {
+    this._lastInvokeTime = time;
+    const immediatelyCall = this._leading || !this._delayMS;
+
+    if (immediatelyCall) {
+      this.invoke();
     }
-    this._callback(...this._args);
+
+    this.timerId = setTimeout(() => {
+      if (!immediatelyCall) this.invoke();
+      this.reset();
+      this.trailingEdge();
+    }, this._delayMS);
+  }
+
+  trailingEdge() {
+    const now = getNow();
+    if (this._lastCallTime && this._lastInvokeTime) {
+      const hasAdditionalCall = this._lastCallTime < this._lastInvokeTime;
+      if (hasAdditionalCall && this._trailing) {
+        const remainingTime = this._delayMS - (now - this._lastCallTime);
+        this.timerId = setTimeout(() => {
+          this.invoke();
+          this.reset();
+        }, remainingTime);
+      }
+    }
+
+    this._lastInvokeTime = null;
+  }
+
+  shouldInvokeNext() {
+    const now = getNow();
+
+    if (!this._lastCallTime) return true;
+
+    const timeSinceLastCall = now - this._lastCallTime;
+
+    if (timeSinceLastCall > this._delayMS) return true;
+    return false;
+  }
+
+  cancel() {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+    }
+    this.reset();
   }
 
   schedule(...args: any[]) {
     this._args = args;
+    const invokeNext = this.shouldInvokeNext();
+    const now = getNow();
+    this._lastCallTime = now;
 
-    if (this._taskHandle) return;
-    const handler = this._leading
-      ? () => {
-          this._taskHandle = null;
-        }
-      : () => {
-          this._taskHandle = null;
-          this._callback(...this._args);
-        };
-
-    if (!this._delayMS) {
-      handler();
-      return;
-    }
-
-    if (this._leading) {
-      this._callback(...this._args);
-    }
-
-    const timeoutHandle = setTimeout(() => {
-      handler();
-    }, this._delayMS);
-
-    this._taskHandle = { cancel: () => clearTimeout(timeoutHandle) };
+    if (!invokeNext) return;
+    this.leadingEdge(now);
   }
 }
 
