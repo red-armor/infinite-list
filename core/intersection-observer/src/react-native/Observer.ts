@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { ClientRect, ObserverProps, ItemLayout } from './types';
 import { IClientRectReadOnly } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
@@ -15,6 +15,17 @@ class Observer {
   private clientRect: IClientRectReadOnly;
   private dimensions: ItemsDimensions;
   private containerObserver: ContainerObserver;
+
+  /**
+   * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+   *
+   * the difference is offsetTop is relative to closest positioned ScrollView
+   */
+  private offsetTop: number;
+  /**
+   * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
+   */
+  private offsetParent: ScrollView;
 
   constructor(props: ObserverProps) {
     const {
@@ -46,9 +57,12 @@ class Observer {
   updateClientRect(cb?: (rect: IClientRectReadOnly) => void) {
     measureLayout(this.target, this.root, (x, y, width, height) => {
       this.clientRect = {
-        ...this.clientRect,
         x,
         y,
+        top: y,
+        left: x,
+        right: x + width,
+        bottom: y + height,
         width,
         height,
       };
@@ -78,40 +92,77 @@ class Observer {
 
   updateIntersection() {
     console.log('containerObserver ', this.containerObserver);
-    const containerRect = this.containerObserver.getRect();
-    const scrollOffsetX = this.containerObserver.scrollOffsetX;
-    const scrollOffsetY = this.containerObserver.scrollOffsetY;
+    const containerRect = this.containerObserver.getBoundingClientRect();
+    const itemClientRect = this.getBoundingClientRect();
 
-    const itemRect = this.clientRect;
-
-    const { top, left, x, y, width, height } = itemRect;
-
-    /**
-     * get item rect relative to container
-     */
-    const nextTop = top - scrollOffsetY + containerRect.top;
-    const nextLeft = left - scrollOffsetX + containerRect.left;
-    const nextX = x - scrollOffsetX + containerRect.x;
-    const nextY = y - scrollOffsetY + containerRect.y;
-
-    const nextItemReact = {
-      x: nextX,
-      y: nextY,
-      top: nextTop,
-      right: nextLeft + width,
-      bottom: nextTop + height,
-      left: nextLeft,
-      width,
-      height,
-    };
-    const intersection = computeIntersection(nextItemReact, containerRect);
+    const intersection = computeIntersection(itemClientRect, containerRect);
 
     console.log(
       'intersection in observer',
-      nextItemReact,
+      itemClientRect,
       containerRect,
       intersection
     );
+    // const scrollOffsetX = this.containerObserver.scrollOffsetX;
+    // const scrollOffsetY = this.containerObserver.scrollOffsetY;
+
+    // const itemRect = this.clientRect;
+
+    // const { top, left, x, y, width, height } = itemRect;
+
+    // /**
+    //  * get item rect relative to container
+    //  */
+    // const nextTop = top - scrollOffsetY + containerRect.top;
+    // const nextLeft = left - scrollOffsetX + containerRect.left;
+    // const nextX = x - scrollOffsetX + containerRect.x;
+    // const nextY = y - scrollOffsetY + containerRect.y;
+
+    // const nextItemReact = {
+    //   x: nextX,
+    //   y: nextY,
+    //   top: nextTop,
+    //   right: nextLeft + width,
+    //   bottom: nextTop + height,
+    //   left: nextLeft,
+    //   width,
+    //   height,
+    // };
+    // const intersection = computeIntersection(nextItemReact, containerRect);
+
+    // console.log(
+    //   'intersection in observer',
+    //   nextItemReact,
+    //   containerRect,
+    //   intersection
+    // );
+  }
+
+  /**
+   * derive from container rect
+   */
+  getBoundingClientRect() {
+    const containerRect = this.containerObserver.getBoundingClientRect();
+    const scrollOffsetX = this.containerObserver.scrollOffsetX;
+    const scrollOffsetY = this.containerObserver.scrollOffsetY;
+
+    const topRelativeToContainer = this.clientRect.top - scrollOffsetY;
+    const topRelativeToViewport = containerRect.top + topRelativeToContainer;
+    const leftRelativeToContainer = this.clientRect.left - scrollOffsetX;
+    const leftRelativeToViewport = containerRect.left + leftRelativeToContainer;
+
+    const clientRect = {
+      x: containerRect.x + leftRelativeToContainer,
+      y: containerRect.y + topRelativeToContainer,
+      top: topRelativeToViewport,
+      right: leftRelativeToViewport + this.clientRect.width,
+      bottom: topRelativeToViewport + this.clientRect.height,
+      left: leftRelativeToViewport,
+      width: this.clientRect.width,
+      height: this.clientRect.height,
+    };
+
+    return clientRect;
   }
 }
 

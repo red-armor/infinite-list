@@ -7,6 +7,7 @@ import {
 
 const MeasureInWindowSimple = () => {
   const greenRef = useRef<View>(null);
+  const secondRef = useRef<View>(null);
   const nestRef = useRef<View>(null);
   const outsideRef = useRef<ScrollView>(null);
   const nestScrollViewRef = useRef<ScrollView>(null);
@@ -31,19 +32,19 @@ const MeasureInWindowSimple = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      observer.observe(greenRef.current, {
+      observer.observe(secondRef.current, {
         root,
-        observerKey: 'green',
+        observerKey: 'second',
       });
     }, 40);
     return () => {
-      observer.unobserve(greenRef);
+      observer.unobserve(secondRef.current);
     };
   }, []);
 
-  const onContentSizeChange = useCallback(() => {
+  const onContentSizeChange = useCallback((e) => {
     console.log('cconte----');
-    observer.updateDocumentIntersections();
+    observer.updateDocumentIntersections(e);
   }, []);
 
   console.log('hello ----', observer);
@@ -57,8 +58,8 @@ const MeasureInWindowSimple = () => {
     });
   }, []);
 
-  const scrollHandler = useCallback(() => {
-    onContentSizeChange();
+  const scrollHandler = useCallback((scrollEvent) => {
+    onContentSizeChange(scrollEvent);
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
@@ -90,6 +91,12 @@ const MeasureInWindowSimple = () => {
     >
       <View style={{ height: 300, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>
+      </View>
+      <View
+        ref={secondRef}
+        style={{ height: 100, width: '100%', backgroundColor: 'pink' }}
+      >
+        <Text>second</Text>
       </View>
       <ScrollView
         horizontal

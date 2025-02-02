@@ -64,6 +64,7 @@ class Scheduler {
   }
 
   invoke() {
+    console.log('invoke ---- ', this._args);
     this._result = this._callback(...this._args);
     return this._result;
   }

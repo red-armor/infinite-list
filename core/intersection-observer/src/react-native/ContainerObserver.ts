@@ -63,16 +63,25 @@ class ContainerObserver {
     return this.rect;
   }
 
+  getBoundingClientRect() {
+    return this.rect;
+  }
+
   getIntersection() {
     return this.intersection;
   }
 
-  updateIntersection() {
+  updateIntersection(scrollEvent) {
+    console.log('scrollevent ----', scrollEvent);
+    const {
+      contentOffset: { x, y },
+    } = scrollEvent.nativeEvent;
+    this.scrollOffsetX = x;
+    this.scrollOffsetY = y;
+
     return new Promise((resolve) => {
       let intersection = convertRectToIntersection(this.rect);
       let ownerContainerObserver = this.ownerContainerObserver;
-
-      console.log('inter--- ', intersection, ownerContainerObserver);
 
       if (ownerContainerObserver) {
         while (ownerContainerObserver) {
@@ -89,7 +98,6 @@ class ContainerObserver {
         resolve(this.intersection);
         return;
       }
-      console.log('b-----');
 
       this.root.current.measureInWindow(
         (x: number, y: number, width: number, height: number) => {

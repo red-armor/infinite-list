@@ -121,10 +121,11 @@ class IntersectionObserver implements IIntersectionObserver {
 
     let container = this.scrollViewToContainerObserverMap.get(scrollView);
 
-    console.log('x----', root);
-
     if (!container) {
       if (root instanceof ReactNativeDocument) {
+        /**
+         * to get parent container
+         */
         const ownerContainerObserver = this.ensureContainerObserver(
           root.ownerDocument
         );
@@ -138,6 +139,9 @@ class IntersectionObserver implements IIntersectionObserver {
           ownerContainerObserver: null,
         });
       }
+      /**
+       * set current container
+       */
       this.scrollViewToContainerObserverMap.set(scrollView, container);
     }
 
@@ -227,23 +231,26 @@ class IntersectionObserver implements IIntersectionObserver {
     }
   }
 
-  updateDocumentIntersections() {
-    this.updateDocumentIntersectionsTask.schedule();
+  updateDocumentIntersections(e) {
+    console.log('updateDocumentIntersections ----', e);
+    this.updateDocumentIntersectionsTask.schedule(e);
   }
 
-  _updateDocumentIntersectionsTask() {
-    console.log('updateContainerIntersections ----fdakfasfakf');
-    this.updateContainerIntersections().then(() => {
+  _updateDocumentIntersectionsTask(scrollEvent) {
+    console.log('updateContainerIntersections ----fdakfasfakf', scrollEvent);
+    this.updateContainerIntersections(scrollEvent).then(() => {
       console.log('updateIntersections ----');
       this.updateIntersections();
     });
   }
 
-  updateContainerIntersections() {
+  updateContainerIntersections(scrollEvent) {
     const tasks = [];
 
+    console.log('------', scrollEvent);
+
     for (const container of this.scrollViewToContainerObserverMap.values()) {
-      tasks.push(container.updateIntersection());
+      tasks.push(container.updateIntersection(scrollEvent));
     }
 
     return Promise.all(tasks);
