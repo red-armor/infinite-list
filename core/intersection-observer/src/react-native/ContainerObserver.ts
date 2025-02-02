@@ -72,7 +72,6 @@ class ContainerObserver {
   }
 
   updateIntersection(scrollEvent) {
-    console.log('scrollevent ----', scrollEvent);
     const {
       contentOffset: { x, y },
     } = scrollEvent.nativeEvent;

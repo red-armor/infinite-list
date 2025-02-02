@@ -12,7 +12,10 @@ export const computeIntersection = (
   const width = right - left;
   const height = bottom - top;
 
-  if (width >= 0 || height >= 0) {
+  /**
+   * only if width and height are positive, there is an intersection
+   */
+  if (width >= 0 && height >= 0) {
     return {
       top,
       right,
@@ -23,4 +26,8 @@ export const computeIntersection = (
     };
   }
   return null;
+};
+
+export const isIntersecting = (intersection: IRectIntersection) => {
+  return intersection && intersection.width >= 0 && intersection.height >= 0;
 };

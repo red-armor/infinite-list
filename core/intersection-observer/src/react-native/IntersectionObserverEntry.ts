@@ -1,42 +1,70 @@
+import { RefObject } from 'react';
 import { ScrollView, View } from 'react-native';
 import {
   IClientRectReadOnly,
   IntersectionObserverEntryProps,
   IIntersectionObserverEntry,
+  IRectIntersection,
 } from './types';
-import { getEmptyRect } from './utils';
 import { generateRandomKey } from './generateRandom';
-import { measureLayout } from './measure';
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
 
 class IntersectionObserverEntry {
   private target: View;
   readonly entryKey: string;
-  private root: ScrollView;
-  private clientRect: IClientRectReadOnly;
-  private dimensions: ItemsDimensions;
+  private root: ScrollView | RefObject<ScrollView>;
   private time: number;
+  readonly isIntersecting: boolean;
+  readonly rootBounds: IClientRectReadOnly | null;
+  readonly boundingClientRect: IClientRectReadOnly;
+  readonly intersectionRect: IRectIntersection | null;
 
   constructor(props: IntersectionObserverEntryProps) {
-    const { target, root, dimensions, entryKey = generateRandomKey() } = props;
+    const {
+      boundingClientRect,
+      rootBounds,
+      target,
+      root,
+      entryKey = generateRandomKey(),
+      intersectionRect,
+    } = props;
     this.root = root;
     this.time = Date.now();
     this.target = target;
     this.entryKey = entryKey;
-    this.clientRect = getEmptyRect();
-    this.dimensions = dimensions;
+    this.rootBounds = rootBounds;
+    this.isIntersecting = !!intersectionRect;
+    this.boundingClientRect = boundingClientRect;
+    this.intersectionRect = intersectionRect;
   }
 
   getEntry(): IIntersectionObserverEntry {
     return {
-      time: 0,
+      time: this.time,
       target: this.target,
-      rootBounds: null,
-      boundingClientRect: getEmptyRect(),
-      intersectionRect: getEmptyRect(),
-      isIntersecting: false,
-      intersectionRatio: 0,
+      rootBounds: this.rootBounds,
+      boundingClientRect: this.boundingClientRect,
+      intersectionRect: this.intersectionRect,
+      isIntersecting: this.isIntersecting,
+      intersectionRatio: this.getIntersectionRation(),
     };
+  }
+
+  getIntersectionRation() {
+    if (!this.intersectionRect) return 0;
+    // Calculates the intersection ratio.
+    const targetRect = this.boundingClientRect;
+    const targetArea = targetRect.width * targetRect.height;
+    const intersectionRect = this.intersectionRect;
+    const intersectionArea = intersectionRect.width * intersectionRect.height;
+
+    // Sets intersection ratio.
+    if (targetArea) {
+      // Round the intersection ratio to avoid floating point math issues:
+      // https://github.com/w3c/IntersectionObserver/issues/324
+      return Number((intersectionArea / targetArea).toFixed(4));
+    }
+    // If area is zero and is intersecting, sets to 1, otherwise to 0
+    return this.isIntersecting ? 1 : 0;
   }
 }
 

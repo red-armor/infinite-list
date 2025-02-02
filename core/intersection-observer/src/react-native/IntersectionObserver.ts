@@ -76,8 +76,6 @@ class IntersectionObserver implements IIntersectionObserver {
     const scrollView = this.getNode(doc);
     const ownerDocument = doc.ownerDocument;
 
-    console.log('doc ----', doc, scrollView, ownerDocument);
-
     if (this.scrollViewToContainerObserverMap.has(scrollView))
       return this.scrollViewToContainerObserverMap.get(scrollView);
 
@@ -89,8 +87,6 @@ class IntersectionObserver implements IIntersectionObserver {
       doc,
       ownerContainerObserver,
     });
-
-    console.log('container ---', container);
 
     this.scrollViewToContainerObserverMap.set(scrollView, container);
     return this.scrollViewToContainerObserverMap.get(scrollView);
@@ -237,7 +233,6 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   _updateDocumentIntersectionsTask(scrollEvent) {
-    console.log('updateContainerIntersections ----fdakfasfakf', scrollEvent);
     this.updateContainerIntersections(scrollEvent).then(() => {
       console.log('updateIntersections ----');
       this.updateIntersections();

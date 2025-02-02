@@ -7,6 +7,7 @@ import { measureLayout } from './measure';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import ContainerObserver from './ContainerObserver';
 import { computeIntersection } from '../common/intersection';
+import IntersectionObserverEntry from './IntersectionObserverEntry';
 
 class Observer {
   // private root: ObserverRoot;
@@ -67,8 +68,6 @@ class Observer {
         height,
       };
 
-      console.log('this ----', this.clientRect);
-
       this.dimensions.setKeyItemLayout(this.observerKey, {
         x,
         y,
@@ -103,6 +102,18 @@ class Observer {
       containerRect,
       intersection
     );
+
+    const entry = new IntersectionObserverEntry({
+      root: this.root,
+      target: this.target,
+      dimensions: this.dimensions,
+      boundingClientRect: this.clientRect,
+      rootBounds: containerRect,
+      intersectionRect: intersection,
+    });
+
+    console.log('entry ', entry.getEntry());
+
     // const scrollOffsetX = this.containerObserver.scrollOffsetX;
     // const scrollOffsetY = this.containerObserver.scrollOffsetY;
 
