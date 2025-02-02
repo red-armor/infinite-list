@@ -45,11 +45,11 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
     listener: ScrollEventHandler,
     options?: boolean | AddEventListenerOptions
   ): { (): void } {
-    this.emitter.on(type, listener);
+    return this.emitter.on(type, listener);
   }
 
-  onScroll() {
-    this.emitter.fire('onScroll');
+  onScroll(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.emitter.fire('onScroll', scrollEvent);
   }
 }
 

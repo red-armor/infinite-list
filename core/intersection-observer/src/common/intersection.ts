@@ -11,7 +11,6 @@ export const computeIntersection = (
 
   const width = right - left;
   const height = bottom - top;
-
   /**
    * only if width and height are positive, there is an intersection
    */

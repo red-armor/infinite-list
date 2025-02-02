@@ -43,11 +43,9 @@ const MeasureInWindowSimple = () => {
   }, []);
 
   const onContentSizeChange = useCallback((e) => {
-    console.log('cconte----');
-    observer.updateDocumentIntersections(e);
+    console.log('onContentSizeChange', e);
+    observer.updateDocumentIntersections();
   }, []);
-
-  console.log('hello ----', observer);
 
   useEffect(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
@@ -59,7 +57,9 @@ const MeasureInWindowSimple = () => {
   }, []);
 
   const scrollHandler = useCallback((scrollEvent) => {
-    onContentSizeChange(scrollEvent);
+    // onContentSizeChange(scrollEvent);
+
+    root.onScroll(scrollEvent);
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });

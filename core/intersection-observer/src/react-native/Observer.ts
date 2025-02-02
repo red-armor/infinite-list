@@ -68,6 +68,8 @@ class Observer {
         height,
       };
 
+      console.log('ayout -----', this.clientRect);
+
       this.dimensions.setKeyItemLayout(this.observerKey, {
         x,
         y,

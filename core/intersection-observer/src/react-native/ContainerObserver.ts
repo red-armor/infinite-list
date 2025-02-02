@@ -71,16 +71,18 @@ class ContainerObserver {
     return this.intersection;
   }
 
-  updateIntersection(scrollEvent) {
-    const {
-      contentOffset: { x, y },
-    } = scrollEvent.nativeEvent;
-    this.scrollOffsetX = x;
-    this.scrollOffsetY = y;
+  updateIntersection() {
+    // const {
+    //   contentOffset: { x, y },
+    // } = scrollEvent.nativeEvent;
+    // this.scrollOffsetX = x;
+    // this.scrollOffsetY = y;
 
     return new Promise((resolve) => {
       let intersection = convertRectToIntersection(this.rect);
       let ownerContainerObserver = this.ownerContainerObserver;
+
+      console.log('----]update ---', ownerContainerObserver);
 
       if (ownerContainerObserver) {
         while (ownerContainerObserver) {

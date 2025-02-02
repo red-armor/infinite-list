@@ -72,9 +72,12 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   ensureContainerObserver(doc: ReactNativeDocument) {
+    console.log('ent=-----');
     if (!doc) return null;
     const scrollView = this.getNode(doc);
     const ownerDocument = doc.ownerDocument;
+
+    console.log('ensure -------');
 
     if (this.scrollViewToContainerObserverMap.has(scrollView))
       return this.scrollViewToContainerObserverMap.get(scrollView);
@@ -135,6 +138,7 @@ class IntersectionObserver implements IIntersectionObserver {
           ownerContainerObserver: null,
         });
       }
+      console.log('set ========');
       /**
        * set current container
        */
@@ -151,8 +155,9 @@ class IntersectionObserver implements IIntersectionObserver {
 
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);
-    this.checkIntersection(el);
     this.monitorIntersections(root);
+    this.checkIntersection(el);
+    this.updateDocumentIntersections();
 
     console.log(
       'scrollViewToContainerObserverMap ',
@@ -207,7 +212,7 @@ class IntersectionObserver implements IIntersectionObserver {
 
       const disposer = doc.addEventListener(
         'onScroll',
-        this.updateIntersections
+        this.updateIntersections.bind(this)
       );
       this.monitorDisposers.push(disposer);
       doc = doc.ownerDocument;
@@ -227,25 +232,25 @@ class IntersectionObserver implements IIntersectionObserver {
     }
   }
 
-  updateDocumentIntersections(e) {
-    console.log('updateDocumentIntersections ----', e);
-    this.updateDocumentIntersectionsTask.schedule(e);
+  updateDocumentIntersections() {
+    this.updateDocumentIntersectionsTask.schedule();
   }
 
-  _updateDocumentIntersectionsTask(scrollEvent) {
-    this.updateContainerIntersections(scrollEvent).then(() => {
+  _updateDocumentIntersectionsTask() {
+    this.updateContainerIntersections().then(() => {
       console.log('updateIntersections ----');
       this.updateIntersections();
     });
   }
 
-  updateContainerIntersections(scrollEvent) {
+  updateContainerIntersections() {
     const tasks = [];
 
-    console.log('------', scrollEvent);
+    console.log('------', this.scrollViewToContainerObserverMap.values());
 
     for (const container of this.scrollViewToContainerObserverMap.values()) {
-      tasks.push(container.updateIntersection(scrollEvent));
+      console.log('container ----', container);
+      tasks.push(container.updateIntersection());
     }
 
     return Promise.all(tasks);
