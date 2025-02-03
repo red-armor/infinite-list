@@ -72,27 +72,8 @@ class ContainerObserver {
   }
 
   updateIntersection() {
-    console.log('update container-----');
+    console.log('update container-----', this.root.current);
     return new Promise((resolve) => {
-      let intersection = convertRectToIntersection(this.rect);
-      let ownerContainerObserver = this.ownerContainerObserver;
-
-      if (ownerContainerObserver) {
-        while (ownerContainerObserver) {
-          intersection =
-            computeIntersection(
-              intersection,
-              ownerContainerObserver.getRect()
-            ) || getEmptyIntersection();
-          ownerContainerObserver =
-            ownerContainerObserver.ownerContainerObserver;
-        }
-
-        this.intersection = intersection;
-        resolve(this.intersection);
-        return;
-      }
-
       this.root.current.measureInWindow(
         (x: number, y: number, width: number, height: number) => {
           this.intersection = convertLayoutToClientRect({
@@ -112,6 +93,27 @@ class ContainerObserver {
             width,
             height
           );
+
+          let ownerContainerObserver = this.ownerContainerObserver;
+
+          if (ownerContainerObserver) {
+            let intersection = convertRectToIntersection(this.rect);
+
+            while (ownerContainerObserver) {
+              intersection =
+                computeIntersection(
+                  intersection,
+                  ownerContainerObserver.getRect()
+                ) || getEmptyIntersection();
+              ownerContainerObserver =
+                ownerContainerObserver.ownerContainerObserver;
+            }
+
+            this.intersection = intersection;
+            resolve(this.intersection);
+            return;
+          }
+
           resolve(this.intersection);
         }
       );

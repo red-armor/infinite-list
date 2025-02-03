@@ -127,12 +127,12 @@ class IntersectionObserver implements IIntersectionObserver {
           root.ownerDocument
         );
         container = new ContainerObserver({
-          doc: this.root,
+          doc: root,
           ownerContainerObserver,
         });
       } else {
         container = new ContainerObserver({
-          doc: this.root,
+          doc: root,
           ownerContainerObserver: null,
         });
       }
@@ -144,7 +144,7 @@ class IntersectionObserver implements IIntersectionObserver {
         container
       );
 
-      console.log('update intersections');
+      console.log('update intersections', container);
 
       /**
        * after init container, should update container rect

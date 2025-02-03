@@ -10,11 +10,19 @@ const MeasureInWindowSimple = () => {
   const secondRef = useRef<View>(null);
   const nestRef = useRef<View>(null);
   const outsideRef = useRef<ScrollView>(null);
+  const blueRef = useRef<View>(null);
   const nestScrollViewRef = useRef<ScrollView>(null);
 
   const root = useMemo(() => {
     return new ReactNativeDocumentBase({
       node: outsideRef,
+    });
+  }, []);
+
+  const horizontalRoot = useMemo(() => {
+    return new ReactNativeDocumentBase({
+      node: nestScrollViewRef,
+      ownerDocument: root,
     });
   }, []);
 
@@ -31,17 +39,25 @@ const MeasureInWindowSimple = () => {
   }, []);
 
   useEffect(() => {
-    observer.observe(secondRef.current, {
-      root,
-      observerKey: 'second',
+    // observer.observe(secondRef.current, {
+    //   root,
+    //   observerKey: 'second',
+    // });
+    observer.observe(blueRef.current, {
+      root: horizontalRoot,
+      observerKey: 'blue',
     });
 
     return () => {
-      observer.unobserve(secondRef.current);
+      // observer.unobserve(secondRef.current);
+      observer.unobserve(blueRef.current);
     };
   }, []);
 
   const onContentSizeChange = useCallback((e) => {
+    // observer.updateIntersections();
+  }, []);
+  const onHorizontalContentSizeChange = useCallback((e) => {
     observer.updateIntersections();
   }, []);
 
@@ -61,6 +77,7 @@ const MeasureInWindowSimple = () => {
     });
   }, []);
   const horizontalScrollHandler = useCallback(() => {
+    observer.updateIntersections();
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
@@ -99,8 +116,12 @@ const MeasureInWindowSimple = () => {
         onScroll={horizontalScrollHandler}
         scrollEventThrottle={50}
         ref={nestScrollViewRef}
+        onContentSizeChange={onHorizontalContentSizeChange}
       >
-        <View style={{ height: 300, width: 200, backgroundColor: 'blue' }}>
+        <View
+          ref={blueRef}
+          style={{ height: 300, width: 200, backgroundColor: 'blue' }}
+        >
           <Text>blue</Text>
         </View>
         <View style={{ height: 300, width: 200, backgroundColor: 'brown' }}>
