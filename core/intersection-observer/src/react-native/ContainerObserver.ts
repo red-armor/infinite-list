@@ -28,6 +28,9 @@ class ContainerObserver {
   public dimensions: ItemsDimensions;
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
+  /**
+   * to resolve observer intersection
+   */
   private clientIntersection: IClientRectReadOnly | null = null;
   private intersection: IRectIntersection | null = null;
   public scrollOffsetX = 0;
@@ -138,14 +141,6 @@ class ContainerObserver {
             }
           : null;
 
-        console.log(
-          'client intersection ',
-          x,
-          y,
-          this.clientIntersection,
-          this.id
-        );
-
         return Promise.all(
           this.children.map((child) => child.updateIntersection())
         ).then(() => this.intersection);
@@ -168,12 +163,30 @@ class ContainerObserver {
     this.children.forEach((child) => {
       child.updateObserversIntersections();
     });
+
+    this.updateObserversIntersectionsInSmartWay();
   }
 
   updateObserversIntersectionsInSmartWay() {
-    const { x, y } = this.rect;
+    if (!this.clientIntersection) {
+      // do nothing
+      return;
+    }
 
-    const { width, height } = this.intersection;
+    const { width, height } = this.clientIntersection;
+
+    let minOffset = 0;
+    let maxOffset = 0;
+
+    if (this.doc.horizontal) {
+      minOffset = this.scrollOffsetX;
+      maxOffset = this.scrollOffsetX + width;
+    } else {
+      minOffset = this.scrollOffsetY;
+      maxOffset = this.scrollOffsetY + height;
+    }
+
+    console.log('min  ', minOffset, maxOffset);
   }
 
   /**

@@ -1,5 +1,4 @@
-import { RefObject } from 'react';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import {
   IClientRectReadOnly,
   IntersectionObserverEntryProps,
@@ -11,7 +10,6 @@ import { generateRandomKey } from './generateRandom';
 class IntersectionObserverEntry {
   private target: View;
   readonly entryKey: string;
-  private root: ScrollView | RefObject<ScrollView>;
   private time: number;
   readonly isIntersecting: boolean;
   readonly rootBounds: IClientRectReadOnly | null;
@@ -23,11 +21,9 @@ class IntersectionObserverEntry {
       boundingClientRect,
       rootBounds,
       target,
-      root,
       entryKey = generateRandomKey(),
       intersectionRect,
     } = props;
-    this.root = root;
     this.time = Date.now();
     this.target = target;
     this.entryKey = entryKey;

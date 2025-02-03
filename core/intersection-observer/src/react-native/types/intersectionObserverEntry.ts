@@ -1,9 +1,8 @@
-import { RefObject } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { IClientRectReadOnly, IRectIntersection } from '../../types';
 export type IntersectionObserverEntryProps = {
-  root: ScrollView | RefObject<ScrollView>;
+  // root: ScrollView | RefObject<ScrollView>;
   target: View;
   entryKey?: string;
   boundingClientRect: IClientRectReadOnly;

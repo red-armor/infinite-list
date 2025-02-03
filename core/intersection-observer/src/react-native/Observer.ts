@@ -122,7 +122,6 @@ class Observer {
     );
 
     const entry = new IntersectionObserverEntry({
-      root: this.root,
       target: this.target,
       dimensions: this.dimensions,
       boundingClientRect: this.clientRect,
