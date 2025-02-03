@@ -64,12 +64,15 @@ class Scheduler {
   }
 
   invoke() {
-    console.log('invoke ---- ', this._args);
     this._result = this._callback(...this._args);
     return this._result;
   }
 
   leadingEdge(time: number) {
+    /**
+     * To record invoke `leadingEdge` time, then in `trailingEdge` can be used to determine
+     * whether to invoke `trailingEdge`
+     */
     this._lastInvokeTime = time;
     const immediatelyCall = this._leading || !this._delayMS;
 
@@ -79,15 +82,19 @@ class Scheduler {
 
     this.timerId = setTimeout(() => {
       if (!immediatelyCall) this.invoke();
-      this.reset();
       this.trailingEdge();
+      /**
+       * reset should be called after trailingEdge
+       */
+      this.reset();
     }, this._delayMS);
   }
 
   trailingEdge() {
     const now = getNow();
     if (this._lastCallTime && this._lastInvokeTime) {
-      const hasAdditionalCall = this._lastCallTime < this._lastInvokeTime;
+      const hasAdditionalCall = this._lastCallTime > this._lastInvokeTime;
+
       if (hasAdditionalCall && this._trailing) {
         const remainingTime = this._delayMS - (now - this._lastCallTime);
         this.timerId = setTimeout(() => {
@@ -122,6 +129,11 @@ class Scheduler {
     this._args = args;
     const invokeNext = this.shouldInvokeNext();
     const now = getNow();
+    /**
+     * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,
+     * it only updates when `leadingEdge` is invoked.
+     *
+     */
     this._lastCallTime = now;
 
     if (!invokeNext) return;

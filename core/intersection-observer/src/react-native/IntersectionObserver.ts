@@ -144,6 +144,8 @@ class IntersectionObserver implements IIntersectionObserver {
         container
       );
 
+      console.log('update intersections');
+
       /**
        * after init container, should update container rect
        */
@@ -248,8 +250,10 @@ class IntersectionObserver implements IIntersectionObserver {
 
   updateContainerIntersections() {
     const tasks = [];
+    const values = this.scrollViewToContainerObserverMap.values();
+    console.log('updateContainerIntersections', values);
 
-    for (const container of this.scrollViewToContainerObserverMap.values()) {
+    for (const container of values) {
       tasks.push(container.updateIntersection());
     }
 

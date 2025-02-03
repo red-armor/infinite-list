@@ -31,20 +31,18 @@ const MeasureInWindowSimple = () => {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      observer.observe(secondRef.current, {
-        root,
-        observerKey: 'second',
-      });
-    }, 40);
+    observer.observe(secondRef.current, {
+      root,
+      observerKey: 'second',
+    });
+
     return () => {
       observer.unobserve(secondRef.current);
     };
   }, []);
 
   const onContentSizeChange = useCallback((e) => {
-    console.log('onContentSizeChange', e);
-    observer.updateDocumentIntersections();
+    observer.updateIntersections();
   }, []);
 
   useEffect(() => {
@@ -57,8 +55,6 @@ const MeasureInWindowSimple = () => {
   }, []);
 
   const scrollHandler = useCallback((scrollEvent) => {
-    // onContentSizeChange(scrollEvent);
-
     root.onScroll(scrollEvent);
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);

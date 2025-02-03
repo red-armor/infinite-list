@@ -72,6 +72,7 @@ class ContainerObserver {
   }
 
   updateIntersection() {
+    console.log('update container-----');
     return new Promise((resolve) => {
       let intersection = convertRectToIntersection(this.rect);
       let ownerContainerObserver = this.ownerContainerObserver;
