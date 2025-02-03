@@ -1,5 +1,4 @@
-import { View, ScrollView, Platform } from 'react-native';
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import { View } from 'react-native';
 import { Scheduler } from '@infinite-list/scheduler';
 import {
   ClientRect,
@@ -9,11 +8,7 @@ import {
   IIntersectionObserver,
   ObserveOptions,
 } from './types';
-import {
-  defaultViewabilityConfigCallbackPairs,
-  parseRootMargin,
-  viewabilityConfig,
-} from './utils';
+import { parseRootMargin } from './utils';
 import Observer from './Observer';
 import ReactNativeDocument, {
   ReactNativeDocumentNode,

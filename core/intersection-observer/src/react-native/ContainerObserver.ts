@@ -8,7 +8,6 @@ import {
   convertLayoutToClientRect,
   convertRectToIntersection,
   defaultViewabilityConfigCallbackPairs,
-  getEmptyIntersection,
   getEmptyRect,
   viewabilityConfig,
 } from './utils';
@@ -29,7 +28,8 @@ class ContainerObserver {
   public dimensions: ItemsDimensions;
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
-  private intersection: IRectIntersection = getEmptyIntersection();
+  private clientIntersection: IClientRectReadOnly | null = null;
+  private intersection: IRectIntersection | null = null;
   public scrollOffsetX = 0;
   public scrollOffsetY = 0;
   private children: ContainerObserver[] = [];
@@ -42,7 +42,7 @@ class ContainerObserver {
 
     this.dimensions = new ItemsDimensions({
       id: `${this.id}_items_dimensions`,
-      horizontal: false,
+      horizontal: this.doc.horizontal,
       viewabilityConfig,
       viewabilityConfigCallbackPairs: defaultViewabilityConfigCallbackPairs,
       canIUseRIC: Platform.OS !== 'ios',
@@ -86,47 +86,58 @@ class ContainerObserver {
     return this.doc.node;
   }
 
-  getRect() {
+  getBoundingClientRect() {
     return this.rect;
   }
 
-  getBoundingClientRect() {
-    return this.rect;
+  getBoundingClientIntersection() {
+    return this.clientIntersection;
   }
 
   getIntersection() {
     return this.intersection;
   }
 
-  updateIntersection(): Promise<IRectIntersection> {
+  updateIntersection(): Promise<IRectIntersection | null> {
     return measureInWindowAsync(this.root.current).then(
       ({ x, y, width, height }) => {
-        this.intersection = convertLayoutToClientRect({
+        this.rect = convertLayoutToClientRect({
           x,
           y,
           width,
           height,
         });
 
-        this.rect = this.intersection;
-
         let ownerContainerObserver = this.ownerContainerObserver;
+        let intersection: IRectIntersection | null = convertRectToIntersection(
+          this.rect
+        );
 
         if (ownerContainerObserver) {
-          let intersection = convertRectToIntersection(this.rect);
-
           while (ownerContainerObserver) {
-            intersection =
-              computeIntersection(
-                intersection,
-                ownerContainerObserver.getRect()
-              ) || getEmptyIntersection();
+            const ownerClientIntersection =
+              ownerContainerObserver.getBoundingClientIntersection();
+            if (!ownerClientIntersection) return null;
+            if (!intersection) return null;
+            intersection = computeIntersection(
+              intersection,
+              ownerClientIntersection
+            );
             ownerContainerObserver =
               ownerContainerObserver.ownerContainerObserver;
           }
-
-          this.intersection = intersection;
         }
+
+        this.intersection = intersection;
+
+        this.clientIntersection = intersection
+          ? {
+              ...intersection,
+              x,
+              y,
+            }
+          : null;
+
         return Promise.all(
           this.children.map((child) => child.updateIntersection())
         ).then(() => this.intersection);
@@ -151,6 +162,16 @@ class ContainerObserver {
     });
   }
 
+  updateObserversIntersectionsInSmartWay() {
+    const { x, y } = this.rect;
+
+    const { width, height } = this.intersection;
+  }
+
+  /**
+   * If container has no parent container, it is an ancestor. which means it
+   * is the root container
+   */
   isAncestor() {
     return !!this.ownerContainerObserver;
   }

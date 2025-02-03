@@ -12,6 +12,17 @@ export type ScrollEventHandler = (
 
 export type ReactNativeDocumentNode = ScrollView | RefObject<ScrollView>;
 
+export type ReactNativeDocumentBaseProps = {
+  horizontal?: boolean;
+  bidirectional?: boolean;
+  id: string;
+  /**
+   * the closest parent document not top most document!!!
+   */
+  ownerDocument: ReactNativeDocument;
+  node: ReactNativeDocumentNode;
+};
+
 /**
  * root should implement ReactNativeDocument
  */
@@ -19,6 +30,12 @@ abstract class ReactNativeDocument {
   abstract id: string;
   abstract ownerDocument: ReactNativeDocument;
   abstract node: ReactNativeDocumentNode;
+  abstract horizontal?: boolean;
+
+  /**
+   * can scroll on horizontal or vertical, it only works on web condition
+   */
+  abstract bidirectional?: boolean;
 
   abstract addEventListener(
     type: string,
@@ -34,19 +51,23 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
   readonly emitter = new Emitter();
   ownerDocument: ReactNativeDocument;
   node: ReactNativeDocumentNode;
+  horizontal: boolean;
+  bidirectional: boolean;
 
-  constructor(props: {
-    id: string;
-    /**
-     * the closest parent document not top most document !!!
-     */
-    ownerDocument: ReactNativeDocument;
-    node: ReactNativeDocumentNode;
-  }) {
+  constructor(props: ReactNativeDocumentBaseProps) {
     super();
-    this.node = props.node;
-    this.id = props.id;
-    this.ownerDocument = props.ownerDocument;
+    const {
+      node,
+      id,
+      horizontal = false,
+      bidirectional = false,
+      ownerDocument,
+    } = props;
+    this.node = node;
+    this.id = id;
+    this.horizontal = horizontal;
+    this.bidirectional = bidirectional;
+    this.ownerDocument = ownerDocument;
   }
 
   addEventListener(

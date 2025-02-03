@@ -96,17 +96,20 @@ class Observer {
   }
 
   updateIntersection() {
-    const containerRect = this.containerObserver.getBoundingClientRect();
+    const containerIntersection =
+      this.containerObserver.getBoundingClientIntersection();
     const itemClientRect = this.getBoundingClientRect();
 
-    const intersection = computeIntersection(itemClientRect, containerRect);
+    const intersection = containerIntersection
+      ? computeIntersection(itemClientRect, containerIntersection)
+      : null;
 
     const entry = new IntersectionObserverEntry({
       root: this.root,
       target: this.target,
       dimensions: this.dimensions,
       boundingClientRect: this.clientRect,
-      rootBounds: containerRect,
+      rootBounds: containerIntersection,
       intersectionRect: intersection,
     });
 
