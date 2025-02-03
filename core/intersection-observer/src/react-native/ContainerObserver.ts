@@ -39,7 +39,6 @@ class ContainerObserver {
     this.doc = props.doc;
     this.id = this.doc.id;
     this.ownerContainerObserver = props.ownerContainerObserver;
-    // this.root = props.root;
 
     this.dimensions = new ItemsDimensions({
       id: 'intersection-observer',
@@ -133,59 +132,11 @@ class ContainerObserver {
         ).then(() => this.intersection);
       }
     );
-
-    // return new Promise((resolve) => {
-    //   this.root.current.measureInWindow(
-    //     (x: number, y: number, width: number, height: number) => {
-    //       this.intersection = convertLayoutToClientRect({
-    //         x,
-    //         y,
-    //         width,
-    //         height,
-    //       });
-
-    //       this.rect = this.intersection;
-
-    //       let ownerContainerObserver = this.ownerContainerObserver;
-
-    //       if (ownerContainerObserver) {
-    //         let intersection = convertRectToIntersection(this.rect);
-
-    //         while (ownerContainerObserver) {
-    //           intersection =
-    //             computeIntersection(
-    //               intersection,
-    //               ownerContainerObserver.getRect()
-    //             ) || getEmptyIntersection();
-    //           ownerContainerObserver =
-    //             ownerContainerObserver.ownerContainerObserver;
-    //         }
-
-    //         this.intersection = intersection;
-
-    //         Promise.all(
-    //           this.children.map((child) => child.updateIntersection())
-    //         ).then(() => {
-    //           resolve(this.intersection);
-    //         });
-
-    //         return;
-    //       }
-
-    //       Promise.all(
-    //         this.children.map((child) => child.updateIntersection())
-    //       ).then(() => {
-    //         resolve(this.intersection);
-    //       });
-    //     }
-    //   );
-    // });
   }
 
   addObserver(observer: Observer) {
     const observerKey = observer.getKey();
     this.keyToObserverMap.set(observerKey, observer);
-
     return () => {
       this.keyToObserverMap.delete(observerKey);
     };

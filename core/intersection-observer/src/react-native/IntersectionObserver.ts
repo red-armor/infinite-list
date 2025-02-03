@@ -70,7 +70,8 @@ class IntersectionObserver implements IIntersectionObserver {
   getNode(doc: ReactNativeDocument) {
     if (!doc) return null;
     const node = doc.node;
-    return (node as RefObject<ScrollView>).current || (node as ScrollView);
+    return node;
+    // return (node as RefObject<ScrollView>).current || (node as ScrollView);
   }
 
   addContainer(container: ContainerObserver) {
@@ -235,7 +236,7 @@ class IntersectionObserver implements IIntersectionObserver {
 
       const disposer = doc.addEventListener('onScroll', () => {
         const container = this.scrollViewToContainerObserverMap.get(
-          current.node.current
+          current.node
         );
         container?.updateIntersection().then(() => {
           container.updateObserversIntersections();

@@ -50,22 +50,22 @@ const MeasureInWindowSimple = () => {
   }, []);
 
   useEffect(() => {
-    // observer.observe(secondRef.current, {
-    //   root,
-    //   observerKey: 'second',
-    // });
-    // observer.observe(blueRef.current, {
-    //   root: horizontalRoot,
-    //   observerKey: 'blue',
-    // });
+    observer.observe(secondRef.current, {
+      root,
+      observerKey: 'second',
+    });
+    observer.observe(blueRef.current, {
+      root: horizontalRoot,
+      observerKey: 'blue',
+    });
     observer.observe(nestRef.current, {
       root: verticalRoot,
-      observerKey: 'blue',
+      observerKey: 'nest',
     });
 
     return () => {
-      // observer.unobserve(secondRef.current);
-      // observer.unobserve(blueRef.current);
+      observer.unobserve(secondRef.current);
+      observer.unobserve(blueRef.current);
       observer.unobserve(nestRef.current);
     };
   }, []);
