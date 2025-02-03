@@ -28,7 +28,7 @@ class IntersectionObserver implements IIntersectionObserver {
   private threshold?: number | number[];
   private dimensions: ItemsDimensions;
   private observerMap: WeakMap<View, Observer> = new WeakMap();
-  private ownerDocument: ReactNativeDocument;
+  private ownerDocument: ReactNativeDocument | undefined;
   private keyToObserverMap: Map<string, Observer> = new Map();
   private monitorDisposers: MonitorDisposer[] = [];
   private updateDocumentIntersectionsTask: Scheduler;
@@ -72,12 +72,10 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   ensureContainerObserver(doc: ReactNativeDocument) {
-    console.log('ent=-----');
     if (!doc) return null;
     const scrollView = this.getNode(doc);
+    if (!scrollView) return null;
     const ownerDocument = doc.ownerDocument;
-
-    console.log('ensure -------');
 
     if (this.scrollViewToContainerObserverMap.has(scrollView))
       return this.scrollViewToContainerObserverMap.get(scrollView);
@@ -138,11 +136,20 @@ class IntersectionObserver implements IIntersectionObserver {
           ownerContainerObserver: null,
         });
       }
-      console.log('set ========');
       /**
        * set current container
        */
-      this.scrollViewToContainerObserverMap.set(scrollView, container);
+      this.scrollViewToContainerObserverMap.set(
+        scrollView as ScrollView,
+        container
+      );
+
+      /**
+       * after init container, should update container rect
+       */
+      this.updateDocumentIntersections();
+
+      // this.checkIntersection(el);
     }
 
     observer = new Observer({
@@ -156,8 +163,8 @@ class IntersectionObserver implements IIntersectionObserver {
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);
     this.monitorIntersections(root);
+
     this.checkIntersection(el);
-    this.updateDocumentIntersections();
 
     console.log(
       'scrollViewToContainerObserverMap ',
@@ -227,7 +234,6 @@ class IntersectionObserver implements IIntersectionObserver {
 
   updateIntersections() {
     for (const observer of this.keyToObserverMap.values()) {
-      console.log('testing ----');
       observer.updateIntersection();
     }
   }
@@ -238,7 +244,6 @@ class IntersectionObserver implements IIntersectionObserver {
 
   _updateDocumentIntersectionsTask() {
     this.updateContainerIntersections().then(() => {
-      console.log('updateIntersections ----');
       this.updateIntersections();
     });
   }
@@ -246,10 +251,7 @@ class IntersectionObserver implements IIntersectionObserver {
   updateContainerIntersections() {
     const tasks = [];
 
-    console.log('------', this.scrollViewToContainerObserverMap.values());
-
     for (const container of this.scrollViewToContainerObserverMap.values()) {
-      console.log('container ----', container);
       tasks.push(container.updateIntersection());
     }
 
