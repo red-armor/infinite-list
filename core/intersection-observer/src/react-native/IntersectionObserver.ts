@@ -31,7 +31,7 @@ class IntersectionObserver implements IIntersectionObserver {
   private ownerDocument: ReactNativeDocument | undefined;
   private keyToObserverMap: Map<string, Observer> = new Map();
   private monitorDisposers: MonitorDisposer[] = [];
-  private updateDocumentIntersectionsTask: Scheduler;
+  private updateIntersectionsTask: Scheduler;
   private scrollViewToContainerObserverMap: Map<ScrollView, ContainerObserver> =
     new Map();
 
@@ -54,8 +54,8 @@ class IntersectionObserver implements IIntersectionObserver {
     });
 
     const marginValues = parseRootMargin(rootMargin);
-    this.updateDocumentIntersectionsTask = new Scheduler(
-      this._updateDocumentIntersectionsTask.bind(this),
+    this.updateIntersectionsTask = new Scheduler(
+      this._updateIntersectionsTask.bind(this),
       50
     );
     this.rootMargin = marginValues
@@ -147,9 +147,7 @@ class IntersectionObserver implements IIntersectionObserver {
       /**
        * after init container, should update container rect
        */
-      this.updateDocumentIntersections();
-
-      // this.checkIntersection(el);
+      this.updateIntersections();
     }
 
     observer = new Observer({
@@ -219,7 +217,7 @@ class IntersectionObserver implements IIntersectionObserver {
 
       const disposer = doc.addEventListener(
         'onScroll',
-        this.updateIntersections.bind(this)
+        this.updateObserversIntersections.bind(this)
       );
       this.monitorDisposers.push(disposer);
       doc = doc.ownerDocument;
@@ -232,19 +230,19 @@ class IntersectionObserver implements IIntersectionObserver {
     });
   }
 
-  updateIntersections() {
+  updateObserversIntersections() {
     for (const observer of this.keyToObserverMap.values()) {
       observer.updateIntersection();
     }
   }
 
-  updateDocumentIntersections() {
-    this.updateDocumentIntersectionsTask.schedule();
+  updateIntersections() {
+    this.updateIntersectionsTask.schedule();
   }
 
-  _updateDocumentIntersectionsTask() {
+  _updateIntersectionsTask() {
     this.updateContainerIntersections().then(() => {
-      this.updateIntersections();
+      this.updateObserversIntersections();
     });
   }
 
