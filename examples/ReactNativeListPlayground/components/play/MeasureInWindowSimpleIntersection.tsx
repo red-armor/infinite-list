@@ -72,12 +72,14 @@ const MeasureInWindowSimple = () => {
 
   const scrollHandler = useCallback((scrollEvent) => {
     root.onScroll(scrollEvent);
+    observer.updateIntersections();
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
   }, []);
-  const horizontalScrollHandler = useCallback(() => {
-    observer.updateIntersections();
+  const horizontalScrollHandler = useCallback((scrollEvent) => {
+    horizontalRoot.onScroll(scrollEvent);
+
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });

@@ -95,9 +95,17 @@ class Scheduler {
     if (this._lastCallTime && this._lastInvokeTime) {
       const hasAdditionalCall = this._lastCallTime > this._lastInvokeTime;
 
+      console.log(
+        'hasAdditionalCall ',
+        this._lastCallTime,
+        this._lastInvokeTime,
+        hasAdditionalCall
+      );
+
       if (hasAdditionalCall && this._trailing) {
         const remainingTime = this._delayMS - (now - this._lastCallTime);
         this.timerId = setTimeout(() => {
+          console.log('trigger tailingEdge -----------');
           this.invoke();
           this.reset();
         }, remainingTime);
@@ -109,6 +117,12 @@ class Scheduler {
 
   shouldInvokeNext() {
     const now = getNow();
+
+    console.log(
+      'hasAdditionalCall shouldInvokeNext ',
+      this._lastCallTime,
+      now - this._lastCallTime
+    );
 
     if (!this._lastCallTime) return true;
 
@@ -128,6 +142,7 @@ class Scheduler {
   schedule(...args: any[]) {
     this._args = args;
     const invokeNext = this.shouldInvokeNext();
+    console.log('hasAdditionalCall invokeNext ', invokeNext);
     const now = getNow();
     /**
      * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,

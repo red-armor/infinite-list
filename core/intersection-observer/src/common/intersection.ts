@@ -9,8 +9,8 @@ export const computeIntersection = (
   const bottom = Math.min(rect1.bottom, rect2.bottom);
   const left = Math.max(rect1.left, rect2.left);
 
-  const width = right - left;
-  const height = bottom - top;
+  const width = right - Math.max(left, 0);
+  const height = bottom - Math.max(top, 0);
   /**
    * only if width and height are positive, there is an intersection
    */
