@@ -1,6 +1,6 @@
 import { ScrollView, View } from 'react-native';
 import { ClientRect, ObserverProps, ItemLayout } from './types';
-import { IClientRectReadOnly } from './types';
+import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
 import { generateRandomKey } from './generateRandom';
 import { measureLayout } from './measure';
@@ -15,6 +15,7 @@ class Observer {
   private clientRect: IClientRectReadOnly;
   private dimensions: ItemsDimensions;
   private containerObserver: ContainerObserver;
+  private entry: IIntersectionObserverEntry | null = null;
 
   /**
    * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
@@ -43,6 +44,10 @@ class Observer {
 
   get root() {
     return this.containerObserver.root;
+  }
+
+  get intersectionEntry() {
+    return this.entry;
   }
 
   dispose() {
@@ -101,7 +106,7 @@ class Observer {
       intersectionRect: intersection,
     });
 
-    console.log('entry ', entry.getEntry());
+    this.entry = entry.getEntry();
   }
 
   getKey() {
