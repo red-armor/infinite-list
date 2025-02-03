@@ -77,6 +77,8 @@ class Observer {
           width,
           height,
         });
+
+        cb?.(this.clientRect);
       }
     );
   }
