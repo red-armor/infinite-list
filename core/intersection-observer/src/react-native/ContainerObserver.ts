@@ -16,6 +16,7 @@ import {
   ContainerObserverProps,
   OwnerContainerObserver,
   IClientRectReadOnly,
+  IIntersectionObserverEntry,
 } from './types';
 import { computeIntersection } from '../common/intersection';
 import ReactNativeDocument from './ReactNativeDocument';
@@ -37,6 +38,7 @@ class ContainerObserver {
   public scrollOffsetY = 0;
   private children: ContainerObserver[] = [];
   private keyToObserverMap: Map<string, Observer> = new Map();
+  private records: IIntersectionObserverEntry[] = [];
 
   constructor(props: ContainerObserverProps) {
     this.doc = props.doc;
@@ -164,13 +166,13 @@ class ContainerObserver {
       child.updateObserversIntersections();
     });
 
-    this.updateObserversIntersectionsInSmartWay();
+    console.log('records', this.updateObserversIntersectionsInSmartWay());
   }
 
   updateObserversIntersectionsInSmartWay() {
     if (!this.clientIntersection) {
       // do nothing
-      return;
+      return [];
     }
 
     const { width, height } = this.clientIntersection;
@@ -186,7 +188,30 @@ class ContainerObserver {
       maxOffset = this.scrollOffsetY + height;
     }
 
-    console.log('min  ', minOffset, maxOffset);
+    const values = this.dimensions.computeIndexRangeMeta(minOffset, maxOffset);
+
+    let records = values
+      .map((record) => {
+        const key = record.getKey();
+        const observer = this.keyToObserverMap.get(key);
+        if (observer) {
+          return observer.updateIntersection();
+        }
+      })
+      .filter((v) => v);
+
+    this.children.forEach((child) => {
+      const childRecords = child.updateObserversIntersectionsInSmartWay();
+      records = records.concat(childRecords);
+    });
+
+    this.records = records as IIntersectionObserverEntry[];
+
+    return this.records;
+  }
+
+  getRecords() {
+    return this.records;
   }
 
   /**

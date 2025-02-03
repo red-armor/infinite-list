@@ -132,6 +132,7 @@ class Observer {
     this.entry = entry.getEntry();
 
     console.log('entry ', this.containerObserver, this.observerKey, this.entry);
+    return this.entry;
   }
 
   getKey() {

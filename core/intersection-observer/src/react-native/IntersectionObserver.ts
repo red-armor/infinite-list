@@ -7,6 +7,7 @@ import {
   MonitorDisposer,
   IIntersectionObserver,
   ObserveOptions,
+  IIntersectionObserverEntry,
 } from './types';
 import { parseRootMargin } from './utils';
 import Observer from './Observer';
@@ -205,7 +206,11 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   takeRecords() {
-    // TODO: implement
+    let records: IIntersectionObserverEntry[] = [];
+    this.containers.forEach((container) => {
+      records = records.concat(container.getRecords());
+    });
+    return records;
   }
 
   monitorIntersections(doc: ReactNativeDocument) {
