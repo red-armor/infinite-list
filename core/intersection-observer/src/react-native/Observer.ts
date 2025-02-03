@@ -111,42 +111,10 @@ class Observer {
       rootBounds: containerRect,
       intersectionRect: intersection,
     });
+  }
 
-    console.log('entry ', entry.getEntry());
-
-    // const scrollOffsetX = this.containerObserver.scrollOffsetX;
-    // const scrollOffsetY = this.containerObserver.scrollOffsetY;
-
-    // const itemRect = this.clientRect;
-
-    // const { top, left, x, y, width, height } = itemRect;
-
-    // /**
-    //  * get item rect relative to container
-    //  */
-    // const nextTop = top - scrollOffsetY + containerRect.top;
-    // const nextLeft = left - scrollOffsetX + containerRect.left;
-    // const nextX = x - scrollOffsetX + containerRect.x;
-    // const nextY = y - scrollOffsetY + containerRect.y;
-
-    // const nextItemReact = {
-    //   x: nextX,
-    //   y: nextY,
-    //   top: nextTop,
-    //   right: nextLeft + width,
-    //   bottom: nextTop + height,
-    //   left: nextLeft,
-    //   width,
-    //   height,
-    // };
-    // const intersection = computeIntersection(nextItemReact, containerRect);
-
-    // console.log(
-    //   'intersection in observer',
-    //   nextItemReact,
-    //   containerRect,
-    //   intersection
-    // );
+  getKey() {
+    return this.observerKey;
   }
 
   /**

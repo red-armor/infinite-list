@@ -35,6 +35,8 @@ class IntersectionObserver implements IIntersectionObserver {
   private scrollViewToContainerObserverMap: Map<ScrollView, ContainerObserver> =
     new Map();
 
+  private containers: ContainerObserver[] = [];
+
   constructor(
     callback: IntersectionObserverCallback,
     props: IntersectionObserverProps
@@ -69,6 +71,20 @@ class IntersectionObserver implements IIntersectionObserver {
     if (!doc) return null;
     const node = doc.node;
     return (node as RefObject<ScrollView>).current || (node as ScrollView);
+  }
+
+  addContainer(container: ContainerObserver) {
+    const index = this.containers.findIndex((item) => item === container);
+    if (index !== -1) {
+      this.containers.push(container);
+    }
+
+    return () => {
+      const index = this.containers.findIndex((item) => item === container);
+      if (index !== -1) {
+        this.containers.splice(index, 1);
+      }
+    };
   }
 
   ensureContainerObserver(doc: ReactNativeDocument) {
@@ -150,6 +166,10 @@ class IntersectionObserver implements IIntersectionObserver {
        * after init container, should update container rect
        */
       this.updateIntersections();
+
+      if (container.isAncestor()) {
+        this.addContainer(container);
+      }
     }
 
     observer = new Observer({
@@ -162,6 +182,8 @@ class IntersectionObserver implements IIntersectionObserver {
 
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);
+    container.addObserver(observer);
+
     this.monitorIntersections(root);
 
     this.checkIntersection(el);
@@ -216,11 +238,25 @@ class IntersectionObserver implements IIntersectionObserver {
 
     while (doc) {
       this.monitoringDocuments.push(doc);
+      const current = doc;
 
-      const disposer = doc.addEventListener(
-        'onScroll',
-        this.updateObserversIntersections.bind(this)
-      );
+      const disposer = doc.addEventListener('onScroll', () => {
+        const container = this.scrollViewToContainerObserverMap.get(
+          current.node.current
+        );
+
+        console.log(
+          'update container rect',
+          current.node,
+          this.scrollViewToContainerObserverMap,
+          container
+        );
+
+        container?.updateIntersection().then(() => {
+          container.updateObserversIntersections();
+        });
+        // this.updateObserversIntersections.bind(this)
+      });
       this.monitorDisposers.push(disposer);
       doc = doc.ownerDocument;
     }
@@ -232,20 +268,26 @@ class IntersectionObserver implements IIntersectionObserver {
     });
   }
 
-  updateObserversIntersections() {
-    for (const observer of this.keyToObserverMap.values()) {
-      observer.updateIntersection();
-    }
-  }
+  // updateObserversIntersections() {
+  //   for (const observer of this.keyToObserverMap.values()) {
+  //     observer.updateIntersection();
+  //   }
+  // }
 
   updateIntersections() {
     this.updateIntersectionsTask.schedule();
   }
 
   _updateIntersectionsTask() {
-    this.updateContainerIntersections().then(() => {
-      this.updateObserversIntersections();
+    this.containers.forEach((container) => {
+      container.updateIntersection().then(() => {
+        container.updateObserversIntersections();
+      });
     });
+
+    // this.updateContainerIntersections().then(() => {
+    //   this.updateObserversIntersections();
+    // });
   }
 
   updateContainerIntersections() {

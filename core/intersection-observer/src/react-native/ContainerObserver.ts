@@ -20,18 +20,23 @@ import {
 } from './types';
 import { computeIntersection } from '../common/intersection';
 import ReactNativeDocument from './ReactNativeDocument';
+import Observer from './Observer';
 
 class ContainerObserver {
   readonly doc: ReactNativeDocument;
+  readonly id: string;
   private dimensions: ItemsDimensions;
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
   private intersection: IRectIntersection = getEmptyIntersection();
   public scrollOffsetX = 0;
   public scrollOffsetY = 0;
+  private children: ContainerObserver[] = [];
+  private keyToObserverMap: Map<string, Observer> = new Map();
 
   constructor(props: ContainerObserverProps) {
     this.doc = props.doc;
+    this.id = this.doc.id;
     this.ownerContainerObserver = props.ownerContainerObserver;
     // this.root = props.root;
 
@@ -53,6 +58,28 @@ class ContainerObserver {
         this.scrollOffsetY = y;
       }
     );
+
+    this.ownerContainerObserver?.addChild(this);
+  }
+
+  addChild(child: ContainerObserver) {
+    const index = this.children.findIndex((item) => item === child);
+    if (index !== -1) {
+      this.children.push(child);
+    }
+
+    return () => {
+      const index = this.children.findIndex((item) => item === child);
+      if (index !== -1) {
+        this.children.splice(index, 1);
+      }
+    };
+  }
+
+  dispose() {
+    this.children.forEach((child) => {
+      child.dispose();
+    });
   }
 
   get root() {
@@ -72,7 +99,6 @@ class ContainerObserver {
   }
 
   updateIntersection() {
-    console.log('update container-----', this.root.current);
     return new Promise((resolve) => {
       this.root.current.measureInWindow(
         (x: number, y: number, width: number, height: number) => {
@@ -110,14 +136,42 @@ class ContainerObserver {
             }
 
             this.intersection = intersection;
-            resolve(this.intersection);
+
+            Promise.all(
+              this.children.map((child) => child.updateIntersection())
+            ).then(() => {
+              resolve(this.intersection);
+            });
+
             return;
           }
 
-          resolve(this.intersection);
+          Promise.all(
+            this.children.map((child) => child.updateIntersection())
+          ).then(() => {
+            resolve(this.intersection);
+          });
         }
       );
     });
+  }
+
+  addObserver(observer: Observer) {
+    const observerKey = observer.getKey();
+    this.keyToObserverMap.set(observerKey, observer);
+  }
+
+  updateObserversIntersections() {
+    for (const observer of this.keyToObserverMap.values()) {
+      observer.updateIntersection();
+    }
+    this.children.forEach((child) => {
+      child.updateObserversIntersections();
+    });
+  }
+
+  isAncestor() {
+    return !!this.ownerContainerObserver;
   }
 }
 

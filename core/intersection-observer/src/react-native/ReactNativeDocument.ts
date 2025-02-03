@@ -14,6 +14,7 @@ export type ScrollEventHandler = (
  * root should implement ReactNativeDocument
  */
 abstract class ReactNativeDocument {
+  abstract id: string;
   abstract ownerDocument: ReactNativeDocument;
   abstract node: ScrollView | RefObject<ScrollView>;
 
@@ -27,16 +28,22 @@ abstract class ReactNativeDocument {
 }
 
 class ReactNativeDocumentBase extends ReactNativeDocument {
+  readonly id: string;
   readonly emitter = new Emitter();
   ownerDocument: ReactNativeDocument;
   node: ScrollView | RefObject<ScrollView>;
 
   constructor(props: {
+    id: string;
+    /**
+     * the closest parent document not top most document !!!
+     */
     ownerDocument: ReactNativeDocument;
     node: ScrollView | RefObject<ScrollView>;
   }) {
     super();
     this.node = props.node;
+    this.id = props.id;
     this.ownerDocument = props.ownerDocument;
   }
 

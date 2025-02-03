@@ -12,17 +12,28 @@ const MeasureInWindowSimple = () => {
   const outsideRef = useRef<ScrollView>(null);
   const blueRef = useRef<View>(null);
   const nestScrollViewRef = useRef<ScrollView>(null);
+  const nestVerticalScrollViewRef = useRef<ScrollView>(null);
 
   const root = useMemo(() => {
     return new ReactNativeDocumentBase({
+      id: 'root',
       node: outsideRef,
     });
   }, []);
 
   const horizontalRoot = useMemo(() => {
     return new ReactNativeDocumentBase({
+      id: 'horizontalRoot',
       node: nestScrollViewRef,
       ownerDocument: root,
+    });
+  }, []);
+
+  const verticalRoot = useMemo(() => {
+    return new ReactNativeDocumentBase({
+      id: 'verticalRoot',
+      node: nestVerticalScrollViewRef,
+      ownerDocument: horizontalRoot,
     });
   }, []);
 
@@ -43,14 +54,19 @@ const MeasureInWindowSimple = () => {
     //   root,
     //   observerKey: 'second',
     // });
-    observer.observe(blueRef.current, {
-      root: horizontalRoot,
+    // observer.observe(blueRef.current, {
+    //   root: horizontalRoot,
+    //   observerKey: 'blue',
+    // });
+    observer.observe(nestRef.current, {
+      root: verticalRoot,
       observerKey: 'blue',
     });
 
     return () => {
       // observer.unobserve(secondRef.current);
-      observer.unobserve(blueRef.current);
+      // observer.unobserve(blueRef.current);
+      observer.unobserve(nestRef.current);
     };
   }, []);
 
@@ -58,6 +74,9 @@ const MeasureInWindowSimple = () => {
     // observer.updateIntersections();
   }, []);
   const onHorizontalContentSizeChange = useCallback((e) => {
+    // observer.updateIntersections();
+  }, []);
+  const onNestVerticalContentSizeChange = useCallback((e) => {
     observer.updateIntersections();
   }, []);
 
@@ -87,7 +106,9 @@ const MeasureInWindowSimple = () => {
       console.log('nest ref ', x, y, width, height);
     });
   }, []);
-  const nestVerticalScrollHandler = useCallback(() => {
+  const nestVerticalScrollHandler = useCallback((scrollEvent) => {
+    verticalRoot.onScroll(scrollEvent);
+
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
@@ -127,8 +148,12 @@ const MeasureInWindowSimple = () => {
           <Text>blue</Text>
         </View>
         <View style={{ height: 300, width: 200, backgroundColor: 'brown' }}>
-          <Text>brown</Text>
+          <View style={{ height: 25 }}>
+            <Text>brown</Text>
+          </View>
           <ScrollView
+            onContentSizeChange={onNestVerticalContentSizeChange}
+            ref={nestVerticalScrollViewRef}
             onScroll={nestVerticalScrollHandler}
             scrollEventThrottle={50}
           >
@@ -170,7 +195,7 @@ const MeasureInWindowSimple = () => {
         </View>
       </ScrollView>
 
-      <View style={{ height: 600, width: '100%', backgroundColor: 'green' }}>
+      <View style={{ height: 2000, width: '100%', backgroundColor: 'green' }}>
         <Text>third</Text>
       </View>
     </ScrollView>
