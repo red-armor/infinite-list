@@ -4,7 +4,6 @@ import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
 import { generateRandomKey } from './generateRandom';
 import { measureLayoutAsync } from './measure';
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import ContainerObserver from './ContainerObserver';
 import { computeIntersection } from '../common/intersection';
 import IntersectionObserverEntry from './IntersectionObserverEntry';
@@ -13,7 +12,6 @@ class Observer {
   private target: View;
   private observerKey: string;
   private clientRect: IClientRectReadOnly;
-  private dimensions: ItemsDimensions;
   private containerObserver: ContainerObserver;
   private entry: IIntersectionObserverEntry | null = null;
 
@@ -31,14 +29,12 @@ class Observer {
   constructor(props: ObserverProps) {
     const {
       target,
-      dimensions,
       containerObserver,
       observerKey = generateRandomKey(),
     } = props;
     this.target = target;
     this.observerKey = observerKey;
     this.clientRect = getEmptyRect();
-    this.dimensions = dimensions;
     this.containerObserver = containerObserver;
   }
 
@@ -48,6 +44,10 @@ class Observer {
 
   get intersectionEntry() {
     return this.entry;
+  }
+
+  get dimensions() {
+    return this.containerObserver.dimensions;
   }
 
   dispose() {

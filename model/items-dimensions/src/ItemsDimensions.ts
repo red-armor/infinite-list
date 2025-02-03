@@ -41,8 +41,8 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
   }
 
   _setKeyItemLayout(key: string, info: ItemLayout | number) {
-    const meta = this.getKeyMeta(key);
-    if (!meta) return false;
+    console.log('set ------', key, info);
+    const meta = this.ensureKeyMeta(key);
     const layout = meta.ensureLayout();
 
     if (typeof info === 'number') {
@@ -68,7 +68,7 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
     return false;
   }
 
-  ensureKeyMeta(key: string) {
+  ensureKeyMeta(key: string): ItemMeta {
     const meta = this.getKeyMeta(key);
     if (!meta) {
       this.setKeyMeta(
@@ -81,7 +81,7 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
       );
     }
 
-    return this.getKeyMeta(key);
+    return this.getKeyMeta(key)!;
   }
 
   getIndexInfo() {

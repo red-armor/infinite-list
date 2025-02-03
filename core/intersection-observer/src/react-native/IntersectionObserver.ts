@@ -27,7 +27,6 @@ class IntersectionObserver implements IIntersectionObserver {
   private root: ReactNativeDocument;
   private rootMargin: string;
   private threshold?: number | number[];
-  private dimensions: ItemsDimensions;
   private observerMap: WeakMap<View, Observer> = new WeakMap();
   private ownerDocument: ReactNativeDocument | undefined;
   private keyToObserverMap: Map<string, Observer> = new Map();
@@ -50,13 +49,6 @@ class IntersectionObserver implements IIntersectionObserver {
     this.threshold = threshold;
 
     this.ownerDocument = document;
-    this.dimensions = new ItemsDimensions({
-      id: 'intersection-observer',
-      horizontal: false,
-      viewabilityConfig,
-      viewabilityConfigCallbackPairs: defaultViewabilityConfigCallbackPairs,
-      canIUseRIC: Platform.OS !== 'ios',
-    });
 
     const marginValues = parseRootMargin(rootMargin);
     this.updateIntersectionsTask = new Scheduler(
@@ -175,7 +167,6 @@ class IntersectionObserver implements IIntersectionObserver {
       root: root || this.root,
       target: el,
       observerKey: nextObserverKey,
-      dimensions: this.dimensions,
       containerObserver: container,
     });
 

@@ -26,7 +26,7 @@ import { measureInWindowAsync } from './measure';
 class ContainerObserver {
   readonly doc: ReactNativeDocument;
   readonly id: string;
-  private dimensions: ItemsDimensions;
+  public dimensions: ItemsDimensions;
   private ownerContainerObserver: OwnerContainerObserver;
   private rect: IClientRectReadOnly = getEmptyRect();
   private intersection: IRectIntersection = getEmptyIntersection();
@@ -41,7 +41,7 @@ class ContainerObserver {
     this.ownerContainerObserver = props.ownerContainerObserver;
 
     this.dimensions = new ItemsDimensions({
-      id: 'intersection-observer',
+      id: `${this.id}_items_dimensions`,
       horizontal: false,
       viewabilityConfig,
       viewabilityConfigCallbackPairs: defaultViewabilityConfigCallbackPairs,
