@@ -109,17 +109,17 @@ class Observer {
       ? computeIntersection(itemClientRect, containerIntersection)
       : null;
 
-    console.log(
-      'intersection ',
-      this.observerKey,
-      intersection,
-      computeIntersection(
-        this.containerObserver.getBoundingClientRect(),
-        itemClientRect
-      ),
-      this.containerObserver.getBoundingClientRect(),
-      this.containerObserver.getBoundingClientIntersection()
-    );
+    // console.log(
+    //   'intersection ',
+    //   this.observerKey,
+    //   intersection,
+    //   computeIntersection(
+    //     this.containerObserver.getBoundingClientRect(),
+    //     itemClientRect
+    //   ),
+    //   this.containerObserver.getBoundingClientRect(),
+    //   this.containerObserver.getBoundingClientIntersection()
+    // );
 
     const entry = new IntersectionObserverEntry({
       target: this.target,
@@ -131,7 +131,7 @@ class Observer {
 
     this.entry = entry.getEntry();
 
-    console.log('entry ', this.containerObserver, this.observerKey, this.entry);
+    // console.log('entry ', this.containerObserver, this.observerKey, this.entry);
     return this.entry;
   }
 

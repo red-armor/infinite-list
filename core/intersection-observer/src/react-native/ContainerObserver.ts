@@ -159,14 +159,18 @@ class ContainerObserver {
   }
 
   updateObserversIntersections() {
+    let records: IIntersectionObserverEntry[] = [];
     for (const observer of this.keyToObserverMap.values()) {
-      observer.updateIntersection();
+      records.push(observer.updateIntersection());
     }
     this.children.forEach((child) => {
-      child.updateObserversIntersections();
+      const childRecords = child.updateObserversIntersections();
+      records = records.concat(childRecords);
     });
 
-    console.log('records', this.updateObserversIntersectionsInSmartWay());
+    this.records = records as IIntersectionObserverEntry[];
+
+    return this.records;
   }
 
   updateObserversIntersectionsInSmartWay() {
@@ -197,6 +201,7 @@ class ContainerObserver {
         if (observer) {
           return observer.updateIntersection();
         }
+        return [];
       })
       .filter((v) => v);
 
