@@ -55,3 +55,44 @@ export const measureLayout = (
     );
   }
 };
+
+export const measureLayoutAsync = (
+  node: React.ElementRef<HostComponent<any>> | number,
+  relativeToNativeComponentRef: React.ElementRef<HostComponent<any>> | number
+) => {
+  return new Promise<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>((resolve, reject) => {
+    if (node) {
+      (node as any as NativeMethods).measureLayout(
+        relativeToNativeComponentRef.current,
+        (x: number, y: number, width: number, height: number) => {
+          resolve({ x, y, width, height });
+        },
+        () => {
+          reject();
+        }
+      );
+    } else {
+      reject();
+    }
+  });
+};
+
+export const measureInWindowAsync = (
+  node: React.ElementRef<HostComponent<any>>
+) =>
+  new Promise<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }>((resolve) => {
+    node.measureInWindow(
+      (x: number, y: number, width: number, height: number) =>
+        resolve({ x, y, width, height })
+    );
+  });

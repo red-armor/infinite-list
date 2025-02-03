@@ -3,7 +3,7 @@ import { ClientRect, ObserverProps, ItemLayout } from './types';
 import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
 import { generateRandomKey } from './generateRandom';
-import { measureLayout } from './measure';
+import { measureLayoutAsync } from './measure';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import ContainerObserver from './ContainerObserver';
 import { computeIntersection } from '../common/intersection';
@@ -58,25 +58,27 @@ class Observer {
    * callback will be invoked after layout measured
    */
   updateClientRect(cb?: (rect: IClientRectReadOnly) => void) {
-    measureLayout(this.target, this.root, (x, y, width, height) => {
-      this.clientRect = {
-        x,
-        y,
-        top: y,
-        left: x,
-        right: x + width,
-        bottom: y + height,
-        width,
-        height,
-      };
+    return measureLayoutAsync(this.target, this.root).then(
+      ({ x, y, width, height }) => {
+        this.clientRect = {
+          x,
+          y,
+          top: y,
+          left: x,
+          right: x + width,
+          bottom: y + height,
+          width,
+          height,
+        };
 
-      this.dimensions.setKeyItemLayout(this.observerKey, {
-        x,
-        y,
-        width,
-        height,
-      });
-    });
+        this.dimensions.setKeyItemLayout(this.observerKey, {
+          x,
+          y,
+          width,
+          height,
+        });
+      }
+    );
   }
 
   getClientRect() {
@@ -107,6 +109,8 @@ class Observer {
     });
 
     this.entry = entry.getEntry();
+
+    console.log('entry ', this.entry);
   }
 
   getKey() {

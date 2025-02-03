@@ -21,6 +21,7 @@ import {
 import { computeIntersection } from '../common/intersection';
 import ReactNativeDocument from './ReactNativeDocument';
 import Observer from './Observer';
+import { measureInWindowAsync } from './measure';
 
 class ContainerObserver {
   readonly doc: ReactNativeDocument;
@@ -98,53 +99,87 @@ class ContainerObserver {
     return this.intersection;
   }
 
-  updateIntersection() {
-    return new Promise((resolve) => {
-      this.root.current.measureInWindow(
-        (x: number, y: number, width: number, height: number) => {
-          this.intersection = convertLayoutToClientRect({
-            x,
-            y,
-            width,
-            height,
-          });
+  updateIntersection(): Promise<IRectIntersection> {
+    return measureInWindowAsync(this.root.current).then(
+      ({ x, y, width, height }) => {
+        this.intersection = convertLayoutToClientRect({
+          x,
+          y,
+          width,
+          height,
+        });
 
-          this.rect = this.intersection;
+        this.rect = this.intersection;
 
-          let ownerContainerObserver = this.ownerContainerObserver;
+        let ownerContainerObserver = this.ownerContainerObserver;
 
-          if (ownerContainerObserver) {
-            let intersection = convertRectToIntersection(this.rect);
+        if (ownerContainerObserver) {
+          let intersection = convertRectToIntersection(this.rect);
 
-            while (ownerContainerObserver) {
-              intersection =
-                computeIntersection(
-                  intersection,
-                  ownerContainerObserver.getRect()
-                ) || getEmptyIntersection();
-              ownerContainerObserver =
-                ownerContainerObserver.ownerContainerObserver;
-            }
-
-            this.intersection = intersection;
-
-            Promise.all(
-              this.children.map((child) => child.updateIntersection())
-            ).then(() => {
-              resolve(this.intersection);
-            });
-
-            return;
+          while (ownerContainerObserver) {
+            intersection =
+              computeIntersection(
+                intersection,
+                ownerContainerObserver.getRect()
+              ) || getEmptyIntersection();
+            ownerContainerObserver =
+              ownerContainerObserver.ownerContainerObserver;
           }
 
-          Promise.all(
-            this.children.map((child) => child.updateIntersection())
-          ).then(() => {
-            resolve(this.intersection);
-          });
+          this.intersection = intersection;
         }
-      );
-    });
+        return Promise.all(
+          this.children.map((child) => child.updateIntersection())
+        ).then(() => this.intersection);
+      }
+    );
+
+    // return new Promise((resolve) => {
+    //   this.root.current.measureInWindow(
+    //     (x: number, y: number, width: number, height: number) => {
+    //       this.intersection = convertLayoutToClientRect({
+    //         x,
+    //         y,
+    //         width,
+    //         height,
+    //       });
+
+    //       this.rect = this.intersection;
+
+    //       let ownerContainerObserver = this.ownerContainerObserver;
+
+    //       if (ownerContainerObserver) {
+    //         let intersection = convertRectToIntersection(this.rect);
+
+    //         while (ownerContainerObserver) {
+    //           intersection =
+    //             computeIntersection(
+    //               intersection,
+    //               ownerContainerObserver.getRect()
+    //             ) || getEmptyIntersection();
+    //           ownerContainerObserver =
+    //             ownerContainerObserver.ownerContainerObserver;
+    //         }
+
+    //         this.intersection = intersection;
+
+    //         Promise.all(
+    //           this.children.map((child) => child.updateIntersection())
+    //         ).then(() => {
+    //           resolve(this.intersection);
+    //         });
+
+    //         return;
+    //       }
+
+    //       Promise.all(
+    //         this.children.map((child) => child.updateIntersection())
+    //       ).then(() => {
+    //         resolve(this.intersection);
+    //       });
+    //     }
+    //   );
+    // });
   }
 
   addObserver(observer: Observer) {
