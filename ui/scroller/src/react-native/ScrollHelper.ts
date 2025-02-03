@@ -10,6 +10,7 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
+import { ReactNativeDocumentBase } from '@infinite-list/intersection-observer/react-native';
 
 import Marshal from './Marshal';
 import ScrollEventHelper from './ScrollEventHelper';
@@ -54,10 +55,6 @@ class ScrollHelper {
 
   private _reverseOrientationRootChildren: ScrollHelper[] = [];
 
-  // readonly _parentScrollHelper: ScrollHelper;
-
-  // public ownerScrollHelper: ScrollHelper | null | undefined;
-
   private _stickyMarshal: StickyMarshal;
 
   private _scrollMetrics: ScrollMetrics = DEFAULT_SCROLL_METRICS;
@@ -89,6 +86,8 @@ class ScrollHelper {
 
   private onRefreshListeners: Function[] = [];
 
+  ownerDocument: ReactNativeDocumentBase;
+
   constructor(props: ScrollHelperProps) {
     const { id, ref, stickyMode, horizontal, marshal } = props;
     this._marshal = marshal;
@@ -112,6 +111,13 @@ class ScrollHelper {
     // this.setMarshal = this._setMarshal.bind(this);
 
     this._dimensionsMeta = this.prepareNested();
+    const parentMarshal = this._marshal.getParentMarshal();
+
+    this.ownerDocument = new ReactNativeDocumentBase({
+      id,
+      node: this._ref,
+      ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
+    });
   }
 
   get ownerScrollHelper() {

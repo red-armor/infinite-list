@@ -212,6 +212,8 @@ class ContainerObserver {
 
     this.records = records as IIntersectionObserverEntry[];
 
+    console.log('this. ', this.records);
+
     return this.records;
   }
 
@@ -224,7 +226,7 @@ class ContainerObserver {
    * is the root container
    */
   isAncestor() {
-    return !!this.ownerContainerObserver;
+    return !this.ownerContainerObserver;
   }
 }
 

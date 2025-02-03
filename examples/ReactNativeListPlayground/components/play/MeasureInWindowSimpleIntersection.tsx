@@ -44,7 +44,7 @@ const MeasureInWindowSimple = () => {
       },
       {
         root: root,
-        document: root,
+        // document: root,
       }
     );
   }, []);

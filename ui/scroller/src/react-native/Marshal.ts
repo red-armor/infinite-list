@@ -7,8 +7,8 @@ import {
   ScrollEventHandler,
   ScrollEventHandlerSubscriptionKeys,
 } from './types';
-import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import ScrollEventHelper from './ScrollEventHelper';
+import { ReactNativeDocumentBase } from '@infinite-list/intersection-observer/react-native';
 
 /**
  * Marshal is bound to ScrollView which means every ScrollView will has its own
@@ -31,7 +31,7 @@ class Marshal {
 
   readonly _id: string;
 
-  // private _parentMarshal: Marshal;
+  private _parentMarshal: Marshal | null;
 
   private _children: Marshal[] = [];
 
@@ -52,14 +52,15 @@ class Marshal {
   /**
    * implement ReactNativeDocument
    */
-  public ownerDocument: ScrollHelper | null | undefined;
+  // ownerDocument: ReactNativeDocumentBase | null;
+  // public ownerDocument: ScrollHelper | null | undefined;
   public node: ScrollView;
 
   constructor(props: MarshalProps) {
     const {
       id,
       ref,
-      // parentMarshal,
+      parentMarshal,
       animated = false,
       horizontal = false,
       scrollUpdating = true,
@@ -87,13 +88,8 @@ class Marshal {
     this._animatedValueX = animatedValueX;
     this._animatedValueY = animatedValueY;
     this._horizontal = horizontal;
-    // this.intersectionObserver = intersectionObserver;
-
-    // this._parentMarshal = parentMarshal;
-
-    // this.register();
     this._scrollUpdating = scrollUpdating;
-    // this._rootScrollHelper = scrollHelper;
+    this._parentMarshal = parentMarshal;
 
     this.scrollEventHelper = new ScrollEventHelper({
       marshal: this,
@@ -124,6 +120,10 @@ class Marshal {
     }
   }
 
+  get ownerDocument() {
+    return this._rootScrollHelper.ownerDocument;
+  }
+
   get scrollHelper() {
     return this._rootScrollHelper;
   }
@@ -148,9 +148,9 @@ class Marshal {
     return !!this._scrollUpdating;
   }
 
-  // getParentMarshal() {
-  //   return this._parentMarshal;
-  // }
+  getParentMarshal() {
+    return this._parentMarshal;
+  }
 
   // getOuterMostHorizontalMarshal() {
   //   return this._outerMostHorizontalMarshal;

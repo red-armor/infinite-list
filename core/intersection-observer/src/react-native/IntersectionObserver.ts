@@ -247,8 +247,10 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   _updateIntersectionsTask() {
+    console.log('this contaienrs ', this.containers);
     this.containers.forEach((container) => {
       container.updateIntersection().then(() => {
+        console.log('trigger ', container);
         container.updateObserversIntersectionsInSmartWay();
       });
     });
