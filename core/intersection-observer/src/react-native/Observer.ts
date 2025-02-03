@@ -10,7 +10,6 @@ import { computeIntersection } from '../common/intersection';
 import IntersectionObserverEntry from './IntersectionObserverEntry';
 
 class Observer {
-  // private root: ObserverRoot;
   private target: View;
   private observerKey: string;
   private clientRect: IClientRectReadOnly;
@@ -30,13 +29,11 @@ class Observer {
 
   constructor(props: ObserverProps) {
     const {
-      // root,
       target,
       dimensions,
       containerObserver,
       observerKey = generateRandomKey(),
     } = props;
-    // this.root = root;
     this.target = target;
     this.observerKey = observerKey;
     this.clientRect = getEmptyRect();
@@ -90,18 +87,10 @@ class Observer {
   }
 
   updateIntersection() {
-    console.log('containerObserver ', this.containerObserver);
     const containerRect = this.containerObserver.getBoundingClientRect();
     const itemClientRect = this.getBoundingClientRect();
 
     const intersection = computeIntersection(itemClientRect, containerRect);
-
-    console.log(
-      'intersection in observer',
-      itemClientRect,
-      containerRect,
-      intersection
-    );
 
     const entry = new IntersectionObserverEntry({
       root: this.root,
@@ -111,6 +100,8 @@ class Observer {
       rootBounds: containerRect,
       intersectionRect: intersection,
     });
+
+    console.log('entry ', entry.getEntry());
   }
 
   getKey() {

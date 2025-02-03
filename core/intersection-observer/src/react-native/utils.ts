@@ -28,13 +28,11 @@ export const parseRootMargin = function (opt_rootMargin?: string) {
   const margins = marginString.split(/\s+/).map(function (margin) {
     // const parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
     const parts = /^(-?\d*\.?\d+)$/.exec(margin);
-    console.log('parts ', parts);
     if (!parts) {
       throw new Error('rootMargin must be specified in pixels or percent');
     }
     return { value: parseFloat(parts[1]), unit: parts[2] };
   });
-  console.log('margin ', margins);
 
   // Handles shorthand.
   margins[1] = margins[1] || margins[0];

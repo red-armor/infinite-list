@@ -64,7 +64,7 @@ class ContainerObserver {
 
   addChild(child: ContainerObserver) {
     const index = this.children.findIndex((item) => item === child);
-    if (index !== -1) {
+    if (index === -1) {
       this.children.push(child);
     }
 
@@ -110,15 +110,6 @@ class ContainerObserver {
           });
 
           this.rect = this.intersection;
-          console.log(
-            'hell00000',
-            this,
-            this.intersection,
-            x,
-            y,
-            width,
-            height
-          );
 
           let ownerContainerObserver = this.ownerContainerObserver;
 
@@ -159,6 +150,10 @@ class ContainerObserver {
   addObserver(observer: Observer) {
     const observerKey = observer.getKey();
     this.keyToObserverMap.set(observerKey, observer);
+
+    return () => {
+      this.keyToObserverMap.delete(observerKey);
+    };
   }
 
   updateObserversIntersections() {

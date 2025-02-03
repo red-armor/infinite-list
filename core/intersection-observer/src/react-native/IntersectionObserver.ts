@@ -75,7 +75,7 @@ class IntersectionObserver implements IIntersectionObserver {
 
   addContainer(container: ContainerObserver) {
     const index = this.containers.findIndex((item) => item === container);
-    if (index !== -1) {
+    if (index === -1) {
       this.containers.push(container);
     }
 
@@ -160,8 +160,6 @@ class IntersectionObserver implements IIntersectionObserver {
         container
       );
 
-      console.log('update intersections', container);
-
       /**
        * after init container, should update container rect
        */
@@ -187,11 +185,6 @@ class IntersectionObserver implements IIntersectionObserver {
     this.monitorIntersections(root);
 
     this.checkIntersection(el);
-
-    console.log(
-      'scrollViewToContainerObserverMap ',
-      this.scrollViewToContainerObserverMap
-    );
 
     return () => {
       this.unobserve(nextObserverKey);
@@ -244,14 +237,6 @@ class IntersectionObserver implements IIntersectionObserver {
         const container = this.scrollViewToContainerObserverMap.get(
           current.node.current
         );
-
-        console.log(
-          'update container rect',
-          current.node,
-          this.scrollViewToContainerObserverMap,
-          container
-        );
-
         container?.updateIntersection().then(() => {
           container.updateObserversIntersections();
         });
@@ -284,16 +269,11 @@ class IntersectionObserver implements IIntersectionObserver {
         container.updateObserversIntersections();
       });
     });
-
-    // this.updateContainerIntersections().then(() => {
-    //   this.updateObserversIntersections();
-    // });
   }
 
   updateContainerIntersections() {
     const tasks = [];
     const values = this.scrollViewToContainerObserverMap.values();
-    console.log('updateContainerIntersections', values);
 
     for (const container of values) {
       tasks.push(container.updateIntersection());
