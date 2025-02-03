@@ -240,7 +240,6 @@ class IntersectionObserver implements IIntersectionObserver {
         container?.updateIntersection().then(() => {
           container.updateObserversIntersections();
         });
-        // this.updateObserversIntersections.bind(this)
       });
       this.monitorDisposers.push(disposer);
       doc = doc.ownerDocument;
@@ -252,12 +251,6 @@ class IntersectionObserver implements IIntersectionObserver {
       if (typeof disposer === 'function') disposer();
     });
   }
-
-  // updateObserversIntersections() {
-  //   for (const observer of this.keyToObserverMap.values()) {
-  //     observer.updateIntersection();
-  //   }
-  // }
 
   updateIntersections() {
     this.updateIntersectionsTask.schedule();
