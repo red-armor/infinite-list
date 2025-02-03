@@ -138,6 +138,14 @@ class ContainerObserver {
             }
           : null;
 
+        console.log(
+          'client intersection ',
+          x,
+          y,
+          this.clientIntersection,
+          this.id
+        );
+
         return Promise.all(
           this.children.map((child) => child.updateIntersection())
         ).then(() => this.intersection);

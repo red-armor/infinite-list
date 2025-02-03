@@ -91,13 +91,24 @@ const MeasureInWindowSimple = () => {
 
   const scrollHandler = useCallback((scrollEvent) => {
     root.onScroll(scrollEvent);
-    observer.updateIntersections();
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
   }, []);
   const horizontalScrollHandler = useCallback((scrollEvent) => {
     horizontalRoot.onScroll(scrollEvent);
+    console.log('horizontalScrollHandler ');
+
+    greenRef.current?.measureInWindow((x, y, width, height) => {
+      console.log('green ref ', x, y, width, height);
+    });
+    nestRef.current?.measureInWindow((x, y, width, height) => {
+      console.log('nest ref ', x, y, width, height);
+    });
+  }, []);
+  const horizontalScrollHandler2 = useCallback((scrollEvent) => {
+    horizontalRoot.onScroll(scrollEvent);
+    console.log('horizontalScrollHandler 2');
 
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
@@ -122,10 +133,11 @@ const MeasureInWindowSimple = () => {
       ref={outsideRef}
       style={{ flex: 1 }}
       onScroll={scrollHandler}
+      onScrollEndDrag={scrollHandler}
       scrollEventThrottle={50}
       onContentSizeChange={onContentSizeChange}
     >
-      <View style={{ height: 300, width: '100%', backgroundColor: 'red' }}>
+      <View style={{ height: 700, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>
       </View>
       <View
@@ -137,7 +149,8 @@ const MeasureInWindowSimple = () => {
       <ScrollView
         horizontal
         onScroll={horizontalScrollHandler}
-        scrollEventThrottle={50}
+        onScrollEndDrag={horizontalScrollHandler2}
+        scrollEventThrottle={16}
         ref={nestScrollViewRef}
         onContentSizeChange={onHorizontalContentSizeChange}
       >
@@ -171,7 +184,7 @@ const MeasureInWindowSimple = () => {
             ></View>
             <View
               ref={nestRef}
-              style={{ height: 50, width: 200, backgroundColor: '#fff' }}
+              style={{ height: 100, width: 200, backgroundColor: '#fff' }}
             ></View>
             <View
               style={{ height: 200, width: 200, backgroundColor: '#888' }}

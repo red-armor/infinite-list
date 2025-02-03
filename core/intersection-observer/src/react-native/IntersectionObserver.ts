@@ -213,12 +213,18 @@ class IntersectionObserver implements IIntersectionObserver {
       return;
     }
 
-    while (doc) {
+    /**
+     * to ensure event only be bound only one time...
+     */
+    while (doc && this.monitoringDocuments.indexOf(doc) === -1) {
       this.monitoringDocuments.push(doc);
       const current = doc;
 
+      console.log('add event listener ', doc.id);
       const disposer = doc.addEventListener('onScroll', () => {
         const container = this.nodeToContainerObserverMap.get(current.node);
+
+        console.log('trigger updateIntersection 1');
         container?.updateIntersection().then(() => {
           container.updateObserversIntersections();
         });
@@ -235,26 +241,29 @@ class IntersectionObserver implements IIntersectionObserver {
   }
 
   updateIntersections() {
+    console.log('updateIntersections ');
     this.updateIntersectionsTask.schedule();
   }
 
   _updateIntersectionsTask() {
     this.containers.forEach((container) => {
+      console.log('trigger updateIntersection 2');
+
       container.updateIntersection().then(() => {
         container.updateObserversIntersections();
       });
     });
   }
 
-  updateContainerIntersections() {
-    const tasks = [];
+  // updateContainerIntersections() {
+  //   const tasks = [];
 
-    for (const container of this.nodeToContainerObserverMap.values()) {
-      tasks.push(container.updateIntersection());
-    }
+  //   for (const container of this.nodeToContainerObserverMap.values()) {
+  //     tasks.push(container.updateIntersection());
+  //   }
 
-    return Promise.all(tasks);
-  }
+  //   return Promise.all(tasks);
+  // }
 
   getClientRect(key: string) {
     const observer = this.keyToObserverMap.get(key);
