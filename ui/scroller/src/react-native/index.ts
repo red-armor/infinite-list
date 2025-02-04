@@ -13,6 +13,7 @@ export { default as ScrollUpdatingContext } from './context/ScrollUpdatingContex
 export { default as ViewabilityContext } from './context/ViewabilityContext';
 export { default as ViewableItemContext } from './context/ViewableItemContext';
 export { default as ScrollHelper } from './ScrollHelper';
+export { default as IntersectionObserverView } from './item/IntersectionObserverView';
 
 export { default as Marshal } from './Marshal';
 export * from './types';
