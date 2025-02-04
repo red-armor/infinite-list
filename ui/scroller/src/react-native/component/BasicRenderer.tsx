@@ -43,6 +43,7 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   const throttledHandler = useMemo(() => {
     function handler(e: NativeSyntheticEvent<NativeScrollEvent>) {
       scrollHelper.onScroll(e);
+      marshal.ownerDocument.onScroll(e);
     }
 
     return throttle(handler, scrollEventThrottle, {

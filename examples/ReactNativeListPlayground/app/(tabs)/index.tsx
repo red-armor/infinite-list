@@ -169,11 +169,13 @@
 // import Group from '../../components/play/Group';
 // import HorizontalList from '../../components/play/HorizontalList';
 // import HorizontalListWithContainer from '../../components/play/HorizontalListWithContainer';
-import MeasureInWindowSimple from '../../components/play/MeasureInWindowSimple';
-import MeasureInWindowSimpleIntersection from '../../components/play/MeasureInWindowSimpleIntersection';
+// import MeasureInWindowSimple from '../../components/play/MeasureInWindowSimple';
+// import MeasureInWindowSimpleIntersection from '../../components/play/MeasureInWindowSimpleIntersection';
+import MeasureInWindowSimpleIntersectionScrollView from '../../components/play/MeasureInWindowSimpleIntersectionScrollView';
 
 export default () => {
-  return <MeasureInWindowSimpleIntersection />;
+  return <MeasureInWindowSimpleIntersectionScrollView />;
+  // return <MeasureInWindowSimpleIntersection />;
   // return <MeasureInWindowSimple />;
   // return <Group />;
   // return <MasonryList />;

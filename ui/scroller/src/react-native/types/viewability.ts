@@ -1,8 +1,8 @@
-import {
-  ItemsDimensions,
-  ListDimensions,
-  ListGroupDimensions,
-} from '@infinite-list/data-model';
+// import {
+//   ItemsDimensions,
+//   ListDimensions,
+//   ListGroupDimensions,
+// } from '@infinite-list/data-model';
 
 export interface ScrollRectangle {
   left: number;
@@ -38,7 +38,7 @@ export type ScrollEventMetrics = {
   targetContentOffset?: ScrollPoint | undefined;
 };
 
-export type DataModelDimensions =
-  | ListDimensions
-  | ItemsDimensions
-  | ListGroupDimensions;
+export type DataModelDimensions = any;
+// | ListDimensions
+// | ItemsDimensions
+// | ListGroupDimensions;

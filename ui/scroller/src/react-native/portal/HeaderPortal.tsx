@@ -1,10 +1,10 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, FC, PropsWithChildren } from 'react';
 
 import ScrollViewContext from '../context/ScrollViewContext';
 
 let count = 1;
 
-const HeaderPortal = (props) => {
+const HeaderPortal: FC<PropsWithChildren> = (props) => {
   const { portalManager } = useContext(ScrollViewContext);
   const componentKey = useMemo(() => `header_${count++}`, []);
   const { children } = props;

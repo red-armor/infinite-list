@@ -8,7 +8,6 @@ import {
   ScrollEventHandlerSubscriptionKeys,
 } from './types';
 import ScrollEventHelper from './ScrollEventHelper';
-import { ReactNativeDocumentBase } from '@infinite-list/intersection-observer/react-native';
 
 /**
  * Marshal is bound to ScrollView which means every ScrollView will has its own
@@ -47,7 +46,7 @@ class Marshal {
    * Inspired from https://github.com/GoogleChromeLabs/intersection-observer/blob/main/intersection-observer.js#L424
    * more info refer to https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
    */
-  public ownerScrollHelper: ScrollHelper | null | undefined;
+  // public ownerScrollHelper: ScrollHelper | null | undefined;
 
   /**
    * implement ReactNativeDocument
@@ -67,7 +66,7 @@ class Marshal {
       animatedValueX,
       animatedValueY,
       // intersectionObserver,
-      ownerScrollHelper,
+      // ownerScrollHelper,
 
       onScroll,
       onScrollToTop,
@@ -91,6 +90,20 @@ class Marshal {
     this._scrollUpdating = scrollUpdating;
     this._parentMarshal = parentMarshal;
 
+    const rootScrollHelper = parentMarshal?.scrollHelper;
+
+    if (!rootScrollHelper || rootScrollHelper.getHorizontal() !== horizontal) {
+      this._rootScrollHelper = new ScrollHelper({
+        marshal: this,
+        id,
+        stickyMode,
+        horizontal,
+        ref,
+      });
+    } else {
+      this._rootScrollHelper = rootScrollHelper;
+    }
+
     this.scrollEventHelper = new ScrollEventHelper({
       marshal: this,
       onScroll,
@@ -101,23 +114,6 @@ class Marshal {
       onMomentumScrollEnd,
       onMomentumScrollBegin,
     });
-
-    if (
-      !ownerScrollHelper ||
-      (ownerScrollHelper && ownerScrollHelper.getHorizontal() !== horizontal)
-    ) {
-      this._rootScrollHelper = new ScrollHelper({
-        marshal: this,
-        id,
-        stickyMode,
-        horizontal,
-        ref,
-      });
-      this.ownerScrollHelper = ownerScrollHelper;
-    } else {
-      this._rootScrollHelper = ownerScrollHelper;
-      this.ownerScrollHelper = ownerScrollHelper.ownerScrollHelper;
-    }
   }
 
   get ownerDocument() {

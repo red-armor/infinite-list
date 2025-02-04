@@ -91,14 +91,16 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
   const removeClippedSubviews = false;
   const scrollHelperDisposerRef = useRef<Function>();
-  const { marshal: parentMarshal, intersectionObserver } =
-    scrollViewContextValues;
+  const {
+    marshal: parentMarshal,
+    intersectionObserver,
+    portalManager,
+  } = scrollViewContextValues;
   const defaultScrollViewRef = useRef<RNScrollView | RNView>();
   const scrollViewRef = (
     isRefObject(forwardRef) ? forwardRef : defaultScrollViewRef
   ) as MutableRefObject<RNScrollView>;
 
-  const portalManager = useMemo(() => new PortalManager(), []);
   const shouldBeView = false;
 
   const defaultAnimatedValueX = useRef(new Animated.Value(0));
@@ -106,8 +108,8 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const animatedValueY = animatedY || defaultAnimatedValueY;
   const animatedValueX = animatedX || defaultAnimatedValueX;
 
-  const rootScrollHelper: ScrollHelper | undefined =
-    parentMarshal?.getScrollHelper();
+  // const rootScrollHelper: ScrollHelper | undefined =
+  //   parentMarshal?.getScrollHelper();
 
   /**
    * Every scrollView has a marshal
@@ -123,7 +125,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         scrollUpdating,
         ref: scrollViewRef,
         horizontal,
-        ownerScrollHelper: rootScrollHelper,
+        // ownerScrollHelper: rootScrollHelper,
 
         /**
          * ScrollHelper props
@@ -192,6 +194,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const nextScrollViewContextValues = useMemo(
     () => ({
       marshal,
+      portalManager: portalManager || new PortalManager(),
       intersectionObserver:
         intersectionObserver ||
         new IntersectionObserver(

@@ -1,9 +1,9 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, FC, PropsWithChildren } from 'react';
 
 import ScrollViewContext from '../context/ScrollViewContext';
 
 let count = 1;
-const FooterPortal = (props) => {
+const FooterPortal: FC<PropsWithChildren> = (props) => {
   const { portalManager } = useContext(ScrollViewContext);
   const { children } = props;
   const componentKey = useMemo(() => `footer_${count++}`, []);

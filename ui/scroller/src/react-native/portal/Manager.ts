@@ -1,6 +1,6 @@
 class Manager {
-  private _setHeaderInfo: Function;
-  private _setFooterInfo: Function;
+  private _setHeaderInfo: Function | null;
+  private _setFooterInfo: Function | null;
 
   constructor() {
     this._setHeaderInfo = null;

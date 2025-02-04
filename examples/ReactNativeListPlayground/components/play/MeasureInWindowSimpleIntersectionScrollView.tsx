@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { ScrollView, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import {
   IntersectionObserver,
   ReactNativeDocumentBase,
 } from '@infinite-list/intersection-observer';
+import { ScrollView } from '@infinite-list/scroller';
 
-const MeasureInWindowSimpleIntersection = () => {
+const MeasureInWindowSimpleIntersectionScrollView = () => {
   const greenRef = useRef<View>(null);
   const secondRef = useRef<View>(null);
   const nestRef = useRef<View>(null);
@@ -215,4 +216,4 @@ const MeasureInWindowSimpleIntersection = () => {
   );
 };
 
-export default MeasureInWindowSimpleIntersection;
+export default MeasureInWindowSimpleIntersectionScrollView;

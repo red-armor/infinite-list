@@ -19,7 +19,7 @@ export type ReactNativeDocumentBaseProps = {
   /**
    * the closest parent document not top most document!!!
    */
-  ownerDocument: ReactNativeDocument;
+  ownerDocument?: ReactNativeDocument | null;
   node: ReactNativeDocumentNode;
 };
 
@@ -28,7 +28,7 @@ export type ReactNativeDocumentBaseProps = {
  */
 abstract class ReactNativeDocument {
   abstract id: string;
-  abstract ownerDocument: ReactNativeDocument;
+  abstract ownerDocument?: ReactNativeDocument | null;
   abstract node: ReactNativeDocumentNode;
   abstract horizontal?: boolean;
 
@@ -49,7 +49,7 @@ abstract class ReactNativeDocument {
 class ReactNativeDocumentBase extends ReactNativeDocument {
   readonly id: string;
   readonly emitter = new Emitter();
-  ownerDocument: ReactNativeDocument;
+  ownerDocument?: ReactNativeDocument | null;
   node: ReactNativeDocumentNode;
   horizontal: boolean;
   bidirectional: boolean;

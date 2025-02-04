@@ -16,7 +16,8 @@ const LOCK_REFRESH_TIMEOUT = 500;
 
 const Control: FC<ControlProps> = (props) => {
   const contextValues = useContext(ScrollViewContext);
-  const { scrollEventHelper } = contextValues;
+  const { marshal } = contextValues;
+  const scrollEventHelper = useMemo(() => marshal!.scrollEventHelper, []);
   const {
     refreshing,
     onRefresh,

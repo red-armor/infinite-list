@@ -1,5 +1,3 @@
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
-import { ItemMeta } from '@infinite-list/item-meta';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
@@ -68,8 +66,6 @@ class ScrollHelper {
 
   private _layout: ViewableItemLayout = DEFAULT_SCROLL_HELPER_LAYOUT;
 
-  private _dimensionsMeta: ItemMeta;
-
   private _scrollEventHelpers: ScrollEventHelper[] = [];
 
   private _ref: SpectrumScrollViewRef;
@@ -82,8 +78,6 @@ class ScrollHelper {
 
   public hasInteraction: boolean;
 
-  // public setMarshal: (marshal: Marshal) => void;
-
   private onRefreshListeners: Function[] = [];
 
   ownerDocument: ReactNativeDocumentBase;
@@ -94,7 +88,6 @@ class ScrollHelper {
 
     this.id = id;
     this._ref = ref;
-    // this.ownerScrollHelper = ownerScrollHelper;
     this._stickyMarshal = new StickyMarshal({
       stickyMode,
     });
@@ -106,11 +99,6 @@ class ScrollHelper {
 
     this.hasInteraction = false;
 
-    this.onViewableHandler = this.onViewableHandler.bind(this);
-
-    // this.setMarshal = this._setMarshal.bind(this);
-
-    this._dimensionsMeta = this.prepareNested();
     const parentMarshal = this._marshal.getParentMarshal();
 
     this.ownerDocument = new ReactNativeDocumentBase({
@@ -118,10 +106,18 @@ class ScrollHelper {
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
     });
+    this.getEventHandlers = this.getEventHandlers.bind(this);
+    this.onContentSizeChange = this.onContentSizeChange.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+    this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
+    this.onScrollEndDrag = this.onScrollEndDrag.bind(this);
+    this.onScrollBeginDrag = this.onScrollBeginDrag.bind(this);
+    this.onMomentumScrollBegin = this.onMomentumScrollBegin.bind(this);
+    this.onScrollToTop = this.onScrollToTop.bind(this);
   }
 
   get ownerScrollHelper() {
-    return this._marshal.ownerScrollHelper;
+    return this._marshal.scrollHelper;
   }
 
   addEventListener(
@@ -165,12 +161,6 @@ class ScrollHelper {
 
   invokeOnRefreshListener() {
     this.onRefreshListeners.forEach((fn) => fn.call(this));
-  }
-
-  cleanup() {
-    if (this._dimensionsMeta) {
-      // do nothing, waiting for InfiniteList update..
-    }
   }
 
   getMarshal() {
@@ -235,9 +225,9 @@ class ScrollHelper {
     };
   }
 
-  onViewableHandler() {
-    this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
-  }
+  // onViewableHandler() {
+  //   this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
+  // }
 
   /**
    *
@@ -249,13 +239,13 @@ class ScrollHelper {
    * is in viewport as well...
    *
    */
-  prepareNested() {
-    const dimensions = this.getItemsDimensions();
-    if (!dimensions) return null;
-    const meta = dimensions.ensureKeyMeta(this.id, this.id);
-    meta.addStateEventListener('viewable', this.onViewableHandler);
-    return meta;
-  }
+  // prepareNested() {
+  //   const dimensions = this.getItemsDimensions();
+  //   if (!dimensions) return null;
+  //   const meta = dimensions.ensureKeyMeta(this.id, this.id);
+  //   meta.addStateEventListener('viewable', this.onViewableHandler);
+  //   return meta;
+  // }
 
   // TODO
   getItemsDimensions() {
@@ -276,9 +266,9 @@ class ScrollHelper {
           ...layout,
         };
 
-    const dimensions = this.getItemsDimensions();
-    if (dimensions)
-      (dimensions as ItemsDimensions).setKeyItemLayout(this.id, this._layout);
+    // const dimensions = this.getItemsDimensions();
+    // if (dimensions)
+    //   (dimensions as ItemsDimensions).setKeyItemLayout(this.id, this._layout);
     this.resolveScrollMetrics();
   }
 
