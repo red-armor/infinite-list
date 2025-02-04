@@ -59,8 +59,8 @@ export const measureLayout = (
 export const measureLayoutAsync = (
   node: React.ElementRef<HostComponent<any>> | number,
   relativeToNativeComponentRef: React.ElementRef<HostComponent<any>> | number
-) => {
-  return new Promise<{
+) =>
+  new Promise<{
     x: number;
     y: number;
     width: number;
@@ -80,7 +80,6 @@ export const measureLayoutAsync = (
       reject();
     }
   });
-};
 
 export const measureInWindowAsync = (
   node: React.ElementRef<HostComponent<any>>
