@@ -8,7 +8,14 @@ import {
   useCallback,
   useMemo,
 } from 'react';
-import { View, ViewProps, ViewStyle, Platform, StyleSheet } from 'react-native';
+import {
+  View,
+  ViewProps,
+  ViewStyle,
+  Platform,
+  StyleSheet,
+  StyleProp,
+} from 'react-native';
 import {
   IClientRectReadOnly,
   Observer,
@@ -32,10 +39,11 @@ const StickyView: FC<
   const {
     observerKey,
     startCorrection = 0,
-    style = {},
+    style,
     zIndex = 2,
     ...rest
   } = props;
+  const nextStyle = style || {};
   const { marshal, intersectionObserver } = useContext(ScrollViewContext);
   const viewRef = useRef<View>(null);
   const observerRef = useRef<Observer | null>(null);
@@ -79,22 +87,14 @@ const StickyView: FC<
         }
 
         stickyMarshal?.calculateRangeValues();
-        // setTimeout(() => {
-        //   console.log('bounding --- ', info.observer.getBoundingClientRect() );
-        // }, 40)
       },
     });
     observerRef.current = info?.observer;
     return info?.remover || noop;
   }, []);
 
-  const containerStyle = useMemo<ViewStyle>(() => {
-    if (!rectRef.current) return style;
-    // const meta = dimensions.ensureKeyMeta(
-    //   viewableItemHelperKeyRef.current,
-    //   ownerId
-    // );
-    // if (!meta?.getLayout()) return ([] as ViewStyle[]).concat(style);
+  const containerStyle = useMemo<StyleProp<ViewStyle>>(() => {
+    if (!rectRef.current) return nextStyle;
     const selectedTranslate = selectValue.selectTranslate();
     const platformStyle =
       Platform.OS === 'ios'
@@ -132,7 +132,7 @@ const StickyView: FC<
           },
         ],
       },
-      style || {},
+      nextStyle,
     ]);
   }, [config]);
 
