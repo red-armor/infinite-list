@@ -49,7 +49,7 @@ export const measureLayout = (
 ) => {
   if (node) {
     (node as any as NativeMethods).measureLayout(
-      relativeToNativeComponentRef.current,
+      relativeToNativeComponentRef,
       onSuccess,
       onFail
     );
@@ -68,7 +68,7 @@ export const measureLayoutAsync = (
   }>((resolve, reject) => {
     if (node) {
       (node as any as NativeMethods).measureLayout(
-        relativeToNativeComponentRef.current,
+        relativeToNativeComponentRef,
         (x: number, y: number, width: number, height: number) => {
           resolve({ x, y, width, height });
         },

@@ -19,7 +19,7 @@ import {
   IIntersectionObserverEntry,
 } from './types';
 import { computeIntersection } from '../common/intersection';
-import ReactNativeDocument from './ReactNativeDocument';
+import ReactNativeDocument, { getNode } from './ReactNativeDocument';
 import Observer from './Observer';
 import { measureInWindowAsync } from './measure';
 
@@ -104,7 +104,7 @@ class ContainerObserver {
   }
 
   updateIntersection(): Promise<IRectIntersection | null> {
-    return measureInWindowAsync(this.root.current).then(
+    return measureInWindowAsync(getNode(this.root) as any).then(
       ({ x, y, width, height }) => {
         this.rect = convertLayoutToClientRect({
           x,
@@ -211,8 +211,6 @@ class ContainerObserver {
     });
 
     this.records = records as IIntersectionObserverEntry[];
-
-    console.log('this. ', this.records);
 
     return this.records;
   }

@@ -8,7 +8,7 @@ import {
   IIntersectionObserver,
   ObserveOptions,
   IIntersectionObserverEntry,
-  ObserverComponent,
+  ObservedComponent,
 } from './types';
 import { parseRootMargin } from './utils';
 import Observer from './Observer';
@@ -63,7 +63,6 @@ class IntersectionObserver implements IIntersectionObserver {
     if (!doc) return null;
     const node = doc.node;
     return node;
-    // return (node as RefObject<ScrollView>).current || (node as ScrollView);
   }
 
   addContainer(container: ContainerObserver) {
@@ -113,7 +112,7 @@ class IntersectionObserver implements IIntersectionObserver {
    *
    * el may be reused...
    */
-  observe(el: ObserverComponent, options: ObserveOptions) {
+  observe(el: ObservedComponent, options: ObserveOptions) {
     const { observerKey = '', root = this.root } = options || {};
     const nextObserverKey = observerKey || generateRandomKey();
     let observer = null;
@@ -214,7 +213,8 @@ class IntersectionObserver implements IIntersectionObserver {
     return records;
   }
 
-  monitorIntersections(doc: ReactNativeDocument) {
+  monitorIntersections(_doc: ReactNativeDocument) {
+    let doc: ReactNativeDocument | null | undefined = _doc;
     if (!doc || this.monitoringDocuments.indexOf(doc) !== -1) {
       return;
     }
@@ -228,8 +228,6 @@ class IntersectionObserver implements IIntersectionObserver {
 
       const disposer = doc.addEventListener('onScroll', () => {
         const container = this.nodeToContainerObserverMap.get(current.node);
-
-        console.log('container ', container);
         container?.updateIntersection().then(() => {
           container.updateObserversIntersectionsInSmartWay();
         });

@@ -1,11 +1,4 @@
-import {
-  TouchableHighlight,
-  TouchableHighlightComponent,
-  TouchableOpacity,
-  TouchableOpacityComponent,
-  View,
-  ViewComponent,
-} from 'react-native';
+import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
 

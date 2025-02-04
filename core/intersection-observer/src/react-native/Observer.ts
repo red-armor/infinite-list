@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { ClientRect, ObserverProps, ItemLayout } from './types';
 import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
@@ -7,6 +7,7 @@ import { measureLayoutAsync } from './measure';
 import ContainerObserver from './ContainerObserver';
 import { computeIntersection } from '../common/intersection';
 import IntersectionObserverEntry from './IntersectionObserverEntry';
+import { getNode } from './ReactNativeDocument';
 
 class Observer {
   private target: View;
@@ -15,16 +16,16 @@ class Observer {
   private containerObserver: ContainerObserver;
   private entry: IIntersectionObserverEntry | null = null;
 
-  /**
-   * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
-   *
-   * the difference is offsetTop is relative to closest positioned ScrollView
-   */
-  private offsetTop: number;
-  /**
-   * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
-   */
-  private offsetParent: ScrollView;
+  // /**
+  //  * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+  //  *
+  //  * the difference is offsetTop is relative to closest positioned ScrollView
+  //  */
+  // private offsetTop: number;
+  // /**
+  //  * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent
+  //  */
+  // private offsetParent: ScrollView;
 
   constructor(props: ObserverProps) {
     const {
@@ -58,7 +59,7 @@ class Observer {
    * callback will be invoked after layout measured
    */
   updateClientRect(cb?: (rect: IClientRectReadOnly) => void) {
-    return measureLayoutAsync(this.target, this.root).then(
+    return measureLayoutAsync(this.target, getNode(this.root) as any).then(
       ({ x, y, width, height }) => {
         this.clientRect = {
           x,

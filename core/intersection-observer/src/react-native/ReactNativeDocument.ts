@@ -12,6 +12,9 @@ export type ScrollEventHandler = (
 
 export type ReactNativeDocumentNode = ScrollView | RefObject<ScrollView>;
 
+export function getNode(node: ReactNativeDocumentNode) {
+  return (node as RefObject<ScrollView>)?.current || (node as ScrollView);
+}
 export type ReactNativeDocumentBaseProps = {
   horizontal?: boolean;
   bidirectional?: boolean;
@@ -79,7 +82,6 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
   }
 
   onScroll(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
-    console.log('scroll --------', scrollEvent.nativeEvent);
     this.emitter.fire('onScroll', scrollEvent);
   }
 }
