@@ -9,6 +9,7 @@ import {
   ObserveOptions,
   IIntersectionObserverEntry,
   ObservedComponent,
+  IntersectionObserverCallback,
 } from './types';
 import { parseRootMargin } from './utils';
 import Observer from './Observer';
@@ -229,7 +230,8 @@ class IntersectionObserver implements IIntersectionObserver {
       const disposer = doc.addEventListener('onScroll', () => {
         const container = this.nodeToContainerObserverMap.get(current.node);
         container?.updateIntersection().then(() => {
-          container.updateObserversIntersectionsInSmartWay();
+          const entries = container.updateObserversIntersectionsInSmartWay();
+          this.callback(entries, this);
         });
       });
       this.monitorDisposers.push(disposer);

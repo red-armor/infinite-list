@@ -44,7 +44,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     animatedY,
     animatedX,
 
-    setMarshal,
     stickyMode,
 
     onRefresh,
@@ -78,6 +77,9 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     scrollEventThrottle = DEFAULT_SCROLL_EVENT_THROTTLE,
     children,
     scrollEnabled = true,
+
+    enableIntersectionObserver = false,
+    intersectionObserverCallback,
     ...rest
   } = props;
   const scrollViewKey = useMemo(() => resolveScrollViewKey(!!horizontal), []);
@@ -106,9 +108,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   const animatedValueY = animatedY || defaultAnimatedValueY;
   const animatedValueX = animatedX || defaultAnimatedValueX;
 
-  // const rootScrollHelper: ScrollHelper | undefined =
-  //   parentMarshal?.getScrollHelper();
-
   /**
    * Every scrollView has a marshal
    */
@@ -123,7 +122,6 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         scrollUpdating,
         ref: scrollViewRef,
         horizontal: !!horizontal,
-        // ownerScrollHelper: rootScrollHelper,
 
         /**
          * ScrollHelper props
@@ -189,25 +187,24 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const nextScrollViewContextValues = useMemo(
-    () => ({
+  const nextScrollViewContextValues = useMemo(() => {
+    if (enableIntersectionObserver && !intersectionObserverCallback) {
+      throw new Error(
+        '`intersectionObserverCallback` is required when' +
+          ' `enableIntersectionObserver` is true'
+      );
+    }
+    return {
       marshal,
       portalManager: portalManager || new PortalManager(),
-      intersectionObserver:
-        intersectionObserver ||
-        new IntersectionObserver(
-          () => {
-            console.log('hello');
-          },
-          {
+      intersectionObserver: enableIntersectionObserver
+        ? intersectionObserver ||
+          new IntersectionObserver(intersectionObserverCallback!, {
             root: marshal.ownerDocument,
-          }
-        ),
-    }),
-    []
-  );
-
-  console.log('rest ', rest);
+          })
+        : null,
+    };
+  }, []);
 
   const nextScrollUpdatingContextValues = useMemo(
     () => ({

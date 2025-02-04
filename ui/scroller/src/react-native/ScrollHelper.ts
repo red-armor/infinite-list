@@ -384,11 +384,7 @@ class ScrollHelper {
   onContentSizeChange(width: number, height: number) {
     this._contentSize = { width, height };
     this.resolveScrollMetrics();
-    console.log('helllll onContentSizeChange');
     this.triggerScrollEventHelpers('onContentSizeChange', width, height);
-
-    // if (!this._horizontal)
-    //   this._marshal?.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
   onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {

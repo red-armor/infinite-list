@@ -1,6 +1,8 @@
 import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
+import { IIntersectionObserverEntry } from './intersectionObserverEntry';
+import IntersectionObserver from '../IntersectionObserver';
 
 export type IntersectionObserverProps = {
   root: ReactNativeDocument;
@@ -44,3 +46,8 @@ export interface IIntersectionObserver {
 }
 
 export type ObservedComponent = View | TouchableHighlight | TouchableOpacity;
+
+export type IntersectionObserverCallback = (
+  entries: IIntersectionObserverEntry[],
+  observer: IntersectionObserver
+) => void;

@@ -21,6 +21,7 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
+import { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
 import ScrollerScrollView from '../ScrollView';
 
 import {
@@ -28,8 +29,6 @@ import {
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/viewable';
 
-import Marshal from '../Marshal';
-import ScrollEventHelper from '../ScrollEventHelper';
 import ScrollHelper from '../ScrollHelper';
 import { StickyMode } from './stickyMarshal';
 
@@ -150,7 +149,13 @@ export type SpectrumScrollViewProps = ScrollViewProps &
      *
      * to get scroller marshal from passing props, just like `setRef`
      */
-    setMarshal?: (marshal: Marshal) => void;
+    // setMarshal?: (marshal: Marshal) => void;
+
+    /**
+     * support intersection observer in react-native
+     */
+    enableIntersectionObserver?: boolean;
+    intersectionObserverCallback?: IntersectionObserverCallback;
 
     animatedX?: MutableRefObject<Animated.Value>;
     animatedY?: MutableRefObject<Animated.Value>;
