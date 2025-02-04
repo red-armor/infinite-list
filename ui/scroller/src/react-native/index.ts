@@ -1,4 +1,4 @@
-import { Animated, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import createViewableComponent from './item/createViewableComponent';
 import createStickyComponent from './item/sticky-item/createStickyComponent';
@@ -29,13 +29,13 @@ export const Viewable = {
 
 export const ViewableComponent = Viewable;
 
-const AnimatedTouchableOpacity =
-  Animated.createAnimatedComponent(TouchableOpacity);
+// const AnimatedTouchableOpacity =
+//   Animated.createAnimatedComponent(TouchableOpacity);
 
-export const StickyComponent = {
-  View: createStickyComponent(Animated.View),
-  TouchableOpacity: createStickyComponent(AnimatedTouchableOpacity),
-};
+// export const StickyComponent = {
+//   View: createStickyComponent(Animated.View),
+//   TouchableOpacity: createStickyComponent(AnimatedTouchableOpacity),
+// };
 
 export const ScrollViewPortal = {
   Header: HeaderPortal,

@@ -10,9 +10,9 @@ const HeaderPortal: FC<PropsWithChildren> = (props) => {
   const { children } = props;
 
   useEffect(() => {
-    portalManager.setHeaderInfo((info) => {
+    portalManager?.setHeaderInfo((info: any) => {
       const { group = [] } = info;
-      const index = group.findIndex((c) => c.key === componentKey);
+      const index = group.findIndex((c: any) => c.key === componentKey);
       const n = {
         key: componentKey,
         c: children,
@@ -23,7 +23,7 @@ const HeaderPortal: FC<PropsWithChildren> = (props) => {
       if (index !== -1)
         return {
           ...info,
-          group: [].concat(before, n, after),
+          group: [].concat(before, n as any, after),
         };
 
       return {

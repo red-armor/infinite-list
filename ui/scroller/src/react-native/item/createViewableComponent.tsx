@@ -44,12 +44,10 @@ const createViewableComponent = <T extends React.ComponentType<any>>(
     const viewableItemHelperKeyRef = useRef(viewableItemHelperKey);
 
     useEffect(() => {
-      if (intersectionObserver) {
-        return intersectionObserver.observe(
-          viewRef.current,
-          viewableItemHelperKeyRef.current
-        );
-      }
+      return intersectionObserver?.observe(
+        viewRef.current,
+        viewableItemHelperKeyRef.current
+      );
     }, [intersectionObserver]);
 
     const layoutHandler = useCallback(

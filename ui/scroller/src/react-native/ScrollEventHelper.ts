@@ -111,10 +111,12 @@ class ScrollEventHelper {
     });
   }
 
+  // @ts-ignore
   _dispatchEvent(eventName: ScrollEventHandlerSubscriptionKeys, ...rest) {
     const handlers = this._subscriptions[eventName];
 
     handlers.forEach((handler) => {
+      // @ts-ignore
       if (typeof handler === 'function') handler.apply(this, rest);
       // if (typeof handler === 'function') handler.apply(this, rest);
     });

@@ -65,7 +65,9 @@ export default (
   const handler = useCallback(() => {
     if (!itemRef.current) return;
 
+    // @ts-ignore
     if (typeof itemRef.current?.measureLayout === 'function') {
+      // @ts-ignore
       itemRef.current.measureLayout(
         container.current,
         onMeasureLayoutSuccess,
@@ -73,6 +75,7 @@ export default (
       );
     } else {
       UIManager.measureLayout(
+        // @ts-ignore
         findNodeHandle(itemRef.current),
         findNodeHandle(container.current),
         onMeasureLayoutFailed,

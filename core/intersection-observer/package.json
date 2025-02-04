@@ -2,7 +2,8 @@
   "name": "@infinite-list/intersection-observer",
   "version": "0.0.1",
   "peerDependencies": {
-    "react": "*"
+    "react": "*",
+    "react-native": "*"
   },
   "exports": {
     "./react": {
@@ -21,5 +22,7 @@
     "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/items-dimensions": "workspace:*",
     "@infinite-list/scheduler": "workspace:*"
-  }
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts"
 }

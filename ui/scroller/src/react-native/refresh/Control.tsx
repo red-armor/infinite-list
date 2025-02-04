@@ -6,7 +6,13 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import { Animated, View, ViewStyle } from 'react-native';
+import {
+  Animated,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import ScrollViewContext from '../context/ScrollViewContext';
 import { ControlProps } from '../types';
@@ -69,19 +75,22 @@ const Control: FC<ControlProps> = (props) => {
   }, []);
 
   useEffect(() => {
-    return scrollEventHelper.subscribeEventHandler('onScroll', (e) => {
-      if (!onRefreshEnabledRef.current || refreshingRef.current) return;
-      const { nativeEvent } = e;
-      const contentOffset = nativeEvent.contentOffset;
-      const { y } = contentOffset;
-      if (y < -refreshThresholdValue) {
-        if (typeof onRefresh === 'function') {
-          onRefreshEnabledRef.current = false;
-          onRefresh();
-          animatedGhostRef.current.setValue(refreshThresholdValue);
+    return scrollEventHelper.subscribeEventHandler(
+      'onScroll',
+      (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+        if (!onRefreshEnabledRef.current || refreshingRef.current) return;
+        const { nativeEvent } = e;
+        const contentOffset = nativeEvent.contentOffset;
+        const { y } = contentOffset;
+        if (y < -refreshThresholdValue) {
+          if (typeof onRefresh === 'function') {
+            onRefreshEnabledRef.current = false;
+            onRefresh();
+            animatedGhostRef.current.setValue(refreshThresholdValue);
+          }
         }
       }
-    });
+    );
   }, []);
 
   const ghostViewStyle = useMemo<any>(() => {

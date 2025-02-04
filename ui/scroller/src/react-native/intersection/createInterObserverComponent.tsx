@@ -37,6 +37,7 @@ const createObserverComponent = <T extends ComponentType<any>>(
     );
 
     return (
+      // @ts-ignore
       <Component ref={componentRef} {...rest}>
         {props.children}
       </Component>

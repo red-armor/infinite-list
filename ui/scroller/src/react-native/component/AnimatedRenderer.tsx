@@ -4,7 +4,6 @@ import React, {
   ForwardedRef,
   PropsWithChildren,
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -196,6 +195,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
         onScroll={Animated.event(
           [
             {
+              // @ts-ignore
               nativeEvent: { contentOffset },
             },
           ],

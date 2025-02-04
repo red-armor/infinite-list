@@ -27,7 +27,9 @@ const LoadingIcon: FC<
   // 如果有progress，则通过props控制旋转
   useEffect(() => {
     if (loading && progress === undefined) {
+      // @ts-ignore
       animation?.current?.play();
+      // @ts-ignore
       return animation.current.stop;
     }
   }, [animation, progress]);

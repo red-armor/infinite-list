@@ -12,7 +12,7 @@ const SmoothControl: FC<SmoothControlProps> = (props) => {
     layoutRef,
     animatedValue,
     lottieAnimatedValueRef,
-    triggerOnRefreshThresholdValue,
+    triggerOnRefreshThresholdValue = 50,
     refreshControlStartCorrection = 0,
     refreshControlContentContainerStyle = {},
   } = props;

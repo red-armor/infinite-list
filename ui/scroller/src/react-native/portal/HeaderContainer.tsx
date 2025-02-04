@@ -11,8 +11,9 @@ const Container = () => {
 
   if (initialRef.current) {
     initialRef.current = false;
-    portalManager.registerHeaderInfoSetter(setInfo);
+    portalManager?.registerHeaderInfoSetter(setInfo);
   }
+  // @ts-ignore
   return <>{info.group.map((i) => i.c)}</>;
 };
 

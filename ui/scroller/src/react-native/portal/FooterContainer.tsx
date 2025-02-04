@@ -11,9 +11,10 @@ const FooterContainer = () => {
 
   if (initialRef.current) {
     initialRef.current = false;
-    portalManager.registerFooterInfoSetter(setInfo);
+    portalManager?.registerFooterInfoSetter(setInfo);
   }
 
+  // @ts-ignore
   return <>{info.group.map((i) => i.c)}</>;
 };
 

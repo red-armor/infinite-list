@@ -1,7 +1,9 @@
-import { Animated } from 'react-native';
+// import { Animated } from 'react-native';
 
-import createStickyComponent from './createStickyComponent';
+// import createStickyComponent from './createStickyComponent';
 
-const StickyItem = createStickyComponent(Animated.View);
+// const StickyItem = createStickyComponent(Animated.View);
 
-export default StickyItem;
+// export default StickyItem;
+
+export default () => null;

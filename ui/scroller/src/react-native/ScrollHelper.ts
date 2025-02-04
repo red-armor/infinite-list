@@ -290,6 +290,7 @@ class ScrollHelper {
   ) {
     this._scrollEventHelpers.forEach((helper) => {
       if (helper.marshal.scrollUpdateEnabled) {
+        // @ts-ignore
         helper[handlerName](...rest);
       }
     });
