@@ -8,6 +8,7 @@ import {
   IIntersectionObserver,
   ObserveOptions,
   IIntersectionObserverEntry,
+  ObserverComponent,
 } from './types';
 import { parseRootMargin } from './utils';
 import Observer from './Observer';
@@ -112,7 +113,7 @@ class IntersectionObserver implements IIntersectionObserver {
    *
    * el may be reused...
    */
-  observe(el: View | null, options: ObserveOptions) {
+  observe(el: ObserverComponent, options: ObserveOptions) {
     const { observerKey = '', root = this.root } = options || {};
     const nextObserverKey = observerKey || generateRandomKey();
     let observer = null;

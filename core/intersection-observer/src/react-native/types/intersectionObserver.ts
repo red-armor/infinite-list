@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
 
@@ -42,3 +42,5 @@ export type ObserveOptions = {
 export interface IIntersectionObserver {
   observe: (el: View, options: ObserveOptions) => void;
 }
+
+export type ObserverComponent = View | TouchableHighlight | TouchableOpacity;
