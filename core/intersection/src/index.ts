@@ -1,2 +1,2 @@
 export * from './lib/intersection';
-import './lib/intersectionObserver.js';
+// import './lib/intersectionObserver.js';
