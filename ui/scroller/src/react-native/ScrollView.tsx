@@ -262,6 +262,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
           ref={scrollViewRef as MutableRefObject<RNScrollView>}
           {...rest}
           {...refreshControlProps}
+          scrollEnabled={scrollEnabled}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
           horizontal={!!horizontal}
@@ -278,6 +279,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
       <HeaderPortalContainer />
       <BasicRenderer
         horizontal={!!horizontal}
+        scrollEnabled={scrollEnabled}
         ref={scrollViewRef as MutableRefObject<RNScrollView>}
         {...rest}
         {...refreshControlProps}

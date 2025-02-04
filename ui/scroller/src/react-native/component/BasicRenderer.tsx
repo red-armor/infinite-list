@@ -28,7 +28,7 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
     forwardRef,
     onLayout,
     scrollEventThrottle,
-    scrollEnabled = true,
+    scrollEnabled,
     ...restProps
   } = props;
 

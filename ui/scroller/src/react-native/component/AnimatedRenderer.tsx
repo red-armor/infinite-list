@@ -21,6 +21,7 @@ import ScrollViewContext from '../context/ScrollViewContext';
 import { DEFAULT_VIEW_LAYOUT } from '../commons/constants';
 import { useNativeRefreshControl } from '../commons/platform';
 import useScrollEnabled from '../hooks/useScrollEnabled';
+import useInitialEffect from '../hooks/useInitialEffect';
 import SmoothControl from '../refresh/SmoothControl';
 import { TRIGGER_ON_REFRESH_THRESHOLD_VALUE } from '../refresh/constants';
 import {
@@ -49,12 +50,11 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   } = props;
   const [loading, setLoading] = useState(false);
   const contextValues = useContext(ScrollViewContext);
-  const marshal = contextValues.marshal!;
-
-  const animatedValue = useMemo(() => marshal.getAnimatedValue(), [marshal]);
-  const scrollHelper = marshal.getScrollHelper();
-  const scrollEventHelper = marshal.getScrollEventHelper();
-  const horizontal = marshal.isHorizontal();
+  const { marshal, intersectionObserver } = contextValues;
+  const scrollHelper = marshal!.getScrollHelper();
+  const animatedValue = useMemo(() => marshal!.getAnimatedValue(), [marshal]);
+  const scrollEventHelper = marshal!.getScrollEventHelper();
+  const horizontal = marshal!.isHorizontal();
 
   const lottieAnimatedValueRef = useRef(
     new Animated.Value(triggerOnRefreshThresholdValue)
@@ -68,6 +68,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   const throttledHandler = useMemo(() => {
     function scrollHandler(e: NativeSyntheticEvent<NativeScrollEvent>) {
       scrollHelper.onScroll(e);
+      marshal?.ownerDocument?.onScroll(e);
     }
 
     return throttle(scrollHandler, scrollEventThrottle, {
@@ -82,32 +83,41 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     });
   }, [onScroll, scrollEventThrottle, scrollHelper]);
 
-  useEffect(() => {
-    return scrollEventHelper.subscribeEventHandler(
-      'onScrollEndDrag',
-      (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const { nativeEvent } = e;
-        const contentOffset = nativeEvent.contentOffset;
+  useInitialEffect(() =>
+    marshal
+      ?.getScrollHelper()
+      .addEventListener(
+        'onScrollEndDrag',
+        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+          marshal?.ownerDocument?.onScroll(e);
+          const { nativeEvent } = e;
+          const contentOffset = nativeEvent.contentOffset;
 
-        const { y } = contentOffset;
-        if (y < -triggerOnRefreshThresholdValue) {
-          setLoading(true);
-          lottieAnimatedValueRef.current.setValue(
-            triggerOnRefreshThresholdValue
-          );
-          if (typeof onRefresh === 'function') {
-            onRefresh();
+          const { y } = contentOffset;
+          if (y < -triggerOnRefreshThresholdValue) {
+            setLoading(true);
+            lottieAnimatedValueRef.current.setValue(
+              triggerOnRefreshThresholdValue
+            );
+            if (typeof onRefresh === 'function') {
+              onRefresh();
+            }
           }
         }
-      }
-    );
-  }, []);
+      )
+  );
+  useInitialEffect(() =>
+    marshal?.getScrollHelper().addEventListener('onContentSizeChange', () => {
+      intersectionObserver?.updateIntersections();
+    })
+  );
 
   const layoutHandler = useCallback((e: LayoutChangeEvent) => {
     layoutRef.current = e.nativeEvent.layout;
     if (typeof onLayout === 'function') {
       onLayout(e);
     }
+    intersectionObserver?.updateIntersections();
     const {
       nativeEvent: { layout },
     } = e;
