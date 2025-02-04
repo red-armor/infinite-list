@@ -1,5 +1,4 @@
-import {
-  forwardRef,
+import React, {
   ComponentProps,
   FC,
   ForwardedRef,
@@ -11,17 +10,16 @@ import {
 } from 'react';
 import { ObserverComponentProps } from '../types';
 import ScrollViewContext from '../context/ScrollViewContext';
-import { ObserverComponent } from '@infinite-list/intersection-observer/react-native';
 
-const createObserverComponent = <T extends ComponentType<ObserverComponent>>(
+const createObserverComponent = <T extends ComponentType<any>>(
   Component: T
 ) => {
   const ObserverComponent: FC<
     PropsWithChildren<ObserverComponentProps> & ComponentProps<T>
   > = (props) => {
-    const { observerKey, ...rest } = props;
+    const { observerKey, forwardRef, ...rest } = props;
     const { marshal, intersectionObserver } = useContext(ScrollViewContext);
-    const defaultRef = useRef<typeof Component | null>();
+    const defaultRef = useRef<any>(null);
     const componentRef = forwardRef || defaultRef;
 
     useEffect(
@@ -34,20 +32,20 @@ const createObserverComponent = <T extends ComponentType<ObserverComponent>>(
     );
 
     return (
-      <Component ref={componentRef} {...rest}>
+      <Component ref={componentRef} {...(rest as ComponentProps<T>)}>
         {props.children}
       </Component>
     );
   };
 
-  return forwardRef(
+  return React.forwardRef(
     (
       props: ObserverComponentProps & ComponentProps<T>,
       ref: ForwardedRef<T>
     ) => {
       return <ObserverComponent {...props} forwardRef={ref} />;
     }
-  ) as any as FC<ObserverComponentProps & ComponentProps<T>>;
+  ) as any as FC<PropsWithChildren<ComponentProps<T> & ObserverComponentProps>>;
 };
 
 export default createObserverComponent;

@@ -126,6 +126,7 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
         </View>
         <IntersectionObserverView
           observerKey="green"
+          ref={greenRef}
           style={{ height: 300, width: 200, backgroundColor: 'green' }}
         >
           <Text>green</Text>
