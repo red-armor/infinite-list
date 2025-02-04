@@ -90,6 +90,7 @@ class ScrollHelper {
     this._ref = ref;
     this._stickyMarshal = new StickyMarshal({
       stickyMode,
+      marshal: this._marshal,
     });
     this._horizontal = horizontal;
     this.selectValue = horizontal ? selectHorizontalValue : selectVerticalValue;

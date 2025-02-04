@@ -6,7 +6,7 @@ import {
   StickyMarshalProps,
   StickyMode,
 } from '../types';
-import { GenericItemT } from '@infinite-list/types';
+import Marshal from '../Marshal';
 
 export function checkValidInputRange(arr: Array<number>) {
   if (arr.length < 2) {
@@ -23,13 +23,15 @@ export function checkValidInputRange(arr: Array<number>) {
   return true;
 }
 
-class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
-  private stickyItemsQueue: Array<StickyItemInfo<ItemT>> = [];
+class StickyMarshal {
+  private stickyItemsQueue: StickyItemInfo[] = [];
   private mode?: StickyMode;
   private _calculateRangeValuesScheduler: Scheduler;
+  readonly marshal: Marshal;
 
   constructor(props: StickyMarshalProps) {
-    const { stickyMode } = props;
+    const { stickyMode, marshal } = props;
+    this.marshal = marshal;
     this.mode = stickyMode || StickyMode.fluid;
     this._calculateRangeValuesScheduler = new Scheduler(
       this._calculateRangeValues.bind(this),
@@ -39,7 +41,7 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
 
   registerStickyItem(
     itemKey: string,
-    info: Omit<StickyItemInfo<ItemT>, 'itemKey' | 'startOffset'>
+    info: Omit<StickyItemInfo, 'itemKey' | 'startOffset'>
   ) {
     const index = this.findIndex(itemKey);
     const nextInfo = info || {};
@@ -62,11 +64,11 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
     return this.stickyItemsQueue.findIndex((item) => item.itemKey === itemKey);
   }
 
-  calculateRangeValues(ownerId?: string) {
-    this._calculateRangeValuesScheduler.schedule(ownerId);
+  calculateRangeValues() {
+    this._calculateRangeValuesScheduler.schedule();
   }
 
-  _calculateRangeValues(ownerId?: string) {
+  _calculateRangeValues() {
     const len = this.stickyItemsQueue.length;
     const _interpolationConfig: {
       [key: string]: InterpolationConfig;
@@ -74,15 +76,21 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
     const _animatedValueConfig: {
       [key: string]: InterpolationConfig;
     } = {};
+    const selectValue = this.marshal.getScrollHelper().selectValue;
 
     for (let idx = 0; idx < len; idx++) {
       const current = this.stickyItemsQueue[idx];
-      const { itemKey, dimensions } = current;
-      const helper = dimensions.getKeyMeta(itemKey, ownerId);
-      const selectValue = dimensions.getSelectValue();
-      const itemOffsetLengthRelativeToContainer =
-        helper?.getItemOffset(true) || 0;
-      const containerOffset = helper?.getContainerOffset();
+      const { itemKey, rect } = current;
+      // const helper = dimensions.getKeyMeta(itemKey, ownerId);
+      // const selectValue = .getSelectValue();
+      // const itemOffsetLengthRelativeToContainer =
+      //   helper?.getItemOffset(true) || 0;
+      // const containerOffset = helper?.getContainerOffset();
+
+      const containerOffset = 0;
+      const itemOffsetLengthRelativeToContainer = rect
+        ? selectValue.selectLength(rect)
+        : 0;
 
       _animatedValueConfig[itemKey] = {
         inputRange: [],
@@ -102,15 +110,17 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
             // should use current item's viewabilityGeneral；such as `SectionList`
             // every List will be general, `stickyHeader` should use its own general
             // to get `layout` info.
-            const currentDimensions = prevItem.dimensions;
+            // const currentDimensions = prevItem.dimensions;
             const prevItemKey = prevItem.itemKey;
-            const prevItemLayout = currentDimensions
-              .getKeyMeta(prevItemKey, ownerId)
-              ?.getLayout();
+            // const prevItemLayout = currentDimensions
+            //   .getKeyMeta(prevItemKey, ownerId)
+            //   ?.getLayout();
+            const prevItemLayout = prevItem.rect;
 
             if (prevItemLayout) {
-              const prevItemLength = selectValue.selectLength(prevItemLayout);
-              const collisionPoint = totalOffset - prevItemLength!;
+              const prevItemLength =
+                selectValue.selectLength(prevItemLayout) || 0;
+              const collisionPoint = totalOffset - prevItemLength;
               const config = _interpolationConfig[prevItemKey];
               const last = Math.max(
                 config.inputRange[config.inputRange.length - 1] || 0,
@@ -153,11 +163,8 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
           if (idx) {
             const prevItems = this.stickyItemsQueue.slice(0, idx);
             prevItemsLength = prevItems.reduce((acc, cur) => {
-              const { itemKey } = cur;
-              const layout = dimensions
-                .getKeyMeta(itemKey, ownerId)
-                ?.getLayout();
-              const itemLength = layout ? selectValue.selectLength(layout) : 0;
+              const { rect } = cur;
+              const itemLength = rect ? selectValue.selectLength(rect) : 0;
               return acc + (itemLength || 0) + cur.startCorrection;
             }, 0);
           }

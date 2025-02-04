@@ -73,24 +73,24 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       enableIntersectionObserver
       intersectionObserverCallback={intersectionObserverHandler}
       // onContentSizeChange={onContentSizeChange}
-      stickyMode={StickyMode.fluid}
     >
       <View style={{ height: 700, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>
       </View>
-      <StickyView
+      <IntersectionObserverTouchableOpacity
         observerKey="second"
         // ref={secondRef}
         style={{ height: 100, width: '100%', backgroundColor: 'pink' }}
       >
         <Text>second</Text>
-      </StickyView>
+      </IntersectionObserverTouchableOpacity>
       <ScrollView
         horizontal
         onScroll={horizontalScrollHandler}
         onScrollEndDrag={horizontalScrollHandler2}
         scrollEventThrottle={16}
         ref={nestScrollViewRef}
+        stickyMode={StickyMode.fluid}
       >
         <IntersectionObserverTouchableOpacity
           // ref={blueRef}
@@ -99,6 +99,12 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
         >
           <Text>blue</Text>
         </IntersectionObserverTouchableOpacity>
+        <StickyView
+          observerKey="yellow"
+          style={{ height: 300, width: 60, backgroundColor: 'yellow' }}
+        >
+          <Text>yellow</Text>
+        </StickyView>
         <View style={{ height: 300, width: 200, backgroundColor: 'brown' }}>
           <View style={{ height: 25 }}>
             <Text>brown</Text>

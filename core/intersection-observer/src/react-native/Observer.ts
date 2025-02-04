@@ -111,18 +111,6 @@ class Observer {
       ? computeIntersection(itemClientRect, containerIntersection)
       : null;
 
-    // console.log(
-    //   'intersection ',
-    //   this.observerKey,
-    //   intersection,
-    //   computeIntersection(
-    //     this.containerObserver.getBoundingClientRect(),
-    //     itemClientRect
-    //   ),
-    //   this.containerObserver.getBoundingClientRect(),
-    //   this.containerObserver.getBoundingClientIntersection()
-    // );
-
     const entry = new IntersectionObserverEntry({
       target: this.target,
       dimensions: this.dimensions,
@@ -140,7 +128,9 @@ class Observer {
   }
 
   /**
-   * relative to viewport
+   * relative to viewport; recently the container layout change will not
+   * trigger item `getBoundingClientReact` update, so If getBoundingClientRect
+   * should be invoked on use..
    */
   getBoundingClientRect() {
     const containerRect = this.containerObserver.getBoundingClientRect();
