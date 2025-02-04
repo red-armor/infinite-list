@@ -5,7 +5,7 @@ import createStickyComponent from './item/sticky-item/createStickyComponent';
 import FooterPortal from './portal/FooterPortal';
 import HeaderPortal from './portal/HeaderPortal';
 
-export { default as ScrollView } from './ScrollView';
+import ScrollerScrollView from './ScrollView';
 export { default as ViewableItem } from './item/ViewableItem';
 export { default as StickyItem } from './item/sticky-item/StickyItem';
 export { default as ScrollViewContext } from './context/ScrollViewContext';
@@ -14,6 +14,7 @@ export { default as ViewabilityContext } from './context/ViewabilityContext';
 export { default as ViewableItemContext } from './context/ViewableItemContext';
 export { default as ScrollHelper } from './ScrollHelper';
 export { default as IntersectionObserverView } from './intersection/IntersectionObserverView';
+export { default as IntersectionObserverTouchableOpacity } from './intersection/IntersectionObserverTouchableOpacity';
 
 export { default as Marshal } from './Marshal';
 export * from './types';
@@ -44,3 +45,9 @@ export const ScrollViewPortal = {
 export * from './constants';
 export * from './commons/platform';
 export { default as useMeasureLayout } from './hooks/useMeasureLayout';
+
+/**
+ * to make exported ScrollView type compatible with react-native
+ */
+export type ScrollView = typeof ScrollerScrollView;
+export { ScrollerScrollView as ScrollView };

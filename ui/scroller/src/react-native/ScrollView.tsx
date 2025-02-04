@@ -17,7 +17,6 @@ import {
 import isRefObject from '@x-oasis/is-ref';
 import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import Marshal from './Marshal';
-import ScrollHelper from './ScrollHelper';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
 import AnimatedRenderer from './component/AnimatedRenderer';

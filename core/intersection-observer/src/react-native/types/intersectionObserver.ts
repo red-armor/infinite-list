@@ -50,4 +50,4 @@ export interface IIntersectionObserver {
   observe: (el: View, options: ObserveOptions) => void;
 }
 
-export type ObserverComponent = View | TouchableHighlight | TouchableOpacity;
+export type ObservedComponent = View | TouchableHighlight | TouchableOpacity;

@@ -1,17 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView as NativeScrollView } from 'react-native';
 import {
   IntersectionObserver,
   ReactNativeDocumentBase,
 } from '@infinite-list/intersection-observer';
-import { ScrollView, IntersectionObserverView } from '@infinite-list/scroller';
+import {
+  ScrollView,
+  IntersectionObserverView,
+  IntersectionObserverTouchableOpacity,
+} from '@infinite-list/scroller';
 
 const MeasureInWindowSimpleIntersectionScrollView = () => {
   const greenRef = useRef<View>(null);
   const secondRef = useRef<View>(null);
   const nestRef = useRef<View>(null);
   const outsideRef = useRef<ScrollView>(null);
-  const nestScrollViewRef = useRef<ScrollView>(null);
+  const nestScrollViewRef = useRef<NativeScrollView>(null);
   const nestVerticalScrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
@@ -80,13 +84,13 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
         ref={nestScrollViewRef}
         // onContentSizeChange={onHorizontalContentSizeChange}
       >
-        <IntersectionObserverView
+        <IntersectionObserverTouchableOpacity
           // ref={blueRef}
           observerKey="blue"
           style={{ height: 300, width: 200, backgroundColor: 'blue' }}
         >
           <Text>blue</Text>
-        </IntersectionObserverView>
+        </IntersectionObserverTouchableOpacity>
         <View style={{ height: 300, width: 200, backgroundColor: 'brown' }}>
           <View style={{ height: 25 }}>
             <Text>brown</Text>

@@ -1,4 +1,9 @@
-import { ForwardedRef, MutableRefObject, PropsWithChildren } from 'react';
+import {
+  ForwardedRef,
+  MutableRefObject,
+  PropsWithChildren,
+  RefObject,
+} from 'react';
 import {
   Animated,
   LayoutChangeEvent,
@@ -16,6 +21,7 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
+import ScrollerScrollView from '../ScrollView';
 
 import {
   ViewabilityConfig,
@@ -69,10 +75,10 @@ export interface ScrollRendererProps
   extends RefreshControlProps,
     ScrollViewProps {
   ref?: ForwardedRef<ScrollView>;
-  scrollViewKey: string;
-  getScrollHelper: GetScrollHelper;
+  // scrollViewKey: string;
+  // getScrollHelper: GetScrollHelper;
 
-  scrollEventHelper: ScrollEventHelper;
+  // scrollEventHelper: ScrollEventHelper;
 }
 
 export interface AnimatedScrollRendererProps extends ScrollRendererProps {
@@ -97,7 +103,7 @@ export interface AnimatedScrollRendererPropsWithForwardRef
 export interface AnimatedViewPagerRenderProps extends ViewPagerAndroidProps {
   ref?: ForwardedRef<PagerView>;
   scrollViewKey: string;
-  getScrollHelper: GetScrollHelper;
+  // getScrollHelper: GetScrollHelper;
   pagerOffsetRef?: MutableRefObject<Animated.Value>;
   pagerPositionRef?: MutableRefObject<Animated.Value>;
 }
@@ -108,7 +114,7 @@ export interface AnimatedViewPagerRenderPropsWithForwardRef
   scrollViewKey: string;
   pagerOffsetRef?: MutableRefObject<Animated.Value>;
   pagerPositionRef?: MutableRefObject<Animated.Value>;
-  getScrollHelper: GetScrollHelper;
+  // getScrollHelper: GetScrollHelper;
 }
 
 export type SpectrumScrollViewProps = ScrollViewProps &
@@ -168,7 +174,7 @@ export type SpectrumScrollViewProps = ScrollViewProps &
   };
 
 export type SpectrumScrollViewPropsWithRef = SpectrumScrollViewProps & {
-  ref?: ForwardedRef<ScrollView>;
+  ref?: RefObject<typeof ScrollerScrollView> | RefObject<ScrollView | null>;
 };
 export type SpectrumScrollViewPropsWithForwardRef = SpectrumScrollViewProps & {
   forwardRef?: ForwardedRef<ScrollView>;
