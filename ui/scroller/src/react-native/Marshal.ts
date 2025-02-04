@@ -15,11 +15,6 @@ import ScrollEventHelper from './ScrollEventHelper';
  */
 class Marshal {
   readonly _horizontal: boolean;
-
-  readonly _animatedValueX: MutableRefObject<Animated.Value>;
-
-  readonly _animatedValueY: MutableRefObject<Animated.Value>;
-
   readonly _animated: boolean;
 
   readonly _rootScrollHelper: ScrollHelper;
@@ -63,8 +58,6 @@ class Marshal {
       scrollUpdating = true,
       animatedValueX,
       animatedValueY,
-      // intersectionObserver,
-      // ownerScrollHelper,
 
       onScroll,
       onScrollToTop,
@@ -82,8 +75,8 @@ class Marshal {
     this._id = id;
 
     this._animated = animated;
-    this._animatedValueX = animatedValueX;
-    this._animatedValueY = animatedValueY;
+    // this._animatedValueX = animatedValueX;
+    // this._animatedValueY = animatedValueY;
     this._horizontal = horizontal;
     this._scrollUpdating = scrollUpdating;
     this._parentMarshal = parentMarshal;
@@ -97,6 +90,8 @@ class Marshal {
         stickyMode,
         horizontal,
         ref,
+        animatedValueX,
+        animatedValueY,
       });
     } else {
       this._rootScrollHelper = rootScrollHelper;
@@ -222,7 +217,7 @@ class Marshal {
   }
 
   getAnimatedValue() {
-    return this._horizontal ? this._animatedValueX : this._animatedValueY;
+    return this.scrollHelper.getAnimatedValue();
   }
 
   isHorizontal() {

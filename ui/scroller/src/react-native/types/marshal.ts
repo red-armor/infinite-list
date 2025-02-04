@@ -18,8 +18,8 @@ export type MarshalProps = {
   parentMarshal: Marshal | null;
   scrollUpdating?: boolean;
   ref: InfiniteListScrollViewRef;
-  animatedValueX: MutableRefObject<Animated.Value>;
-  animatedValueY: MutableRefObject<Animated.Value>;
+  animatedValueX?: MutableRefObject<Animated.Value>;
+  animatedValueY?: MutableRefObject<Animated.Value>;
 } & Omit<ScrollHelperProps, 'marshal'> &
   Omit<ScrollEventHelperProps, 'marshal'>;
 
@@ -30,6 +30,8 @@ export type ScrollHelperProps = {
   stickyMode?: StickyMode;
   horizontal: boolean;
   ref: InfiniteListScrollViewRef;
+  animatedValueX?: MutableRefObject<Animated.Value>;
+  animatedValueY?: MutableRefObject<Animated.Value>;
 };
 
 export type ScrollEventHelperProps = {

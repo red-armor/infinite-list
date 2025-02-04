@@ -103,10 +103,10 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
 
   const shouldBeView = false;
 
-  const defaultAnimatedValueX = useRef(new Animated.Value(0));
-  const defaultAnimatedValueY = useRef(new Animated.Value(0));
-  const animatedValueY = animatedY || defaultAnimatedValueY;
-  const animatedValueX = animatedX || defaultAnimatedValueX;
+  // const defaultAnimatedValueX = useRef(new Animated.Value(0));
+  // const defaultAnimatedValueY = useRef(new Animated.Value(0));
+  // const animatedValueY = animatedY || defaultAnimatedValueY;
+  // const animatedValueX = animatedX || defaultAnimatedValueX;
 
   /**
    * Every scrollView has a marshal
@@ -116,8 +116,8 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
       new Marshal({
         id: scrollViewKey,
         animated,
-        animatedValueY,
-        animatedValueX,
+        animatedValueY: animatedY,
+        animatedValueX: animatedX,
         parentMarshal,
         scrollUpdating,
         ref: scrollViewRef,

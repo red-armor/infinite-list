@@ -7,6 +7,7 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
+  Animated,
 } from 'react-native';
 import { ReactNativeDocumentBase } from '@infinite-list/intersection-observer/react-native';
 
@@ -51,7 +52,7 @@ class ScrollHelper {
 
   public selectValue: SelectValue;
 
-  private _reverseOrientationRootChildren: ScrollHelper[] = [];
+  // private _reverseOrientationRootChildren: ScrollHelper[] = [];
 
   private _stickyMarshal: StickyMarshal;
 
@@ -82,8 +83,20 @@ class ScrollHelper {
 
   ownerDocument: ReactNativeDocumentBase;
 
+  private _animatedValueX: Animated.Value;
+
+  private _animatedValueY: Animated.Value;
+
   constructor(props: ScrollHelperProps) {
-    const { id, ref, stickyMode, horizontal, marshal } = props;
+    const {
+      id,
+      ref,
+      stickyMode,
+      horizontal,
+      marshal,
+      animatedValueX,
+      animatedValueY,
+    } = props;
     this._marshal = marshal;
 
     this.id = id;
@@ -97,6 +110,9 @@ class ScrollHelper {
     this._layoutMeasurement = DEFAULT_LAYOUT_MEASUREMENT;
     this._contentSize = DEFAULT_SCROLL_EVENT_METRICS.contentSize;
     this.resolveScrollMetrics();
+
+    this._animatedValueY = animatedValueY || new Animated.Value(0);
+    this._animatedValueX = animatedValueX || new Animated.Value(0);
 
     this.hasInteraction = false;
 
@@ -173,6 +189,10 @@ class ScrollHelper {
     return this._contentSize;
   }
 
+  getAnimatedValue() {
+    return this._horizontal ? this._animatedValueX : this._animatedValueY;
+  }
+
   addScrollEnabledHandler(handler: { (falsy: boolean): void }) {
     this._scrollEnabledHandler = handler;
   }
@@ -205,19 +225,19 @@ class ScrollHelper {
     };
   }
 
-  registerReverseOrientationChild(child: ScrollHelper) {
-    const index = this._reverseOrientationRootChildren.findIndex(
-      (v) => v === child
-    );
-    if (index === -1) this._reverseOrientationRootChildren.push(child);
+  // registerReverseOrientationChild(child: ScrollHelper) {
+  //   const index = this._reverseOrientationRootChildren.findIndex(
+  //     (v) => v === child
+  //   );
+  //   if (index === -1) this._reverseOrientationRootChildren.push(child);
 
-    return () => {
-      const index = this._reverseOrientationRootChildren.findIndex(
-        (v) => v === child
-      );
-      if (index !== -1) this._reverseOrientationRootChildren.splice(index, 1);
-    };
-  }
+  //   return () => {
+  //     const index = this._reverseOrientationRootChildren.findIndex(
+  //       (v) => v === child
+  //     );
+  //     if (index !== -1) this._reverseOrientationRootChildren.splice(index, 1);
+  //   };
+  // }
 
   /**
    *
