@@ -160,7 +160,7 @@
 //     useEffect(() => {
 //       if (!marshal || !marshal.getAnimated()) {
 //         console.error(
-//           `[Spectrum Error]: 'createStickyComponent' should` +
+//           `[InfiniteList Error]: 'createStickyComponent' should` +
 //             `be wrapped in ScrollView with 'animated={true}'`
 //         );
 //       }

@@ -42,7 +42,7 @@ export interface ViewRendererProps extends ViewProps {
 
 export type GetScrollHelper = () => ScrollHelper;
 
-export type SpectrumScrollViewRef = MutableRefObject<ScrollView>;
+export type InfiniteListScrollViewRef = MutableRefObject<ScrollView>;
 
 export interface ViewRendererPropsWithForwardRef extends ScrollViewProps {
   forwardRef?: ForwardedRef<View>;
@@ -116,7 +116,7 @@ export interface AnimatedViewPagerRenderPropsWithForwardRef
   // getScrollHelper: GetScrollHelper;
 }
 
-export type SpectrumScrollViewProps = ScrollViewProps &
+export type InfiniteListScrollViewProps = ScrollViewProps &
   RefreshControlProps & {
     id?: string;
     /**
@@ -178,12 +178,13 @@ export type SpectrumScrollViewProps = ScrollViewProps &
       | undefined;
   };
 
-export type SpectrumScrollViewPropsWithRef = SpectrumScrollViewProps & {
+export type InfiniteListScrollViewPropsWithRef = InfiniteListScrollViewProps & {
   ref?: RefObject<typeof ScrollerScrollView> | RefObject<ScrollView | null>;
 };
-export type SpectrumScrollViewPropsWithForwardRef = SpectrumScrollViewProps & {
-  forwardRef?: ForwardedRef<ScrollView>;
-};
+export type InfiniteListScrollViewPropsWithForwardRef =
+  InfiniteListScrollViewProps & {
+    forwardRef?: ForwardedRef<ScrollView>;
+  };
 
 export type SyntheticEventHandlerEvent =
   NativeSyntheticEvent<NativeScrollEvent>;

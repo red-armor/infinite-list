@@ -7,7 +7,7 @@ import {
 import { StickyMode } from './stickyMarshal';
 import { SyntheticEventHandler, ContentSizeChangeHandler } from './scrollView';
 import Marshal from '../Marshal';
-import { SpectrumScrollViewRef } from './scrollView';
+import { InfiniteListScrollViewRef } from './scrollView';
 
 export type SetScrollUpdating = (falsy: boolean) => void;
 
@@ -17,7 +17,7 @@ export type MarshalProps = {
   horizontal?: boolean;
   parentMarshal: Marshal | null;
   scrollUpdating?: boolean;
-  ref: SpectrumScrollViewRef;
+  ref: InfiniteListScrollViewRef;
   animatedValueX: MutableRefObject<Animated.Value>;
   animatedValueY: MutableRefObject<Animated.Value>;
 } & Omit<ScrollHelperProps, 'marshal'> &
@@ -29,7 +29,7 @@ export type ScrollHelperProps = {
   id: string;
   stickyMode?: StickyMode;
   horizontal: boolean;
-  ref: SpectrumScrollViewRef;
+  ref: InfiniteListScrollViewRef;
 };
 
 export type ScrollEventHelperProps = {

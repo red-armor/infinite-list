@@ -30,13 +30,13 @@ import HeaderPortalContainer from './portal/HeaderContainer';
 import PortalManager from './portal/Manager';
 import {
   ScrollToOption,
-  SpectrumScrollViewProps,
-  SpectrumScrollViewPropsWithForwardRef,
-  SpectrumScrollViewPropsWithRef,
+  InfiniteListScrollViewProps,
+  InfiniteListScrollViewPropsWithForwardRef,
+  InfiniteListScrollViewPropsWithRef,
 } from './types';
 import { resolveScrollViewKey } from './commons/utils';
 
-const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
+const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
   const {
     id,
     forwardRef,
@@ -297,9 +297,12 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
 // https://stackoverflow.com/a/51898192/2006805
 const ForwardScrollView = React.forwardRef(
-  (props: SpectrumScrollViewProps, forwardRef: ForwardedRef<RNScrollView>) => (
-    <ScrollView forwardRef={forwardRef} {...props} />
-  )
-) as (props: PropsWithChildren<SpectrumScrollViewPropsWithRef>) => JSX.Element;
+  (
+    props: InfiniteListScrollViewProps,
+    forwardRef: ForwardedRef<RNScrollView>
+  ) => <ScrollView forwardRef={forwardRef} {...props} />
+) as (
+  props: PropsWithChildren<InfiniteListScrollViewPropsWithRef>
+) => JSX.Element;
 
 export default ForwardScrollView;

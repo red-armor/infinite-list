@@ -2,7 +2,7 @@ import { MutableRefObject } from 'react';
 import { Animated, ScrollView } from 'react-native';
 import ScrollHelper from './ScrollHelper';
 import {
-  SpectrumScrollViewRef,
+  InfiniteListScrollViewRef,
   MarshalProps,
   ScrollEventHandler,
   ScrollEventHandlerSubscriptionKeys,
@@ -34,7 +34,7 @@ class Marshal {
 
   private _reverseOrientationChildren: Marshal[] = [];
 
-  private _ref: SpectrumScrollViewRef;
+  private _ref: InfiniteListScrollViewRef;
 
   private _disposers: Function[] = [];
 

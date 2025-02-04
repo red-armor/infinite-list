@@ -26,7 +26,7 @@ import {
   ScrollEventMetrics,
   ScrollHelperProps,
   ScrollSize,
-  SpectrumScrollViewRef,
+  InfiniteListScrollViewRef,
   StickyMode,
   ViewableItemLayout,
 } from './types';
@@ -68,7 +68,7 @@ class ScrollHelper {
 
   private _scrollEventHelpers: ScrollEventHelper[] = [];
 
-  private _ref: SpectrumScrollViewRef;
+  private _ref: InfiniteListScrollViewRef;
 
   readonly _horizontal: boolean;
 
