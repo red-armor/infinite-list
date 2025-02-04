@@ -87,7 +87,7 @@ class StickyMarshal {
       //   helper?.getItemOffset(true) || 0;
       // const containerOffset = helper?.getContainerOffset();
 
-      const containerOffset = 0;
+      const containerOffset = selectValue.selectOffset(rect);
       const itemOffsetLengthRelativeToContainer = rect
         ? selectValue.selectLength(rect)
         : 0;

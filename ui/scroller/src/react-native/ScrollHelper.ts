@@ -111,8 +111,8 @@ class ScrollHelper {
     this._contentSize = DEFAULT_SCROLL_EVENT_METRICS.contentSize;
     this.resolveScrollMetrics();
 
-    this._animatedValueY = animatedValueY || new Animated.Value(0);
-    this._animatedValueX = animatedValueX || new Animated.Value(0);
+    this._animatedValueY = animatedValueY?.current || new Animated.Value(0);
+    this._animatedValueX = animatedValueX?.current || new Animated.Value(0);
 
     this.hasInteraction = false;
 
