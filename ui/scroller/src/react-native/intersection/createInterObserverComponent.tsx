@@ -25,7 +25,7 @@ const createObserverComponent = <T extends ComponentType<any>>(
     useEffect(
       () =>
         intersectionObserver?.observe(componentRef.current, {
-          root: marshal?.ownerDocument,
+          root: marshal!.ownerDocument,
           observerKey: observerKey,
         }),
       []

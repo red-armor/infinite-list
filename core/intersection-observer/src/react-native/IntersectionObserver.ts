@@ -80,7 +80,7 @@ class IntersectionObserver implements IIntersectionObserver {
     };
   }
 
-  ensureContainerObserver(doc: ReactNativeDocument) {
+  ensureContainerObserver(doc: ReactNativeDocument | undefined | null) {
     if (!doc) return null;
     const node = doc.node;
     if (!node) return null;
