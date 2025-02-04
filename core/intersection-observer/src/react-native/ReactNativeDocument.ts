@@ -79,6 +79,7 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
   }
 
   onScroll(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
+    console.log('scroll --------', scrollEvent.nativeEvent);
     this.emitter.fire('onScroll', scrollEvent);
   }
 }

@@ -227,6 +227,8 @@ class IntersectionObserver implements IIntersectionObserver {
 
       const disposer = doc.addEventListener('onScroll', () => {
         const container = this.nodeToContainerObserverMap.get(current.node);
+
+        console.log('container ', container);
         container?.updateIntersection().then(() => {
           container.updateObserversIntersectionsInSmartWay();
         });
