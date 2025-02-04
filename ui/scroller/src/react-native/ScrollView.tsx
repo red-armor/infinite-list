@@ -54,7 +54,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
 
     animated = false,
     viewabilityConfig,
-    horizontal: _horizontal,
+    horizontal = false,
     enableViewPager = false,
 
     /**
@@ -81,8 +81,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     scrollEnabled = true,
     ...rest
   } = props;
-  const horizontal = useMemo(() => !!_horizontal, []);
-  const scrollViewKey = useMemo(() => resolveScrollViewKey(horizontal), []);
+  const scrollViewKey = useMemo(() => resolveScrollViewKey(!!horizontal), []);
 
   /**
    * In android device, `removeClippedSubviews` used with zIndex will crash.
@@ -124,7 +123,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         parentMarshal,
         scrollUpdating,
         ref: scrollViewRef,
-        horizontal,
+        horizontal: !!horizontal,
         // ownerScrollHelper: rootScrollHelper,
 
         /**
@@ -209,6 +208,8 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
+  console.log('rest ', rest);
+
   const nextScrollUpdatingContextValues = useMemo(
     () => ({
       scrollUpdating,
@@ -264,6 +265,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
           {...refreshControlProps}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
+          horizontal={!!horizontal}
           useSmoothControl={useSmoothControl}
         >
           {nextChildren}
@@ -276,6 +278,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     <ScrollViewContext.Provider value={nextScrollViewContextValues}>
       <HeaderPortalContainer />
       <BasicRenderer
+        horizontal={!!horizontal}
         ref={scrollViewRef as MutableRefObject<RNScrollView>}
         {...rest}
         {...refreshControlProps}

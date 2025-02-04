@@ -48,7 +48,7 @@ export type RefreshControlProps = {
   useSmoothControl?: boolean;
   onRefresh?: (() => void) | undefined | null;
   refreshControlStartCorrection?: number;
-  triggerOnRefreshThresholdValue: number;
+  triggerOnRefreshThresholdValue?: number;
   refreshControlContentContainerStyle?: ViewStyle;
 };
 

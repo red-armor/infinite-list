@@ -28,9 +28,10 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
     forwardRef,
     onLayout,
     scrollEventThrottle,
-    scrollEnabled,
+    scrollEnabled = true,
     ...restProps
   } = props;
+
   const contextValues = useContext(ScrollViewContext);
   const marshal = contextValues.marshal!;
   const scrollHelper = marshal.getScrollHelper();
