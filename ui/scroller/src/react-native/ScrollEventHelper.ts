@@ -44,7 +44,6 @@ class ScrollEventHelper {
 
     this.marshal = marshal;
     this._onScroll = onScroll;
-    // this._scrollHelper = scrollHelper;
     this._onScrollBeginDrag = onScrollBeginDrag;
     this._onScrollEndDrag = onScrollEndDrag;
     this._onContentSizeChange = onContentSizeChange;

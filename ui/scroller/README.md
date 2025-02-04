@@ -1,7 +1,10 @@
-# scroller
+# Scroller
 
-This library was generated with [Nx](https://nx.dev).
+A React component library for efficient infinite scrolling implementations.
 
-## Running unit tests
+## Features
 
-Run `nx test scroller` to execute the unit tests via [Jest](https://jestjs.io).
+- Virtualized scrolling for optimal performance
+- Support for dynamic content loading
+- Customizable scroll behavior and styling
+- TypeScript support

@@ -96,7 +96,7 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
 
         if (this.mode === StickyMode.fluid) {
           current.startOffset = totalOffset - current.startCorrection;
-          // 表示前面还有一个
+          // Iterate over each sticky item in the queue
           if (idx) {
             const prevItem = this.stickyItemsQueue[idx - 1];
             // should use current item's viewabilityGeneral；such as `SectionList`
@@ -223,7 +223,7 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
         }
       }
 
-      // 只有config发生变化的，才进行config的更新
+      // Only update the config if it has changed
       if (Object.keys(config).length) {
         current.setConfig(config);
       }

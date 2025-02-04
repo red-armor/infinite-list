@@ -26,8 +26,6 @@ class Marshal {
 
   readonly scrollEventHelper: ScrollEventHelper;
 
-  // readonly intersectionObserver: IntersectionObserver;
-
   readonly _id: string;
 
   private _parentMarshal: Marshal | null;
@@ -156,8 +154,8 @@ class Marshal {
   //   return this._outerMostVerticalMarshal;
   // }
 
-  // 因为marshal是和ScrollView绑定的，而每一个ScrollView都有一个`rootScrollHelper`
-  // 它可能是self，也可能是parent scrollHelper；
+  // Since marshal is bound to ScrollView, and each ScrollView has a `rootScrollHelper`
+  // it can be either self or parent scrollHelper
   getRootScrollHelper() {
     return this._rootScrollHelper;
   }

@@ -32,19 +32,19 @@ import {
 } from './types';
 
 /**
- * The same direction ScrollView only has one ScrollHelper, it only belong to the root
+ * The same direction ScrollView only has one ScrollHelper, it only belongs to the root
  * ScrollView. The usage of ScrollHelper is to trigger registered ScrollEventHelper
  *
- * - nested scroller 对于嵌套的scrollHelper，处理视窗逻辑主要是分两种情况
- *   - 初始化
- *     - onContentSizeChanged: 解没有parentScrollHelper的情况，也就是自己就是顶层
- *     - onLayout: 解不是root的时候，这个时候要先知道自己的布局，才能够计算它的children
- *   - 有元素滚动
- *     - 这个时候主要就是通过ItemDimensions来解决了
+ * - For nested scrollers, there are two main scenarios for handling viewport logic:
+ *   - Initialization
+ *     - onContentSizeChanged: Handles cases without a parentScrollHelper (when it's the top level)
+ *     - onLayout: Handles non-root cases, where we need to know its own layout first to calculate its children
+ *   - Element scrolling
+ *     - This is mainly handled through ItemDimensions
  *
- *   问题点：
- *     - 挂载的问题，现在ScrollView的整体设计是基于ScrollHelper来实现的。所以现在Item的话，
- *       同样是相对于parent scrollHelper来进行处理
+ *   Issues:
+ *     - Mounting: The current ScrollView design is based on ScrollHelper implementation.
+ *       Therefore, Items are also processed relative to the parent scrollHelper
  */
 class ScrollHelper {
   public id: string;
@@ -246,17 +246,6 @@ class ScrollHelper {
   //   meta.addStateEventListener('viewable', this.onViewableHandler);
   //   return meta;
   // }
-
-  // TODO
-  getItemsDimensions() {
-    return null;
-    // if (!this._parentScrollHelper) return null;
-
-    // const rootMarshal = this._parentScrollHelper.getMarshal();
-
-    // // 这个肯定是ItemsDimensions
-    // return rootMarshal.dimensions;
-  }
 
   setLayout(layout: ViewableItemLayout | ScrollSize) {
     this._layout = this._layout
