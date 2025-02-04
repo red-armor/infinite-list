@@ -188,7 +188,11 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
   );
 
   const nextScrollViewContextValues = useMemo(() => {
-    if (enableIntersectionObserver && !intersectionObserverCallback) {
+    if (
+      !intersectionObserver &&
+      enableIntersectionObserver &&
+      !intersectionObserverCallback
+    ) {
       throw new Error(
         '`intersectionObserverCallback` is required when' +
           ' `enableIntersectionObserver` is true'
@@ -197,7 +201,9 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
     return {
       marshal,
       portalManager: portalManager || new PortalManager(),
-      intersectionObserver: enableIntersectionObserver
+      intersectionObserver: intersectionObserver
+        ? intersectionObserver
+        : enableIntersectionObserver
         ? intersectionObserver ||
           new IntersectionObserver(intersectionObserverCallback!, {
             root: marshal.ownerDocument,
@@ -205,6 +211,7 @@ const ScrollView: FC<SpectrumScrollViewPropsWithForwardRef> = (props) => {
         : null,
     };
   }, []);
+  console.log('nextScrollViewContextValues ', nextScrollViewContextValues);
 
   const nextScrollUpdatingContextValues = useMemo(
     () => ({

@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View, Text, ScrollView as NativeScrollView } from 'react-native';
-import {
-  IntersectionObserver,
-  ReactNativeDocumentBase,
-} from '@infinite-list/intersection-observer';
+import { IIntersectionObserverEntry } from '@infinite-list/intersection-observer';
 import {
   ScrollView,
   IntersectionObserverView,
@@ -27,20 +24,12 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
     });
   }, []);
 
-  const scrollHandler = useCallback((scrollEvent) => {
+  const scrollHandler = useCallback(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
   }, []);
-  const horizontalScrollHandler = useCallback((scrollEvent) => {
-    greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
-    });
-    nestRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nest ref ', x, y, width, height);
-    });
-  }, []);
-  const horizontalScrollHandler2 = useCallback((scrollEvent) => {
+  const horizontalScrollHandler = useCallback(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
@@ -48,7 +37,7 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       console.log('nest ref ', x, y, width, height);
     });
   }, []);
-  const nestVerticalScrollHandler = useCallback((scrollEvent) => {
+  const horizontalScrollHandler2 = useCallback(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
@@ -56,6 +45,31 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       console.log('nest ref ', x, y, width, height);
     });
   }, []);
+  const nestVerticalScrollHandler = useCallback(() => {
+    greenRef.current?.measureInWindow((x, y, width, height) => {
+      console.log('green ref ', x, y, width, height);
+    });
+    nestRef.current?.measureInWindow((x, y, width, height) => {
+      console.log('nest ref ', x, y, width, height);
+    });
+  }, []);
+
+  const intersectionObserverHandler = useCallback(
+    (
+      intersectionObserverEntries: IIntersectionObserverEntry[],
+      observer: IntersectionObserver
+    ) => {
+      console.log('intersectionObserverEntries ', intersectionObserverEntries);
+      // intersectionObserverEntries.forEach((entry) => {
+      //   console.log(
+      //     'intersectionObserverHandler ',
+      //     entry.intersectionRatio,
+      //     entry.target
+      //   );
+      // });
+    },
+    []
+  );
 
   return (
     <ScrollView
@@ -82,7 +96,8 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
         onScrollEndDrag={horizontalScrollHandler2}
         scrollEventThrottle={16}
         ref={nestScrollViewRef}
-        // onContentSizeChange={onHorizontalContentSizeChange}
+        enableIntersectionObserver
+        intersectionObserverCallback={intersectionObserverHandler}
       >
         <IntersectionObserverTouchableOpacity
           // ref={blueRef}
