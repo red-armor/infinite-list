@@ -37,9 +37,7 @@ const ListGroup = <ItemT extends GenericItemT>(
     ...rest
   } = props;
   // @ts-ignore
-  const { scrollEventHelper, getScrollHelper } = useContext(
-    scrollComponentContext
-  );
+  const { marshal } = useContext(scrollComponentContext);
   const layoutRef = useRef<{
     x: number;
     y: number;
@@ -57,7 +55,8 @@ const ListGroup = <ItemT extends GenericItemT>(
 
   const scrollMetricsRef = useRef<any>();
 
-  const scrollHelper = getScrollHelper();
+  const scrollHelper = marshal.getScrollHelper();
+  const scrollEventHelper = marshal.getScrollEventHelper();
 
   const layoutHandler = useCallback(() => {
     if (viewRef.current) {
