@@ -112,7 +112,7 @@ class IntersectionObserver implements IIntersectionObserver {
    *
    * el may be reused...
    */
-  observe(el: View, options: ObserveOptions) {
+  observe(el: View | null, options: ObserveOptions) {
     const { observerKey = '', root = this.root } = options || {};
     const nextObserverKey = observerKey || generateRandomKey();
     let observer = null;

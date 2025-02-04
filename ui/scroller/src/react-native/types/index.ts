@@ -8,3 +8,4 @@ export * from './marshal';
 export * from './control';
 export * from './stickyMarshal';
 export * from './stickyMarshal';
+export * from './intersection';

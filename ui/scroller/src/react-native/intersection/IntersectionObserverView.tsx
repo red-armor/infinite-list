@@ -15,14 +15,14 @@ const IntersectionObserverView: FC<
 
   useEffect(() => {
     if (intersectionObserver) {
-      intersectionObserver.observe(viewRef.current, {
+      return intersectionObserver.observe(viewRef.current, {
         root: marshal?.ownerDocument,
         observerKey: observerKey,
       });
-      return () => {
-        intersectionObserver.unobserve(viewRef.current);
-      };
     }
+    return () => {
+      // do nothing
+    };
   }, []);
 
   return (
