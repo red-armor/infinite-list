@@ -65,12 +65,13 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       <View style={{ height: 700, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>
       </View>
-      <View
-        ref={secondRef}
+      <IntersectionObserverView
+        observerKey="second"
+        // ref={secondRef}
         style={{ height: 100, width: '100%', backgroundColor: 'pink' }}
       >
         <Text>second</Text>
-      </View>
+      </IntersectionObserverView>
       <ScrollView
         horizontal
         onScroll={horizontalScrollHandler}

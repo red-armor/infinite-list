@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 import ScrollViewContext from '../context/ScrollViewContext';
 import throttle from '@x-oasis/throttle';
-
 import useScrollEnabled from '../hooks/useScrollEnabled';
+import useInitialEffect from '../hooks/useInitialEffect';
 import {
   ScrollRendererProps,
   ScrollRendererPropsWithForwardRef,
@@ -33,8 +33,8 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   } = props;
 
   const contextValues = useContext(ScrollViewContext);
-  const marshal = contextValues.marshal!;
-  const scrollHelper = marshal.getScrollHelper();
+  const { marshal, intersectionObserver } = contextValues;
+  const scrollHelper = marshal!.getScrollHelper();
 
   const [_scrollEnabled] = useScrollEnabled({
     scrollEnabled: !!scrollEnabled,
@@ -43,11 +43,8 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
 
   const throttledHandler = useMemo(() => {
     function handler(e: NativeSyntheticEvent<NativeScrollEvent>) {
-      scrollHelper.onScroll(e);
-
-      console.log('hello ', marshal.ownerDocument, e);
-
-      marshal.ownerDocument.onScroll(e);
+      scrollHelper?.onScroll(e);
+      marshal?.ownerDocument?.onScroll(e);
     }
 
     return throttle(handler, scrollEventThrottle, {
@@ -69,12 +66,30 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
       onLayout(e);
     }
 
+    intersectionObserver?.updateIntersections();
+
     const {
       nativeEvent: { layout },
     } = e;
 
     scrollHelper.setLayout(layout);
   }, []);
+
+  useInitialEffect(() =>
+    marshal
+      ?.getScrollHelper()
+      .addEventListener(
+        'onScrollEndDrag',
+        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+          marshal?.ownerDocument?.onScroll(e);
+        }
+      )
+  );
+  useInitialEffect(() =>
+    marshal?.getScrollHelper().addEventListener('onContentSizeChange', () => {
+      intersectionObserver?.updateIntersections();
+    })
+  );
 
   return (
     <ScrollView
