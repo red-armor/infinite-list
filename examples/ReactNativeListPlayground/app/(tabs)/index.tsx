@@ -172,7 +172,7 @@
 // import MeasureInWindowSimple from '../../components/play/MeasureInWindowSimple';
 // import MeasureInWindowSimpleIntersection from '../../components/play/MeasureInWindowSimpleIntersection';
 // import MeasureInWindowSimpleIntersectionScrollView from '../../components/play/MeasureInWindowSimpleIntersectionScrollView';
-import StickyView from '../../components/play/StickyView';
+import StickyView from '../../components/play/StickyViewHorizontal';
 
 export default () => {
   // return <List />;

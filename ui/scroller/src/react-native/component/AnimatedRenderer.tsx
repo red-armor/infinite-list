@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
   useContext,
+  useEffect,
 } from 'react';
 import {
   Animated,
@@ -52,7 +53,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   const { marshal, intersectionObserver } = contextValues;
   const scrollHelper = marshal!.getScrollHelper();
   const animatedValue = useMemo(() => marshal!.getAnimatedValue(), [marshal]);
-  const scrollEventHelper = marshal!.getScrollEventHelper();
   const horizontal = marshal!.isHorizontal();
 
   const lottieAnimatedValueRef = useRef(
@@ -63,6 +63,12 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     scrollEnabled: !!scrollEnabled,
     scrollHelper,
   });
+
+  useEffect(() => {
+    animatedValue.addListener(({ value }) => {
+      console.log('value --- ', value);
+    });
+  }, []);
 
   const throttledHandler = useMemo(() => {
     function scrollHandler(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -127,11 +133,11 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   const contentOffset = useMemo(() => {
     if (horizontal)
       return {
-        x: animatedValue.current,
+        x: animatedValue,
       };
 
     return {
-      y: animatedValue.current,
+      y: animatedValue,
     };
   }, [horizontal]);
 
@@ -148,7 +154,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
                         inputRange: [0, triggerOnRefreshThresholdValue],
                         outputRange: [0, triggerOnRefreshThresholdValue],
                       }),
-                      animatedValue.current.interpolate({
+                      animatedValue.interpolate({
                         inputRange: [
                           triggerOnRefreshThresholdValue - 2,
                           triggerOnRefreshThresholdValue - 1,

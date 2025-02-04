@@ -65,7 +65,7 @@ export type SmoothControlProps = PropsWithChildren<
       x: number;
       y: number;
     }>;
-    animatedValue: MutableRefObject<Animated.Value>;
+    animatedValue: Animated.Value;
     lottieAnimatedValueRef: MutableRefObject<Animated.Value>;
   }
 >;

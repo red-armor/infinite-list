@@ -55,7 +55,7 @@ const SmoothControl: FC<SmoothControlProps> = (props) => {
                   inputRange: [-1, 0, triggerOnRefreshThresholdValue],
                   outputRange: [0, -triggerOnRefreshThresholdValue, 0],
                 })
-              : animatedValue.current.interpolate({
+              : animatedValue.interpolate({
                   inputRange: [
                     -(triggerOnRefreshThresholdValue + 1),
                     -triggerOnRefreshThresholdValue,

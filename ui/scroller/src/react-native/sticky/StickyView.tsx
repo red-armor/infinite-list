@@ -15,6 +15,7 @@ import {
   Platform,
   StyleSheet,
   StyleProp,
+  Animated,
 } from 'react-native';
 import {
   IClientRectReadOnly,
@@ -136,10 +137,12 @@ const StickyView: FC<
     ]);
   }, [config]);
 
+  console.log('config ', config);
+
   return (
-    <View ref={viewRef} style={containerStyle} {...rest}>
+    <Animated.View ref={viewRef} style={containerStyle} {...rest}>
       {props.children}
-    </View>
+    </Animated.View>
   );
 };
 

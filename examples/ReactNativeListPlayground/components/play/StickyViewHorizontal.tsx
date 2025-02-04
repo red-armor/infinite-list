@@ -9,7 +9,7 @@ import {
   StickyMode,
 } from '@infinite-list/scroller';
 
-const MeasureInWindowSimpleIntersectionScrollView = () => {
+const StickyViewHorizontal = () => {
   const greenRef = useRef<View>(null);
   const secondRef = useRef<View>(null);
   const nestRef = useRef<View>(null);
@@ -86,6 +86,7 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       </IntersectionObserverTouchableOpacity>
       <ScrollView
         horizontal
+        animated
         onScroll={horizontalScrollHandler}
         onScrollEndDrag={horizontalScrollHandler2}
         scrollEventThrottle={16}
@@ -161,4 +162,4 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
   );
 };
 
-export default MeasureInWindowSimpleIntersectionScrollView;
+export default StickyViewHorizontal;
