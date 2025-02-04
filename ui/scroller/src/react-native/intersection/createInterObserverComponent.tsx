@@ -32,7 +32,7 @@ const createObserverComponent = <T extends ComponentType<any>>(
         intersectionObserver?.observe(componentRef.current, {
           root: marshal!.ownerDocument,
           observerKey: observerKey,
-        }),
+        })?.remover,
       []
     );
 

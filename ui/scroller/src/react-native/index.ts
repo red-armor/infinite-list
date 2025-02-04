@@ -15,6 +15,7 @@ export { default as ViewableItemContext } from './context/ViewableItemContext';
 export { default as ScrollHelper } from './ScrollHelper';
 export { default as IntersectionObserverView } from './intersection/IntersectionObserverView';
 export { default as IntersectionObserverTouchableOpacity } from './intersection/IntersectionObserverTouchableOpacity';
+export { default as StickyView } from './sticky/StickyView';
 
 export { default as Marshal } from './Marshal';
 export * from './types';
@@ -22,12 +23,12 @@ export { default as RefreshControl } from './refresh/Control';
 
 export { createViewableComponent, createStickyComponent };
 
-export const Viewable = {
-  View: createViewableComponent(View),
-  TouchableOpacity: createViewableComponent(TouchableOpacity),
-};
+// export const Viewable = {
+//   View: createViewableComponent(View),
+//   TouchableOpacity: createViewableComponent(TouchableOpacity),
+// };
 
-export const ViewableComponent = Viewable;
+// export const ViewableComponent = Viewable;
 
 // const AnimatedTouchableOpacity =
 //   Animated.createAnimatedComponent(TouchableOpacity);

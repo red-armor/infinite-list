@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { ClientRect, ObserverProps, ItemLayout } from './types';
+import { ClientRect, ObserverProps, ItemLayout, OnRectChange } from './types';
 import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
 import { getEmptyRect, convertLayoutToClientRect } from './utils';
 import { generateRandomKey } from './generateRandom';
@@ -15,6 +15,7 @@ class Observer {
   private clientRect: IClientRectReadOnly;
   private containerObserver: ContainerObserver;
   private entry: IIntersectionObserverEntry | null = null;
+  readonly onRectChange?: OnRectChange;
 
   // /**
   //  * https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
@@ -30,10 +31,12 @@ class Observer {
   constructor(props: ObserverProps) {
     const {
       target,
+      onRectChange,
       containerObserver,
       observerKey = generateRandomKey(),
     } = props;
     this.target = target;
+    this.onRectChange = onRectChange;
     this.observerKey = observerKey;
     this.clientRect = getEmptyRect();
     this.containerObserver = containerObserver;
@@ -72,6 +75,8 @@ class Observer {
           height,
         };
 
+        this.onRectChange?.(this.clientRect);
+
         this.dimensions.setKeyItemLayout(this.observerKey, {
           x,
           y,
@@ -82,10 +87,6 @@ class Observer {
         cb?.(this.clientRect);
       }
     );
-  }
-
-  getClientRect() {
-    return this.clientRect;
   }
 
   setClientRect(layout: IClientRectReadOnly | ItemLayout) {
@@ -131,8 +132,6 @@ class Observer {
     });
 
     this.entry = entry.getEntry();
-
-    // console.log('entry ', this.containerObserver, this.observerKey, this.entry);
     return this.entry;
   }
 
@@ -141,7 +140,7 @@ class Observer {
   }
 
   /**
-   * derive from container rect
+   * relative to viewport
    */
   getBoundingClientRect() {
     const containerRect = this.containerObserver.getBoundingClientRect();
@@ -165,6 +164,14 @@ class Observer {
     };
 
     return clientRect;
+  }
+
+  /**
+   * relative to closest ScrollView
+   *
+   */
+  getClientRect() {
+    return this.clientRect;
   }
 }
 

@@ -3,6 +3,7 @@ import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
 import { IIntersectionObserverEntry } from './intersectionObserverEntry';
 import IntersectionObserver from '../IntersectionObserver';
+import { OnRectChange } from './observer';
 
 export type IntersectionObserverProps = {
   root: ReactNativeDocument;
@@ -39,6 +40,7 @@ export type MonitorDisposer = () => void;
 export type ObserveOptions = {
   observerKey: string;
   root: ReactNativeDocument;
+  onRectChange?: OnRectChange;
 };
 
 export interface IIntersectionObserver {

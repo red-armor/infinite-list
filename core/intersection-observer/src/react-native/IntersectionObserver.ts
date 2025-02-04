@@ -113,8 +113,14 @@ class IntersectionObserver implements IIntersectionObserver {
    *
    * el may be reused...
    */
-  observe(el: ObservedComponent, options: ObserveOptions) {
-    const { observerKey = '', root = this.root } = options || {};
+  observe(
+    el: ObservedComponent,
+    options: ObserveOptions
+  ): {
+    observer: Observer;
+    remover: () => void;
+  } {
+    const { observerKey = '', root = this.root, onRectChange } = options || {};
     const nextObserverKey = observerKey || generateRandomKey();
     let observer = null;
     let node = null;
@@ -163,6 +169,7 @@ class IntersectionObserver implements IIntersectionObserver {
     observer = new Observer({
       root: root || this.root,
       target: el,
+      onRectChange,
       observerKey: nextObserverKey,
       containerObserver: container,
     });
@@ -175,8 +182,11 @@ class IntersectionObserver implements IIntersectionObserver {
 
     this.checkIntersection(el);
 
-    return () => {
-      this.unobserve(nextObserverKey);
+    return {
+      observer,
+      remover: () => {
+        this.unobserve(nextObserverKey);
+      },
     };
   }
 
