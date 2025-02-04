@@ -65,7 +65,6 @@ class ScrollTracker {
   }
 
   // get domNode(): HTMLDivElement {
-  //   console.log('dom ', this._domNode);
 
   //   if (this._domNode instanceof HTMLDivElement) {
   //     return this._domNode;

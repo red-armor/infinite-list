@@ -1,11 +1,11 @@
-import Batchinator from '@x-oasis/batchinator';
+import { Scheduler } from '@infinite-list/scheduler';
 
 import {
   InterpolationConfig,
   StickyItemInfo,
   StickyMarshalProps,
   StickyMode,
-} from './types';
+} from '../types';
 import { GenericItemT } from '@infinite-list/types';
 
 export function checkValidInputRange(arr: Array<number>) {
@@ -26,12 +26,12 @@ export function checkValidInputRange(arr: Array<number>) {
 class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
   private stickyItemsQueue: Array<StickyItemInfo<ItemT>> = [];
   private mode?: StickyMode;
-  private _calculateRangeValuesBatchinator: Batchinator;
+  private _calculateRangeValuesScheduler: Scheduler;
 
   constructor(props: StickyMarshalProps) {
     const { stickyMode } = props;
     this.mode = stickyMode || StickyMode.fluid;
-    this._calculateRangeValuesBatchinator = new Batchinator(
+    this._calculateRangeValuesScheduler = new Scheduler(
       this._calculateRangeValues.bind(this),
       50
     );
@@ -63,7 +63,7 @@ class StickyMarshal<ItemT extends GenericItemT = GenericItemT> {
   }
 
   calculateRangeValues(ownerId?: string) {
-    this._calculateRangeValuesBatchinator.schedule(ownerId);
+    this._calculateRangeValuesScheduler.schedule(ownerId);
   }
 
   _calculateRangeValues(ownerId?: string) {

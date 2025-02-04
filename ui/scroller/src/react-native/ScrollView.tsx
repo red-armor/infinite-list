@@ -211,7 +211,6 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
         : null,
     };
   }, []);
-  console.log('nextScrollViewContextValues ', nextScrollViewContextValues);
 
   const nextScrollUpdatingContextValues = useMemo(
     () => ({
