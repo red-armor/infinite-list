@@ -9,7 +9,6 @@ import React, {
   useRef,
 } from 'react';
 import {
-  Animated,
   RefreshControl as RNRefreshControl,
   ScrollView as RNScrollView,
   View as RNView,
@@ -102,11 +101,6 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
   ) as MutableRefObject<RNScrollView>;
 
   const shouldBeView = false;
-
-  // const defaultAnimatedValueX = useRef(new Animated.Value(0));
-  // const defaultAnimatedValueY = useRef(new Animated.Value(0));
-  // const animatedValueY = animatedY || defaultAnimatedValueY;
-  // const animatedValueX = animatedX || defaultAnimatedValueX;
 
   /**
    * Every scrollView has a marshal

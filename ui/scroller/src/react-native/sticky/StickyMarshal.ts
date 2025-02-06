@@ -78,19 +78,14 @@ class StickyMarshal {
     } = {};
     const selectValue = this.marshal.getScrollHelper().selectValue;
 
+    console.log('this mode ', this.mode);
+
     for (let idx = 0; idx < len; idx++) {
       const current = this.stickyItemsQueue[idx];
       const { itemKey, rect } = current;
-      // const helper = dimensions.getKeyMeta(itemKey, ownerId);
-      // const selectValue = .getSelectValue();
-      // const itemOffsetLengthRelativeToContainer =
-      //   helper?.getItemOffset(true) || 0;
-      // const containerOffset = helper?.getContainerOffset();
 
-      const containerOffset = selectValue.selectOffset(rect);
-      const itemOffsetLengthRelativeToContainer = rect
-        ? selectValue.selectLength(rect)
-        : 0;
+      const itemOffset = selectValue.selectOffset(rect) || 0;
+      const itemLength = rect ? selectValue.selectLength(rect) : 0;
 
       _animatedValueConfig[itemKey] = {
         inputRange: [],
@@ -98,23 +93,18 @@ class StickyMarshal {
       };
       const _currentAnimatedValueConfig = _animatedValueConfig[itemKey];
 
-      if (typeof itemOffsetLengthRelativeToContainer !== 'undefined') {
-        const totalOffset =
-          containerOffset || 0 + itemOffsetLengthRelativeToContainer;
+      if (itemLength != null) {
+        const totalOffset = itemOffset;
 
         if (this.mode === StickyMode.fluid) {
           current.startOffset = totalOffset - current.startCorrection;
-          // Iterate over each sticky item in the queue
+          // Iterate over sticky item from the second item onwards
           if (idx) {
             const prevItem = this.stickyItemsQueue[idx - 1];
             // should use current item's viewabilityGeneral；such as `SectionList`
             // every List will be general, `stickyHeader` should use its own general
             // to get `layout` info.
-            // const currentDimensions = prevItem.dimensions;
             const prevItemKey = prevItem.itemKey;
-            // const prevItemLayout = currentDimensions
-            //   .getKeyMeta(prevItemKey, ownerId)
-            //   ?.getLayout();
             const prevItemLayout = prevItem.rect;
 
             if (prevItemLayout) {

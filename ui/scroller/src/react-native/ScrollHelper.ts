@@ -28,7 +28,6 @@ import {
   ScrollHelperProps,
   ScrollSize,
   InfiniteListScrollViewRef,
-  StickyMode,
   ViewableItemLayout,
 } from './types';
 
@@ -51,8 +50,6 @@ class ScrollHelper {
   public id: string;
 
   public selectValue: SelectValue;
-
-  // private _reverseOrientationRootChildren: ScrollHelper[] = [];
 
   private _stickyMarshal: StickyMarshal;
 
@@ -225,20 +222,6 @@ class ScrollHelper {
     };
   }
 
-  // registerReverseOrientationChild(child: ScrollHelper) {
-  //   const index = this._reverseOrientationRootChildren.findIndex(
-  //     (v) => v === child
-  //   );
-  //   if (index === -1) this._reverseOrientationRootChildren.push(child);
-
-  //   return () => {
-  //     const index = this._reverseOrientationRootChildren.findIndex(
-  //       (v) => v === child
-  //     );
-  //     if (index !== -1) this._reverseOrientationRootChildren.splice(index, 1);
-  //   };
-  // }
-
   /**
    *
    * @returns
@@ -296,7 +279,8 @@ class ScrollHelper {
    * @param scrollEventMetrics ScrollEventMetrics
    * @return null
    *
-   * To update `this._scrollMetrics`, should be triggered `onScroll` or `onContentSizeChange`
+   * To update `this._scrollMetrics`, should be triggered `onScroll` or
+   * `onContentSizeChange`
    */
   resolveScrollMetrics() {
     const timestamp = Date.now();

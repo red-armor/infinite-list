@@ -91,7 +91,7 @@ const StickyViewHorizontal = () => {
         onScrollEndDrag={horizontalScrollHandler2}
         scrollEventThrottle={16}
         ref={nestScrollViewRef}
-        stickyMode={StickyMode.fluid}
+        // stickyMode={StickyMode.stuck}
       >
         <IntersectionObserverTouchableOpacity
           // ref={blueRef}
@@ -143,6 +143,12 @@ const StickyViewHorizontal = () => {
             ></View>
           </ScrollView>
         </View>
+        <StickyView
+          observerKey="second-sticky"
+          style={{ height: 300, width: 60, backgroundColor: 'brown' }}
+        >
+          <Text>brown</Text>
+        </StickyView>
         <IntersectionObserverView
           observerKey="green"
           ref={greenRef}

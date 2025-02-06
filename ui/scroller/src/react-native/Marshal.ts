@@ -1,5 +1,4 @@
-import { MutableRefObject } from 'react';
-import { Animated, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import ScrollHelper from './ScrollHelper';
 import {
   InfiniteListScrollViewRef,
@@ -75,8 +74,6 @@ class Marshal {
     this._id = id;
 
     this._animated = animated;
-    // this._animatedValueX = animatedValueX;
-    // this._animatedValueY = animatedValueY;
     this._horizontal = horizontal;
     this._scrollUpdating = scrollUpdating;
     this._parentMarshal = parentMarshal;
@@ -140,14 +137,6 @@ class Marshal {
   getParentMarshal() {
     return this._parentMarshal;
   }
-
-  // getOuterMostHorizontalMarshal() {
-  //   return this._outerMostHorizontalMarshal;
-  // }
-
-  // getOuterMostVerticalMarshal() {
-  //   return this._outerMostVerticalMarshal;
-  // }
 
   // Since marshal is bound to ScrollView, and each ScrollView has a `rootScrollHelper`
   // it can be either self or parent scrollHelper

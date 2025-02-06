@@ -1,6 +1,5 @@
 import noop from '@x-oasis/noop';
 
-// import ScrollHelper from './ScrollHelper';
 import {
   ContentSizeChangeHandler,
   ScrollEventHandlerSubscriptionKeys,
@@ -19,7 +18,6 @@ import Marshal from './Marshal';
  */
 class ScrollEventHelper {
   private _disposer: Function;
-  // private _scrollHelper: ScrollHelper;
   readonly marshal: Marshal;
   private _onScroll: SyntheticEventHandler | undefined;
   private _onScrollEndDrag: SyntheticEventHandler | undefined;

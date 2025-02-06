@@ -32,7 +32,7 @@ const StickyView: FC<
   PropsWithChildren<
     ViewProps & {
       observerKey: string;
-      startCorrection: number;
+      startCorrection?: number;
       zIndex?: number;
     }
   >
