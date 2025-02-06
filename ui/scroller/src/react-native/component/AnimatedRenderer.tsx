@@ -64,11 +64,11 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     scrollHelper,
   });
 
-  useEffect(() => {
-    animatedValue.addListener(({ value }) => {
-      console.log('value --- ', value);
-    });
-  }, []);
+  // useEffect(() => {
+  //   animatedValue.addListener(({ value }) => {
+  //     console.log('value --- ', value);
+  //   });
+  // }, []);
 
   const throttledHandler = useMemo(() => {
     function scrollHandler(e: NativeSyntheticEvent<NativeScrollEvent>) {

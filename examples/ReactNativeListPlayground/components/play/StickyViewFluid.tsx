@@ -70,6 +70,8 @@ const StickyViewHorizontal = () => {
       onScroll={scrollHandler}
       onScrollEndDrag={scrollHandler}
       scrollEventThrottle={50}
+      animated
+      stickyMode={StickyMode.stuck}
       enableIntersectionObserver
       intersectionObserverCallback={intersectionObserverHandler}
       // onContentSizeChange={onContentSizeChange}
@@ -77,13 +79,15 @@ const StickyViewHorizontal = () => {
       <View style={{ height: 700, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>
       </View>
-      <IntersectionObserverTouchableOpacity
-        observerKey="second"
-        // ref={secondRef}
-        style={{ height: 100, width: '100%', backgroundColor: 'pink' }}
-      >
-        <Text>second</Text>
-      </IntersectionObserverTouchableOpacity>
+      <StickyView observerKey="second-sticky">
+        <IntersectionObserverTouchableOpacity
+          observerKey="second"
+          // ref={secondRef}
+          style={{ height: 100, width: '100%', backgroundColor: 'pink' }}
+        >
+          <Text>second</Text>
+        </IntersectionObserverTouchableOpacity>
+      </StickyView>
       <ScrollView
         horizontal
         animated
@@ -91,7 +95,7 @@ const StickyViewHorizontal = () => {
         onScrollEndDrag={horizontalScrollHandler2}
         scrollEventThrottle={16}
         ref={nestScrollViewRef}
-        // stickyMode={StickyMode.stuck}
+        stickyMode={StickyMode.stuck}
       >
         <IntersectionObserverTouchableOpacity
           // ref={blueRef}
@@ -101,7 +105,7 @@ const StickyViewHorizontal = () => {
           <Text>blue</Text>
         </IntersectionObserverTouchableOpacity>
         <StickyView
-          observerKey="yellow"
+          observerKey="yellow-sticky"
           style={{ height: 300, width: 60, backgroundColor: 'yellow' }}
         >
           <Text>yellow</Text>
@@ -144,7 +148,7 @@ const StickyViewHorizontal = () => {
           </ScrollView>
         </View>
         <StickyView
-          observerKey="second-sticky"
+          observerKey="brown-sticky"
           style={{ height: 300, width: 60, backgroundColor: 'brown' }}
         >
           <Text>brown</Text>
@@ -160,6 +164,12 @@ const StickyViewHorizontal = () => {
           <Text>grey</Text>
         </View>
       </ScrollView>
+      <StickyView
+        observerKey="third-sticky"
+        style={{ height: 100, width: '100%', backgroundColor: 'black' }}
+      >
+        <Text>third sticky</Text>
+      </StickyView>
 
       <View style={{ height: 2000, width: '100%', backgroundColor: 'green' }}>
         <Text>third</Text>
