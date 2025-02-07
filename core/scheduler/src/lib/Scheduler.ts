@@ -1,8 +1,5 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-
-// https://github.com/facebook/react-native/blob/main/Libraries/Interaction/Batchinator.js
-
-const getNow = () => Date.now();
+import { getNow } from './utils';
 
 class Scheduler {
   readonly _delayMS: number;
@@ -22,8 +19,8 @@ class Scheduler {
     cb: Function,
     delayMS: number,
     options?: {
-      leading: boolean;
-      trailing: boolean;
+      leading?: boolean;
+      trailing?: boolean;
     }
   ) {
     this._callback = cb;
@@ -114,9 +111,18 @@ class Scheduler {
   shouldInvokeNext() {
     const now = getNow();
 
+    console.log('this call ', this._lastCallTime, now);
+
     if (!this._lastCallTime) return true;
 
     const timeSinceLastCall = now - this._lastCallTime;
+
+    console.log(
+      'timeSinceLastCall > this._delayMS ',
+      timeSinceLastCall,
+      this._delayMS,
+      timeSinceLastCall > this._delayMS
+    );
 
     if (timeSinceLastCall > this._delayMS) return true;
     return false;
