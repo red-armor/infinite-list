@@ -16,6 +16,7 @@ class Scheduler {
   private _lastInvokeTime: number | null = null;
   private timerId: NodeJS.Timer | null = null;
   private _result: any = null;
+  private _hasOverlappedTask: boolean;
 
   constructor(
     cb: Function,
@@ -27,6 +28,7 @@ class Scheduler {
   ) {
     this._callback = cb;
     this._delayMS = delayMS;
+    this._hasOverlappedTask = false;
     this._args = [];
     this._leading = defaultBooleanValue(options?.leading, true);
     this._trailing = defaultBooleanValue(options?.trailing, true);
@@ -60,6 +62,7 @@ class Scheduler {
 
   reset() {
     this.timerId = null;
+    this._hasOverlappedTask = false;
     this._lastCallTime = null;
   }
 
@@ -70,8 +73,8 @@ class Scheduler {
 
   leadingEdge(time: number) {
     /**
-     * To record invoke `leadingEdge` time, then in `trailingEdge` can be used to determine
-     * whether to invoke `trailingEdge`
+     * To record invoke `leadingEdge` time, then in `trailingEdge`
+     * can be used to determine whether to invoke `trailingEdge`
      */
     this._lastInvokeTime = time;
     const immediatelyCall = this._leading || !this._delayMS;
@@ -93,7 +96,8 @@ class Scheduler {
   trailingEdge() {
     const now = getNow();
     if (this._lastCallTime && this._lastInvokeTime) {
-      const hasAdditionalCall = this._lastCallTime > this._lastInvokeTime;
+      const hasAdditionalCall =
+        this._lastCallTime > this._lastInvokeTime || this._hasOverlappedTask;
 
       if (hasAdditionalCall && this._trailing) {
         const remainingTime = this._delayMS - (now - this._lastCallTime);
@@ -130,7 +134,18 @@ class Scheduler {
     const invokeNext = this.shouldInvokeNext();
     const now = getNow();
 
-    console.log('schedule ', ...args, now);
+    /**
+     * has consecutive calls, and the trigger time is the same...
+     *
+     * for example, the first task start on time t1 and finished on t1,
+     * then the second task also comes at t1, but its args may changed.
+     *
+     * on basic condition, it will not be trigger on trailingEdge handler..
+     * so we fix this issue by setting `_hasOverlappedTask` to true.
+     */
+    if (this.timerId && now === this._lastCallTime) {
+      this._hasOverlappedTask = true;
+    }
 
     /**
      * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,
