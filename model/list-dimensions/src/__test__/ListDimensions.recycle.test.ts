@@ -771,7 +771,7 @@ describe('data update', () => {
         key: '3',
       },
       {
-        key: 'space_4_18',
+        key: 'space_4_20',
       },
     ]);
 
@@ -838,7 +838,7 @@ describe('data update', () => {
         key: '2',
       },
       {
-        key: 'space_4_19',
+        key: 'space_4_21',
       },
     ]);
   });

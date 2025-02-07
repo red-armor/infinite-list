@@ -409,6 +409,10 @@ class RecycleStateImpl<
           ? endIndexOffset - startIndexOffset
           : startIndexOffset,
       itemMeta: null,
+
+      /**
+       * key is used to identify space state
+       */
       key: buildStateTokenIndexKey(
         this.listContainer.initialNumToRender,
         this.listContainer.getData().length
