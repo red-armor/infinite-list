@@ -79,6 +79,7 @@ const StickyView: FC<
       onRectChange: (rect) => {
         rectRef.current = rect;
         if (!registeredRef.current) {
+          // console.log('register sticky ', observerKey, rect)
           stickyMarshal?.registerStickyItem(observerKey, {
             rect,
             startCorrection,
@@ -87,7 +88,7 @@ const StickyView: FC<
           registeredRef.current = true;
         }
 
-        stickyMarshal?.calculateRangeValues();
+        stickyMarshal?.calculateRangeValues(observerKey);
       },
     });
     observerRef.current = info?.observer;

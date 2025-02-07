@@ -45,6 +45,8 @@ class StickyMarshal {
   ) {
     const index = this.findIndex(itemKey);
     const nextInfo = info || {};
+
+    // console.log('reigster ', itemKey, index)
     if (index === -1)
       this.stickyItemsQueue.push({
         itemKey,
@@ -64,8 +66,9 @@ class StickyMarshal {
     return this.stickyItemsQueue.findIndex((item) => item.itemKey === itemKey);
   }
 
-  calculateRangeValues() {
-    this._calculateRangeValuesScheduler.schedule();
+  calculateRangeValues(observerKey: string) {
+    // this._calculateRangeValues()
+    this._calculateRangeValuesScheduler.schedule(observerKey);
   }
 
   _calculateRangeValues() {
@@ -78,7 +81,7 @@ class StickyMarshal {
     } = {};
     const selectValue = this.marshal.getScrollHelper().selectValue;
 
-    console.log('this mode ', this.mode);
+    // console.log('this mode ', this.mode, this.stickyItemsQueue.slice());
 
     for (let idx = 0; idx < len; idx++) {
       const current = this.stickyItemsQueue[idx];
@@ -93,6 +96,7 @@ class StickyMarshal {
       };
       const _currentAnimatedValueConfig = _animatedValueConfig[itemKey];
 
+      // console.log('item key ', itemKey, itemOffset, itemLength)
       if (itemLength != null) {
         const totalOffset = itemOffset;
 

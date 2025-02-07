@@ -129,6 +129,9 @@ class Scheduler {
     this._args = args;
     const invokeNext = this.shouldInvokeNext();
     const now = getNow();
+
+    console.log('schedule ', ...args, now);
+
     /**
      * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,
      * it only updates when `leadingEdge` is invoked.
