@@ -59,13 +59,15 @@ describe('scheduler', () => {
    * https://vitest.dev/guide/mocking#mock-an-exported-class-implementation
    */
   it('test usage of `_hasOverlappedTask`', () => {
-    vi.mock('./Scheduler.ts', async (importOriginal) => {
-      const mod = await importOriginal();
-      return {
-        ...mod,
-        getNow: vi.fn(() => 1000),
-      };
-    });
+    vi.spyOn(all, 'getNow').mockReturnValue(1000);
+
+    // vi.mock('./Scheduler.ts', async (importOriginal) => {
+    //   const mod = await importOriginal();
+    //   return {
+    //     ...mod,
+    //     getNow: vi.fn(() => 1000),
+    //   };
+    // });
     const scheduler = new Scheduler(mock, 50);
     scheduler.schedule();
     scheduler.schedule();
