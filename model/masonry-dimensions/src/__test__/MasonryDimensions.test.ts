@@ -158,7 +158,7 @@ describe('basic', () => {
       '38',
     ]);
     expect(stateResult[0][0].spaceState.map((state) => state.key)).toEqual([
-      'space_0_28',
+      'space_0_30',
     ]);
 
     expect(
@@ -186,7 +186,7 @@ describe('basic', () => {
       '39',
     ]);
     expect(stateResult[1][0].spaceState.map((state) => state.key)).toEqual([
-      'space_0_28',
+      'space_0_30',
     ]);
 
     masonryDimensions.updateScrollMetrics({
