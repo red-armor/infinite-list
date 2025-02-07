@@ -3,10 +3,10 @@ import Batchinator from '@x-oasis/batchinator';
 import { defaultKeyExtractor } from '@infinite-list/utils';
 import { ActionType } from '@infinite-list/state';
 import { context as itemMetaContext } from '@infinite-list/item-meta';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, beforeAll } from 'vitest';
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
-    key: index,
+    key: `key_${index}`,
   }));
 
 vi.useFakeTimers();
