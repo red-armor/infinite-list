@@ -60,6 +60,7 @@ export type ObservedComponent = View | TouchableHighlight | TouchableOpacity;
 //     entries: IIntersectionObserverEntry[],  // 观察的元素
 //   ): void;
 // }
+
 export type IntersectionObserverCallback = {
   (
     entries: IIntersectionObserverEntry[],

@@ -11,6 +11,8 @@ export const zh = defineConfig({
   themeConfig: {
     nav: nav(),
 
+    outline: 'deep',
+
     sidebar: {
       '/zh/react/': { base: '/zh/react/', items: sidebarReact() },
       '/zh/react-native/': {
@@ -26,7 +28,7 @@ export const zh = defineConfig({
 
     footer: {
       message: '基于 MIT 许可发布',
-      copyright: `版权所有 © 2019-${new Date().getFullYear()} 尤雨溪`,
+      copyright: `版权所有 © 2024-${new Date().getFullYear()} ryuyutyo`,
     },
 
     // docFooter: {
@@ -112,6 +114,29 @@ function sidebarReact(): DefaultTheme.SidebarItem[] {
         // { text: '部署', link: 'deploy' }
       ],
     },
+    {
+      text: 'Core',
+      collapsed: false,
+      items: [
+        {
+          text: 'intersection-observer',
+          items: [
+            {
+              text: 'IntersectionObserver',
+              link: '/core/intersection-observer.md',
+            },
+            {
+              text: 'Observer',
+              link: '/core/observer.md',
+            },
+          ],
+        },
+        {
+          text: 'viewable',
+          link: '/core/viewable.md',
+        },
+      ],
+    },
     // {
     //   text: '写作',
     //   collapsed: false,
@@ -175,6 +200,29 @@ function sidebarReactNative(): DefaultTheme.SidebarItem[] {
         //     { text: 'Carbon Ads', link: 'carbon-ads' }
         //   ]
         // }
+      ],
+    },
+    {
+      text: 'Core',
+      collapsed: false,
+      items: [
+        {
+          text: 'intersection-observer',
+          items: [
+            {
+              text: 'IntersectionObserver',
+              link: '/core/intersection-observer.md',
+            },
+            {
+              text: 'Observer',
+              link: '/core/observer.md',
+            },
+          ],
+        },
+        {
+          text: 'viewable',
+          link: '/core/viewable.md',
+        },
       ],
     },
   ];
