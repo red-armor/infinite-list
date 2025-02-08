@@ -87,6 +87,9 @@ describe('scheduler', () => {
         getNow: vi.fn(() => 1000),
       };
     });
+    /**
+     * How to overwrite a method of a class?
+     */
     Scheduler.prototype.schedule = vi
       .fn()
       .mockImplementation(function (...args: any[]) {
