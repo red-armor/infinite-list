@@ -1,9 +1,12 @@
 import { useRef, useCallback, useEffect } from 'react';
 import { View, Text, ScrollView as NativeScrollView } from 'react-native';
 
-import { ScrollView, ScrollViewContext } from '@infinite-list/scroller';
+import {
+  ScrollView,
+  ScrollViewContext,
+} from '@infinite-list/scroller/react-native';
 
-import { ListGroup, GroupList } from '@infinite-list/group';
+import { ListGroup, GroupList } from '@infinite-list/group/react-native';
 
 type Item = {
   key: string;

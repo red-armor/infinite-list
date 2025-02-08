@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View, Text, ScrollView as NativeScrollView } from 'react-native';
-import { IIntersectionObserverEntry } from '@infinite-list/intersection-observer';
+import { IIntersectionObserverEntry } from '@infinite-list/intersection-observer/react-native';
 import {
   ScrollView,
   IntersectionObserverView,
   StickyView,
   IntersectionObserverTouchableOpacity,
   StickyMode,
-} from '@infinite-list/scroller';
+} from '@infinite-list/scroller/react-native';
 
 const StickyViewHorizontal = () => {
   const greenRef = useRef<View>(null);

@@ -3,7 +3,7 @@ import { ScrollView, View, Text } from 'react-native';
 import {
   IntersectionObserver,
   ReactNativeDocumentBase,
-} from '@infinite-list/intersection-observer';
+} from '@infinite-list/intersection-observer/react-native';
 
 const MeasureInWindowSimpleIntersection = () => {
   const greenRef = useRef<View>(null);

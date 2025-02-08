@@ -172,8 +172,8 @@
 // import MeasureInWindowSimple from '../../components/play/MeasureInWindowSimple';
 // import MeasureInWindowSimpleIntersection from '../../components/play/MeasureInWindowSimpleIntersection';
 // import MeasureInWindowSimpleIntersectionScrollView from '../../components/play/MeasureInWindowSimpleIntersectionScrollView';
-// import StickyViewFluid from '../../components/play/StickyViewFluid';
-import StickyViewStuck from '../../components/play/StickyViewStuck';
+import StickyViewFluid from '../../components/play/StickyViewFluid';
+// import StickyViewStuck from '../../components/play/StickyViewStuck';
 
 export default () => {
   // return <List />;
@@ -185,6 +185,6 @@ export default () => {
   // return <MeasureInWindowSimple />;
   // return <MeasureInWindowSimpleIntersection />;
   // return <MeasureInWindowSimpleIntersectionScrollView />;
-  // return <StickyViewFluid />;
-  return <StickyViewStuck />;
+  return <StickyViewFluid />;
+  // return <StickyViewStuck />;
 };
