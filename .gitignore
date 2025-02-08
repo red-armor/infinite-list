@@ -99,3 +99,6 @@ yarn-error.log
 
 # testing
 /coverage
+
+docs/.vitepress/dist
+docs/.vitepress/cache
