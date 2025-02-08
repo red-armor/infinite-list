@@ -71,7 +71,7 @@ function nav(): DefaultTheme.NavItem[] {
     //   activeMatch: '/react/'
     // },
     {
-      text: 'react-native-zh',
+      text: 'react-native',
       link: '/zh/react-native/introduction',
       activeMatch: '/react-native/',
     },
@@ -86,7 +86,7 @@ function nav(): DefaultTheme.NavItem[] {
     //   activeMatch: '/zh/reference/'
     // },
     {
-      text: pkg.version,
+      text: '0.0.1',
       items: [
         {
           text: '更新日志',
@@ -104,10 +104,10 @@ function nav(): DefaultTheme.NavItem[] {
 function sidebarReact(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: '简介',
+      text: '开始',
       collapsed: false,
       items: [
-        { text: '什么是 VitePress？', link: 'introduction' },
+        { text: '简介', link: 'introduction' },
         // { text: '什么是 VitePress？', link: 'what-is-vitepress' },
         // { text: '快速开始', link: 'getting-started' },
         // { text: '路由', link: 'routing' },
@@ -123,17 +123,50 @@ function sidebarReact(): DefaultTheme.SidebarItem[] {
           items: [
             {
               text: 'IntersectionObserver',
-              link: '/core/intersection-observer.md',
+              link: '/core/intersection-observer/introduction.md',
             },
             {
               text: 'Observer',
-              link: '/core/observer.md',
+              link: '/core/intersection-observer/observer.md',
             },
           ],
         },
         {
           text: 'viewable',
           link: '/core/viewable.md',
+        },
+      ],
+    },
+    {
+      text: 'UI',
+      collapsed: false,
+      items: [
+        {
+          text: 'list',
+          items: [
+            {
+              text: 'List',
+              link: '/ui/list/introduction.md',
+            },
+          ],
+        },
+        {
+          text: 'Masonry',
+          items: [
+            {
+              text: 'Masonry',
+              link: '/ui/masonry/introduction.md',
+            },
+          ],
+        },
+        {
+          text: 'scroller',
+          items: [
+            {
+              text: 'Scroller',
+              link: '/ui/scroller/introduction.md',
+            },
+          ],
         },
       ],
     },
@@ -174,9 +207,10 @@ function sidebarReact(): DefaultTheme.SidebarItem[] {
 function sidebarReactNative(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: '参考',
+      text: '开始',
       items: [
-        { text: '站点配置', link: 'introduction' },
+        { text: '简介', link: 'introduction' },
+        { text: '快速上手', link: 'quick-start' },
         // { text: '站点配置', link: 'site-config' },
         // { text: 'frontmatter 配置', link: 'frontmatter-config' },
         // { text: '运行时 API', link: 'runtime-api' },
@@ -211,17 +245,50 @@ function sidebarReactNative(): DefaultTheme.SidebarItem[] {
           items: [
             {
               text: 'IntersectionObserver',
-              link: '/core/intersection-observer.md',
+              link: '/core/intersection-observer/introduction.md',
             },
             {
               text: 'Observer',
-              link: '/core/observer.md',
+              link: '/core/intersection-observer/observer.md',
             },
           ],
         },
         {
           text: 'viewable',
           link: '/core/viewable.md',
+        },
+      ],
+    },
+    {
+      text: 'UI',
+      collapsed: false,
+      items: [
+        {
+          text: 'list',
+          items: [
+            {
+              text: 'List',
+              link: '/ui/list/introduction.md',
+            },
+          ],
+        },
+        {
+          text: 'Masonry',
+          items: [
+            {
+              text: 'Masonry',
+              link: '/ui/masonry/introduction.md',
+            },
+          ],
+        },
+        {
+          text: 'scroller',
+          items: [
+            {
+              text: 'Scroller',
+              link: '/ui/scroller/introduction.md',
+            },
+          ],
         },
       ],
     },

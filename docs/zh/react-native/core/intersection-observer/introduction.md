@@ -1,5 +1,7 @@
 # IntersectionObserver
 
+- Type
+
 ```ts
 interface IntersectionObserverConstructor {
   new (
@@ -8,6 +10,9 @@ interface IntersectionObserverConstructor {
   ): IntersectionObserverInterface
 }
 ```
+
+- Example
+
 
 ## props
 
@@ -32,3 +37,6 @@ type ObserveOptions = {
   onRectChange?: OnRectChange;
 };
 ```
+
+## More
+- [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver)
