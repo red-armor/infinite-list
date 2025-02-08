@@ -14,14 +14,14 @@ interface IntersectionObserverConstructor {
 - Example
 
 
-## props
+## Props
 
 ### enableIntersectionObserver
 
 - Type: `boolean`
 - Default: `false`
 
-## methods
+## Methods
 
 ### observe
 
