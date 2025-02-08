@@ -13,13 +13,19 @@ interface IntersectionObserverConstructor {
 
 - Example
 
-
-## Props
-
-### enableIntersectionObserver
-
-- Type: `boolean`
-- Default: `false`
+```ts
+const intersectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      console.log('IntersectionObserver: ', entry)
+    }
+  })
+}, {
+  root: marshal.ownerDocument,
+  rootMargin: '0px',
+  threshold: 0,
+})
+```
 
 ## Methods
 

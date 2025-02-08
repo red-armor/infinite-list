@@ -264,6 +264,23 @@ function sidebarReactNative(): DefaultTheme.SidebarItem[] {
       collapsed: false,
       items: [
         {
+          text: 'scroller',
+          items: [
+            {
+              text: 'ScrollView',
+              link: '/ui/scroller/introduction.md',
+            },
+            {
+              text: 'ScrollEvent',
+              link: '/ui/scroller/scrollEvent.md',
+            },
+            {
+              text: 'Marshal',
+              link: '/ui/scroller/marshal.md',
+            },
+          ],
+        },
+        {
           text: 'list',
           items: [
             {
@@ -278,15 +295,6 @@ function sidebarReactNative(): DefaultTheme.SidebarItem[] {
             {
               text: 'Masonry',
               link: '/ui/masonry/introduction.md',
-            },
-          ],
-        },
-        {
-          text: 'scroller',
-          items: [
-            {
-              text: 'Scroller',
-              link: '/ui/scroller/introduction.md',
             },
           ],
         },
