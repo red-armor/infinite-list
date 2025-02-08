@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { View, Text, ScrollView as NativeScrollView } from 'react-native';
-import { IIntersectionObserverEntry } from '@infinite-list/intersection-observer/react-native';
+import {
+  IIntersectionObserverEntry,
+  IntersectionObserver,
+} from '@infinite-list/intersection-observer/react-native';
 import {
   ScrollView,
   IntersectionObserverView,
@@ -59,14 +62,14 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       intersectionObserverEntries: IIntersectionObserverEntry[],
       observer: IntersectionObserver
     ) => {
-      console.log('intersectionObserverEntries ', intersectionObserverEntries);
-      // intersectionObserverEntries.forEach((entry) => {
-      //   console.log(
-      //     'intersectionObserverHandler ',
-      //     entry.intersectionRatio,
-      //     entry.target
-      //   );
-      // });
+      intersectionObserverEntries.forEach((entry) => {
+        console.log(
+          'intersectionObserverHandler ',
+          entry.intersectionRatio,
+          entry.observer.observerKey
+          // entry.target
+        );
+      });
     },
     []
   );
@@ -78,7 +81,9 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       onScroll={scrollHandler}
       onScrollEndDrag={scrollHandler}
       scrollEventThrottle={50}
+      // enableIntersectionObserver
       // onContentSizeChange={onContentSizeChange}
+      // intersectionObserverCallback={intersectionObserverHandler}
     >
       <View style={{ height: 700, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>
@@ -131,7 +136,9 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
             <IntersectionObserverView
               observerKey="nest"
               style={{ height: 100, width: 200, backgroundColor: '#fff' }}
-            ></IntersectionObserverView>
+            >
+              <Text>nest</Text>
+            </IntersectionObserverView>
             <View
               style={{ height: 200, width: 200, backgroundColor: '#888' }}
             ></View>

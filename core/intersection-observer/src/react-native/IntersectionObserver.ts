@@ -124,6 +124,7 @@ class IntersectionObserver implements IIntersectionObserver {
     const nextObserverKey = observerKey || generateRandomKey();
     let observer = null;
     let node = null;
+    console.log('ober -----', nextObserverKey);
 
     if (root instanceof ReactNativeDocument) {
       node = root.node;
@@ -241,6 +242,7 @@ class IntersectionObserver implements IIntersectionObserver {
         const container = this.nodeToContainerObserverMap.get(current.node);
         container?.updateIntersection().then(() => {
           const entries = container.updateObserversIntersectionsInSmartWay();
+          console.log('entry ', entries);
           this.callback(entries, this);
         });
       });

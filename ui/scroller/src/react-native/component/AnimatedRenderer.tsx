@@ -8,7 +8,6 @@ import React, {
   useRef,
   useState,
   useContext,
-  useEffect,
 } from 'react';
 import {
   Animated,

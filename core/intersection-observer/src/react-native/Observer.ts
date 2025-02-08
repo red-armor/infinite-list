@@ -11,7 +11,7 @@ import { getNode } from './ReactNativeDocument';
 
 class Observer {
   private target: View;
-  private observerKey: string;
+  private _observerKey: string;
   private clientRect: IClientRectReadOnly;
   private containerObserver: ContainerObserver;
   private entry: IIntersectionObserverEntry | null = null;
@@ -37,7 +37,7 @@ class Observer {
     } = props;
     this.target = target;
     this.onRectChange = onRectChange;
-    this.observerKey = observerKey;
+    this._observerKey = observerKey;
     this.clientRect = getEmptyRect();
     this.containerObserver = containerObserver;
   }
@@ -48,6 +48,10 @@ class Observer {
 
   get intersectionEntry() {
     return this.entry;
+  }
+
+  get observerKey() {
+    return this._observerKey;
   }
 
   get dimensions() {
@@ -112,6 +116,7 @@ class Observer {
       : null;
 
     const entry = new IntersectionObserverEntry({
+      observer: this,
       target: this.target,
       dimensions: this.dimensions,
       boundingClientRect: this.clientRect,

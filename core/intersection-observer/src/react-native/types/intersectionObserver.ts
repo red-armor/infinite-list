@@ -49,7 +49,20 @@ export interface IIntersectionObserver {
 
 export type ObservedComponent = View | TouchableHighlight | TouchableOpacity;
 
-export type IntersectionObserverCallback = (
-  entries: IIntersectionObserverEntry[],
-  observer: IntersectionObserver
-) => void;
+// export function IntersectionObserverCallback(entries: IIntersectionObserverEntry[], observer: IntersectionObserver): void
+
+// export interface IntersectionObserverCallback {
+//   (
+//     entries: IIntersectionObserverEntry[],  // 观察的元素
+//     observer: IntersectionObserver,
+//   ): void;
+//   (
+//     entries: IIntersectionObserverEntry[],  // 观察的元素
+//   ): void;
+// }
+export type IntersectionObserverCallback = {
+  (
+    entries: IIntersectionObserverEntry[],
+    observer?: IntersectionObserver
+  ): void;
+};

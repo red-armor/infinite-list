@@ -152,6 +152,7 @@ class ContainerObserver {
 
   addObserver(observer: Observer) {
     const observerKey = observer.getKey();
+    console.log('observer ----', observerKey);
     this.keyToObserverMap.set(observerKey, observer);
     return () => {
       this.keyToObserverMap.delete(observerKey);
@@ -161,10 +162,12 @@ class ContainerObserver {
   updateObserversIntersections() {
     let records: IIntersectionObserverEntry[] = [];
     for (const observer of this.keyToObserverMap.values()) {
+      console.log('observer ----', observer.getKey());
       records.push(observer.updateIntersection());
     }
     this.children.forEach((child) => {
       const childRecords = child.updateObserversIntersections();
+
       records = records.concat(childRecords);
     });
 

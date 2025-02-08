@@ -6,11 +6,13 @@ import {
   IRectIntersection,
 } from './types';
 import { generateRandomKey } from './generateRandom';
+import Observer from './Observer';
 
 class IntersectionObserverEntry {
   private target: View;
   readonly entryKey: string;
   private time: number;
+  readonly observer: Observer;
   readonly isIntersecting: boolean;
   readonly rootBounds: IClientRectReadOnly | null;
   readonly boundingClientRect: IClientRectReadOnly;
@@ -21,10 +23,12 @@ class IntersectionObserverEntry {
       boundingClientRect,
       rootBounds,
       target,
+      observer,
       entryKey = generateRandomKey(),
       intersectionRect,
     } = props;
     this.time = Date.now();
+    this.observer = observer;
     this.target = target;
     this.entryKey = entryKey;
     this.rootBounds = rootBounds;
@@ -36,6 +40,8 @@ class IntersectionObserverEntry {
   getEntry(): IIntersectionObserverEntry {
     return {
       time: this.time,
+      // entryKey: this.entryKey,
+      observer: this.observer,
       target: this.target,
       rootBounds: this.rootBounds,
       boundingClientRect: this.boundingClientRect,

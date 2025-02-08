@@ -79,7 +79,6 @@ const StickyView: FC<
       onRectChange: (rect) => {
         rectRef.current = rect;
         if (!registeredRef.current) {
-          // console.log('register sticky ', observerKey, rect)
           stickyMarshal?.registerStickyItem(observerKey, {
             rect,
             startCorrection,
