@@ -25,6 +25,7 @@ import {
 import ReactNativeDocument, { getNode } from './ReactNativeDocument';
 import Observer from './Observer';
 import { measureInWindowAsync } from './measure';
+import { TaskRunner } from '@infinite-list/scheduler';
 
 class ContainerObserver {
   readonly doc: ReactNativeDocument;
@@ -42,6 +43,8 @@ class ContainerObserver {
   private children: ContainerObserver[] = [];
   private keyToObserverMap: Map<string, Observer> = new Map();
   private records: IIntersectionObserverEntry[] = [];
+  updateIntersectionTaskRunner: TaskRunner;
+  private listenersDisposers: Function[] = [];
 
   constructor(props: ContainerObserverProps) {
     this.doc = props.doc;
@@ -59,23 +62,37 @@ class ContainerObserver {
     /**
      * monitor intersection
      */
-    this.doc.addEventListener(
-      'onScroll',
-      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        this.updateScrollInfo(event);
-      }
+    this.listenersDisposers.push(
+      this.doc.addEventListener(
+        'onScroll',
+        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          this.updateScrollInfo(event);
+          this.updateIntersectionTaskRunner.schedule();
+        }
+      )
     );
-    this.doc.addEventListener(
-      'onScrollEndDrag',
-      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        this.updateScrollInfo(event);
-      }
+    this.listenersDisposers.push(
+      this.doc.addEventListener(
+        'onScrollEndDrag',
+        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          this.updateScrollInfo(event);
+          this.updateIntersectionTaskRunner.schedule();
+        }
+      )
     );
-    this.doc.addEventListener(
-      'onMomentumScrollEnd',
-      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        this.updateScrollInfo(event);
-      }
+    this.listenersDisposers.push(
+      this.doc.addEventListener(
+        'onMomentumScrollEnd',
+        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+          this.updateScrollInfo(event);
+          this.updateIntersectionTaskRunner.schedule();
+        }
+      )
+    );
+
+    this.updateIntersectionTaskRunner = new TaskRunner(
+      this.updateIntersection.bind(this),
+      50
     );
 
     this.ownerContainerObserver?.addChild(this);
@@ -107,6 +124,9 @@ class ContainerObserver {
     this.children.forEach((child) => {
       child.dispose();
     });
+    this.listenersDisposers.forEach((disposer) => {
+      disposer();
+    });
   }
 
   get root() {
@@ -127,15 +147,6 @@ class ContainerObserver {
     return this.clientIntersection;
   }
 
-  // setBoundingClientIntersection(
-  //   rect: IClientRectReadOnly | null
-  // ): Promise<IClientRectReadOnly | null> {
-  //   this.clientIntersection = rect;
-  //   return Promise.all(
-  //     this.children.map((child) => child.setBoundingClientIntersection(rect))
-  //   ).then(() => rect);
-  // }
-
   /**
    *
    * @param intersection
@@ -152,7 +163,6 @@ class ContainerObserver {
       return true;
     }
     return false;
-    // this.clientIntersection = intersection
   }
 
   get offsetLeft() {

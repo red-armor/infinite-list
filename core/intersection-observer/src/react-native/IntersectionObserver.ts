@@ -19,7 +19,7 @@ import { generateRandomKey } from './generateRandom';
 import ContainerObserver from './ContainerObserver';
 
 class IntersectionObserver implements IIntersectionObserver {
-  private monitoringDocuments: ReactNativeDocument[] = [];
+  // private monitoringDocuments: ReactNativeDocument[] = [];
   private callback: IntersectionObserverCallback;
   private root: ReactNativeDocument;
   private rootMargin: string;
@@ -177,7 +177,7 @@ class IntersectionObserver implements IIntersectionObserver {
     this.keyToObserverMap.set(nextObserverKey, observer);
     container.addObserver(observer);
 
-    this.monitorIntersections(root);
+    // this.monitorIntersections(root);
 
     this.checkIntersection(el);
 

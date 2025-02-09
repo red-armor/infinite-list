@@ -111,6 +111,26 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
       )
   );
   useInitialEffect(() =>
+    marshal
+      ?.getScrollHelper()
+      .addEventListener(
+        'onScrollEndDrag',
+        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+          marshal?.ownerDocument?.onScrollEndDrag(e);
+        }
+      )
+  );
+  useInitialEffect(() =>
+    marshal
+      ?.getScrollHelper()
+      .addEventListener(
+        'onMomentumScrollEnd',
+        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+          marshal?.ownerDocument?.onMomentumScrollEnd(e);
+        }
+      )
+  );
+  useInitialEffect(() =>
     marshal?.getScrollHelper().addEventListener('onContentSizeChange', () => {
       intersectionObserver?.updateIntersections();
     })

@@ -81,7 +81,17 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
       .addEventListener(
         'onScrollEndDrag',
         (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-          marshal?.ownerDocument?.onScroll(e);
+          marshal?.ownerDocument?.onScrollEndDrag(e);
+        }
+      )
+  );
+  useInitialEffect(() =>
+    marshal
+      ?.getScrollHelper()
+      .addEventListener(
+        'onMomentumScrollEnd',
+        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+          marshal?.ownerDocument?.onMomentumScrollEnd(e);
         }
       )
   );

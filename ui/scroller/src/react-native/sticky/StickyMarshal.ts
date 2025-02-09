@@ -1,4 +1,4 @@
-import { Scheduler } from '@infinite-list/scheduler';
+import { TaskRunner } from '@infinite-list/scheduler';
 
 import {
   InterpolationConfig,
@@ -26,14 +26,14 @@ export function checkValidInputRange(arr: Array<number>) {
 class StickyMarshal {
   private stickyItemsQueue: StickyItemInfo[] = [];
   private mode?: StickyMode;
-  private _calculateRangeValuesScheduler: Scheduler;
+  private _calculateRangeValuesScheduler: TaskRunner;
   readonly marshal: Marshal;
 
   constructor(props: StickyMarshalProps) {
     const { stickyMode, marshal } = props;
     this.marshal = marshal;
     this.mode = stickyMode || StickyMode.fluid;
-    this._calculateRangeValuesScheduler = new Scheduler(
+    this._calculateRangeValuesScheduler = new TaskRunner(
       this._calculateRangeValues.bind(this),
       50
     );
