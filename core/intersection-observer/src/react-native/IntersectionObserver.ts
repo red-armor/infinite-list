@@ -10,12 +10,11 @@ import {
   IIntersectionObserverEntry,
   ObservedComponent,
   IntersectionObserverCallback,
+  ReactNativeDocumentNode,
 } from './types';
 import { parseRootMargin } from './utils';
 import Observer from './Observer';
-import ReactNativeDocument, {
-  ReactNativeDocumentNode,
-} from './ReactNativeDocument';
+import ReactNativeDocument from './ReactNativeDocument';
 import { generateRandomKey } from './generateRandom';
 import ContainerObserver from './ContainerObserver';
 

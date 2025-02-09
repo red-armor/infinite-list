@@ -119,6 +119,9 @@ class ScrollHelper {
       id,
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
+      onIntersectionChange: (intersection) => {
+        console.log('intersection', intersection);
+      },
     });
     this.getEventHandlers = this.getEventHandlers.bind(this);
     this.onContentSizeChange = this.onContentSizeChange.bind(this);

@@ -5,48 +5,16 @@ import {
   ScrollView,
 } from 'react-native';
 import Emitter from './Emitter';
-
-export type ScrollEventHandler = (
-  e: NativeSyntheticEvent<NativeScrollEvent>
-) => void;
-
-export type ReactNativeDocumentNode = ScrollView | RefObject<ScrollView>;
+import {
+  ScrollEventHandler,
+  ReactNativeDocumentNode,
+  ReactNativeDocument,
+  ReactNativeDocumentBaseProps,
+  OnIntersectionChange,
+} from './types';
 
 export function getNode(node: ReactNativeDocumentNode) {
   return (node as RefObject<ScrollView>)?.current || (node as ScrollView);
-}
-export type ReactNativeDocumentBaseProps = {
-  horizontal?: boolean;
-  bidirectional?: boolean;
-  id: string;
-  /**
-   * the closest parent document not top most document!!!
-   */
-  ownerDocument?: ReactNativeDocument | null;
-  node: ReactNativeDocumentNode;
-};
-
-/**
- * root should implement ReactNativeDocument
- */
-abstract class ReactNativeDocument {
-  abstract id: string;
-  abstract ownerDocument?: ReactNativeDocument | null;
-  abstract node: ReactNativeDocumentNode;
-  abstract horizontal?: boolean;
-
-  /**
-   * can scroll on horizontal or vertical, it only works on web condition
-   */
-  abstract bidirectional?: boolean;
-
-  abstract addEventListener(
-    type: string,
-    listener: ScrollEventHandler,
-    options?: boolean | AddEventListenerOptions
-  ): {
-    (): void;
-  };
 }
 
 class ReactNativeDocumentBase extends ReactNativeDocument {
@@ -56,6 +24,7 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
   node: ReactNativeDocumentNode;
   horizontal: boolean;
   bidirectional: boolean;
+  onIntersectionChange?: OnIntersectionChange;
 
   constructor(props: ReactNativeDocumentBaseProps) {
     super();
@@ -65,9 +34,11 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
       horizontal = false,
       bidirectional = false,
       ownerDocument,
+      onIntersectionChange,
     } = props;
     this.node = node;
     this.id = id;
+    this.onIntersectionChange = onIntersectionChange;
     this.horizontal = horizontal;
     this.bidirectional = bidirectional;
     this.ownerDocument = ownerDocument;

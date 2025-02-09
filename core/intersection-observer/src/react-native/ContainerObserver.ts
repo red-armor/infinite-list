@@ -18,7 +18,10 @@ import {
   IClientRectReadOnly,
   IIntersectionObserverEntry,
 } from './types';
-import { computeIntersection } from '../common/intersection';
+import {
+  computeIntersection,
+  compareIntersection,
+} from '../common/intersection';
 import ReactNativeDocument, { getNode } from './ReactNativeDocument';
 import Observer from './Observer';
 import { measureInWindowAsync } from './measure';
@@ -95,8 +98,55 @@ class ContainerObserver {
     return this.rect;
   }
 
+  /**
+   * xxBoundingClientxxx indicating relative to viewport
+   * @returns
+   *  - x: relative to viewport
+   *  - left: relative to viewport
+   */
   getBoundingClientIntersection() {
     return this.clientIntersection;
+  }
+
+  // setBoundingClientIntersection(
+  //   rect: IClientRectReadOnly | null
+  // ): Promise<IClientRectReadOnly | null> {
+  //   this.clientIntersection = rect;
+  //   return Promise.all(
+  //     this.children.map((child) => child.setBoundingClientIntersection(rect))
+  //   ).then(() => rect);
+  // }
+
+  /**
+   *
+   * @param intersection
+   * @returns true if intersection changed, otherwise false
+   */
+  setBoundingClientIntersection(intersection: IClientRectReadOnly | null) {
+    const oldClientIntersection = this.clientIntersection;
+    if (!compareIntersection(this.clientIntersection, intersection)) {
+      this.clientIntersection = intersection;
+      this.doc?.onIntersectionChange?.(
+        this.clientIntersection,
+        oldClientIntersection
+      );
+      return true;
+    }
+    return false;
+    // this.clientIntersection = intersection
+  }
+
+  get offsetLeft() {
+    if (!this.ownerContainerObserver) return 0;
+    return this.rect.x - this.ownerContainerObserver.rect.x;
+  }
+  get offsetTop() {
+    if (!this.ownerContainerObserver) return 0;
+    return this.rect.y - this.ownerContainerObserver.rect.y;
+  }
+
+  get offsetParent() {
+    return this.ownerContainerObserver;
   }
 
   getIntersection() {
@@ -134,14 +184,23 @@ class ContainerObserver {
         }
 
         this.intersection = intersection;
+        this.setBoundingClientIntersection(
+          intersection
+            ? {
+                ...intersection,
+                x,
+                y,
+              }
+            : null
+        );
 
-        this.clientIntersection = intersection
-          ? {
-              ...intersection,
-              x,
-              y,
-            }
-          : null;
+        // this.clientIntersection = intersection
+        //   ? {
+        //       ...intersection,
+        //       x,
+        //       y,
+        //     }
+        //   : null;
 
         return Promise.all(
           this.children.map((child) => child.updateIntersection())
@@ -152,7 +211,6 @@ class ContainerObserver {
 
   addObserver(observer: Observer) {
     const observerKey = observer.getKey();
-    console.log('observer ----', observerKey);
     this.keyToObserverMap.set(observerKey, observer);
     return () => {
       this.keyToObserverMap.delete(observerKey);
@@ -162,7 +220,6 @@ class ContainerObserver {
   updateObserversIntersections() {
     let records: IIntersectionObserverEntry[] = [];
     for (const observer of this.keyToObserverMap.values()) {
-      console.log('observer ----', observer.getKey());
       records.push(observer.updateIntersection());
     }
     this.children.forEach((child) => {

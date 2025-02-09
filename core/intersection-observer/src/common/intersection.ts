@@ -30,3 +30,30 @@ export const computeIntersection = (
 export const isIntersecting = (intersection: IRectIntersection) => {
   return intersection && intersection.width >= 0 && intersection.height >= 0;
 };
+
+/**
+ *
+ * @param a IRectIntersection | null
+ * @param b IRectIntersection | null
+ * @returns true means equal, false means not equal
+ */
+export const compareIntersection = (
+  a: IRectIntersection | null,
+  b: IRectIntersection | null
+) => {
+  if (a && b) {
+    return (
+      a.top === b.top &&
+      a.bottom === b.bottom &&
+      a.left === b.left &&
+      a.right === b.right
+    );
+  }
+
+  /**
+   * both null
+   */
+  if (!a && !b) return true;
+
+  return false;
+};
