@@ -77,7 +77,6 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     children,
     scrollEnabled = true,
 
-    enableIntersectionObserver = false,
     intersectionObserverCallback,
     ...rest
   } = props;
@@ -181,30 +180,18 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const nextScrollViewContextValues = useMemo(() => {
-    if (
-      !intersectionObserver &&
-      enableIntersectionObserver &&
-      !intersectionObserverCallback
-    ) {
-      throw new Error(
-        '`intersectionObserverCallback` is required when' +
-          ' `enableIntersectionObserver` is true'
-      );
-    }
-    return {
+  const nextScrollViewContextValues = useMemo(
+    () => ({
       marshal,
       portalManager: portalManager || new PortalManager(),
       intersectionObserver: intersectionObserver
         ? intersectionObserver
-        : enableIntersectionObserver
-        ? intersectionObserver ||
-          new IntersectionObserver(intersectionObserverCallback!, {
+        : new IntersectionObserver(intersectionObserverCallback!, {
             root: marshal.ownerDocument,
-          })
-        : null,
-    };
-  }, []);
+          }),
+    }),
+    []
+  );
 
   const nextScrollUpdatingContextValues = useMemo(
     () => ({

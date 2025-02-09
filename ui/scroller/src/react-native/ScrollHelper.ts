@@ -120,7 +120,7 @@ class ScrollHelper {
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
       onIntersectionChange: (intersection) => {
-        console.log('intersection', intersection);
+        console.log('intersection', this.id, intersection);
       },
     });
     this.getEventHandlers = this.getEventHandlers.bind(this);

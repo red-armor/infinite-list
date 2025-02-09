@@ -60,7 +60,8 @@ class ContainerObserver {
     });
 
     /**
-     * monitor intersection
+     * on scroll, `measureInWindow`'s value may not change, so listen to
+     * `onMomentumScrollEnd` is required.
      */
     this.listenersDisposers.push(
       this.doc.addEventListener(
@@ -199,8 +200,6 @@ class ContainerObserver {
           height,
         });
 
-        console.log('id ', this.id, x, y, width, height);
-
         let ownerContainerObserver = this.ownerContainerObserver;
         let intersection: IRectIntersection | null = convertRectToIntersection(
           this.rect
@@ -232,13 +231,7 @@ class ContainerObserver {
             : null
         );
 
-        // this.clientIntersection = intersection
-        //   ? {
-        //       ...intersection,
-        //       x,
-        //       y,
-        //     }
-        //   : null;
+        console.log('offfset ---- ', this.offsetLeft, this.offsetTop, this.id);
 
         return Promise.all(
           this.children.map((child) => child.updateIntersection())

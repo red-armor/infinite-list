@@ -154,7 +154,6 @@ export type InfiniteListScrollViewProps = ScrollViewProps &
     /**
      * support intersection observer in react-native
      */
-    enableIntersectionObserver?: boolean;
     intersectionObserverCallback?: IntersectionObserverCallback;
 
     animatedX?: MutableRefObject<Animated.Value>;
