@@ -56,8 +56,9 @@ const ListGroup = <ItemT extends GenericItemT>(
   const scrollMetricsRef = useRef<any>();
 
   const scrollHelper = marshal.getScrollHelper();
-  const scrollEventHelper = marshal.getScrollEventHelper();
 
+  // TODO containerRef may has error...
+  // should use root scroller ref
   const layoutHandler = useCallback(() => {
     if (viewRef.current) {
       measureLayout(
@@ -97,35 +98,7 @@ const ListGroup = <ItemT extends GenericItemT>(
 
   useEffect(
     () =>
-      scrollEventHelper.subscribeEventHandler('onContentSizeChange', () => {
-        const scrollMetrics = scrollHelper.getScrollMetrics();
-        if (scrollMetrics !== scrollMetricsRef.current) {
-          listGroupDimensions.updateScrollMetrics(
-            scrollHelper.getScrollMetrics()
-          );
-          scrollMetricsRef.current = scrollMetrics;
-        }
-      }),
-    []
-  );
-
-  useEffect(
-    () =>
-      scrollEventHelper.subscribeEventHandler('onScroll', () => {
-        const scrollMetrics = scrollHelper.getScrollMetrics();
-        if (scrollMetrics !== scrollMetricsRef.current) {
-          listGroupDimensions.updateScrollMetrics(
-            scrollHelper.getScrollMetrics()
-          );
-          scrollMetricsRef.current = scrollMetrics;
-        }
-      }),
-    []
-  );
-
-  useEffect(
-    () =>
-      scrollEventHelper.subscribeEventHandler('onMomentumScrollEnd', () => {
+      scrollHelper.addScrollMetricsChangeListener(() => {
         const scrollMetrics = scrollHelper.getScrollMetrics();
         if (scrollMetrics !== scrollMetricsRef.current) {
           listGroupDimensions.updateScrollMetrics(

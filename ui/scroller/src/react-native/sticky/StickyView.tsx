@@ -137,8 +137,6 @@ const StickyView: FC<
     ]);
   }, [config]);
 
-  console.log('config ', observerKey, config);
-
   return (
     <Animated.View ref={viewRef} style={containerStyle} {...rest}>
       {props.children}

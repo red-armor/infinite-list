@@ -67,6 +67,7 @@ class ContainerObserver {
       this.doc.addScrollEventChangeListener(
         (event: NativeSyntheticEvent<NativeScrollEvent>) => {
           this.updateScrollInfo(event);
+
           this.updateIntersectionTaskRunner.schedule();
         }
       )
@@ -211,8 +212,6 @@ class ContainerObserver {
               }
             : null
         );
-
-        console.log('offfset ---- ', this.offsetLeft, this.offsetTop, this.id);
 
         return Promise.all(
           this.children.map((child) => child.updateIntersection())

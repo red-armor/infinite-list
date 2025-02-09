@@ -103,8 +103,6 @@ describe('scheduler', () => {
          */
         this._lastCallTime = now;
 
-        console.log('invokke ', invokeNext, now);
-
         if (!invokeNext) return;
         this.leadingEdge(now);
       });

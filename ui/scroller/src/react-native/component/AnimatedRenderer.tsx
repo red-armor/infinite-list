@@ -108,52 +108,13 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
         }
       )
   );
-  // useInitialEffect(() =>
-  //   marshal
-  //     ?.getScrollHelper()
-  //     .addEventListener(
-  //       'onScrollEndDrag',
-  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-  //         marshal?.ownerDocument?.onScrollEndDrag(e);
-  //       }
-  //     )
-  // );
-  // useInitialEffect(() =>
-  //   marshal
-  //     ?.getScrollHelper()
-  //     .addEventListener(
-  //       'onMomentumScrollEnd',
-  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-  //         marshal?.ownerDocument?.onMomentumScrollEnd(e);
-  //       }
-  //     )
-  // );
-  useInitialEffect(() =>
-    marshal?.getScrollHelper().addEventListener('onContentSizeChange', () => {
-      intersectionObserver?.updateIntersections();
-    })
-  );
 
   const layoutHandler = useCallback((e: LayoutChangeEvent) => {
     layoutRef.current = e.nativeEvent.layout;
     if (typeof onLayout === 'function') {
       onLayout(e);
     }
-    intersectionObserver?.updateIntersections();
-    const {
-      nativeEvent: { layout },
-    } = e;
-    if (!marshal?.isRootScroller) {
-      const parentLayout = marshal?.getScrollHelper()?.getLayout();
-      if (parentLayout)
-        scrollHelper.setLayout({
-          ...layout,
-          width: parentLayout.width,
-          height: parentLayout.height,
-        });
-    } else {
-      scrollHelper.setLayout(layout);
-    }
+    scrollHelper.onLayout(e);
   }, []);
 
   const contentOffset = useMemo(() => {

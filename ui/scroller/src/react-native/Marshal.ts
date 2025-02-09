@@ -1,4 +1,5 @@
 import { ScrollView } from 'react-native';
+import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import ScrollHelper from './ScrollHelper';
 import {
   InfiniteListScrollViewRef,
@@ -15,6 +16,8 @@ import ScrollEventHelper from './ScrollEventHelper';
 class Marshal {
   readonly _horizontal: boolean;
   readonly _animated: boolean;
+
+  readonly intersectionObserver: IntersectionObserver;
 
   readonly _rootScrollHelper: ScrollHelper;
 
@@ -72,6 +75,9 @@ class Marshal {
       onMomentumScrollEnd,
       onMomentumScrollBegin,
 
+      intersectionObserver,
+      intersectionObserverCallback,
+
       stickyMode,
     } = props;
     this._ref = ref;
@@ -95,6 +101,8 @@ class Marshal {
         ref,
         animatedValueX,
         animatedValueY,
+        intersectionObserver,
+        intersectionObserverCallback,
       });
       this._isRootScroller = true;
     } else {

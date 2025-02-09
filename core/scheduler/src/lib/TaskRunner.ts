@@ -110,19 +110,16 @@ class TaskRunner {
 
   shouldInvokeNext() {
     const now = getNow();
-
-    console.log('this call ', this._lastCallTime, now);
-
     if (!this._lastCallTime) return true;
 
     const timeSinceLastCall = now - this._lastCallTime;
 
-    console.log(
-      'timeSinceLastCall > this._delayMS ',
-      timeSinceLastCall,
-      this._delayMS,
-      timeSinceLastCall > this._delayMS
-    );
+    // console.log(
+    //   'timeSinceLastCall > this._delayMS ',
+    //   timeSinceLastCall,
+    //   this._delayMS,
+    //   timeSinceLastCall > this._delayMS
+    // );
 
     if (timeSinceLastCall > this._delayMS) return true;
     return false;

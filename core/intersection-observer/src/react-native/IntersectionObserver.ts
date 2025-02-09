@@ -101,6 +101,20 @@ class IntersectionObserver implements IIntersectionObserver {
     return this.nodeToContainerObserverMap.get(node);
   }
 
+  addDoc(doc: ReactNativeDocument) {
+    const container = this.ensureContainerObserver(doc);
+    let disposer = () => {
+      // do nothing
+    };
+    if (container?.isAncestor()) {
+      disposer = this.addContainer(container);
+    }
+    return {
+      container,
+      disposer,
+    };
+  }
+
   /**
    *
    * @param el

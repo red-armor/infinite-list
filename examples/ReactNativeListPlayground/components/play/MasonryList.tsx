@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { ScrollView as NativeScrollView } from 'react-native';
 import { MasonryList } from '@infinite-list/masonry/react-native';
-import { ScrollView } from '@infinite-list/scroller';
+import { ScrollView } from '@infinite-list/scroller/react-native';
 import { Text, View } from 'react-native';
 
 const buildData = (count: number, startIndex = 0) =>

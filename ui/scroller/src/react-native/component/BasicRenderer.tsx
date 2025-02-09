@@ -15,7 +15,6 @@ import {
 import ScrollViewContext from '../context/ScrollViewContext';
 import throttle from '@x-oasis/throttle';
 import useScrollEnabled from '../hooks/useScrollEnabled';
-import useInitialEffect from '../hooks/useInitialEffect';
 import {
   ScrollRendererProps,
   ScrollRendererPropsWithForwardRef,
@@ -66,53 +65,8 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
       onLayout(e);
     }
 
-    intersectionObserver?.updateIntersections();
-
-    const {
-      nativeEvent: { layout },
-    } = e;
-
-    if (!marshal?.isRootScroller) {
-      const parentLayout = marshal?.getScrollHelper()?.getLayout();
-      if (parentLayout)
-        scrollHelper.setLayout({
-          ...layout,
-          width: parentLayout.width,
-          height: parentLayout.height,
-        });
-    } else {
-      scrollHelper.setLayout(layout);
-    }
+    scrollHelper.onLayout(e);
   }, []);
-
-  // useInitialEffect(() =>
-  //   marshal
-  //     ?.getScrollHelper()
-  //     .addEventListener(
-  //       'onScrollEndDrag',
-  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-  //         marshal?.ownerDocument?.onScrollEndDrag(e);
-  //       }
-  //     )
-  // );
-  // useInitialEffect(() =>
-  //   marshal
-  //     ?.getScrollHelper()
-  //     .addEventListener(
-  //       'onMomentumScrollEnd',
-  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-  //         marshal?.ownerDocument?.onMomentumScrollEnd(e);
-  //       }
-  //     )
-  // );
-  useInitialEffect(() =>
-    marshal
-      ?.getScrollHelper()
-      .addEventListener('onContentSizeChange', (width, height) => {
-        console.log('onContentSizeChange', width, height);
-        intersectionObserver?.updateIntersections();
-      })
-  );
 
   return (
     <ScrollView

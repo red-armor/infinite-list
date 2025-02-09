@@ -7,7 +7,7 @@ import {
   useCallback,
 } from 'react';
 import { View, ViewStyle, LayoutChangeEvent } from 'react-native';
-import { ItemLayout } from '@infinite-list/types';
+import { ItemLayout, ScrollMetrics } from '@infinite-list/types';
 import { ListProps } from './types';
 import { ListDimensions } from '@infinite-list/list-dimensions';
 import { RecycleStateResult } from '@infinite-list/strategies';
@@ -86,37 +86,38 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     listModel.updateScrollMetrics(scrollMetrics);
 
     const rect = e.nativeEvent.layout;
-    containerLayoutRef.current = rect;
 
-    listRef.current?.measureLayout(
-      contextValues.marshal?.getScrollHelper().getRef().current,
-      (x, y, width, height) => {
-        console.log('x -----------', x, y, width, height);
-
-        containerLayoutRef.current = {
-          x,
-          y,
-          width,
-          height,
-        };
-      }
-    );
-
-    console.log('rect ----------', rect);
+    /**
+     * should use position relative to root scroller, or it will cause
+     * error when its closet ScrollView is not root scroller
+     */
+    if (contextValues.marshal?.getScrollHelper?.().getRef?.().current) {
+      listRef.current?.measureLayout(
+        // @ts-ignore
+        contextValues.marshal?.getScrollHelper?.().getRef().current,
+        (x, y, width, height) => {
+          containerLayoutRef.current = {
+            x,
+            y,
+            width,
+            height,
+          };
+        }
+      );
+    } else {
+      containerLayoutRef.current = rect;
+    }
   }, []);
 
   useEffect(
     () =>
-      contextValues.marshal?.getScrollHelper().addListener('onScroll', () => {
-        const scrollMetrics = contextValues.marshal
-          ?.getScrollHelper()
-          .getScrollMetrics();
-        listModel.updateScrollMetrics(scrollMetrics);
-      }),
+      contextValues.marshal
+        ?.getScrollHelper()
+        .addScrollMetricsChangeListener((scrollMetrics: ScrollMetrics) => {
+          listModel.updateScrollMetrics(scrollMetrics);
+        }),
     []
   );
-
-  console.log('state ----- ', state);
 
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;

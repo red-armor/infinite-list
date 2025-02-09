@@ -14,7 +14,6 @@ import {
   View as RNView,
 } from 'react-native';
 import isRefObject from '@x-oasis/is-ref';
-import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
 import Marshal from './Marshal';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
@@ -132,6 +131,10 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
         onContentSizeChange,
         onMomentumScrollEnd,
         onMomentumScrollBegin,
+
+        intersectionObserverCallback,
+        intersectionObserver:
+          parentMarshal && parentMarshal.intersectionObserver,
       }),
     []
   );
@@ -185,11 +188,7 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     () => ({
       marshal,
       portalManager: portalManager || new PortalManager(),
-      intersectionObserver: intersectionObserver
-        ? intersectionObserver
-        : new IntersectionObserver(intersectionObserverCallback!, {
-            root: marshal.ownerDocument,
-          }),
+      intersectionObserver: marshal.intersectionObserver,
     }),
     []
   );

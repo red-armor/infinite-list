@@ -87,7 +87,27 @@ const MasonryList = <ItemT extends GenericItemT>(
     dimensionsModel.updateScrollMetrics(scrollMetrics);
 
     const rect = e.nativeEvent.layout;
-    containerLayoutRef.current = rect;
+
+    /**
+     * should use position relative to root scroller, or it will cause
+     * error when its closet ScrollView is not root scroller
+     */
+    if (contextValues.marshal?.getScrollHelper?.().getRef?.().current) {
+      listRef.current?.measureLayout(
+        // @ts-ignore
+        contextValues.marshal?.getScrollHelper?.().getRef().current,
+        (x, y, width, height) => {
+          containerLayoutRef.current = {
+            x,
+            y,
+            width,
+            height,
+          };
+        }
+      );
+    } else {
+      containerLayoutRef.current = rect;
+    }
 
     const { width } = e.nativeEvent.layout;
     if (!getColumnWidth) {

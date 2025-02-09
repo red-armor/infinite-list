@@ -7,10 +7,13 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
+  LayoutChangeEvent,
   Animated,
 } from 'react-native';
 import {
+  ContainerObserver,
   IClientRectReadOnly,
+  IntersectionObserver,
   ReactNativeDocumentBase,
 } from '@infinite-list/intersection-observer/react-native';
 
@@ -53,6 +56,8 @@ import Emitter from './commons/Emitter';
 class ScrollHelper {
   id: string;
 
+  readonly intersectionObserver: IntersectionObserver;
+
   readonly _horizontal: boolean;
 
   public selectValue: SelectValue;
@@ -90,6 +95,8 @@ class ScrollHelper {
 
   private _onScrollMetricsChangeEmitter = new Emitter();
 
+  private _intersectionObserverContainer: ContainerObserver | null | undefined;
+
   ownerDocument: ReactNativeDocumentBase;
 
   constructor(props: ScrollHelperProps) {
@@ -101,6 +108,8 @@ class ScrollHelper {
       marshal,
       animatedValueX,
       animatedValueY,
+      intersectionObserver,
+      intersectionObserverCallback,
     } = props;
     this._marshal = marshal;
 
@@ -127,9 +136,7 @@ class ScrollHelper {
       id,
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
-      onIntersectionChange: (intersection) => {
-        this._intersection = intersection;
-      },
+      onIntersectionChange: this.onIntersectionChangeHandler.bind(this),
     });
     this.getEventHandlers = this.getEventHandlers.bind(this);
     this.onContentSizeChange = this.onContentSizeChange.bind(this);
@@ -139,6 +146,21 @@ class ScrollHelper {
     this.onScrollBeginDrag = this.onScrollBeginDrag.bind(this);
     this.onMomentumScrollBegin = this.onMomentumScrollBegin.bind(this);
     this.onScrollToTop = this.onScrollToTop.bind(this);
+
+    const nextIntersectionObserver =
+      intersectionObserverCallback ||
+      ((entries: any, observer: any) => {
+        // do nothing
+      });
+
+    this.intersectionObserver =
+      intersectionObserver ||
+      new IntersectionObserver(nextIntersectionObserver, {
+        root: this.ownerDocument,
+      });
+
+    const info = this.intersectionObserver.addDoc(this.ownerDocument);
+    this._intersectionObserverContainer = info.container;
   }
 
   get ownerScrollHelper() {
@@ -161,6 +183,15 @@ class ScrollHelper {
     return this._marshal
       .getScrollEventHelper()
       .subscribeEventHandler(eventName, handler);
+  }
+
+  /**
+   * The nested ScrollView state result is updated by intersection change..
+   */
+  onIntersectionChangeHandler(intersection: IClientRectReadOnly | null) {
+    this._intersection = intersection;
+    this.resolveScrollMetrics();
+    this.onScrollMetricsChange();
   }
 
   addOnRefreshListener(fn: Function) {
@@ -259,6 +290,7 @@ class ScrollHelper {
           ...layout,
         };
     this.resolveScrollMetrics();
+    this.onScrollMetricsChange();
   }
 
   getLayout() {
@@ -309,14 +341,21 @@ class ScrollHelper {
       : 1;
     const velocity = dOffset / dt;
 
-    this._onScrollMetricsChangeEmitter.fire('scroll-metrics-change', {
+    this._scrollMetrics = {
       ...this._scrollMetrics,
       contentLength,
       offset,
       visibleLength,
       velocity,
       timestamp,
-    });
+    };
+  }
+
+  onScrollMetricsChange() {
+    this._onScrollMetricsChangeEmitter.fire(
+      'scroll-metrics-change',
+      this._scrollMetrics
+    );
   }
 
   addScrollMetricsChangeListener(cb: any) {
@@ -335,6 +374,7 @@ class ScrollHelper {
     const { layoutMeasurement } = metrics;
     this.setLayout(layoutMeasurement);
     this._scrollEventMetrics = metrics;
+    this.resolveScrollMetrics();
   }
 
   getScrollEventMetrics() {
@@ -360,7 +400,9 @@ class ScrollHelper {
     const metrics = scrollEvent.nativeEvent;
     this.setLayout(metrics.layoutMeasurement);
     this._scrollEventMetrics = metrics;
+    this.resolveScrollMetrics();
     this._onScrollMetricsChangeEmitter.fire('scroll-event-change', scrollEvent);
+    this.onScrollMetricsChange();
     this.ownerDocument.onScrollEventChange(scrollEvent);
   }
 
@@ -409,6 +451,8 @@ class ScrollHelper {
     this._contentSize = { width, height };
     this.resolveScrollMetrics();
     this.triggerScrollEventHelpers('onContentSizeChange', width, height);
+
+    this._intersectionObserverContainer?.updateIntersection();
   }
 
   onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -419,6 +463,26 @@ class ScrollHelper {
         ...e.nativeEvent,
       },
     });
+  }
+
+  onLayout(e: LayoutChangeEvent) {
+    const {
+      nativeEvent: { layout },
+    } = e;
+    const scrollHelper = this._marshal?.getScrollHelper();
+    if (!this._marshal?.isRootScroller) {
+      const parentLayout = scrollHelper?.getLayout();
+      if (parentLayout)
+        scrollHelper.setLayout({
+          ...layout,
+          width: parentLayout.width,
+          height: parentLayout.height,
+        });
+    } else {
+      scrollHelper?.setLayout(layout);
+    }
+
+    this._intersectionObserverContainer?.updateIntersection();
   }
 
   getEventHandlers() {

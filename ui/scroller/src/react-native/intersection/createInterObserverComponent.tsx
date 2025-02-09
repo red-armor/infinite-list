@@ -26,13 +26,6 @@ const createObserverComponent = <T extends ComponentType<any>>(
     const { marshal, intersectionObserver } = useContext(ScrollViewContext);
     const defaultRef = useRef<T | null>(null);
     const componentRef = forwardRef || defaultRef;
-
-    console.log('observ-----', observerKey);
-
-    useEffect(() => {
-      console.log('componentRef.current', intersectionObserver);
-    }, []);
-
     useEffect(
       () =>
         intersectionObserver?.observe(componentRef.current, {

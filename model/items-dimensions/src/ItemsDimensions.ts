@@ -41,7 +41,6 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
   }
 
   _setKeyItemLayout(key: string, info: ItemLayout | number) {
-    console.log('set ------', key, info);
     const meta = this.ensureKeyMeta(key);
     const layout = meta.ensureLayout();
 

@@ -4,6 +4,10 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
+import {
+  IntersectionObserver,
+  IntersectionObserverCallback,
+} from '@infinite-list/intersection-observer/react-native';
 import { StickyMode } from './stickyMarshal';
 import { SyntheticEventHandler, ContentSizeChangeHandler } from './scrollView';
 import Marshal from '../Marshal';
@@ -18,6 +22,9 @@ export type MarshalProps = {
   parentMarshal: Marshal | null;
   scrollUpdating?: boolean;
   ref: InfiniteListScrollViewRef;
+  intersectionObserver: IntersectionObserver | null;
+  intersectionObserverCallback?: IntersectionObserverCallback;
+
   animatedValueX?: MutableRefObject<Animated.Value>;
   animatedValueY?: MutableRefObject<Animated.Value>;
 } & Omit<ScrollHelperProps, 'marshal'> &
@@ -32,6 +39,8 @@ export type ScrollHelperProps = {
   ref: InfiniteListScrollViewRef;
   animatedValueX?: MutableRefObject<Animated.Value>;
   animatedValueY?: MutableRefObject<Animated.Value>;
+  intersectionObserver: IntersectionObserver | null;
+  intersectionObserverCallback?: IntersectionObserverCallback;
 };
 
 export type ScrollEventHelperProps = {
