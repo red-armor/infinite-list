@@ -35,6 +35,7 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   const contextValues = useContext(ScrollViewContext);
   const { marshal, intersectionObserver } = contextValues;
   const scrollHelper = marshal!.getScrollHelper();
+  const horizontal = marshal!.isHorizontal();
 
   const [_scrollEnabled] = useScrollEnabled({
     scrollEnabled: !!scrollEnabled,
@@ -72,7 +73,17 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
       nativeEvent: { layout },
     } = e;
 
-    scrollHelper.setLayout(layout);
+    if (!marshal?.isRootScroller) {
+      const parentLayout = marshal?.getScrollHelper()?.getLayout();
+      if (parentLayout)
+        scrollHelper.setLayout({
+          ...layout,
+          width: parentLayout.width,
+          height: parentLayout.height,
+        });
+    } else {
+      scrollHelper.setLayout(layout);
+    }
   }, []);
 
   useInitialEffect(() =>
@@ -96,15 +107,19 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
       )
   );
   useInitialEffect(() =>
-    marshal?.getScrollHelper().addEventListener('onContentSizeChange', () => {
-      intersectionObserver?.updateIntersections();
-    })
+    marshal
+      ?.getScrollHelper()
+      .addEventListener('onContentSizeChange', (width, height) => {
+        console.log('onContentSizeChange', width, height);
+        intersectionObserver?.updateIntersections();
+      })
   );
 
   return (
     <ScrollView
       {...scrollHelper.getEventHandlers()}
       {...restProps}
+      horizontal={horizontal}
       ref={forwardRef}
       onLayout={layoutHandler}
       onScroll={throttledHandler}

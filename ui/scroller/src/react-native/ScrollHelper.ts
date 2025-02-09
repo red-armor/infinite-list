@@ -9,7 +9,10 @@ import {
   ScrollView,
   Animated,
 } from 'react-native';
-import { ReactNativeDocumentBase } from '@infinite-list/intersection-observer/react-native';
+import {
+  IClientRectReadOnly,
+  ReactNativeDocumentBase,
+} from '@infinite-list/intersection-observer/react-native';
 
 import Marshal from './Marshal';
 import ScrollEventHelper from './ScrollEventHelper';
@@ -78,6 +81,8 @@ class ScrollHelper {
 
   private onRefreshListeners: Function[] = [];
 
+  private _intersection: IClientRectReadOnly | null;
+
   ownerDocument: ReactNativeDocumentBase;
 
   private _animatedValueX: Animated.Value;
@@ -120,7 +125,7 @@ class ScrollHelper {
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
       onIntersectionChange: (intersection) => {
-        console.log('intersection', this.id, intersection);
+        this._intersection = intersection;
       },
     });
     this.getEventHandlers = this.getEventHandlers.bind(this);
@@ -244,6 +249,7 @@ class ScrollHelper {
   // }
 
   setLayout(layout: ViewableItemLayout | ScrollSize) {
+    console.log('setLayout ', layout);
     this._layout = this._layout
       ? { ...this._layout, ...layout }
       : {
@@ -290,7 +296,10 @@ class ScrollHelper {
     const scrollEventMetrics = this.getScrollEventMetrics();
     const { contentOffset } = scrollEventMetrics;
     const contentLength = this.selectValue.selectLength(this.contentSize);
-    const visibleLength = this.selectValue.selectLength(this.getLayout());
+
+    const visibleLength = !this._intersection
+      ? 0
+      : this.selectValue.selectLength(this._intersection);
     const offset = this.selectValue.selectOffset(contentOffset);
     const dOffset = offset - this._scrollMetrics?.offset || 0;
     const dt = this._scrollMetrics?.timestamp
@@ -312,6 +321,10 @@ class ScrollHelper {
     return this._scrollMetrics;
   }
 
+  /**
+   *
+   * @param metrics
+   */
   setScrollEventMetrics(metrics: ScrollEventMetrics) {
     const { layoutMeasurement } = metrics;
     this.setLayout(layoutMeasurement);

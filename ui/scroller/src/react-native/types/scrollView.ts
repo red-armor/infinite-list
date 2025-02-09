@@ -74,10 +74,6 @@ export interface ScrollRendererProps
   extends RefreshControlProps,
     ScrollViewProps {
   ref?: ForwardedRef<ScrollView>;
-  // scrollViewKey: string;
-  // getScrollHelper: GetScrollHelper;
-
-  // scrollEventHelper: ScrollEventHelper;
 }
 
 export interface AnimatedScrollRendererProps extends ScrollRendererProps {
@@ -88,10 +84,6 @@ export interface ScrollRendererPropsWithForwardRef
   extends RefreshControlProps,
     ScrollViewProps {
   forwardRef?: ForwardedRef<ScrollView>;
-  // scrollViewKey: string;
-  // getScrollHelper: GetScrollHelper;
-
-  // scrollEventHelper: ScrollEventHelper;
 }
 
 export interface AnimatedScrollRendererPropsWithForwardRef
@@ -101,8 +93,6 @@ export interface AnimatedScrollRendererPropsWithForwardRef
 
 export interface AnimatedViewPagerRenderProps extends ViewPagerAndroidProps {
   ref?: ForwardedRef<PagerView>;
-  scrollViewKey: string;
-  // getScrollHelper: GetScrollHelper;
   pagerOffsetRef?: MutableRefObject<Animated.Value>;
   pagerPositionRef?: MutableRefObject<Animated.Value>;
 }
@@ -113,7 +103,6 @@ export interface AnimatedViewPagerRenderPropsWithForwardRef
   scrollViewKey: string;
   pagerOffsetRef?: MutableRefObject<Animated.Value>;
   pagerPositionRef?: MutableRefObject<Animated.Value>;
-  // getScrollHelper: GetScrollHelper;
 }
 
 export type InfiniteListScrollViewProps = ScrollViewProps &
@@ -126,17 +115,17 @@ export type InfiniteListScrollViewProps = ScrollViewProps &
 
     stickyMode?: StickyMode;
 
-    enableViewPager?: boolean;
+    // enableViewPager?: boolean;
 
-    /**
-     * @platform android
-     */
-    pagerOffsetRef?: MutableRefObject<Animated.Value>;
+    // /**
+    //  * @platform android
+    //  */
+    // pagerOffsetRef?: MutableRefObject<Animated.Value>;
 
-    /**
-     * @platform android
-     */
-    pagerPositionRef?: MutableRefObject<Animated.Value>;
+    // /**
+    //  * @platform android
+    //  */
+    // pagerPositionRef?: MutableRefObject<Animated.Value>;
 
     /**
      * enable / disable trigger scroll event in current ScrollView

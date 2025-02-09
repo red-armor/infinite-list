@@ -145,8 +145,17 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     const {
       nativeEvent: { layout },
     } = e;
-
-    scrollHelper.setLayout(layout);
+    if (!marshal?.isRootScroller) {
+      const parentLayout = marshal?.getScrollHelper()?.getLayout();
+      if (parentLayout)
+        scrollHelper.setLayout({
+          ...layout,
+          width: parentLayout.width,
+          height: parentLayout.height,
+        });
+    } else {
+      scrollHelper.setLayout(layout);
+    }
   }, []);
 
   const contentOffset = useMemo(() => {

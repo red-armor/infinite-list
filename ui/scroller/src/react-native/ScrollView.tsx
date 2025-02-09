@@ -20,9 +20,9 @@ import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
 import AnimatedRenderer from './component/AnimatedRenderer';
 import BasicRenderer from './component/BasicRenderer';
-import ViewRenderer from './component/ViewRenderer';
+// import ViewRenderer from './component/ViewRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';
-import ScrollUpdatingContext from './context/ScrollUpdatingContext';
+// import ScrollUpdatingContext from './context/ScrollUpdatingContext';
 import ScrollViewContext from './context/ScrollViewContext';
 import FooterPortalContainer from './portal/FooterContainer';
 import HeaderPortalContainer from './portal/HeaderContainer';
@@ -52,7 +52,7 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     animated = false,
     viewabilityConfig,
     horizontal = false,
-    enableViewPager = false,
+    // enableViewPager = false,
 
     /**
      * event handlers begin
@@ -68,8 +68,8 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
      * event handlers end
      */
 
-    pagerOffsetRef: _pagerOffsetRef,
-    pagerPositionRef: _pagerPositionRef,
+    // pagerOffsetRef: _pagerOffsetRef,
+    // pagerPositionRef: _pagerPositionRef,
     viewabilityConfigCallbackPairs = defaultViewabilityConfigCallbackPairs,
     scrollUpdating = true,
     removeClippedSubviews: _removeClippedSubviews,
@@ -80,7 +80,10 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     intersectionObserverCallback,
     ...rest
   } = props;
-  const scrollViewKey = useMemo(() => resolveScrollViewKey(!!horizontal), []);
+  const scrollViewKey = useMemo(
+    () => id || resolveScrollViewKey(!!horizontal),
+    []
+  );
 
   /**
    * In android device, `removeClippedSubviews` used with zIndex will crash.
@@ -98,8 +101,6 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
   const scrollViewRef = (
     isRefObject(forwardRef) ? forwardRef : defaultScrollViewRef
   ) as MutableRefObject<RNScrollView>;
-
-  const shouldBeView = false;
 
   /**
    * Every scrollView has a marshal
@@ -193,23 +194,6 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const nextScrollUpdatingContextValues = useMemo(
-    () => ({
-      scrollUpdating,
-    }),
-    [scrollUpdating]
-  );
-
-  const nextChildren = useMemo(() => {
-    if (shouldBeView) return children;
-    return (
-      <ScrollUpdatingContext.Provider value={nextScrollUpdatingContextValues}>
-        {isIos && !useSmoothControl ? refreshControl : null}
-        {children}
-      </ScrollUpdatingContext.Provider>
-    );
-  }, [children, shouldBeView]);
-
   const _refreshControl = useMemo(() => {
     if (!nextOnRefresh) return null;
     if (isIos) return null;
@@ -224,21 +208,7 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
       }
     : {};
 
-  if (!enableViewPager && !!shouldBeView)
-    return (
-      <ScrollViewContext.Provider value={nextScrollViewContextValues}>
-        <HeaderPortalContainer />
-        <ViewRenderer
-          ref={scrollViewRef as any as MutableRefObject<RNView>}
-          {...rest}
-        >
-          {nextChildren}
-        </ViewRenderer>
-        <FooterPortalContainer />
-      </ScrollViewContext.Provider>
-    );
-
-  if (!enableViewPager && !shouldBeView && !!animated)
+  if (animated)
     return (
       <ScrollViewContext.Provider value={nextScrollViewContextValues}>
         <HeaderPortalContainer />
@@ -249,10 +219,9 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
           scrollEnabled={scrollEnabled}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
-          horizontal={!!horizontal}
           useSmoothControl={useSmoothControl}
         >
-          {nextChildren}
+          {children}
         </AnimatedRenderer>
         <FooterPortalContainer />
       </ScrollViewContext.Provider>
@@ -262,13 +231,12 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     <ScrollViewContext.Provider value={nextScrollViewContextValues}>
       <HeaderPortalContainer />
       <BasicRenderer
-        horizontal={!!horizontal}
         scrollEnabled={scrollEnabled}
         ref={scrollViewRef as MutableRefObject<RNScrollView>}
         {...rest}
         {...refreshControlProps}
       >
-        {nextChildren}
+        {children}
       </BasicRenderer>
       <FooterPortalContainer />
     </ScrollViewContext.Provider>

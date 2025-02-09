@@ -75,6 +75,10 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
     []
   );
 
+  const onLayoutHandler = useCallback((e: any) => {
+    console.log('onLayoutHandler ', e.nativeEvent.layout);
+  }, []);
+
   return (
     <ScrollView
       ref={outsideRef}
@@ -82,6 +86,7 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
       onScroll={scrollHandler}
       onScrollEndDrag={scrollHandler}
       scrollEventThrottle={50}
+      // onLayout={onLayoutHandler}
       // enableIntersectionObserver
       // onContentSizeChange={onContentSizeChange}
       // intersectionObserverCallback={intersectionObserverHandler}
@@ -117,13 +122,15 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
             <Text>brown</Text>
           </View>
           <ScrollView
+            id="vertical-2"
+            onLayout={onLayoutHandler}
             // onContentSizeChange={onNestVerticalContentSizeChange}
             ref={nestVerticalScrollViewRef}
             onScroll={nestVerticalScrollHandler}
             scrollEventThrottle={50}
           >
             <View
-              style={{ height: 50, width: 200, backgroundColor: 'red' }}
+              style={{ height: 150, width: 200, backgroundColor: 'red' }}
             ></View>
             <View
               style={{ height: 30, width: 200, backgroundColor: 'yellow' }}
@@ -149,6 +156,7 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
             <View
               style={{ height: 80, width: 200, backgroundColor: '#bbb' }}
             ></View>
+            <List />
           </ScrollView>
         </View>
         <IntersectionObserverView
@@ -163,7 +171,7 @@ const MeasureInWindowSimpleIntersectionScrollView = () => {
         </View>
       </ScrollView>
 
-      <List />
+      {/* <List /> */}
 
       <View style={{ height: 2000, width: '100%', backgroundColor: 'green' }}>
         <Text>third</Text>

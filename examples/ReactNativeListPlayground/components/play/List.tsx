@@ -23,7 +23,7 @@ export default () => {
       );
 
     return (
-      <View style={{ height: 80, width: '100%', backgroundColor: '#fff' }}>
+      <View style={{ height: 90, width: '100%', backgroundColor: '#fff' }}>
         <Text>{item.value}</Text>
       </View>
     );
@@ -35,9 +35,18 @@ export default () => {
 
   return (
     <ScrollView
+      onLayout={(e) => {
+        console.log('onLayout inner', e.nativeEvent.layout);
+      }}
+      onContentSizeChange={(width, height) => {
+        console.log('onContentSizeChange inner', width, height);
+      }}
       ref={scrollViewRef}
       contentContainerStyle={{
         backgroundColor: '#fff',
+      }}
+      onScrollEndDrag={(e) => {
+        console.log('onScrollEndDrag', e.nativeEvent.contentOffset.y);
       }}
     >
       <View

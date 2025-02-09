@@ -35,6 +35,12 @@ class Marshal {
   private _scrollUpdating: boolean;
 
   /**
+   * Indicate the marshal binding ScrollView is the root ScrollView; it will
+   * be useful when has nested ScrollView
+   */
+  private _isRootScroller: boolean;
+
+  /**
    * Inspired from https://github.com/GoogleChromeLabs/intersection-observer/blob/main/intersection-observer.js#L424
    * more info refer to https://developer.mozilla.org/en-US/docs/Web/API/Node/ownerDocument
    */
@@ -90,8 +96,10 @@ class Marshal {
         animatedValueX,
         animatedValueY,
       });
+      this._isRootScroller = true;
     } else {
       this._rootScrollHelper = rootScrollHelper;
+      this._isRootScroller = false;
     }
 
     this.scrollEventHelper = new ScrollEventHelper({
@@ -112,6 +120,10 @@ class Marshal {
 
   get scrollHelper() {
     return this._rootScrollHelper;
+  }
+
+  get isRootScroller() {
+    return this._isRootScroller;
   }
 
   enableScrollUpdating() {

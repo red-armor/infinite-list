@@ -87,6 +87,22 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
     const rect = e.nativeEvent.layout;
     containerLayoutRef.current = rect;
+
+    listRef.current?.measureLayout(
+      contextValues.marshal?.getScrollHelper().getRef().current,
+      (x, y, width, height) => {
+        console.log('x -----------', x, y, width, height);
+
+        containerLayoutRef.current = {
+          x,
+          y,
+          width,
+          height,
+        };
+      }
+    );
+
+    console.log('rect ----------', rect);
   }, []);
 
   useEffect(
@@ -99,6 +115,8 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
       }),
     []
   );
+
+  console.log('state ----- ', state);
 
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;
