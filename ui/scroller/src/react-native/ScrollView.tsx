@@ -19,9 +19,7 @@ import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
 import AnimatedRenderer from './component/AnimatedRenderer';
 import BasicRenderer from './component/BasicRenderer';
-// import ViewRenderer from './component/ViewRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';
-// import ScrollUpdatingContext from './context/ScrollUpdatingContext';
 import ScrollViewContext from './context/ScrollViewContext';
 import FooterPortalContainer from './portal/FooterContainer';
 import HeaderPortalContainer from './portal/HeaderContainer';
@@ -134,7 +132,8 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
 
         intersectionObserverCallback,
         intersectionObserver:
-          parentMarshal && parentMarshal.intersectionObserver,
+          intersectionObserver ||
+          (parentMarshal && parentMarshal.intersectionObserver),
       }),
     []
   );
