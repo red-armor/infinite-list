@@ -90,13 +90,13 @@ const MeasureInWindowSimpleIntersection = () => {
   }, []);
 
   const scrollHandler = useCallback((scrollEvent) => {
-    root.onScroll(scrollEvent);
+    root.onScrollEventChange(scrollEvent);
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });
   }, []);
   const horizontalScrollHandler = useCallback((scrollEvent) => {
-    horizontalRoot.onScroll(scrollEvent);
+    horizontalRoot.onScrollEventChange(scrollEvent);
     console.log('horizontalScrollHandler ');
 
     greenRef.current?.measureInWindow((x, y, width, height) => {
@@ -107,7 +107,7 @@ const MeasureInWindowSimpleIntersection = () => {
     });
   }, []);
   const horizontalScrollHandler2 = useCallback((scrollEvent) => {
-    horizontalRoot.onScroll(scrollEvent);
+    horizontalRoot.onScrollEventChange(scrollEvent);
     console.log('horizontalScrollHandler 2');
 
     greenRef.current?.measureInWindow((x, y, width, height) => {
@@ -118,7 +118,7 @@ const MeasureInWindowSimpleIntersection = () => {
     });
   }, []);
   const nestVerticalScrollHandler = useCallback((scrollEvent) => {
-    verticalRoot.onScroll(scrollEvent);
+    verticalRoot.onScrollEventChange(scrollEvent);
 
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);

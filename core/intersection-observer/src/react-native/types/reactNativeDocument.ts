@@ -49,11 +49,15 @@ export abstract class ReactNativeDocument {
 
   abstract onIntersectionChange?: OnIntersectionChange;
 
-  abstract addEventListener(
-    type: string,
-    listener: ScrollEventHandler,
-    options?: boolean | AddEventListenerOptions
-  ): {
+  // abstract addEventListener(
+  //   type: string,
+  //   listener: ScrollEventHandler,
+  //   options?: boolean | AddEventListenerOptions
+  // ): {
+  //   (): void;
+  // };
+
+  abstract addScrollEventChangeListener(cb: ScrollEventHandler): {
     (): void;
   };
 }

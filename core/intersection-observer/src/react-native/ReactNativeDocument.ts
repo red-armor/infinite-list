@@ -52,15 +52,23 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
     return this.emitter.on(type, listener);
   }
 
-  onScroll(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
-    this.emitter.fire('onScroll', scrollEvent);
+  addScrollEventChangeListener(cb: ScrollEventHandler) {
+    return this.emitter.on('on-scroll-event-change', cb);
   }
-  onScrollEndDrag(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
-    this.emitter.fire('onScrollEndDrag', scrollEvent);
+
+  onScrollEventChange(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.emitter.fire('on-scroll-event-change', scrollEvent);
   }
-  onMomentumScrollEnd(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
-    this.emitter.fire('onMomentumScrollEnd', scrollEvent);
-  }
+
+  // onScroll(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
+  //   this.emitter.fire('onScroll', scrollEvent);
+  // }
+  // onScrollEndDrag(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
+  //   this.emitter.fire('onScrollEndDrag', scrollEvent);
+  // }
+  // onMomentumScrollEnd(scrollEvent: NativeSyntheticEvent<NativeScrollEvent>) {
+  //   this.emitter.fire('onMomentumScrollEnd', scrollEvent);
+  // }
 }
 
 export { ReactNativeDocumentBase };

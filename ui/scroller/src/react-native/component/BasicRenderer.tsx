@@ -45,7 +45,6 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   const throttledHandler = useMemo(() => {
     function handler(e: NativeSyntheticEvent<NativeScrollEvent>) {
       scrollHelper?.onScroll(e);
-      marshal?.ownerDocument?.onScroll(e);
     }
 
     return throttle(handler, scrollEventThrottle, {
@@ -86,26 +85,26 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
     }
   }, []);
 
-  useInitialEffect(() =>
-    marshal
-      ?.getScrollHelper()
-      .addEventListener(
-        'onScrollEndDrag',
-        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-          marshal?.ownerDocument?.onScrollEndDrag(e);
-        }
-      )
-  );
-  useInitialEffect(() =>
-    marshal
-      ?.getScrollHelper()
-      .addEventListener(
-        'onMomentumScrollEnd',
-        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-          marshal?.ownerDocument?.onMomentumScrollEnd(e);
-        }
-      )
-  );
+  // useInitialEffect(() =>
+  //   marshal
+  //     ?.getScrollHelper()
+  //     .addEventListener(
+  //       'onScrollEndDrag',
+  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //         marshal?.ownerDocument?.onScrollEndDrag(e);
+  //       }
+  //     )
+  // );
+  // useInitialEffect(() =>
+  //   marshal
+  //     ?.getScrollHelper()
+  //     .addEventListener(
+  //       'onMomentumScrollEnd',
+  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //         marshal?.ownerDocument?.onMomentumScrollEnd(e);
+  //       }
+  //     )
+  // );
   useInitialEffect(() =>
     marshal
       ?.getScrollHelper()

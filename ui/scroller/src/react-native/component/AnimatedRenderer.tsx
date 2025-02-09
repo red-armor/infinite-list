@@ -72,7 +72,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   const throttledHandler = useMemo(() => {
     function scrollHandler(e: NativeSyntheticEvent<NativeScrollEvent>) {
       scrollHelper.onScroll(e);
-      marshal?.ownerDocument?.onScroll(e);
     }
 
     return throttle(scrollHandler, scrollEventThrottle, {
@@ -93,7 +92,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
       .addEventListener(
         'onScrollEndDrag',
         (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-          marshal?.ownerDocument?.onScroll(e);
           const { nativeEvent } = e;
           const contentOffset = nativeEvent.contentOffset;
 
@@ -110,26 +108,26 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
         }
       )
   );
-  useInitialEffect(() =>
-    marshal
-      ?.getScrollHelper()
-      .addEventListener(
-        'onScrollEndDrag',
-        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-          marshal?.ownerDocument?.onScrollEndDrag(e);
-        }
-      )
-  );
-  useInitialEffect(() =>
-    marshal
-      ?.getScrollHelper()
-      .addEventListener(
-        'onMomentumScrollEnd',
-        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-          marshal?.ownerDocument?.onMomentumScrollEnd(e);
-        }
-      )
-  );
+  // useInitialEffect(() =>
+  //   marshal
+  //     ?.getScrollHelper()
+  //     .addEventListener(
+  //       'onScrollEndDrag',
+  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //         marshal?.ownerDocument?.onScrollEndDrag(e);
+  //       }
+  //     )
+  // );
+  // useInitialEffect(() =>
+  //   marshal
+  //     ?.getScrollHelper()
+  //     .addEventListener(
+  //       'onMomentumScrollEnd',
+  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //         marshal?.ownerDocument?.onMomentumScrollEnd(e);
+  //       }
+  //     )
+  // );
   useInitialEffect(() =>
     marshal?.getScrollHelper().addEventListener('onContentSizeChange', () => {
       intersectionObserver?.updateIntersections();

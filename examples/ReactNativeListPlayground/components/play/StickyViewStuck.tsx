@@ -72,7 +72,6 @@ const StickyViewHorizontal = () => {
       scrollEventThrottle={50}
       animated
       stickyMode={StickyMode.stuck}
-      enableIntersectionObserver
       intersectionObserverCallback={intersectionObserverHandler}
       // onContentSizeChange={onContentSizeChange}
     >

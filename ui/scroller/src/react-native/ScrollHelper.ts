@@ -33,6 +33,7 @@ import {
   InfiniteListScrollViewRef,
   ViewableItemLayout,
 } from './types';
+import Emitter from './commons/Emitter';
 
 /**
  * The same direction ScrollView only has one ScrollHelper, it only belongs to the root
@@ -50,7 +51,9 @@ import {
  *       Therefore, Items are also processed relative to the parent scrollHelper
  */
 class ScrollHelper {
-  public id: string;
+  id: string;
+
+  readonly _horizontal: boolean;
 
   public selectValue: SelectValue;
 
@@ -71,8 +74,6 @@ class ScrollHelper {
 
   private _ref: InfiniteListScrollViewRef;
 
-  readonly _horizontal: boolean;
-
   private _marshal: Marshal;
 
   private _scrollEnabledHandler?: { (falsy: boolean): void };
@@ -81,13 +82,15 @@ class ScrollHelper {
 
   private onRefreshListeners: Function[] = [];
 
-  private _intersection: IClientRectReadOnly | null;
-
-  ownerDocument: ReactNativeDocumentBase;
+  private _intersection: IClientRectReadOnly | null = null;
 
   private _animatedValueX: Animated.Value;
 
   private _animatedValueY: Animated.Value;
+
+  private _onScrollMetricsChangeEmitter = new Emitter();
+
+  ownerDocument: ReactNativeDocumentBase;
 
   constructor(props: ScrollHelperProps) {
     const {
@@ -249,7 +252,6 @@ class ScrollHelper {
   // }
 
   setLayout(layout: ViewableItemLayout | ScrollSize) {
-    console.log('setLayout ', layout);
     this._layout = this._layout
       ? { ...this._layout, ...layout }
       : {
@@ -307,14 +309,18 @@ class ScrollHelper {
       : 1;
     const velocity = dOffset / dt;
 
-    this._scrollMetrics = {
+    this._onScrollMetricsChangeEmitter.fire('scroll-metrics-change', {
       ...this._scrollMetrics,
       contentLength,
       offset,
       visibleLength,
       velocity,
       timestamp,
-    };
+    });
+  }
+
+  addScrollMetricsChangeListener(cb: any) {
+    return this._onScrollMetricsChangeEmitter.on('scroll-metrics-change', cb);
   }
 
   getScrollMetrics() {
@@ -342,12 +348,25 @@ class ScrollHelper {
     this.hasInteraction = true;
   }
 
+  addScrollEventChangeListener(
+    cb: (metrics: NativeSyntheticEvent<NativeScrollEvent>) => void
+  ) {
+    this._onScrollMetricsChangeEmitter.on('scroll-event-change', cb);
+  }
+
+  handleScrollEventChange(
+    scrollEvent: NativeSyntheticEvent<NativeScrollEvent>
+  ) {
+    const metrics = scrollEvent.nativeEvent;
+    this.setLayout(metrics.layoutMeasurement);
+    this._scrollEventMetrics = metrics;
+    this._onScrollMetricsChangeEmitter.fire('scroll-event-change', scrollEvent);
+    this.ownerDocument.onScrollEventChange(scrollEvent);
+  }
+
   onScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.recordInteraction();
-
-    this.setScrollEventMetrics(e.nativeEvent);
-    this.resolveScrollMetrics();
-
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onScroll', {
       nativeEvent: {
         ...e.nativeEvent,
@@ -356,6 +375,7 @@ class ScrollHelper {
   }
 
   onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onScrollBeginDrag', {
       nativeEvent: {
         ...e.nativeEvent,
@@ -372,6 +392,7 @@ class ScrollHelper {
   }
 
   onMomentumScrollBegin(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onMomentumScrollBegin', {
       nativeEvent: {
         ...e.nativeEvent,
@@ -380,8 +401,7 @@ class ScrollHelper {
   }
 
   onMomentumScrollEnd(e: NativeSyntheticEvent<NativeScrollEvent>) {
-    this.setScrollEventMetrics(e.nativeEvent);
-    this.resolveScrollMetrics();
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onMomentumScrollEnd', e);
   }
 
@@ -392,6 +412,8 @@ class ScrollHelper {
   }
 
   onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.handleScrollEventChange(e);
+
     this.triggerScrollEventHelpers('onScrollToTop', {
       nativeEvent: {
         ...e.nativeEvent,

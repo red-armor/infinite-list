@@ -64,26 +64,7 @@ class ContainerObserver {
      * `onMomentumScrollEnd` is required.
      */
     this.listenersDisposers.push(
-      this.doc.addEventListener(
-        'onScroll',
-        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          this.updateScrollInfo(event);
-          this.updateIntersectionTaskRunner.schedule();
-        }
-      )
-    );
-    this.listenersDisposers.push(
-      this.doc.addEventListener(
-        'onScrollEndDrag',
-        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-          this.updateScrollInfo(event);
-          this.updateIntersectionTaskRunner.schedule();
-        }
-      )
-    );
-    this.listenersDisposers.push(
-      this.doc.addEventListener(
-        'onMomentumScrollEnd',
+      this.doc.addScrollEventChangeListener(
         (event: NativeSyntheticEvent<NativeScrollEvent>) => {
           this.updateScrollInfo(event);
           this.updateIntersectionTaskRunner.schedule();

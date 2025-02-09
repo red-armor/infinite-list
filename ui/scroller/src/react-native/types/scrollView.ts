@@ -31,6 +31,7 @@ import {
 
 import ScrollHelper from '../ScrollHelper';
 import { StickyMode } from './stickyMarshal';
+import { ScrollMetrics } from '@infinite-list/types';
 
 // import PagerView from 'react-native-pager-view';
 // TODO
@@ -193,3 +194,5 @@ export type ScrollToOption =
       y?: number | undefined;
       animated?: boolean | undefined;
     };
+
+export type OnScrollMetricsChange = (scrollMetrics: ScrollMetrics) => void;
