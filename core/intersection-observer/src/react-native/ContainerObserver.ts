@@ -56,18 +56,37 @@ class ContainerObserver {
       canIUseRIC: Platform.OS !== 'ios',
     });
 
+    /**
+     * monitor intersection
+     */
     this.doc.addEventListener(
       'onScroll',
       (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const {
-          contentOffset: { x, y },
-        } = event.nativeEvent;
-        this.scrollOffsetX = x;
-        this.scrollOffsetY = y;
+        this.updateScrollInfo(event);
+      }
+    );
+    this.doc.addEventListener(
+      'onScrollEndDrag',
+      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        this.updateScrollInfo(event);
+      }
+    );
+    this.doc.addEventListener(
+      'onMomentumScrollEnd',
+      (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        this.updateScrollInfo(event);
       }
     );
 
     this.ownerContainerObserver?.addChild(this);
+  }
+
+  updateScrollInfo(event: NativeSyntheticEvent<NativeScrollEvent>) {
+    const {
+      contentOffset: { x, y },
+    } = event.nativeEvent;
+    this.scrollOffsetX = x;
+    this.scrollOffsetY = y;
   }
 
   addChild(child: ContainerObserver) {
@@ -153,6 +172,13 @@ class ContainerObserver {
     return this.intersection;
   }
 
+  /**
+   * comparing add listener to parent, the strategy could be found in
+   * https://github.com/GoogleChromeLabs/intersection-observer/blob/main/intersection-observer.js#L407C12-L407C33.
+   * In my opinion, it's better to trigger from top to bottom; only if parent is ready,
+   * then child's trigger is meaningful.
+   *
+   */
   updateIntersection(): Promise<IRectIntersection | null> {
     return measureInWindowAsync(getNode(this.root) as any).then(
       ({ x, y, width, height }) => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import Scheduler from './Scheduler';
+import TaskRunner from './TaskRunner';
 
 import * as all from './utils';
 
@@ -16,7 +16,7 @@ describe('scheduler', () => {
     vi.restoreAllMocks();
   });
   it('should work', () => {
-    const scheduler = new Scheduler(mock, 50);
+    const scheduler = new TaskRunner(mock, 50);
     scheduler.schedule();
     vi.useFakeTimers();
     vi.advanceTimersByTime(50);
@@ -24,7 +24,7 @@ describe('scheduler', () => {
   });
 
   it('test trailing is true', () => {
-    const scheduler = new Scheduler(mock, 50, {
+    const scheduler = new TaskRunner(mock, 50, {
       trailing: true,
     });
     scheduler.schedule();
@@ -38,7 +38,7 @@ describe('scheduler', () => {
   });
 
   it('test trailing is false', () => {
-    const scheduler = new Scheduler(mock, 50, {
+    const scheduler = new TaskRunner(mock, 50, {
       trailing: false,
     });
     scheduler.schedule();
@@ -61,14 +61,14 @@ describe('scheduler', () => {
   it('test usage of `_hasOverlappedTask`', () => {
     vi.spyOn(all, 'getNow').mockReturnValue(1000);
 
-    // vi.mock('./Scheduler.ts', async (importOriginal) => {
+    // vi.mock('./TaskRunner.ts', async (importOriginal) => {
     //   const mod = await importOriginal();
     //   return {
     //     ...mod,
     //     getNow: vi.fn(() => 1000),
     //   };
     // });
-    const scheduler = new Scheduler(mock, 50);
+    const scheduler = new TaskRunner(mock, 50);
     scheduler.schedule();
     scheduler.schedule();
     vi.advanceTimersByTime(50);
@@ -80,7 +80,7 @@ describe('scheduler', () => {
   it('test usage of `_hasOverlappedTask`', () => {
     vi.spyOn(all, 'getNow').mockReturnValue(1000);
 
-    vi.mock('./Scheduler.ts', async (importOriginal) => {
+    vi.mock('./TaskRunner.ts', async (importOriginal) => {
       const mod = await importOriginal();
       return {
         ...mod,
@@ -90,7 +90,7 @@ describe('scheduler', () => {
     /**
      * How to overwrite a method of a class?
      */
-    Scheduler.prototype.schedule = vi
+    TaskRunner.prototype.schedule = vi
       .fn()
       .mockImplementation(function (...args: any[]) {
         this._args = args;
@@ -109,7 +109,7 @@ describe('scheduler', () => {
         this.leadingEdge(now);
       });
 
-    const scheduler = new Scheduler(mock, 50);
+    const scheduler = new TaskRunner(mock, 50);
 
     // scheduler.schedule = vi.fn().mockImplementation((...args: any[]) => {
     //   scheduler._args = args;

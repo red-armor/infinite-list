@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { Scheduler } from '@infinite-list/scheduler';
+import { TaskRunner } from '@infinite-list/scheduler';
 import {
   ClientRect,
   ItemLayout,
@@ -28,7 +28,7 @@ class IntersectionObserver implements IIntersectionObserver {
   private ownerDocument: ReactNativeDocument | undefined;
   private keyToObserverMap: Map<string, Observer> = new Map();
   private monitorDisposers: MonitorDisposer[] = [];
-  private updateIntersectionsTask: Scheduler;
+  private updateIntersectionsTask: TaskRunner;
   private nodeToContainerObserverMap: Map<
     ReactNativeDocumentNode,
     ContainerObserver
@@ -48,7 +48,7 @@ class IntersectionObserver implements IIntersectionObserver {
     this.ownerDocument = document;
 
     const marginValues = parseRootMargin(rootMargin);
-    this.updateIntersectionsTask = new Scheduler(
+    this.updateIntersectionsTask = new TaskRunner(
       this._updateIntersectionsTask.bind(this),
       50
     );
@@ -223,32 +223,32 @@ class IntersectionObserver implements IIntersectionObserver {
     return records;
   }
 
-  monitorIntersections(_doc: ReactNativeDocument) {
-    let doc: ReactNativeDocument | null | undefined = _doc;
-    if (!doc || this.monitoringDocuments.indexOf(doc) !== -1) {
-      return;
-    }
+  // monitorIntersections(_doc: ReactNativeDocument) {
+  //   let doc: ReactNativeDocument | null | undefined = _doc;
+  //   if (!doc || this.monitoringDocuments.indexOf(doc) !== -1) {
+  //     return;
+  //   }
 
-    /**
-     * to ensure event only be bound only one time...
-     */
-    while (doc && this.monitoringDocuments.indexOf(doc) === -1) {
-      this.monitoringDocuments.push(doc);
-      const current = doc;
+  //   /**
+  //    * to ensure event only be bound only one time...
+  //    */
+  //   while (doc && this.monitoringDocuments.indexOf(doc) === -1) {
+  //     this.monitoringDocuments.push(doc);
+  //     const current = doc;
 
-      const disposer = doc.addEventListener('onScroll', () => {
-        console.log('onscroll -----');
-        const container = this.nodeToContainerObserverMap.get(current.node);
-        container?.updateIntersection().then(() => {
-          const entries = container.updateObserversIntersectionsInSmartWay();
-          console.log('entry ', entries);
-          this.callback(entries, this);
-        });
-      });
-      this.monitorDisposers.push(disposer);
-      doc = doc.ownerDocument;
-    }
-  }
+  //     const disposer = doc.addEventListener('onScroll', () => {
+  //       console.log('onscroll -----');
+  //       const container = this.nodeToContainerObserverMap.get(current.node);
+  //       container?.updateIntersection().then(() => {
+  //         const entries = container.updateObserversIntersectionsInSmartWay();
+  //         console.log('entry ', entries);
+  //         this.callback(entries, this);
+  //       });
+  //     });
+  //     this.monitorDisposers.push(disposer);
+  //     doc = doc.ownerDocument;
+  //   }
+  // }
 
   unmonitorIntersections() {
     this.monitorDisposers.forEach((disposer) => {

@@ -1,1 +1,1 @@
-export { default as Scheduler } from './lib/Scheduler';
+export { default as TaskRunner } from './lib/TaskRunner';
