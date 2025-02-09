@@ -128,6 +128,22 @@ class Observer {
     return this.entry;
   }
 
+  getBoundingClientIntersection() {
+    return this.entry?.intersectionRect;
+  }
+
+  get offsetTop() {
+    return this.clientRect.top;
+  }
+
+  get offsetLeft() {
+    return this.clientRect.left;
+  }
+
+  get offsetParent() {
+    return this.containerObserver;
+  }
+
   getKey() {
     return this.observerKey;
   }
