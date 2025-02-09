@@ -163,6 +163,8 @@ class ContainerObserver {
           height,
         });
 
+        console.log('id ', this.id, x, y, width, height);
+
         let ownerContainerObserver = this.ownerContainerObserver;
         let intersection: IRectIntersection | null = convertRectToIntersection(
           this.rect
