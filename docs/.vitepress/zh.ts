@@ -75,6 +75,22 @@ function nav(): DefaultTheme.NavItem[] {
       link: '/zh/react-native/introduction',
       activeMatch: '/react-native/',
     },
+    {
+      text: 'platform',
+      // link: '/zh/react-native/introduction',
+      items: [
+        {
+          text: 'react',
+          link: '/zh/react/introduction',
+          activeMatch: '/react/',
+        },
+        {
+          text: 'react-native',
+          link: '/zh/react-native/introduction',
+          activeMatch: '/react-native/',
+        },
+      ],
+    },
     // {
     //   text: '指南',
     //   link: '/zh/guide/what-is-vitepress',
@@ -297,6 +313,17 @@ function sidebarReactNative(): DefaultTheme.SidebarItem[] {
               link: '/ui/masonry/introduction.md',
             },
           ],
+        },
+      ],
+    },
+
+    {
+      text: 'Extra Topic',
+      collapsed: false,
+      items: [
+        {
+          text: 'Rethinking List',
+          link: '/extra/rethinking-list.md',
         },
       ],
     },
