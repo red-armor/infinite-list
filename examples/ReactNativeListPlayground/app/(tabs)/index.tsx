@@ -172,13 +172,13 @@ import HorizontalListWithContainer from '../../components/play/HorizontalListWit
 import MeasureInWindowSimple from '../../components/play/MeasureInWindowSimple';
 // import MeasureInWindowSimpleIntersection from '../../components/play/MeasureInWindowSimpleIntersection';
 // import MeasureInWindowSimpleIntersectionScrollView from '../../components/play/MeasureInWindowSimpleIntersectionScrollView';
-// import StickyViewFluid from '../../components/play/StickyViewFluid';
+import StickyViewFluid from '../../components/play/StickyViewFluid';
 // import StickyViewStuck from '../../components/play/StickyViewStuck';
 
 import IntersectionObserverList from '../../components/play/IntersectionObserverList';
 
 export default () => {
-  return <List />;
+  // return <List />;
   // return <MasonryList />;
   // return <Group />;
   // return <HorizontalList />
@@ -187,7 +187,7 @@ export default () => {
   // return <MeasureInWindowSimple />;
   // return <MeasureInWindowSimpleIntersection />;
   // return <MeasureInWindowSimpleIntersectionScrollView />;
-  // return <StickyViewFluid />;
+  return <StickyViewFluid />;
   // return <StickyViewStuck />;
   // return <IntersectionObserverList />;
 };

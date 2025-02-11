@@ -217,7 +217,8 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
           scrollEnabled={scrollEnabled}
           onRefresh={nextOnRefresh}
           refreshing={refreshing}
-          useSmoothControl={useSmoothControl}
+          useSmoothControl={true}
+          // useSmoothControl={useSmoothControl}
         >
           {children}
         </AnimatedRenderer>

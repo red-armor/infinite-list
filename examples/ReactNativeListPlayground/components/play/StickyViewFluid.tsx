@@ -71,6 +71,7 @@ const StickyViewHorizontal = () => {
       onScrollEndDrag={scrollHandler}
       scrollEventThrottle={50}
       animated
+      useSmoothControl
       stickyMode={StickyMode.stuck}
       intersectionObserverCallback={intersectionObserverHandler}
       // onContentSizeChange={onContentSizeChange}

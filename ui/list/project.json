@@ -4,5 +4,13 @@
   "sourceRoot": "ui/list/src",
   "projectType": "library",
   "tags": [],
-  "targets": {}
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "ui/list/jest.config.ts"
+      }
+    }
+  }
 }

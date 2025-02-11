@@ -18,5 +18,8 @@ module.exports = {
       'react-native/jest/assetFileTransformer.js'
     ),
   },
+  transformIgnorePatterns: [
+    '<rootDir>/node_modules/(?!((jest-)?react-native|@react-native(-community)?)/)',
+  ],
   coverageDirectory: '../../coverage/ui/list',
 };

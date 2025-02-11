@@ -48,6 +48,7 @@ const SmoothControl: FC<SmoothControlProps> = (props) => {
         alignItems: 'center',
         justifyContent: 'center',
         height: triggerOnRefreshThresholdValue,
+        backgroundColor: 'green',
         transform: [
           {
             translateY: fade
