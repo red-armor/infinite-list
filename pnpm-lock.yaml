@@ -765,6 +765,9 @@ importers:
 
   ui/scroller:
     dependencies:
+      '@infinite-list/disposable':
+        specifier: workspace:*
+        version: link:../../core/disposable
       '@infinite-list/intersection-observer':
         specifier: workspace:*
         version: link:../../core/intersection-observer
@@ -774,9 +777,9 @@ importers:
       '@infinite-list/items-dimensions':
         specifier: workspace:*
         version: link:../../model/items-dimensions
-      '@x-oasis/batchinator':
-        specifier: ^0.1.14
-        version: 0.1.35
+      '@infinite-list/scheduler':
+        specifier: workspace:*
+        version: link:../../core/scheduler
       '@x-oasis/is-ref':
         specifier: ^0.1.35
         version: 0.1.35
@@ -6128,9 +6131,7 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
-      - bufferutil
       - supports-color
-      - utf-8-validate
     dev: true
 
   /@react-native/normalize-colors@0.74.83:
