@@ -161,20 +161,21 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const nextOnRefresh = useMemo(() => {
-    if (!onRefresh) return null;
-    if (typeof onRefresh === 'function')
-      return () => {
-        onRefresh();
-        marshal.getScrollHelper().invokeOnRefreshListener();
-      };
-    return null;
-  }, [onRefresh]);
+  // const nextOnRefresh = useMemo(() => {
+  //   return () => {}
+  //   if (!onRefresh) return null;
+  //   if (typeof onRefresh === 'function')
+  //     return () => {
+  //       // onRefresh();
+  //       marshal.getScrollHelper().invokeOnRefreshListener();
+  //     };
+  //   return null;
+  // }, [onRefresh]);
 
-  const useSmoothControl = useMemo(
-    () => typeof nextOnRefresh === 'function' && isIos,
-    []
-  );
+  // const useSmoothControl = useMemo(
+  //   () => typeof nextOnRefresh === 'function' && isIos,
+  //   []
+  // );
 
   useEffect(
     () => () => {
@@ -192,19 +193,19 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const _refreshControl = useMemo(() => {
-    if (!nextOnRefresh) return null;
-    if (isIos) return null;
-    return (
-      <RNRefreshControl refreshing={!!refreshing} onRefresh={nextOnRefresh} />
-    );
-  }, [refreshing]);
+  // const _refreshControl = useMemo(() => {
+  //   if (!nextOnRefresh) return null;
+  //   if (isIos) return null;
+  //   return (
+  //     <RNRefreshControl refreshing={!!refreshing} onRefresh={nextOnRefresh} />
+  //   );
+  // }, [refreshing]);
 
-  const refreshControlProps = _refreshControl
-    ? {
-        refreshControl: _refreshControl,
-      }
-    : {};
+  // const refreshControlProps = _refreshControl
+  //   ? {
+  //       refreshControl: _refreshControl,
+  //     }
+  //   : {};
 
   if (animated)
     return (
@@ -213,12 +214,10 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
         <AnimatedRenderer
           ref={scrollViewRef as MutableRefObject<RNScrollView>}
           {...rest}
-          {...refreshControlProps}
+          // {...refreshControlProps}
           scrollEnabled={scrollEnabled}
-          onRefresh={nextOnRefresh}
+          // onRefresh={nextOnRefresh}
           refreshing={refreshing}
-          useSmoothControl={true}
-          // useSmoothControl={useSmoothControl}
         >
           {children}
         </AnimatedRenderer>
@@ -233,7 +232,7 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
         scrollEnabled={scrollEnabled}
         ref={scrollViewRef as MutableRefObject<RNScrollView>}
         {...rest}
-        {...refreshControlProps}
+        // {...refreshControlProps}
       >
         {children}
       </BasicRenderer>

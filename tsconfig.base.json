@@ -11,6 +11,7 @@
       "@infinite-list/container": ["core/container/src/index.ts"],
       "@infinite-list/dimension": ["model/dimension/src/index.ts"],
       "@infinite-list/dimensions-model": ["core/dimensions-model/src/index.ts"],
+      "@infinite-list/disposable": ["core/disposable/src/index.ts"],
       "@infinite-list/group-dimensions": [
         "model/group-dimensions/src/index.ts"
       ],

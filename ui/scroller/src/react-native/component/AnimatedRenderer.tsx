@@ -21,12 +21,15 @@ import { DEFAULT_VIEW_LAYOUT } from '../commons/constants';
 import { useNativeRefreshControl } from '../commons/platform';
 import useScrollEnabled from '../hooks/useScrollEnabled';
 import useInitialEffect from '../hooks/useInitialEffect';
-import SmoothControl from '../refresh/SmoothControl';
 import { TRIGGER_ON_REFRESH_THRESHOLD_VALUE } from '../refresh/constants';
 import {
   AnimatedScrollRendererProps,
   AnimatedScrollRendererPropsWithForwardRef,
 } from '../types';
+
+const noop = () => {
+  // do nothing
+};
 
 const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   props
@@ -38,7 +41,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     onLayout,
     scrollEventThrottle,
     style = {},
-    onRefresh,
+    onRefresh = noop,
     refreshing,
     scrollEnabled,
     useSmoothControl,
@@ -96,7 +99,11 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
           const contentOffset = nativeEvent.contentOffset;
 
           const { y } = contentOffset;
+
+          console.log('--------', y);
+
           if (y < -triggerOnRefreshThresholdValue) {
+            console.log('set ----- tre');
             setLoading(true);
             lottieAnimatedValueRef.current.setValue(
               triggerOnRefreshThresholdValue
@@ -159,48 +166,40 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     ];
   }, [loading]);
 
+  console.log(
+    'loading ------xxxxx',
+    useSmoothControl,
+    onRefresh,
+    useNativeRefreshControl,
+    loading,
+    !useNativeRefreshControl && typeof onRefresh === 'function'
+  );
+
   return (
-    <>
-      {useSmoothControl && (
-        <SmoothControl
-          refreshing={refreshing}
-          setLoading={setLoading}
-          loading={loading}
-          layoutRef={layoutRef}
-          animatedValue={animatedValue}
-          lottieAnimatedValueRef={lottieAnimatedValueRef}
-          refreshControlStartCorrection={refreshControlStartCorrection}
-          triggerOnRefreshThresholdValue={triggerOnRefreshThresholdValue}
-          refreshControlContentContainerStyle={
-            refreshControlContentContainerStyle
-          }
-        />
-      )}
-      <Animated.ScrollView
-        ref={forwardRef}
-        style={scrollViewStyle}
-        horizontal={horizontal}
-        {...restProps}
-        {...scrollHelper.getEventHandlers()}
-        scrollEnabled={_scrollEnabled}
-        scrollEventThrottle={1}
-        onLayout={layoutHandler}
-        onScroll={Animated.event(
-          [
-            {
-              // @ts-ignore
-              nativeEvent: { contentOffset },
-            },
-          ],
+    <Animated.ScrollView
+      ref={forwardRef}
+      style={scrollViewStyle}
+      horizontal={horizontal}
+      {...restProps}
+      {...scrollHelper.getEventHandlers()}
+      scrollEnabled={_scrollEnabled}
+      scrollEventThrottle={1}
+      onLayout={layoutHandler}
+      onScroll={Animated.event(
+        [
           {
-            listener: throttledHandler,
-            useNativeDriver: true,
-          }
-        )}
-      >
-        {children}
-      </Animated.ScrollView>
-    </>
+            // @ts-ignore
+            nativeEvent: { contentOffset },
+          },
+        ],
+        {
+          listener: throttledHandler,
+          useNativeDriver: true,
+        }
+      )}
+    >
+      {children}
+    </Animated.ScrollView>
   );
 };
 

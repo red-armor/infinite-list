@@ -27,6 +27,7 @@ const StickyViewHorizontal = () => {
   }, []);
 
   const scrollHandler = useCallback(() => {
+    console.log('test---------');
     greenRef.current?.measureInWindow((x, y, width, height) => {
       console.log('green ref ', x, y, width, height);
     });

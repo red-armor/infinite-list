@@ -1,22 +1,74 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { FC, useState, useMemo, useEffect, useContext } from 'react';
+import { View, ViewStyle, StyleSheet, ActivityIndicator } from 'react-native';
+import { ParallaxScrollViewContext } from '../context';
+import { Disposable } from '@ads-x/disposable';
 
-const TRIGGER_ON_REFRESH_THRESHOLD_VALUE = 50;
-const LOCK_REFRESH_TIMEOUT = 500;
+const RefreshControlThresholdValue = 100;
 
-const styles = StyleSheet.create({
-  container: {
-    top: -50,
-    right: 0,
-    left: 0,
-    height: 50,
-  },
-});
+const RefreshControl: FC<{
+  refreshing?: boolean;
+}> = (props) => {
+  const styles = useStyles();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const disposable = useMemo(() => new Disposable(), []);
+  const parallaxContextValues = useContext(ParallaxScrollViewContext);
 
-const RefreshControl = () => {
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const refreshControlService = useMemo(
+    () => parallaxContextValues.refreshControlService!,
+    [parallaxContextValues]
+  );
 
-  return <View style={styles.container}></View>;
+  useEffect(() => {
+    disposable.registerDisposable(
+      refreshControlService.onStateChanged((values) => {
+        setIsRefreshing(values.isRefreshing);
+      })
+    );
+  }, []);
+
+  useEffect(
+    () => () => {
+      disposable.dispose();
+    },
+    []
+  );
+
+  const containerStyle = useMemo<ViewStyle>(() => {
+    if (!isRefreshing) return styles.container;
+    return styles.refreshingContainer;
+  }, [isRefreshing, styles]);
+
+  return (
+    <View style={containerStyle}>
+      <ActivityIndicator size="small" color="#eee" />
+    </View>
+  );
+};
+
+export const useStyles = () => {
+  return useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'absolute',
+          top: -RefreshControlThresholdValue,
+          left: 0,
+          right: 0,
+          height: RefreshControlThresholdValue,
+        },
+        refreshingContainer: {
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: RefreshControlThresholdValue,
+        },
+      }),
+    []
+  );
 };
 
 export default RefreshControl;

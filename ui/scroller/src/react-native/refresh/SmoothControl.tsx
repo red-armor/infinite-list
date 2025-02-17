@@ -20,22 +20,25 @@ const SmoothControl: FC<SmoothControlProps> = (props) => {
   const [fade, setFade] = useState(false);
 
   useEffect(() => {
-    if (!refreshing && loading) {
+    console.log('ppppppppp------');
+
+    if (loading) {
       setFade(true);
       setTimeout(() => {
         Animated.timing(lottieAnimatedValueRef.current, {
           toValue: 0,
-          duration: 250,
+          duration: 2500,
           useNativeDriver: true,
         }).start(({ finished }) => {
           if (finished) {
+            console.log('to false ==============');
             setLoading(false);
             setFade(false);
           }
         });
       });
     }
-  }, [refreshing]);
+  }, [loading]);
 
   const refreshIcon = useMemo<any>(() => {
     return [
