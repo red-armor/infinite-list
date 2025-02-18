@@ -174,6 +174,7 @@ config.resolver.extraNodeModules = {
     'src'
   ),
   '@infinite-list/scheduler': path.join(root, 'core', 'scheduler', 'src'),
+  '@infinite-list/disposable': path.join(root, 'core', 'disposable', 'src'),
 
   /**
    * model
@@ -244,6 +245,8 @@ config.watchFolders = [
   path.join(root, 'core', 'intersection-observer', 'node_modules'),
   path.join(root, 'core', 'scheduler', 'src'),
   path.join(root, 'core', 'scheduler', 'node_modules'),
+  path.join(root, 'core', 'disposable', 'src'),
+  path.join(root, 'core', 'disposable', 'node_modules'),
 
   /**
    * model

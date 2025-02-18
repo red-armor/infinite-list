@@ -37,6 +37,7 @@ import {
   ViewableItemLayout,
 } from './types';
 import Emitter from './commons/Emitter';
+import RefreshControlService from './controller/RefreshControlService';
 
 /**
  * The same direction ScrollView only has one ScrollHelper, it only belongs to the root
@@ -97,6 +98,8 @@ class ScrollHelper {
 
   private _intersectionObserverContainer: ContainerObserver | null | undefined;
 
+  private _refreshControlService: RefreshControlService;
+
   ownerDocument: ReactNativeDocumentBase;
 
   constructor(props: ScrollHelperProps) {
@@ -123,6 +126,7 @@ class ScrollHelper {
     this.selectValue = horizontal ? selectHorizontalValue : selectVerticalValue;
     this._layoutMeasurement = DEFAULT_LAYOUT_MEASUREMENT;
     this._contentSize = DEFAULT_SCROLL_EVENT_METRICS.contentSize;
+    this._refreshControlService = new RefreshControlService();
     this.resolveScrollMetrics();
 
     this._animatedValueY = animatedValueY?.current || new Animated.Value(0);
@@ -165,6 +169,10 @@ class ScrollHelper {
 
   get ownerScrollHelper() {
     return this._marshal.scrollHelper;
+  }
+
+  get refreshControlService() {
+    return this._refreshControlService;
   }
 
   addEventListener(
@@ -414,6 +422,7 @@ class ScrollHelper {
         ...e.nativeEvent,
       },
     });
+    this.refreshControlService.receiveOnScrollEvent(e);
   }
 
   onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -423,6 +432,7 @@ class ScrollHelper {
         ...e.nativeEvent,
       },
     });
+    this.refreshControlService.receiveOnScrollBeginDragEvent(e);
   }
 
   onScrollEndDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -431,6 +441,7 @@ class ScrollHelper {
         ...e.nativeEvent,
       },
     });
+    this.refreshControlService.receiveOnScrollEndDragEvent(e);
   }
 
   onMomentumScrollBegin(e: NativeSyntheticEvent<NativeScrollEvent>) {

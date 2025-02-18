@@ -1,6 +1,5 @@
 import { DisposableService, Event } from '@infinite-list/disposable';
 import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-// import ParallaxTabViewService from './ParallaxTabViewService';
 import { TaskRunner } from '@infinite-list/scheduler';
 
 type RefreshControlState = {
@@ -86,9 +85,10 @@ class RefreshControlService extends DisposableService<RefreshControlState> {
     newState: RefreshControlState,
     oldState: RefreshControlState
   ) {
-    if (newState.isRefreshing !== oldState.isRefreshing) {
-      this.bubbleRefreshingState();
-    }
+    console.log('buble ----');
+    // if (newState.isRefreshing !== oldState.isRefreshing) {
+    //   this.bubbleRefreshingState();
+    // }
   }
 
   checkRefreshing() {

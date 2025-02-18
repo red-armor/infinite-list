@@ -19,6 +19,7 @@ import {
   ScrollRendererProps,
   ScrollRendererPropsWithForwardRef,
 } from '../types';
+import RefreshControl from '../controller/RefreshControl';
 
 const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   const {
@@ -79,6 +80,7 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
       scrollEnabled={_scrollEnabled}
       scrollEventThrottle={scrollEventThrottle}
     >
+      <RefreshControl />
       {children}
     </ScrollView>
   );

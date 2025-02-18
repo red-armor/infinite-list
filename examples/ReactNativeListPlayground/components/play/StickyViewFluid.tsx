@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { View, Text, ScrollView as NativeScrollView } from 'react-native';
 import { IIntersectionObserverEntry } from '@infinite-list/intersection-observer/react-native';
 import {
@@ -8,6 +14,36 @@ import {
   IntersectionObserverTouchableOpacity,
   StickyMode,
 } from '@infinite-list/scroller/react-native';
+import { ScrollViewContext } from '@infinite-list/scroller/react-native';
+
+const Inner = () => {
+  const contextValues = useContext(ScrollViewContext);
+
+  const refreshingService = useMemo(() => {
+    return contextValues.marshal?.getScrollHelper().refreshControlService;
+  }, []);
+
+  console.log(
+    'service= ===',
+    contextValues.marshal?.getScrollHelper(),
+    refreshingService
+  );
+
+  useEffect(() => {
+    refreshingService!.onStateChanged((state) => {
+      console.log('state ', state);
+      const { isRefreshing } = state;
+      if (isRefreshing) {
+        setTimeout(() => {
+          contextValues.marshal
+            ?.getScrollHelper()
+            .refreshControlService.stopRefreshing();
+        }, 1000);
+      }
+    });
+  }, []);
+  return null;
+};
 
 const StickyViewHorizontal = () => {
   const greenRef = useRef<View>(null);
@@ -77,6 +113,7 @@ const StickyViewHorizontal = () => {
       intersectionObserverCallback={intersectionObserverHandler}
       // onContentSizeChange={onContentSizeChange}
     >
+      <Inner />
       <View style={{ height: 700, width: '100%', backgroundColor: 'red' }}>
         <Text>first</Text>
       </View>

@@ -26,6 +26,7 @@ import {
   AnimatedScrollRendererProps,
   AnimatedScrollRendererPropsWithForwardRef,
 } from '../types';
+import RefreshControl from '../controller/RefreshControl';
 
 const noop = () => {
   // do nothing
@@ -89,32 +90,32 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     });
   }, [onScroll, scrollEventThrottle, scrollHelper]);
 
-  useInitialEffect(() =>
-    marshal
-      ?.getScrollHelper()
-      .addEventListener(
-        'onScrollEndDrag',
-        (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-          const { nativeEvent } = e;
-          const contentOffset = nativeEvent.contentOffset;
+  // useInitialEffect(() =>
+  //   marshal
+  //     ?.getScrollHelper()
+  //     .addEventListener(
+  //       'onScrollEndDrag',
+  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //         const { nativeEvent } = e;
+  //         const contentOffset = nativeEvent.contentOffset;
 
-          const { y } = contentOffset;
+  //         const { y } = contentOffset;
 
-          console.log('--------', y);
+  //         console.log('--------', y);
 
-          if (y < -triggerOnRefreshThresholdValue) {
-            console.log('set ----- tre');
-            setLoading(true);
-            lottieAnimatedValueRef.current.setValue(
-              triggerOnRefreshThresholdValue
-            );
-            if (typeof onRefresh === 'function') {
-              onRefresh();
-            }
-          }
-        }
-      )
-  );
+  //         if (y < -triggerOnRefreshThresholdValue) {
+  //           console.log('set ----- tre');
+  //           setLoading(true);
+  //           lottieAnimatedValueRef.current.setValue(
+  //             triggerOnRefreshThresholdValue
+  //           );
+  //           if (typeof onRefresh === 'function') {
+  //             onRefresh();
+  //           }
+  //         }
+  //       }
+  //     )
+  // );
 
   const layoutHandler = useCallback((e: LayoutChangeEvent) => {
     layoutRef.current = e.nativeEvent.layout;
@@ -138,42 +139,42 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   const scrollViewStyle = useMemo(() => {
     return [
       style,
-      !useNativeRefreshControl && typeof onRefresh === 'function'
-        ? {
-            transform: [
-              {
-                translateY: loading
-                  ? Animated.multiply(
-                      lottieAnimatedValueRef.current.interpolate({
-                        inputRange: [0, triggerOnRefreshThresholdValue],
-                        outputRange: [0, triggerOnRefreshThresholdValue],
-                      }),
-                      animatedValue.interpolate({
-                        inputRange: [
-                          triggerOnRefreshThresholdValue - 2,
-                          triggerOnRefreshThresholdValue - 1,
-                          triggerOnRefreshThresholdValue,
-                          triggerOnRefreshThresholdValue + 1,
-                        ],
-                        outputRange: [1, 1, 0, 0],
-                      })
-                    )
-                  : 0,
-              },
-            ],
-          }
-        : {},
+      // !useNativeRefreshControl && typeof onRefresh === 'function'
+      //   ? {
+      //       transform: [
+      //         {
+      //           translateY: loading
+      //             ? Animated.multiply(
+      //                 lottieAnimatedValueRef.current.interpolate({
+      //                   inputRange: [0, triggerOnRefreshThresholdValue],
+      //                   outputRange: [0, triggerOnRefreshThresholdValue],
+      //                 }),
+      //                 animatedValue.interpolate({
+      //                   inputRange: [
+      //                     triggerOnRefreshThresholdValue - 2,
+      //                     triggerOnRefreshThresholdValue - 1,
+      //                     triggerOnRefreshThresholdValue,
+      //                     triggerOnRefreshThresholdValue + 1,
+      //                   ],
+      //                   outputRange: [1, 1, 0, 0],
+      //                 })
+      //               )
+      //             : 0,
+      //         },
+      //       ],
+      //     }
+      //   : {},
     ];
   }, [loading]);
 
-  console.log(
-    'loading ------xxxxx',
-    useSmoothControl,
-    onRefresh,
-    useNativeRefreshControl,
-    loading,
-    !useNativeRefreshControl && typeof onRefresh === 'function'
-  );
+  // console.log(
+  //   'loading ------xxxxx',
+  //   useSmoothControl,
+  //   onRefresh,
+  //   useNativeRefreshControl,
+  //   loading,
+  //   !useNativeRefreshControl && typeof onRefresh === 'function'
+  // );
 
   return (
     <Animated.ScrollView
@@ -198,6 +199,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
         }
       )}
     >
+      <RefreshControl />
       {children}
     </Animated.ScrollView>
   );

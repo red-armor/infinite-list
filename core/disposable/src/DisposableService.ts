@@ -37,6 +37,8 @@ abstract class DisposableService<
       };
     }
 
+    console.log('set =====', this.getState(), _state);
+
     if (!shallowEqual(_state, this.getState())) {
       this._onStateChangedEvent.fire(this.getState(), _state);
     }

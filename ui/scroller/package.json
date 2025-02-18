@@ -31,6 +31,5 @@
     "@infinite-list/disposable": "workspace:*",
     "@infinite-list/items-dimensions": "workspace:*",
     "@infinite-list/intersection-observer": "workspace:*"
-
   }
 }

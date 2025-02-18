@@ -1,7 +1,7 @@
 import React, { FC, useState, useMemo, useEffect, useContext } from 'react';
 import { View, ViewStyle, StyleSheet, ActivityIndicator } from 'react-native';
-import { ParallaxScrollViewContext } from '../context';
-import { Disposable } from '@ads-x/disposable';
+import ScrollViewContext from '../context/ScrollViewContext';
+import { Disposable } from '@infinite-list/disposable';
 
 const RefreshControlThresholdValue = 100;
 
@@ -11,12 +11,9 @@ const RefreshControl: FC<{
   const styles = useStyles();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const disposable = useMemo(() => new Disposable(), []);
-  const parallaxContextValues = useContext(ParallaxScrollViewContext);
-
-  const refreshControlService = useMemo(
-    () => parallaxContextValues.refreshControlService!,
-    [parallaxContextValues]
-  );
+  const { marshal } = useContext(ScrollViewContext);
+  const refreshControlService =
+    marshal!.getScrollHelper().refreshControlService;
 
   useEffect(() => {
     disposable.registerDisposable(
