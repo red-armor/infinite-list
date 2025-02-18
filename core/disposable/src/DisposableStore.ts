@@ -1,5 +1,6 @@
 import { isArray } from './assertion/types';
-import { Iterable } from './assertion/iterable';
+import { is } from './assertion/iterable';
+// import { Iterable } from './assertion/iterable';
 import type { IDisposable } from './types/disposable';
 import { isDisposable } from './Disposable';
 
@@ -32,7 +33,7 @@ export function dispose<T extends IDisposable>(
     }
     return disposables;
   }
-  if (Iterable.is<IDisposable>(disposables)) {
+  if (is<IDisposable>(disposables)) {
     for (const disposable of disposables as IDisposable[]) {
       try {
         disposable?.dispose();

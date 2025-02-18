@@ -35,9 +35,9 @@ const LoadingIcon: FC<
   //   }
   // }, [animation, progress]);
 
-  return (
-    <ActivityIndicator size="large" color={'yellow'} animating={loading} />
-  );
+  // return (
+  //   <ActivityIndicator size="large" color={'yellow'} animating={loading} />
+  // );
 
   return (
     <View style={[styles.image, style]}>

@@ -53,6 +53,7 @@ class RefreshControlService extends DisposableService<RefreshControlState> {
     );
 
     this.registerDisposable(
+      // @ts-expect-error
       this.onStateChanged(this.onStateChangedHandler.bind(this))
     );
   }
