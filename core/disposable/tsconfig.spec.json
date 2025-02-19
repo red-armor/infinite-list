@@ -22,5 +22,5 @@
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
     "src/**/*.d.ts"
-  ]
+, "src/assertion/iterable.ts"  ]
 }
