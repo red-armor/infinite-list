@@ -1,7 +1,4 @@
-// import { TouchableOpacity, View } from 'react-native';
-
 import createViewableComponent from './item/createViewableComponent';
-// import createStickyComponent from './item/sticky-item/createStickyComponent';
 import FooterPortal from './portal/FooterPortal';
 import HeaderPortal from './portal/HeaderPortal';
 

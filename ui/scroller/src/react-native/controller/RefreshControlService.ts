@@ -52,10 +52,9 @@ class RefreshControlService extends DisposableService<RefreshControlState> {
       50
     );
 
-    this.registerDisposable(
-      // @ts-expect-error
-      this.onStateChanged(this.onStateChangedHandler.bind(this))
-    );
+    // this.registerDisposable(
+    //   this.onStateChanged(this.onStateChangedHandler.bind(this))
+    // );
   }
 
   /**
@@ -82,15 +81,15 @@ class RefreshControlService extends DisposableService<RefreshControlState> {
     });
   }
 
-  onStateChangedHandler(
-    newState: RefreshControlState,
-    oldState: RefreshControlState
-  ) {
-    console.log('buble ----');
-    // if (newState.isRefreshing !== oldState.isRefreshing) {
-    //   this.bubbleRefreshingState();
-    // }
-  }
+  // onStateChangedHandler(
+  //   newState: RefreshControlState,
+  //   oldState: RefreshControlState
+  // ) {
+  //   console.log('buble ----');
+  //   // if (newState.isRefreshing !== oldState.isRefreshing) {
+  //   //   this.bubbleRefreshingState();
+  //   // }
+  // }
 
   checkRefreshing() {
     if (this._scrollMetrics) {
