@@ -9,7 +9,6 @@ const RefreshControlThresholdValue = 100;
 
 class RefreshControlService extends DisposableService<RefreshControlState> {
   _state: RefreshControlState;
-  // readonly ownerService?: ParallaxTabViewService;
 
   private _onScrollEvent = new Event<NativeSyntheticEvent<NativeScrollEvent>>({
     name: 'on-scroll',

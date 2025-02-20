@@ -114,13 +114,6 @@ class TaskRunner {
 
     const timeSinceLastCall = now - this._lastCallTime;
 
-    // console.log(
-    //   'timeSinceLastCall > this._delayMS ',
-    //   timeSinceLastCall,
-    //   this._delayMS,
-    //   timeSinceLastCall > this._delayMS
-    // );
-
     if (timeSinceLastCall > this._delayMS) return true;
     return false;
   }
@@ -151,8 +144,8 @@ class TaskRunner {
     }
 
     /**
-     * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,
-     * it only updates when `leadingEdge` is invoked.
+     * _lastCallTime is updated on every schedule invocation. comparing
+     * with _lastInvokeTime, it only updates when `leadingEdge` is invoked.
      *
      */
     this._lastCallTime = now;

@@ -58,16 +58,15 @@ describe('scheduler', () => {
    * https://soorria.com/snippets/mocking-classes-vitest#mocking-static-methods
    * https://vitest.dev/guide/mocking#mock-an-exported-class-implementation
    */
-  it('test usage of `_hasOverlappedTask`', () => {
-    vi.spyOn(all, 'getNow').mockReturnValue(1000);
+  it.only('test usage of `_hasOverlappedTask`, then it run twice', () => {
+    // vi.spyOn(all, 'getNow').mockReturnValue(1000);
 
-    // vi.mock('./TaskRunner.ts', async (importOriginal) => {
-    //   const mod = await importOriginal();
-    //   return {
-    //     ...mod,
-    //     getNow: vi.fn(() => 1000),
-    //   };
-    // });
+    vi.mock('./utils.ts', async (importOriginal) => {
+      const mod = await importOriginal();
+      return {
+        getNow: vi.fn(() => 1000),
+      };
+    });
     const scheduler = new TaskRunner(mock, 50);
     scheduler.schedule();
     scheduler.schedule();
@@ -77,53 +76,40 @@ describe('scheduler', () => {
     expect(mock).toHaveBeenCalledTimes(2);
   });
 
-  it('test usage of `_hasOverlappedTask`', () => {
-    vi.spyOn(all, 'getNow').mockReturnValue(1000);
+  it.only('test usage of `_hasOverlappedTask`, comparing has param it only run once', () => {
+    // vi.spyOn(all, 'getNow').mockReturnValue(1000);
 
-    vi.mock('./TaskRunner.ts', async (importOriginal) => {
-      const mod = await importOriginal();
-      return {
-        ...mod,
-        getNow: vi.fn(() => 1000),
-      };
-    });
     /**
      * How to overwrite a method of a class?
      */
-    TaskRunner.prototype.schedule = vi
-      .fn()
-      .mockImplementation(function (...args: any[]) {
-        this._args = args;
-        const invokeNext = this.shouldInvokeNext();
-        const now = all.getNow();
-        /**
-         * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,
-         * it only updates when `leadingEdge` is invoked.
-         *
-         */
-        this._lastCallTime = now;
+    // TaskRunner.prototype.schedule = vi
+    //   .fn()
+    //   .mockImplementation(function (...args: any[]) {
+    //     this._args = args;
+    //     const invokeNext = this.shouldInvokeNext();
+    //     const now = all.getNow();
+    //     this._lastCallTime = now;
 
-        if (!invokeNext) return;
-        this.leadingEdge(now);
-      });
+    //     if (!invokeNext) return;
+    //     this.leadingEdge(now);
+    //   });
 
     const scheduler = new TaskRunner(mock, 50);
 
-    // scheduler.schedule = vi.fn().mockImplementation((...args: any[]) => {
-    //   scheduler._args = args;
-    //   const invokeNext = scheduler.shouldInvokeNext();
-    //   const now = getNow();
-    //   /**
-    //    * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,
-    //    * it only updates when `leadingEdge` is invoked.
-    //    *
-    //    */
-    //   scheduler._lastCallTime = now;
-    //   console.log('invokke ', invokeNext, now)
+    scheduler.schedule = vi.fn().mockImplementation((...args: any[]) => {
+      scheduler._args = args;
+      const invokeNext = scheduler.shouldInvokeNext();
+      const now = all.getNow();
+      /**
+       * _lastCallTime is updated on every schedule invocation. comparing with _lastInvokeTime,
+       * it only updates when `leadingEdge` is invoked.
+       *
+       */
+      scheduler._lastCallTime = now;
 
-    //   if (!invokeNext) return;
-    //   scheduler.leadingEdge(now);
-    // })
+      if (!invokeNext) return;
+      scheduler.leadingEdge(now);
+    });
 
     scheduler.schedule();
     scheduler.schedule();
