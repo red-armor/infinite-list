@@ -114,7 +114,7 @@ class TaskRunner {
 
     const timeSinceLastCall = now - this._lastCallTime;
 
-    if (timeSinceLastCall > this._delayMS) return true;
+    if (timeSinceLastCall >= this._delayMS) return true;
     return false;
   }
 
