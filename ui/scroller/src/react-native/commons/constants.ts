@@ -1,7 +1,3 @@
-import { Dimensions } from 'react-native';
-
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-
 export const DEFAULT_SCROLL_EVENT_THROTTLE = 16;
 
 export const DEFAULT_LAYOUT_MEASUREMENT = {
