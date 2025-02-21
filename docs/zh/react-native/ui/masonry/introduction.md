@@ -1,10 +1,11 @@
 # Masonry
 
-针对React Native的Masonry组件，支持Recycler，允许用户自定义配置recycler渲染策略，确保最佳的滑动体感；它有下列特点
+针对`React Native`的`Masonry`组件，支持`Recycler`，允许用户自定义配置`recycler`渲染策略，确保最佳的滑动体感；它有下列特点：
 
-- 支持Recycler，item的渲染是重复使用的过程，确保整体的流畅度
+- 支持`Recycler`，`item`的渲染是重复使用的过程，确保整体的流畅度
 - 支持不定高，可以不设置item的高度组建自动计算
-- 支持可控的多列展示
+- 支持可控的多列展示，可以根据需要设置展示的列数
+- 不再和`ScrollView`绑定，让列表可以作为单独的独立的模块放置到页面的各个位置
 
 ## Installation
 
@@ -119,7 +120,7 @@ The function to render each item in the list.
 (item: any, index: number) => string
 ```
 
-## Special Props
+## Specialized Props
 
 ### recyclerBufferSize
 - Type: `number`
