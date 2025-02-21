@@ -1,7 +1,5 @@
 import { useCallback, useMemo, useRef, useEffect } from 'react';
-import { useColorScheme } from 'react-native';
-import { ScrollView as NativeScrollView } from 'react-native';
-import { MasonryList } from '@infinite-list/masonry/react-native';
+import { MasonryList, RenderItem } from '@infinite-list/masonry/react-native';
 import { ScrollView } from '@infinite-list/scroller/react-native';
 import { Text, View } from 'react-native';
 
@@ -13,9 +11,12 @@ const buildData = (count: number, startIndex = 0) =>
 
 export default () => {
   const data = useMemo(() => buildData(1500), []);
-  const scrollViewRef = useRef<NativeScrollView>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
-  const renderItem = useCallback((props) => {
+  const renderItem: RenderItem<{
+    key: number;
+    value: number;
+  }> = useCallback((props) => {
     const { item, itemMeta } = props;
     const index = itemMeta.getIndexInfo().index;
     const totalIndex = itemMeta.getIndexInfo().indexInTotal;

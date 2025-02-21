@@ -17,9 +17,10 @@
     "publish": "pnpm publish -r --access public",
     "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
     "dev:web": "nx storybook react",
-    "docs:dev": "vitepress dev docs --host",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "dev:rn": "cd ./examples/ReactNativeListPlayground && npm run start",
+    "dev:docs": "vitepress dev docs --host",
+    "build:docs": "vitepress build docs",
+    "preview:docs": "vitepress preview docs"
   },
   "private": true,
   "lint-staged": {

@@ -148,6 +148,19 @@ function sidebarReact(): DefaultTheme.SidebarItem[] {
           ],
         },
         {
+          text: 'strategies',
+          items: [
+            {
+              text: 'Strategies',
+              link: '/core/strategies/introduction.md',
+            },
+            {
+              text: 'Recycler',
+              link: '/core/strategies/recycler.md',
+            },
+          ],
+        },
+        {
           text: 'viewable',
           link: '/core/viewable.md',
         },
@@ -266,6 +279,19 @@ function sidebarReactNative(): DefaultTheme.SidebarItem[] {
             {
               text: 'Observer',
               link: '/core/intersection-observer/observer.md',
+            },
+          ],
+        },
+        {
+          text: 'strategies',
+          items: [
+            {
+              text: 'Strategies',
+              link: '/core/strategies/introduction.md',
+            },
+            {
+              text: 'Recycler',
+              link: '/core/strategies/recycler.md',
             },
           ],
         },
