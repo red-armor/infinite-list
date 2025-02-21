@@ -1,10 +1,7 @@
-import createViewableComponent from './item/createViewableComponent';
 import FooterPortal from './portal/FooterPortal';
 import HeaderPortal from './portal/HeaderPortal';
 
 import ScrollerScrollView from './ScrollView';
-export { default as ViewableItem } from './item/ViewableItem';
-export { default as StickyItem } from './item/sticky-item/StickyItem';
 export { default as ScrollViewContext } from './context/ScrollViewContext';
 export { default as ScrollUpdatingContext } from './context/ScrollUpdatingContext';
 export { default as ViewabilityContext } from './context/ViewabilityContext';
@@ -18,23 +15,6 @@ export { default as Marshal } from './Marshal';
 export * from './types';
 export { default as RefreshControl } from './refresh/Control';
 
-export { createViewableComponent };
-
-// export const Viewable = {
-//   View: createViewableComponent(View),
-//   TouchableOpacity: createViewableComponent(TouchableOpacity),
-// };
-
-// export const ViewableComponent = Viewable;
-
-// const AnimatedTouchableOpacity =
-//   Animated.createAnimatedComponent(TouchableOpacity);
-
-// export const StickyComponent = {
-//   View: createStickyComponent(Animated.View),
-//   TouchableOpacity: createStickyComponent(AnimatedTouchableOpacity),
-// };
-
 export const ScrollViewPortal = {
   Header: HeaderPortal,
   Footer: FooterPortal,
@@ -42,7 +22,6 @@ export const ScrollViewPortal = {
 
 export * from './constants';
 export * from './commons/platform';
-export { default as useMeasureLayout } from './hooks/useMeasureLayout';
 
 /**
  * to make exported ScrollView type compatible with react-native
