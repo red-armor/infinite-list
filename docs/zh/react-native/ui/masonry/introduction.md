@@ -85,7 +85,7 @@ export default () => {
 
 ```
 
-## Props
+## Compatible Props
 
 ### data
 - Type: `Array<ItemT>`
@@ -112,12 +112,6 @@ type RenderItem<ItemT extends DefaultItemT> = (
 ```
 The function to render each item in the list.
 
-### recyclerBufferSize
-- Type: `number`
-
-### recyclerReservedBufferPerBatch
-- Type: `number`
-
 ### keyExtractor
 
 - Type: 
@@ -125,5 +119,12 @@ The function to render each item in the list.
 (item: any, index: number) => string
 ```
 
+## Special Props
+
+### recyclerBufferSize
+- Type: `number`
+
+### recyclerReservedBufferPerBatch
+- Type: `number`
 
 ### containerRef
