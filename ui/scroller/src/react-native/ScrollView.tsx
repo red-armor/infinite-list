@@ -9,7 +9,6 @@ import React, {
   useRef,
 } from 'react';
 import { ScrollView as RNScrollView, View as RNView } from 'react-native';
-import isRefObject from '@x-oasis/is-ref';
 import Marshal from './Marshal';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import AnimatedRenderer from './component/AnimatedRenderer';
@@ -25,6 +24,7 @@ import {
   InfiniteListScrollViewPropsWithForwardRef,
   InfiniteListScrollViewPropsWithRef,
 } from './types';
+import isRefObject from '@x-oasis/is-ref';
 import { resolveScrollViewKey } from './commons/utils';
 
 const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
