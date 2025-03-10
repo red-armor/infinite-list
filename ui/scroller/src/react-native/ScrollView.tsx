@@ -8,15 +8,10 @@ import React, {
   useMemo,
   useRef,
 } from 'react';
-import {
-  RefreshControl as RNRefreshControl,
-  ScrollView as RNScrollView,
-  View as RNView,
-} from 'react-native';
+import { ScrollView as RNScrollView, View as RNView } from 'react-native';
 import isRefObject from '@x-oasis/is-ref';
 import Marshal from './Marshal';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
-import { isIos } from './commons/platform';
 import AnimatedRenderer from './component/AnimatedRenderer';
 import BasicRenderer from './component/BasicRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';

@@ -18,10 +18,7 @@ import {
 } from 'react-native';
 import ScrollViewContext from '../context/ScrollViewContext';
 import { DEFAULT_VIEW_LAYOUT } from '../commons/constants';
-import { useNativeRefreshControl } from '../commons/platform';
 import useScrollEnabled from '../hooks/useScrollEnabled';
-import useInitialEffect from '../hooks/useInitialEffect';
-import { TRIGGER_ON_REFRESH_THRESHOLD_VALUE } from '../refresh/constants';
 import {
   AnimatedScrollRendererProps,
   AnimatedScrollRendererPropsWithForwardRef,
@@ -47,7 +44,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     scrollEnabled,
     useSmoothControl,
     refreshControlStartCorrection,
-    triggerOnRefreshThresholdValue = TRIGGER_ON_REFRESH_THRESHOLD_VALUE,
     refreshControlContentContainerStyle,
     ...restProps
   } = props;
@@ -58,20 +54,11 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   const animatedValue = useMemo(() => marshal!.getAnimatedValue(), [marshal]);
   const horizontal = marshal!.isHorizontal();
 
-  const lottieAnimatedValueRef = useRef(
-    new Animated.Value(triggerOnRefreshThresholdValue)
-  );
   const layoutRef = useRef(DEFAULT_VIEW_LAYOUT);
   const [_scrollEnabled] = useScrollEnabled({
     scrollEnabled: !!scrollEnabled,
     scrollHelper,
   });
-
-  // useEffect(() => {
-  //   animatedValue.addListener(({ value }) => {
-  //     console.log('value --- ', value);
-  //   });
-  // }, []);
 
   const throttledHandler = useMemo(() => {
     function scrollHandler(e: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -166,15 +153,6 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
       //   : {},
     ];
   }, [loading]);
-
-  // console.log(
-  //   'loading ------xxxxx',
-  //   useSmoothControl,
-  //   onRefresh,
-  //   useNativeRefreshControl,
-  //   loading,
-  //   !useNativeRefreshControl && typeof onRefresh === 'function'
-  // );
 
   return (
     <Animated.ScrollView
