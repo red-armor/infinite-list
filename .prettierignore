@@ -3,8 +3,8 @@
 /coverage
 /.nx/cache
 /.nx/workspace-data
-pnpm-lock
-docs
+pnpm-lock.yaml
+/docs
 .vscode
 .gitignore
 .prettierrc
