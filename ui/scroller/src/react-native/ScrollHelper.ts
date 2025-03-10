@@ -1,14 +1,10 @@
-import SelectValue, {
-  selectHorizontalValue,
-  selectVerticalValue,
-} from '@x-oasis/select-value';
 import { MutableRefObject } from 'react';
 import {
+  Animated,
+  LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
-  LayoutChangeEvent,
-  Animated,
 } from 'react-native';
 import {
   ContainerObserver,
@@ -16,10 +12,14 @@ import {
   IntersectionObserver,
   ReactNativeDocumentBase,
 } from '@infinite-list/intersection-observer/react-native';
-
+import { ContentSize, ScrollMetrics } from '@infinite-list/types';
+import SelectValue, {
+  selectHorizontalValue,
+  selectVerticalValue,
+} from '@x-oasis/select-value';
 import Marshal from './Marshal';
 import ScrollEventHelper from './ScrollEventHelper';
-import StickyMarshal from './sticky/StickyMarshal';
+import Emitter from './commons/Emitter';
 import {
   DEFAULT_LAYOUT_MEASUREMENT,
   DEFAULT_SCROLL_EVENT_METRICS,
@@ -27,17 +27,16 @@ import {
   DEFAULT_SCROLL_METRICS,
 } from './commons/constants';
 import { isIos } from './commons/platform';
-import { ScrollMetrics, ContentSize } from '@infinite-list/types';
+import RefreshControlService from './controller/RefreshControlService';
+import StickyMarshal from './sticky/StickyMarshal';
 import {
+  InfiniteListScrollViewRef,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventMetrics,
   ScrollHelperProps,
   ScrollSize,
-  InfiniteListScrollViewRef,
   ViewableItemLayout,
 } from './types';
-import Emitter from './commons/Emitter';
-import RefreshControlService from './controller/RefreshControlService';
 
 /**
  * The same direction ScrollView only has one ScrollHelper, it only belongs to the root
