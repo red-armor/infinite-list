@@ -24,7 +24,6 @@ import {
   InfiniteListScrollViewProps,
   InfiniteListScrollViewPropsWithForwardRef,
   InfiniteListScrollViewPropsWithRef,
-  ScrollToOption,
 } from './types';
 
 const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
