@@ -1,8 +1,8 @@
 import { TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import ReactNativeDocument from '../ReactNativeDocument';
 import { IClientRectReadOnly } from '../../types';
-import { IIntersectionObserverEntry } from './intersectionObserverEntry';
 import IntersectionObserver from '../IntersectionObserver';
+import ReactNativeDocument from '../ReactNativeDocument';
+import { IIntersectionObserverEntry } from './intersectionObserverEntry';
 import { OnRectChange } from './observer';
 
 export type IntersectionObserverProps = {

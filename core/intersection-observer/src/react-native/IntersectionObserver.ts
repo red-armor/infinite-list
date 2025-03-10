@@ -1,22 +1,22 @@
 import { View } from 'react-native';
 import { TaskRunner } from '@infinite-list/scheduler';
-import {
-  ClientRect,
-  ItemLayout,
-  IntersectionObserverProps,
-  MonitorDisposer,
-  IIntersectionObserver,
-  ObserveOptions,
-  IIntersectionObserverEntry,
-  ObservedComponent,
-  IntersectionObserverCallback,
-  ReactNativeDocumentNode,
-} from './types';
-import { parseRootMargin } from './utils';
+import ContainerObserver from './ContainerObserver';
 import Observer from './Observer';
 import ReactNativeDocument from './ReactNativeDocument';
 import { generateRandomKey } from './generateRandom';
-import ContainerObserver from './ContainerObserver';
+import {
+  ClientRect,
+  IIntersectionObserver,
+  IIntersectionObserverEntry,
+  IntersectionObserverCallback,
+  IntersectionObserverProps,
+  ItemLayout,
+  MonitorDisposer,
+  ObserveOptions,
+  ObservedComponent,
+  ReactNativeDocumentNode,
+} from './types';
+import { parseRootMargin } from './utils';
 
 class IntersectionObserver implements IIntersectionObserver {
   // private monitoringDocuments: ReactNativeDocument[] = [];

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { SpaceItemProps } from './types';
 import { GenericItemT } from '@infinite-list/strategies';
+import { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   const { data, dimensions, renderItem: RenderItem, horizontal } = props;

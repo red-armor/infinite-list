@@ -1,21 +1,21 @@
 import {
-  PropsWithChildren,
   FC,
-  useEffect,
+  PropsWithChildren,
+  useCallback,
   useContext,
+  useEffect,
+  useMemo,
   useRef,
   useState,
-  useCallback,
-  useMemo,
 } from 'react';
 import {
+  Animated,
+  Platform,
+  StyleProp,
+  StyleSheet,
   View,
   ViewProps,
   ViewStyle,
-  Platform,
-  StyleSheet,
-  StyleProp,
-  Animated,
 } from 'react-native';
 import {
   IClientRectReadOnly,

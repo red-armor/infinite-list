@@ -1,8 +1,7 @@
 import { createContext } from 'react';
 import { IntersectionObserver } from '@infinite-list/intersection-observer/react-native';
-import PortalManager from '../portal/Manager';
-
 import Marshal from '../Marshal';
+import PortalManager from '../portal/Manager';
 
 export const defaultScrollViewContext = {
   marshal: null,

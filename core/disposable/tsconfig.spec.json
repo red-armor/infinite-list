@@ -21,6 +21,7 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
-    "src/**/*.d.ts"
-, "src/assertion/iterable.ts"  ]
+    "src/**/*.d.ts",
+    "src/assertion/iterable.ts"
+  ]
 }

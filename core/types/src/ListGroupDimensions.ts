@@ -1,11 +1,11 @@
-import { GenericItemT } from './generic.types';
-import { IOnEndReachedHelper } from './OnEndReachedHelper';
-import { IListDimensionsModel } from './ListDimensionsModel';
 import { IDimension } from './Dimension';
+import { IListDimensionsModel } from './ListDimensionsModel';
+import { IOnEndReachedHelper } from './OnEndReachedHelper';
+import { GenericItemT } from './generic.types';
 import { IItemMeta } from './itemMeta';
 
 export interface IListGroupDimensions<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > {
   maxToRenderPerBatch: number;
   getItemKey(item: ItemT, index?: number): string | null;
@@ -59,5 +59,5 @@ export type ListGroupIndexInfo<ItemT extends GenericItemT = GenericItemT> = {
 };
 
 export type ListGroupChildDimensions<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = IListDimensionsModel<ItemT> | IDimension<ItemT>;

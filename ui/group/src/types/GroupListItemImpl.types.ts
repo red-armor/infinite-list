@@ -1,6 +1,6 @@
 import { ItemMeta } from '@infinite-list/item-meta';
 import { ListItemWrapper } from './ListItem.types';
-import { ListItemProps, DefaultItemT } from './ListItem.types';
+import { DefaultItemT, ListItemProps } from './ListItem.types';
 
 export type RenderItemInfo<ItemT extends DefaultItemT = DefaultItemT> = {
   item: ItemT;

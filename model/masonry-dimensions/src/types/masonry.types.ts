@@ -1,31 +1,29 @@
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
-import { TheHostProps } from '@infinite-list/types';
-
-import { GenericItemT } from './generic.types';
-import MasonryDimensionsModel from '../MasonryDimensionsModel';
 import { ListIndexInfo } from '@infinite-list/item-meta';
-
 import {
-  ListStateResult,
   ListBaseDimensionsProps,
+  ListStateResult,
 } from '@infinite-list/strategies';
+import { TheHostProps } from '@infinite-list/types';
+import MasonryDimensionsModel from '../MasonryDimensionsModel';
+import { GenericItemT } from './generic.types';
 
 export interface MasonryDimensionsProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends Omit<ListDimensionsModelProps<ItemT>, 'store' | 'container'> {
   column?: number;
   stateListener?: MasonryStateListener<ItemT>;
 }
 
 export interface MasonryDimensionsModelProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends Omit<ListDimensionsModelProps<ItemT>, 'store'>,
     TheHostProps {
   column?: number;
 }
 
 export type MasonryColumnStateResults<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = [ListStateResult<ItemT>, ListStateResult<ItemT>];
 export type MasonryStateResults<ItemT extends GenericItemT = GenericItemT> =
   MasonryColumnStateResults<ItemT>[];
@@ -35,7 +33,7 @@ export type MasonryStateListener<ItemT extends GenericItemT = GenericItemT> = (
 ) => void;
 
 export interface MasonryDimensionStrategyProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends Omit<ListBaseDimensionsProps, 'store' | 'container'> {
   columnIndex: number;
   dataModel: MasonryDimensionsModel<ItemT>;

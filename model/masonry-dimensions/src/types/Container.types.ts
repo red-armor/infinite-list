@@ -1,8 +1,8 @@
-import { GenericItemT } from './generic.types';
 import { ListIndexInfo } from '@infinite-list/item-meta';
+import { GenericItemT } from './generic.types';
 
 export interface DimensionsModelContainer<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > {
   /**
    *

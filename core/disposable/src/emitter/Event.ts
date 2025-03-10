@@ -1,5 +1,5 @@
 import { toDisposable } from '../Disposable';
-import type { EventProps, EventListener, TheFunction } from './types';
+import type { EventListener, EventProps, TheFunction } from './types';
 
 export default class Event<T = any> {
   readonly name: string;

@@ -1,5 +1,5 @@
-import { DisposableService, Event } from '@infinite-list/disposable';
 import { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { DisposableService, Event } from '@infinite-list/disposable';
 import { TaskRunner } from '@infinite-list/scheduler';
 
 type RefreshControlState = {

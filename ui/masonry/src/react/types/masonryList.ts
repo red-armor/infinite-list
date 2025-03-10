@@ -1,12 +1,11 @@
-import { GenericItemT } from '@infinite-list/item-meta';
 import { ForwardedRef, RefObject } from 'react';
-
+import { GenericItemT } from '@infinite-list/item-meta';
 import {
+  ColumnDimensionInfo,
+  ColumnStateRendererProps,
   MasonryListProps as CommonMasonryListProps,
   RecycleItemProps,
   SpaceItemProps,
-  ColumnStateRendererProps,
-  ColumnDimensionInfo,
 } from '../../types/masonryList';
 
 export type ScrollerRef = RefObject<HTMLDivElement>;

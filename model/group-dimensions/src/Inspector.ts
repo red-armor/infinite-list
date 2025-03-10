@@ -1,14 +1,14 @@
-import shallowArrayEqual from '@x-oasis/shallow-array-equal';
 import Batchinator from '@x-oasis/batchinator';
+import findLastIndex from '@x-oasis/find-last-index';
+import shallowArrayEqual from '@x-oasis/shallow-array-equal';
+import ListGroupDimensions from './ListGroupDimensions';
 import {
-  InspectorProps,
+  GenericItemT,
   InspectingAPI,
   InspectingListener,
+  InspectorProps,
   OnIndexKeysChanged,
-  GenericItemT,
 } from './types';
-import findLastIndex from '@x-oasis/find-last-index';
-import ListGroupDimensions from './ListGroupDimensions';
 
 class Inspector<ItemT extends GenericItemT = GenericItemT> {
   private _indexKeys: string[] = [];

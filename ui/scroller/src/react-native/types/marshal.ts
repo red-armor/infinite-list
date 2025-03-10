@@ -8,10 +8,10 @@ import {
   IntersectionObserver,
   IntersectionObserverCallback,
 } from '@infinite-list/intersection-observer/react-native';
-import { StickyMode } from './stickyMarshal';
-import { SyntheticEventHandler, ContentSizeChangeHandler } from './scrollView';
 import Marshal from '../Marshal';
+import { ContentSizeChangeHandler, SyntheticEventHandler } from './scrollView';
 import { InfiniteListScrollViewRef } from './scrollView';
+import { StickyMode } from './stickyMarshal';
 
 export type SetScrollUpdating = (falsy: boolean) => void;
 

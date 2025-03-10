@@ -1,4 +1,5 @@
 import { ScrollView } from 'react-native';
+import ScrollEventHelper from './ScrollEventHelper';
 import ScrollHelper from './ScrollHelper';
 import {
   InfiniteListScrollViewRef,
@@ -6,7 +7,6 @@ import {
   ScrollEventHandler,
   ScrollEventHandlerSubscriptionKeys,
 } from './types';
-import ScrollEventHelper from './ScrollEventHelper';
 
 /**
  * Marshal is bound to ScrollView which means every ScrollView will has its own

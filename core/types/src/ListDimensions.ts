@@ -1,6 +1,6 @@
-import { GenericItemT } from './generic.types';
 import { IListDimensionsModel } from './ListDimensionsModel';
 import { IOnEndReachedHelper } from './OnEndReachedHelper';
+import { GenericItemT } from './generic.types';
 import { IItemMeta } from './itemMeta';
 
 export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {

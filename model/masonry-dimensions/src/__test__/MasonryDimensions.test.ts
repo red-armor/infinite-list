@@ -1,8 +1,9 @@
-import MasonryDimensions from '../MasonryDimensions';
-import Batchinator from '@x-oasis/batchinator';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetContext } from '@infinite-list/item-meta';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
+import Batchinator from '@x-oasis/batchinator';
+import MasonryDimensions from '../MasonryDimensions';
 import { MasonryStateResults } from '../types';
+
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index + startIndex,

@@ -1,12 +1,12 @@
 import { View } from 'react-native';
+import Observer from './Observer';
+import { generateRandomKey } from './generateRandom';
 import {
   IClientRectReadOnly,
-  IntersectionObserverEntryProps,
   IIntersectionObserverEntry,
   IRectIntersection,
+  IntersectionObserverEntryProps,
 } from './types';
-import { generateRandomKey } from './generateRandom';
-import Observer from './Observer';
 
 class IntersectionObserverEntry {
   private target: View;

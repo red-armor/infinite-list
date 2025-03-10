@@ -1,8 +1,8 @@
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import noop from '@x-oasis/noop';
 import getMapKeyByValue from '@x-oasis/get-map-key-by-value';
-import { StateEventListener, ItemMetaStateEventHelperProps } from './types';
+import noop from '@x-oasis/noop';
+import { ItemMetaStateEventHelperProps, StateEventListener } from './types';
 
 let canIUseRIC = false;
 let finished = false;
@@ -79,14 +79,14 @@ class ItemMetaStateEventHelper {
       typeof batchUpdateEnabled === 'boolean'
         ? batchUpdateEnabled
         : eventName === 'viewable'
-        ? false
-        : true;
+          ? false
+          : true;
     this._once =
       typeof once === 'boolean'
         ? once
         : eventName === 'impression'
-        ? true
-        : false;
+          ? true
+          : false;
 
     this._strictListenerKeyToHandleCountMap = strictListenerKeyToHandleCountMap;
     this._triggerBatchinator = new Batchinator(this._trigger.bind(this), 50);

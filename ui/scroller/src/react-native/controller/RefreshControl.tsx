@@ -1,7 +1,7 @@
-import React, { FC, useState, useMemo, useEffect, useContext } from 'react';
-import { View, ViewStyle, StyleSheet, ActivityIndicator } from 'react-native';
-import ScrollViewContext from '../context/ScrollViewContext';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View, ViewStyle } from 'react-native';
 import { Disposable } from '@infinite-list/disposable';
+import ScrollViewContext from '../context/ScrollViewContext';
 
 const RefreshControlThresholdValue = 100;
 

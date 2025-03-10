@@ -1,7 +1,6 @@
 import { CSSProperties, useEffect, useMemo, useRef } from 'react';
 import { GenericItemT } from '@infinite-list/strategies';
 import SelectValue from '@x-oasis/select-value';
-
 import { RecycleItemProps } from './types';
 
 const RecycleItem = <ItemT extends GenericItemT>(

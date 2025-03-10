@@ -1,7 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import { test, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, test } from 'vitest';
 import TaskRunner from './TaskRunner';
-
 import * as all from './utils';
 
 const mock = vi.fn();

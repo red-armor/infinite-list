@@ -1,6 +1,6 @@
 // import SelectValue from '@x-oasis/select-value';
-import { IsItemViewableOptions } from './types';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
+import { IsItemViewableOptions } from './types';
 
 // export function resolveMeasureMetrics(
 //   scrollEventMetrics: ScrollEventMetrics,
@@ -111,8 +111,8 @@ export function isItemViewable(options: IsItemViewableOptions) {
     typeof getItemOffset === 'function'
       ? getItemOffset(viewabilityItemMeta as ViewabilityItemMeta)
       : viewabilityItemMeta instanceof ViewabilityItemMeta
-      ? viewabilityItemMeta.getItemOffset()
-      : viewabilityItemMeta.offset;
+        ? viewabilityItemMeta.getItemOffset()
+        : viewabilityItemMeta.offset;
   const itemLength =
     viewabilityItemMeta instanceof ViewabilityItemMeta
       ? viewabilityItemMeta.getItemLength()

@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { IClientRectReadOnly, IRectIntersection } from '../../types';
 import Observer from '../Observer';
+
 export type IntersectionObserverEntryProps = {
   target: View;
   entryKey?: string;

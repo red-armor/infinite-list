@@ -1,4 +1,4 @@
-import { ItemMeta, GenericItemT } from '@infinite-list/item-meta';
+import { GenericItemT, ItemMeta } from '@infinite-list/item-meta';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   item: ItemT;

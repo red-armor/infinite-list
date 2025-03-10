@@ -3,7 +3,7 @@ import { ItemMetaOwnerRequiredProps } from './itemMeta';
 
 export interface IListDimensionsModel<
   ItemT extends GenericItemT = GenericItemT,
-  ExtraInfo extends {} = {}
+  ExtraInfo extends {} = {},
 > extends ItemMetaOwnerRequiredProps<ItemT> {
   getItemKey(item: ItemT, index?: number): string | null;
   extraInfo: ExtraInfo;

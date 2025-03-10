@@ -1,26 +1,26 @@
-import preCheck from './middleware/preCheck';
 import hydrateOnEndReached from './middleware/hydrateOnEndReached';
 import makeIndexMeaningful from './middleware/makeIndexMeaningful';
+import preCheck from './middleware/preCheck';
 import resolveIndexRange from './middleware/resolveIndexRange';
-import resolveMaxIndex from './middleware/resolveMaxIndex';
 // import fixVisibleRange from './middleware/fixVisibleRange';
 // import fixBufferedRange from './middleware/fixBufferedRange';
 // import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
 import resolveInitialState from './middleware/resolveInitialState';
+import resolveMaxIndex from './middleware/resolveMaxIndex';
+import { ReducerAtom } from './types';
 import {
   Action,
   ActionPayload,
   ActionType,
   Ctx,
   Enhancer,
-  ReducerResult,
   HydrationWithBatchUpdate,
   Initial,
   Recalculate,
+  ReducerResult,
   ScrollDown,
   ScrollUp,
 } from './types/types';
-import { ReducerAtom } from './types';
 
 const initialize = <State extends ReducerResult = ReducerResult>(
   state: State,

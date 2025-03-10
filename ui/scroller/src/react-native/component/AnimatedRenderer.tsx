@@ -1,13 +1,12 @@
-import throttle from '@x-oasis/throttle';
 import React, {
   FC,
   ForwardedRef,
   PropsWithChildren,
   useCallback,
+  useContext,
   useMemo,
   useRef,
   useState,
-  useContext,
 } from 'react';
 import {
   Animated,
@@ -16,14 +15,15 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-import ScrollViewContext from '../context/ScrollViewContext';
+import throttle from '@x-oasis/throttle';
 import { DEFAULT_VIEW_LAYOUT } from '../commons/constants';
+import ScrollViewContext from '../context/ScrollViewContext';
+import RefreshControl from '../controller/RefreshControl';
 import useScrollEnabled from '../hooks/useScrollEnabled';
 import {
   AnimatedScrollRendererProps,
   AnimatedScrollRendererPropsWithForwardRef,
 } from '../types';
-import RefreshControl from '../controller/RefreshControl';
 
 const noop = () => {
   // do nothing

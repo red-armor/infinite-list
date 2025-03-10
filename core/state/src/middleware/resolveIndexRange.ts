@@ -1,5 +1,5 @@
-import { ActionPayload, Ctx, ReducerResult } from '../types/types';
 import { log } from '@infinite-list/utils';
+import { ActionPayload, Ctx, ReducerResult } from '../types/types';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,

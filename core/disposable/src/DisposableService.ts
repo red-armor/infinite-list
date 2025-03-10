@@ -5,7 +5,7 @@ import { shallowEqual } from './utils';
 export type IDisposableServiceState = Record<string, any>;
 
 abstract class DisposableService<
-  State extends IDisposableServiceState = object
+  State extends IDisposableServiceState = object,
 > extends Disposable {
   private _onStateChangedEvent = new Event<State>({ name: 'on-state-changed' });
   onStateChanged = this._onStateChangedEvent.subscribe;

@@ -1,10 +1,10 @@
-import { ItemLayout } from './BaseLayout.types';
-import { GenericItemT } from './generic.types';
 import {
   IListDimensionsModel,
-  ListGroupIndexInfo,
   ItemMetaOwner,
+  ListGroupIndexInfo,
 } from '@infinite-list/types';
+import { ItemLayout } from './BaseLayout.types';
+import { GenericItemT } from './generic.types';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 

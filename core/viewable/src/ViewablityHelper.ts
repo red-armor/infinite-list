@@ -1,15 +1,15 @@
 import resolveChanged from '@x-oasis/resolve-changed';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
 import {
+  NormalizedViewablityConfig,
+  OnViewableItemsChanged,
   ScrollMetrics,
-  ViewabilityScrollMetrics,
   ViewAreaModeConfig,
   ViewabilityConfig,
-  OnViewableItemsChanged,
-  NormalizedViewablityConfig,
   ViewabilityConfigCallbackPair,
-  VisiblePercentModeConfig,
   ViewabilityHelperChangedToken,
+  ViewabilityScrollMetrics,
+  VisiblePercentModeConfig,
 } from './types';
 import { isItemViewable } from './viewabilityUtils';
 

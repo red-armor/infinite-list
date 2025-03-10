@@ -1,6 +1,7 @@
 // import ItemMeta from './ItemMeta';
 import { ItemMeta } from '@infinite-list/item-meta';
 import SelectValue from '@x-oasis/select-value';
+
 export default class SortedItems {
   readonly selectValue: SelectValue;
   private _items: Array<ItemMeta> = [];

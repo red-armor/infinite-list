@@ -4,6 +4,21 @@ import {
   Platform,
 } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
+import { TaskRunner } from '@infinite-list/scheduler';
+import {
+  compareIntersection,
+  computeIntersection,
+} from '../common/intersection';
+import Observer from './Observer';
+import ReactNativeDocument, { getNode } from './ReactNativeDocument';
+import { measureInWindowAsync } from './measure';
+import {
+  ContainerObserverProps,
+  IClientRectReadOnly,
+  IIntersectionObserverEntry,
+  IRectIntersection,
+  OwnerContainerObserver,
+} from './types';
 import {
   convertLayoutToClientRect,
   convertRectToIntersection,
@@ -11,21 +26,6 @@ import {
   getEmptyRect,
   viewabilityConfig,
 } from './utils';
-import {
-  IRectIntersection,
-  ContainerObserverProps,
-  OwnerContainerObserver,
-  IClientRectReadOnly,
-  IIntersectionObserverEntry,
-} from './types';
-import {
-  computeIntersection,
-  compareIntersection,
-} from '../common/intersection';
-import ReactNativeDocument, { getNode } from './ReactNativeDocument';
-import Observer from './Observer';
-import { measureInWindowAsync } from './measure';
-import { TaskRunner } from '@infinite-list/scheduler';
 
 class ContainerObserver {
   readonly doc: ReactNativeDocument;

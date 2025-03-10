@@ -2,9 +2,6 @@ import {
   BaseDimensionsProps,
   KeysChangedType,
 } from '@infinite-list/base-dimensions';
-import { GenericItemT } from './generic.types';
-import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
-
 import {
   IListDimensions,
   IListDimensionsModel,
@@ -12,6 +9,8 @@ import {
   IMasonryDimensions,
   IMasonryDimensionsModel,
 } from '@infinite-list/types';
+import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
+import { GenericItemT } from './generic.types';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,
@@ -27,7 +26,7 @@ export type GetItemLayout<ItemT> = (
  */
 export type KeyExtractor<ItemT> = (item: ItemT, index?: number) => string;
 export type OnListDimensionsModelDataChanged<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = (props: {
   dataModel: IListDimensionsModel<ItemT> | IMasonryDimensionsModel<ItemT>;
   dataChangedType: KeysChangedType;
@@ -36,7 +35,7 @@ export type OnListDimensionsModelDataChanged<
 }) => void;
 
 export interface ListDimensionsModelProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends ListBaseDimensionsProps,
     BaseDimensionsProps {
   data: Array<ItemT>;
@@ -71,7 +70,7 @@ export interface ListDimensionsModelProps<
 }
 
 export type ListDimensionsModelContainer<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > =
   | IListGroupDimensions<ItemT>
   | IListDimensions<ItemT>

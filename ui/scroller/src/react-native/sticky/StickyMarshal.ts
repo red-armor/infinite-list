@@ -1,12 +1,11 @@
 import { TaskRunner } from '@infinite-list/scheduler';
-
+import Marshal from '../Marshal';
 import {
   InterpolationConfig,
   StickyItemInfo,
   StickyMarshalProps,
   StickyMode,
 } from '../types';
-import Marshal from '../Marshal';
 
 export function checkValidInputRange(arr: Array<number>) {
   if (arr.length < 2) {

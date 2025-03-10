@@ -3,8 +3,8 @@ import React, {
   ForwardedRef,
   PropsWithChildren,
   useCallback,
-  useMemo,
   useContext,
+  useMemo,
 } from 'react';
 import {
   LayoutChangeEvent,
@@ -12,14 +12,14 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-import ScrollViewContext from '../context/ScrollViewContext';
 import throttle from '@x-oasis/throttle';
+import ScrollViewContext from '../context/ScrollViewContext';
+import RefreshControl from '../controller/RefreshControl';
 import useScrollEnabled from '../hooks/useScrollEnabled';
 import {
   ScrollRendererProps,
   ScrollRendererPropsWithForwardRef,
 } from '../types';
-import RefreshControl from '../controller/RefreshControl';
 
 const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   const {

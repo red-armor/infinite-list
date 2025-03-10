@@ -1,9 +1,9 @@
-import ListGroupDimensions from '../ListGroupDimensions';
-import Batchinator from '@x-oasis/batchinator';
+import { afterEach, describe, expect, it, test, vi } from 'vitest';
 import { defaultKeyExtractor } from '@infinite-list/utils';
-import { describe, expect, it, test, vi, afterEach } from 'vitest';
-import { DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from '../common';
+import Batchinator from '@x-oasis/batchinator';
 import Inspector from '../Inspector';
+import ListGroupDimensions from '../ListGroupDimensions';
+import { DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from '../common';
 
 vi.useFakeTimers();
 

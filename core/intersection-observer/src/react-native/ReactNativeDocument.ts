@@ -6,11 +6,11 @@ import {
 } from 'react-native';
 import Emitter from './Emitter';
 import {
-  ScrollEventHandler,
-  ReactNativeDocumentNode,
+  OnIntersectionChange,
   ReactNativeDocument,
   ReactNativeDocumentBaseProps,
-  OnIntersectionChange,
+  ReactNativeDocumentNode,
+  ScrollEventHandler,
 } from './types';
 
 export function getNode(node: ReactNativeDocumentNode) {

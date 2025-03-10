@@ -1,10 +1,11 @@
-import ListDimensions from '../ListDimensions';
-import Batchinator from '@x-oasis/batchinator';
-import { RecycleStateResult } from '@infinite-list/strategies';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { KeysChangedType } from '@infinite-list/base-dimensions';
-import { defaultKeyExtractor } from '@infinite-list/utils';
 import { resetContext } from '@infinite-list/item-meta';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { RecycleStateResult } from '@infinite-list/strategies';
+import { defaultKeyExtractor } from '@infinite-list/utils';
+import Batchinator from '@x-oasis/batchinator';
+import ListDimensions from '../ListDimensions';
+
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index + startIndex,

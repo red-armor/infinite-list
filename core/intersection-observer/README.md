@@ -9,6 +9,7 @@ This package provides a wrapper around the browser's [Intersection Observer API]
 ## Usage
 
 ## Reading More
+
 - [Intersection Observer API](URL_ADDRESS- [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
 - [A polyfill for IntersectionObserver - GoogleChromeLabs](https://github.com/GoogleChromeLabs/intersection-observer)
 - [IntersectionObserver - W3C](https://github.com/w3c/IntersectionObserver)

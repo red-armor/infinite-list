@@ -1,6 +1,6 @@
+import { CSSProperties } from 'react';
 import { GenericItemT, ItemLayout } from '@infinite-list/types';
 import { ListItemProps } from '../../types';
-import { CSSProperties } from 'react';
 
 export interface CompatListItemProps<ItemT extends GenericItemT>
   extends Omit<ListItemProps<ItemT>, 'ListItemWrapper'> {

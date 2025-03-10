@@ -1,5 +1,6 @@
+import { Button, Text, View } from 'react-native';
 import { render, screen, userEvent } from '@testing-library/react-native';
-import { View, Text, Button } from 'react-native';
+
 // import { describe, expect, test } from '@jest/globals';
 
 const MyApp = () => {

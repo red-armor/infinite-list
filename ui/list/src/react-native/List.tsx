@@ -1,20 +1,20 @@
 import {
+  useCallback,
+  useContext,
   useEffect,
   useMemo,
-  useState,
   useRef,
-  useContext,
-  useCallback,
+  useState,
 } from 'react';
-import { View, ViewStyle, LayoutChangeEvent } from 'react-native';
-import { ItemLayout, ScrollMetrics } from '@infinite-list/types';
-import { ListProps } from './types';
-import { ListDimensions } from '@infinite-list/list-dimensions';
-import { RecycleStateResult } from '@infinite-list/strategies';
+import { LayoutChangeEvent, View, ViewStyle } from 'react-native';
 import { GenericItemT } from '@infinite-list/item-meta';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { ScrollViewContext } from '@infinite-list/scroller/react-native';
+import { RecycleStateResult } from '@infinite-list/strategies';
+import { ItemLayout, ScrollMetrics } from '@infinite-list/types';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-import { ScrollViewContext } from '@infinite-list/scroller/react-native';
+import { ListProps } from './types';
 
 const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const {

@@ -1,33 +1,33 @@
-import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import { ItemMeta } from '@infinite-list/item-meta';
+import { ListGroupIndexInfo } from '@infinite-list/types';
+import { log } from '@infinite-list/utils';
+import defaultValue from '@x-oasis/default-value';
+import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
+// import { resolveToken } from './utils';
+import BaseState from './BaseState';
 import {
-  buildStateTokenIndexKey,
   DEFAULT_RECYCLER_TYPE,
   RECYCLER_BUFFER_SIZE,
   RECYCLER_RESERVED_BUFFER_PER_BATCH,
+  buildStateTokenIndexKey,
 } from './common';
 import {
-  ListState,
-  RecycleStateResult,
-  RecycleRecycleState,
   GenericItemT,
-  StateListener,
-  SpaceStateResult,
+  ListState,
+  RecycleRecycleState,
   RecycleStateImplProps,
+  RecycleStateResult,
+  SpaceStateResult,
+  StateListener,
 } from './types';
-import { ListGroupIndexInfo } from '@infinite-list/types';
 
-// import { resolveToken } from './utils';
-import BaseState from './BaseState';
-import { log } from '@infinite-list/utils';
-import defaultValue from '@x-oasis/default-value';
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
 class RecycleStateImpl<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends BaseState<ItemT> {
   private _onRecyclerProcess?: OnRecyclerProcess;
   public stateListener?: StateListener<ItemT>;

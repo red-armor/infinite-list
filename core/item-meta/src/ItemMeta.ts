@@ -1,17 +1,17 @@
+import { IItemMeta, ItemMetaOwner } from '@infinite-list/types';
+import { ViewabilityItemMeta } from '@infinite-list/viewable';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import noop from '@x-oasis/noop';
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
 import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import {
-  ItemLayout,
-  ItemMetaState,
-  ItemMetaProps,
-  StateEventListener,
-  ItemMetaStateEventHelperProps,
   GenericItemT,
+  ItemLayout,
+  ItemMetaProps,
+  ItemMetaState,
+  ItemMetaStateEventHelperProps,
+  StateEventListener,
 } from './types';
-import noop from '@x-oasis/noop';
-import { IItemMeta, ItemMetaOwner } from '@infinite-list/types';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import { ViewabilityItemMeta } from '@infinite-list/viewable';
 
 export const isValidMetaLayout = (meta: IItemMeta | null | undefined) =>
   !!(meta && !meta.isApproximateLayout && meta.getLayout());
@@ -35,7 +35,7 @@ export const resetContext = () => {
  */
 class ItemMeta<
     ItemT extends GenericItemT = GenericItemT,
-    ItemMetaOwnerExtraInfo extends {} = {}
+    ItemMetaOwnerExtraInfo extends {} = {},
   >
   extends ViewabilityItemMeta
   implements IItemMeta<ItemT, ItemMetaOwnerExtraInfo>
@@ -99,7 +99,7 @@ class ItemMeta<
 
   static spawn<
     T extends GenericItemT = GenericItemT,
-    SpawnItemMetaOwnerExtraInfo extends {} = {}
+    SpawnItemMetaOwnerExtraInfo extends {} = {},
   >(props: ItemMetaProps<T>) {
     const ancestor = context[props.key];
     if (ancestor) {

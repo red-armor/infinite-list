@@ -1,9 +1,8 @@
 import { GenericItemT } from '@infinite-list/types';
-
 import {
-  PortalContextProps as CommonPortalContextProps,
-  GroupSpaceContentProps as CommonGroupSpaceContentProps,
   GroupRecycleContentProps as CommonGroupRecycleContentProps,
+  GroupSpaceContentProps as CommonGroupSpaceContentProps,
+  PortalContextProps as CommonPortalContextProps,
 } from '../../types/PortalContext.types';
 
 export type PortalContextProps<ItemT extends GenericItemT = GenericItemT> =
@@ -11,5 +10,5 @@ export type PortalContextProps<ItemT extends GenericItemT = GenericItemT> =
 export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
   CommonGroupSpaceContentProps<ItemT>;
 export type GroupRecycleContentProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = CommonGroupRecycleContentProps<ItemT>;

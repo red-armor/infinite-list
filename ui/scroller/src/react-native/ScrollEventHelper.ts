@@ -1,15 +1,14 @@
 import noop from '@x-oasis/noop';
-
+import Marshal from './Marshal';
 import {
   ContentSizeChangeHandler,
+  InternalScrollEventHandlerSubscriptionKeys,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventHandlerSubscriptions,
+  ScrollEventHelperProps,
   SyntheticEventHandler,
   SyntheticEventHandlerEvent,
-  InternalScrollEventHandlerSubscriptionKeys,
-  ScrollEventHelperProps,
 } from './types';
-import Marshal from './Marshal';
 
 /**
  * ScrollEventHelper is bound to ScrollView, Every ScrollView will has its own

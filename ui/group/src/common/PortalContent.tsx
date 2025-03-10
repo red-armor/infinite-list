@@ -1,14 +1,13 @@
-import { useEffect, useMemo, memo, useState, PropsWithChildren } from 'react';
+import { PropsWithChildren, memo, useEffect, useMemo, useState } from 'react';
 import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
 import { ItemMetaOwner } from '@infinite-list/types';
 import {
-  PortalContextProps,
+  ExtraInfo,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
+  PortalContextProps,
   TRecycleContentItem,
-  ExtraInfo,
 } from '../types';
-
 import GroupListItemImpl from './GroupListItemImpl';
 
 const RecycleContentItem = <ItemT extends GenericItemT = GenericItemT>(

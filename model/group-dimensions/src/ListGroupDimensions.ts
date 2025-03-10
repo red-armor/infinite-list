@@ -1,33 +1,31 @@
-import Batchinator from '@x-oasis/batchinator';
-import isClamped from '@x-oasis/is-clamped';
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import { KeysChangedType } from '@infinite-list/base-dimensions';
 import { Dimension } from '@infinite-list/dimension';
+import { ListDimensionsModel } from '@infinite-list/dimensions-model';
+import { IndexToOffsetMap, ItemLayout } from '@infinite-list/dimensions-model';
 import { ItemMeta } from '@infinite-list/item-meta';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { BaseImpl } from '@infinite-list/strategies';
 import { log } from '@infinite-list/utils';
+import { OnEndReached } from '@infinite-list/viewable';
+import Batchinator from '@x-oasis/batchinator';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import isClamped from '@x-oasis/is-clamped';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+import Inspector from './Inspector';
 import { createStore } from './state';
-
-import { ListDimensionsModel } from '@infinite-list/dimensions-model';
-
 import {
-  ListGroupIndexInfo,
-  ListGroupDimensionsProps,
-  ListRangeResult,
-  ScrollMetrics,
-  KeyToOnEndReachedMap,
-  RegisteredListProps,
-  RegisteredDimensionProps,
   DimensionsIndexRange,
   GenericItemT,
+  KeyToOnEndReachedMap,
   ListGroupChildDimensions,
+  ListGroupDimensionsProps,
+  ListGroupIndexInfo,
+  ListRangeResult,
+  RegisteredDimensionProps,
+  RegisteredListProps,
+  ScrollMetrics,
 } from './types';
-import { KeysChangedType } from '@infinite-list/base-dimensions';
-import { OnEndReached } from '@infinite-list/viewable';
-import { ItemLayout, IndexToOffsetMap } from '@infinite-list/dimensions-model';
 
-import Inspector from './Inspector';
 // import { info } from './utils/logger';
 // import createStore from './state/createStore';
 
@@ -42,7 +40,7 @@ const info = log.info;
  * ListGroup is just like a router.
  */
 class ListGroupDimensions<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends BaseImpl<ItemT> {
   private keyToListDimensionsMap = new Map<
     string,

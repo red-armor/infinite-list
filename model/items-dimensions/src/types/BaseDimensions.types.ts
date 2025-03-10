@@ -1,9 +1,9 @@
-import { BaseLayoutProps } from './BaseLayout.types';
 import {
   OnViewableItemsChanged,
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/viewable';
+import { BaseLayoutProps } from './BaseLayout.types';
 
 export interface BaseDimensionsProps extends BaseLayoutProps {
   ignoredToPerBatch?: boolean;

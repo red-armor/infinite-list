@@ -1,16 +1,16 @@
 import uniqueArrayObject from '@x-oasis/unique-array-object';
+import ViewabilityItemMeta from './ViewabilityItemMeta';
+import ViewablityHelper from './ViewablityHelper';
+import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 import {
   GenericItemT,
-  ViewabilityConfig,
   OnViewableItemsChanged,
+  ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
   ViewabilityScrollMetrics,
 } from './types';
-import ViewablityHelper from './ViewablityHelper';
-import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 // TODO ------
 import { ItemMeta } from './types';
-import ViewabilityItemMeta from './ViewabilityItemMeta';
 
 class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   private _tuple: ViewabilityConfigCallbackPairs = [];

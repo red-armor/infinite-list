@@ -1,5 +1,3 @@
-import { ListGroupDimensions } from '@infinite-list/group-dimensions';
-import { GenericItemT } from '@infinite-list/item-meta';
 import {
   useCallback,
   useContext,
@@ -8,18 +6,20 @@ import {
   useRef,
   useState,
 } from 'react';
-import { View, Platform } from 'react-native';
+import { Platform, View } from 'react-native';
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import { GenericItemT } from '@infinite-list/item-meta';
+import PortalContent from '../common/PortalContent';
+import { ClockEnd, ClockStart } from '../common/clock';
+import context from '../common/context';
+import { ListItemWrapper as TListItemWrapper } from '../types';
 import {
   RecycleContentItemWrapper,
   SpaceRendererComponent,
 } from './CompatComponent';
-import { ListGroupProps } from './types';
-import { ListItemWrapper as TListItemWrapper } from '../types';
-import context from '../common/context';
-import PortalContent from '../common/PortalContent';
-import { ClockStart, ClockEnd } from '../common/clock';
-import { measureLayout } from './measure';
 import CompatListItem from './CompatListItem';
+import { measureLayout } from './measure';
+import { ListGroupProps } from './types';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>

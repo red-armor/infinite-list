@@ -1,13 +1,13 @@
 import { View } from 'react-native';
-import { ClientRect, ObserverProps, ItemLayout, OnRectChange } from './types';
-import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
-import { getEmptyRect, convertLayoutToClientRect } from './utils';
-import { generateRandomKey } from './generateRandom';
-import { measureLayoutAsync } from './measure';
-import ContainerObserver from './ContainerObserver';
 import { computeIntersection } from '../common/intersection';
+import ContainerObserver from './ContainerObserver';
 import IntersectionObserverEntry from './IntersectionObserverEntry';
 import { getNode } from './ReactNativeDocument';
+import { generateRandomKey } from './generateRandom';
+import { measureLayoutAsync } from './measure';
+import { ClientRect, ItemLayout, ObserverProps, OnRectChange } from './types';
+import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
+import { convertLayoutToClientRect, getEmptyRect } from './utils';
 
 class Observer {
   private target: View;

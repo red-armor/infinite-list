@@ -1,8 +1,8 @@
-import { isArray } from './assertion/types';
+import { isDisposable } from './Disposable';
 import { is } from './assertion/iterable';
+import { isArray } from './assertion/types';
 // import { Iterable } from './assertion/iterable';
 import type { IDisposable } from './types/disposable';
-import { isDisposable } from './Disposable';
 
 export function dispose<T extends IDisposable>(disposable: T): T;
 export function dispose<T extends IDisposable>(

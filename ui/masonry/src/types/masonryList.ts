@@ -1,10 +1,10 @@
+import { GenericItemT } from '@infinite-list/item-meta';
 import {
-  MasonryDimensions as MasonryDimension,
   MasonryColumnStateResults,
+  MasonryDimensions as MasonryDimension,
   MasonryDimensionsModelProps,
 } from '@infinite-list/masonry-dimensions';
 import { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
-import { GenericItemT } from '@infinite-list/item-meta';
 import { RenderItem } from './list';
 
 export type GetColumnWidth = (columnIndex: number) => number;
@@ -19,7 +19,7 @@ export type MasonryListProps<ItemT extends GenericItemT = GenericItemT> = Omit<
 };
 
 export type ColumnStateRendererProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = Omit<MasonryListProps<ItemT>, 'id' | 'column' | 'data' | 'forwardRef'> & {
   columnIndex: number;
   horizontal?: boolean;

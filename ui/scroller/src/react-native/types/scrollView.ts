@@ -22,16 +22,14 @@ import {
   ViewStyle,
 } from 'react-native';
 import { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
-import ScrollerScrollView from '../ScrollView';
-
+import { ScrollMetrics } from '@infinite-list/types';
 import {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/viewable';
-
 import ScrollHelper from '../ScrollHelper';
+import ScrollerScrollView from '../ScrollView';
 import { StickyMode } from './stickyMarshal';
-import { ScrollMetrics } from '@infinite-list/types';
 
 // import PagerView from 'react-native-pager-view';
 // TODO

@@ -1,8 +1,8 @@
-import { defaultKeyExtractor } from '@infinite-list/utils';
 import { useContext, useEffect, useRef } from 'react';
-import context, { ContextType } from '../context';
-import { DefaultItemT, GroupListProps } from '../../types';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
+import { defaultKeyExtractor } from '@infinite-list/utils';
+import { DefaultItemT, GroupListProps } from '../../types';
+import context, { ContextType } from '../context';
 
 export default <ItemT extends DefaultItemT>(props: GroupListProps<ItemT>) => {
   const disposerRef = useRef<Function>();

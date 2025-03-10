@@ -1,5 +1,4 @@
-import { memo, PropsWithChildren, useContext, useRef } from 'react';
-
+import { PropsWithChildren, memo, useContext, useRef } from 'react';
 import { DefaultItemT } from '../types';
 import { GroupListProps } from '../types';
 import context from './context';

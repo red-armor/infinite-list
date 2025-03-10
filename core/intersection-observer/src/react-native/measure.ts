@@ -1,7 +1,7 @@
 import {
-  NativeMethods,
   HostComponent,
   MeasureLayoutOnSuccessCallback,
+  NativeMethods,
 } from 'react-native';
 
 // https://github.com/facebook/react-native/blob/main/packages/react-native/Libraries/ReactNative/UIManager.d.ts#L17

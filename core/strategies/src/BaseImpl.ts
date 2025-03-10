@@ -1,38 +1,36 @@
-import Batchinator from '@x-oasis/batchinator';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import { BaseLayout } from '@infinite-list/base-dimensions';
 import { ItemMeta } from '@infinite-list/item-meta';
-
-import {
-  isEmpty,
-  DISPATCH_METRICS_THRESHOLD,
-  ON_END_REACHED_THRESHOLD,
-  STILLNESS_THRESHOLD,
-} from './common';
-import {
-  ListBaseDimensionsProps,
-  ScrollMetrics,
-  ItemLayout,
-  StateListener,
-  ListBaseDimensionsStore,
-  GenericItemT,
-  IndexToOffsetMap,
-  ListStateResult,
-  ReducerResult,
-} from './types';
 import { IndexInfo } from '@infinite-list/item-meta';
-import { OnEndReached } from '@infinite-list/viewable';
 import {
-  ListSpyUtils,
   EnabledSelector,
+  ListSpyUtils,
   StillnessHelper,
 } from '@infinite-list/utils';
+import { OnEndReached } from '@infinite-list/viewable';
 import {
   OnEndReachedHelper,
   ViewabilityConfigTuples,
 } from '@infinite-list/viewable';
-import { BaseLayout } from '@infinite-list/base-dimensions';
-
+import Batchinator from '@x-oasis/batchinator';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import StateHub from './StateHub';
+import {
+  DISPATCH_METRICS_THRESHOLD,
+  ON_END_REACHED_THRESHOLD,
+  STILLNESS_THRESHOLD,
+  isEmpty,
+} from './common';
+import {
+  GenericItemT,
+  IndexToOffsetMap,
+  ItemLayout,
+  ListBaseDimensionsProps,
+  ListBaseDimensionsStore,
+  ListStateResult,
+  ReducerResult,
+  ScrollMetrics,
+  StateListener,
+} from './types';
 
 /**
  * item should be first class data model; item's value reference change will
@@ -40,7 +38,7 @@ import StateHub from './StateHub';
  * will not change.
  */
 abstract class BaseImpl<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends BaseLayout {
   private _setMetricsBatchinator: Batchinator;
 

@@ -1,7 +1,7 @@
+import ScrollerScrollView from './ScrollView';
 import FooterPortal from './portal/FooterPortal';
 import HeaderPortal from './portal/HeaderPortal';
 
-import ScrollerScrollView from './ScrollView';
 export { default as ScrollViewContext } from './context/ScrollViewContext';
 export { default as ScrollHelper } from './ScrollHelper';
 export { default as IntersectionObserverView } from './intersection/IntersectionObserverView';

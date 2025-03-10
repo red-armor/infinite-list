@@ -1,14 +1,14 @@
 import SelectValue from '@x-oasis/select-value';
-import { GenericItemT } from './generic.types';
-import { IListDimensionsModel } from './ListDimensionsModel';
 import { IDimension } from './Dimension';
+import { IListDimensionsModel } from './ListDimensionsModel';
+import { GenericItemT } from './generic.types';
 // import { IPseudoListDimensions } from './pseudoListDimensions';
 import { IItemDimensions } from './itemDimensions';
 import { ItemLayout } from './layout';
 
 export type IItemMeta<
   ItemT extends GenericItemT = GenericItemT,
-  ItemMetaOwnerExtraInfo extends {} = {}
+  ItemMetaOwnerExtraInfo extends {} = {},
 > = {
   isApproximateLayout: boolean;
   getLayout(): ItemLayout | undefined;
@@ -16,7 +16,7 @@ export type IItemMeta<
 
 export type ItemMetaOwner<
   ItemT extends GenericItemT = GenericItemT,
-  ItemMetaOwnerExtraInfo extends {} = {}
+  ItemMetaOwnerExtraInfo extends {} = {},
 > =
   | IListDimensionsModel<ItemT, ItemMetaOwnerExtraInfo>
   | IDimension<ItemT, ItemMetaOwnerExtraInfo>
@@ -24,7 +24,7 @@ export type ItemMetaOwner<
   | IItemDimensions;
 
 export type ItemMetaOwnerRequiredProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = {
   resolveConfigTuplesDefaultState(defaultValue?: boolean): {
     [key: string]: boolean;

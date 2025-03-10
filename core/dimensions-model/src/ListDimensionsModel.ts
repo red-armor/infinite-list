@@ -1,31 +1,30 @@
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import { BaseDimensions } from '@infinite-list/base-dimensions';
+import { ItemLayout, KeysChangedType } from '@infinite-list/base-dimensions';
 import { ItemMeta } from '@infinite-list/item-meta';
+import { IndexInfo } from '@infinite-list/item-meta';
+import { IListDimensionsModel } from '@infinite-list/types';
 import { log } from '@infinite-list/utils';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import layoutEqual from '@x-oasis/layout-equal';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
   LAYOUT_EQUAL_CORRECTION_VALUE,
 } from './common';
-
 import {
+  GenericItemT,
   GetItemLayout,
   GetItemSeparatorLength,
   KeyExtractor,
-  ListDimensionsModelProps,
   ListDimensionsModelContainer,
-  GenericItemT,
+  ListDimensionsModelProps,
   OnListDimensionsModelDataChanged,
 } from './types';
-import { IndexInfo } from '@infinite-list/item-meta';
-import { ItemLayout, KeysChangedType } from '@infinite-list/base-dimensions';
-import { IListDimensionsModel } from '@infinite-list/types';
 
 class ListDimensionsModel<
     ItemT extends GenericItemT = GenericItemT,
-    ExtraInfo extends {} = {}
+    ExtraInfo extends {} = {},
   >
   extends BaseDimensions<ItemT>
   implements IListDimensionsModel<ItemT, ExtraInfo>

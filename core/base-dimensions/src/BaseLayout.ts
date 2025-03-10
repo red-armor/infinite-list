@@ -1,13 +1,13 @@
+import { Container } from '@infinite-list/container';
 import {
   INITIAL_NUM_TO_RENDER,
-  MAX_TO_RENDER_PER_BATCH,
-  WINDOW_SIZE,
-  RECYCLER_RESERVED_BUFFER_PER_BATCH,
-  LENGTH_PRECISION,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
+  LENGTH_PRECISION,
+  MAX_TO_RENDER_PER_BATCH,
+  RECYCLER_RESERVED_BUFFER_PER_BATCH,
+  WINDOW_SIZE,
 } from './common';
-import { Container } from '@infinite-list/container';
-import { ItemLayout, FillingMode, BaseLayoutProps } from './types';
+import { BaseLayoutProps, FillingMode, ItemLayout } from './types';
 
 abstract class BaseLayout extends Container {
   readonly _windowSize: number;

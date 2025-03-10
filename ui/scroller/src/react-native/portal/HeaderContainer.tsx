@@ -1,5 +1,4 @@
 import React, { useContext, useRef, useState } from 'react';
-
 import ScrollViewContext from '../context/ScrollViewContext';
 
 const Container = () => {

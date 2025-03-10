@@ -1,19 +1,19 @@
 import {
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
   CSSProperties,
   RefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
-import { ListDimensions } from '@infinite-list/list-dimensions';
-import { RecycleStateResult } from '@infinite-list/strategies';
 import { GenericItemT } from '@infinite-list/item-meta';
-import { ListProps } from './types';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { ScrollTracker } from '@infinite-list/scroller/web';
+import { RecycleStateResult } from '@infinite-list/strategies';
+import { ItemLayout } from '@infinite-list/types';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-import { ScrollTracker } from '@infinite-list/scroller/web';
-import { ItemLayout } from '@infinite-list/types';
+import { ListProps } from './types';
 
 export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const {

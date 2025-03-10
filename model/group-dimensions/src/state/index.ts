@@ -1,10 +1,8 @@
 import { ReducerResult } from '@infinite-list/state';
-
-import fixVisibleRange from './middleware/fixVisibleRange';
-import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
-import fixBufferedRange from './middleware/fixBufferedRange';
-
 import { createStore as _createStore } from '@infinite-list/state';
+import fixBufferedRange from './middleware/fixBufferedRange';
+import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
+import fixVisibleRange from './middleware/fixVisibleRange';
 
 export function createStore<State extends ReducerResult = ReducerResult>() {
   return _createStore<State>({

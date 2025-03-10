@@ -1,16 +1,16 @@
 import React, {
   ComponentProps,
+  ComponentType,
   FC,
   ForwardedRef,
   PropsWithChildren,
-  useContext,
-  useRef,
-  useEffect,
-  ComponentType,
   RefObject,
+  useContext,
+  useEffect,
+  useRef,
 } from 'react';
-import { ObserverComponentProps } from '../types';
 import ScrollViewContext from '../context/ScrollViewContext';
+import { ObserverComponentProps } from '../types';
 
 const createObserverComponent = <T extends ComponentType<any>>(
   Component: T
