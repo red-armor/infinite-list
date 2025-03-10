@@ -6,8 +6,8 @@ import {
   LENGTH_PRECISION,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
 } from './common';
-import { ItemLayout, FillingMode, BaseLayoutProps } from './types';
 import { Container } from '@infinite-list/container';
+import { ItemLayout, FillingMode, BaseLayoutProps } from './types';
 
 abstract class BaseLayout extends Container {
   readonly _windowSize: number;
