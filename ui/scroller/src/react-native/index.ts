@@ -10,7 +10,6 @@ export { default as StickyView } from './sticky/StickyView';
 
 export { default as Marshal } from './Marshal';
 export * from './types';
-export { default as RefreshControl } from './refresh/Control';
 
 export const ScrollViewPortal = {
   Header: HeaderPortal,
