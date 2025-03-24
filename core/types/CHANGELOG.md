@@ -1,5 +1,11 @@
 # @infinite-list/types
 
+## 1.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
 ## 0.0.5
 
 ### Patch Changes

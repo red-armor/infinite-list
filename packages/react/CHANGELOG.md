@@ -1,5 +1,16 @@
 # @infinite-list/react
 
+## 3.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
+### Patch Changes
+
+- Updated dependencies [4e4ff34]
+  - @infinite-list/data-model@3.0.0
+
 ## 2.2.11
 
 ### Patch Changes

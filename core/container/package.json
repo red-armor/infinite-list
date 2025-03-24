@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/container",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "dependencies": {
     "@x-oasis/select-value": "^0.1.14"
   },

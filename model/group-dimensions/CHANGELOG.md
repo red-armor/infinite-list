@@ -1,5 +1,22 @@
 # @infinite-list/group-dimensions
 
+## 1.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
+### Patch Changes
+
+- Updated dependencies [4e4ff34]
+  - @infinite-list/items-dimensions@1.0.0
+  - @infinite-list/base-dimensions@1.0.0
+  - @infinite-list/strategies@1.0.0
+  - @infinite-list/dimension@1.0.0
+  - @infinite-list/item-meta@1.0.0
+  - @infinite-list/state@1.0.0
+  - @infinite-list/utils@1.0.0
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @infinite-list/state
 
+## 1.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
+### Patch Changes
+
+- Updated dependencies [4e4ff34]
+  - @infinite-list/types@1.0.0
+
 ## 0.0.5
 
 ### Patch Changes

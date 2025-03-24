@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/list-dimensions",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "dependencies": {
     "@infinite-list/dimensions-model": "workspace:*",
     "@infinite-list/state": "workspace:*",
