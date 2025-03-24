@@ -1,6 +1,7 @@
 {
   "name": "@infinite-list/react-native",
   "version": "3.0.0",
+  "main": "./src/index.ts",
   "dependencies": {
     "@infinite-list/data-model": "workspace:*",
     "@x-oasis/batchinator": "^0.1.14",

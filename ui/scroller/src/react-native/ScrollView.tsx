@@ -235,14 +235,9 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
   );
 };
 
-// https://stackoverflow.com/a/51898192/2006805
-const ForwardScrollView = React.forwardRef(
-  (
-    props: InfiniteListScrollViewProps,
-    forwardRef: ForwardedRef<RNScrollView>
-  ) => <ScrollView forwardRef={forwardRef} {...props} />
-) as (
-  props: PropsWithChildren<InfiniteListScrollViewPropsWithRef>
-) => JSX.Element;
+const ForwardScrollView = React.forwardRef<
+  RNScrollView,
+  InfiniteListScrollViewProps
+>((props, forwardRef) => <ScrollView forwardRef={forwardRef} {...props} />);
 
 export default ForwardScrollView;

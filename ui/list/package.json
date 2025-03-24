@@ -28,6 +28,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./index.js",
-  "types": "./index.d.ts"
+  "main": "./src/react-native/index.ts",
+  "types": "./src/react-native/index.ts"
 }
