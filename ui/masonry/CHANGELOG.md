@@ -1,5 +1,11 @@
 # @infinite-list/masonry
 
+## 1.0.1
+
+### Patch Changes
+
+- @infinite-list/scroller@2.0.1
+
 ## 1.0.0
 
 ### Major Changes

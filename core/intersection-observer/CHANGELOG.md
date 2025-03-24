@@ -1,5 +1,12 @@
 # @infinite-list/intersection-observer
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aa9f86a]
+  - @infinite-list/scheduler@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
