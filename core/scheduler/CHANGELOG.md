@@ -1,5 +1,11 @@
 # @infinite-list/scheduler
 
+## 1.0.1
+
+### Patch Changes
+
+- aa9f86a: bump publish
+
 ## 1.0.0
 
 ### Major Changes

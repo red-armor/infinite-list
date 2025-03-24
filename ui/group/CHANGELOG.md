@@ -1,5 +1,11 @@
 # @infinite-list/group
 
+## 2.0.1
+
+### Patch Changes
+
+- @infinite-list/scroller@2.0.1
+
 ## 2.0.0
 
 ### Major Changes
