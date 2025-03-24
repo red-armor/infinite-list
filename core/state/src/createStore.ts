@@ -1,10 +1,9 @@
 // import ListDimensions from '../ListDimensions';
 // import ListGroupDimensions from '../ListGroupDimensions';
-
 import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
-import { ScrollMetrics } from './types';
 import { resolveAction } from './actions';
 import reducer from './reducer';
+import { ScrollMetrics } from './types';
 import { Action, ActionType, Enhancer, ReducerResult } from './types/types';
 
 function createStore<State extends ReducerResult = ReducerResult>(

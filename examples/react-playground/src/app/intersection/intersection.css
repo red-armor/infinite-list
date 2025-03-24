@@ -1,0 +1,77 @@
+.contents {
+  position: absolute;
+  width: 700px;
+  /* height: 1725px; */
+  height: 300px;
+  overflow-y: auto;
+}
+
+.wrapper {
+  position: relative;
+  width: 1200px;
+  /* height: 500px;
+  width: 400px;
+  overflow-x: auto; */
+  /* top: 600px; */
+}
+
+.sampleBox {
+  position: relative;
+  left: 175px;
+  width: 150px;
+  background-color: rgb(245 170 140);
+  border: 2px solid rgb(201 126 17);
+  padding: 4px;
+  margin-bottom: 6px;
+}
+
+#box1 {
+  height: 200px;
+}
+
+#box2 {
+  height: 75px;
+}
+
+#box3 {
+  height: 150px;
+}
+
+#box4 {
+  height: 100px;
+}
+
+.label {
+  font:
+    14px "Open Sans",
+    "Arial",
+    sans-serif;
+  position: absolute;
+  margin: 0;
+  background-color: rgb(255 255 255 / 70%);
+  border: 1px solid rgb(0 0 0 / 70%);
+  width: 3em;
+  height: 18px;
+  padding: 2px;
+  text-align: center;
+}
+
+.topLeft {
+  left: 2px;
+  top: 2px;
+}
+
+.topRight {
+  right: 2px;
+  top: 2px;
+}
+
+.bottomLeft {
+  bottom: 2px;
+  left: 2px;
+}
+
+.bottomRight {
+  bottom: 2px;
+  right: 2px;
+}

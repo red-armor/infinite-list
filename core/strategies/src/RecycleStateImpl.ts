@@ -1,33 +1,33 @@
-import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
 import { ItemMeta } from '@infinite-list/item-meta';
+import { ListGroupIndexInfo } from '@infinite-list/types';
+import { log } from '@infinite-list/utils';
+import defaultValue from '@x-oasis/default-value';
+import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
+// import { resolveToken } from './utils';
+import BaseState from './BaseState';
 import {
-  buildStateTokenIndexKey,
   DEFAULT_RECYCLER_TYPE,
   RECYCLER_BUFFER_SIZE,
   RECYCLER_RESERVED_BUFFER_PER_BATCH,
+  buildStateTokenIndexKey,
 } from './common';
 import {
-  ListState,
-  RecycleStateResult,
-  RecycleRecycleState,
   GenericItemT,
-  StateListener,
-  SpaceStateResult,
+  ListState,
+  RecycleRecycleState,
   RecycleStateImplProps,
+  RecycleStateResult,
+  SpaceStateResult,
+  StateListener,
 } from './types';
-import { ListGroupIndexInfo } from '@infinite-list/types';
 
-import { resolveToken } from './utils';
-import BaseState from './BaseState';
-import { log } from '@infinite-list/utils';
-import defaultValue from '@x-oasis/default-value';
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
  * will not change.
  */
 class RecycleStateImpl<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends BaseState<ItemT> {
   private _onRecyclerProcess?: OnRecyclerProcess;
   public stateListener?: StateListener<ItemT>;
@@ -57,6 +57,7 @@ class RecycleStateImpl<
     } = props;
 
     this._onRecyclerProcess = onRecyclerProcess;
+
     // this._releaseSpaceStateItem = releaseSpaceStateItem;
 
     this._recycler = new Recycler<ItemMeta<ItemT>>({
@@ -296,13 +297,37 @@ class RecycleStateImpl<
         const { meta: itemMeta, targetIndex, recyclerKey } = info;
         const item = this.listContainer.getData()[targetIndex];
 
+        let itemMetaState = null;
+
         if (indexToOffsetMap[targetIndex] != null) {
-          const itemMetaState =
-            this.listContainer._configTuple.resolveItemMetaState(
-              itemMeta,
-              this.listContainer._scrollMetrics,
-              () => indexToOffsetMap[targetIndex]
+          /**
+           * [TODO]: maybe only sensitive item should calculate...
+           */
+          if (itemMeta.isApproximateLayout) {
+            const itemOffset = this.listContainer.getFinalIndexKeyOffset(
+              targetIndex,
+              true
             );
+
+            itemMetaState =
+              this.listContainer._configTuple.resolveItemMetaState(
+                itemMeta,
+                this.listContainer._scrollMetrics,
+                () => itemOffset + this.listContainer.getContainerOffset()
+              );
+          }
+          if (!itemMetaState) {
+            itemMetaState =
+              this.listContainer._configTuple.resolveItemMetaState(
+                itemMeta,
+                this.listContainer._scrollMetrics,
+                () =>
+                  indexToOffsetMap[targetIndex] +
+                  this.listContainer.getContainerOffset()
+              );
+
+            // console.log('update =====', this.listContainer._scrollMetrics, indexToOffsetMap[targetIndex], itemMetaState)
+          }
 
           itemMeta?.setItemMetaState(itemMetaState);
         }
@@ -312,7 +337,8 @@ class RecycleStateImpl<
           targetKey: itemMeta.getKey(),
           targetIndex,
           isSpace: false,
-          isSticky: false,
+          isSticky:
+            this.listContainer.stickyHeaderIndices.indexOf(targetIndex) !== -1,
           item,
           itemMeta,
 
@@ -358,52 +384,85 @@ class RecycleStateImpl<
             this.listContainer._configTuple.resolveItemMetaState(
               itemMeta,
               this.listContainer._scrollMetrics,
-              () => indexToOffsetMap[targetIndex]
+              () =>
+                indexToOffsetMap[targetIndex] +
+                this.listContainer.getContainerOffset()
             );
           itemMeta?.setItemMetaState(itemMetaState);
         }
       }
     }
-    const afterTokens = resolveToken({
-      startIndex: this.listContainer.initialNumToRender,
-      endIndex: this.listContainer.getData().length - 1,
-      reservedIndices: this.listContainer.reservedIndices,
-      stickyHeaderIndices: this.listContainer.stickyHeaderIndices,
-      persistanceIndices: this.listContainer.persistanceIndices,
+
+    const startIndexOffset = this.listContainer.getFinalIndexKeyOffset(
+      this.listContainer.initialNumToRender || 0,
+      true
+    );
+    const endIndexOffset = this.listContainer.getTotalLength();
+
+    spaceState.push({
+      item: null,
+      isSpace: true,
+      isSticky: false,
+      isReserved: false,
+      length:
+        typeof endIndexOffset === 'number'
+          ? endIndexOffset - startIndexOffset
+          : startIndexOffset,
+      itemMeta: null,
+
+      /**
+       * key is used to identify space state
+       */
+      key: buildStateTokenIndexKey(
+        this.listContainer.initialNumToRender,
+        this.listContainer.getData().length
+      ),
     });
 
-    afterTokens.forEach((token) => {
-      const { isSticky, isReserved, startIndex, endIndex } = token;
-      if (isSticky || isReserved) {
-        const item = this.listContainer.getData()[startIndex];
-        const itemMeta = this.listContainer.getFinalItemMeta(item);
-        spaceState.push({
-          item,
-          isSpace: false,
-          key: itemMeta?.getKey() || '',
-          itemMeta,
-          isSticky,
-          isReserved,
-          length: this.listContainer.getFinalIndexItemLength(startIndex),
-        });
-      } else {
-        const startIndexOffset =
-          this.listContainer.getFinalIndexKeyOffset(startIndex);
-        // should plus 1, use list total length
-        const endIndexOffset =
-          this.listContainer.getFinalIndexKeyBottomOffset(endIndex);
-        spaceState.push({
-          item: null,
-          isSpace: true,
-          isSticky: false,
-          isReserved: false,
-          length: endIndexOffset - startIndexOffset,
-          // endIndex is not included
-          itemMeta: null,
-          key: buildStateTokenIndexKey(startIndex, endIndex - 1),
-        });
-      }
-    });
+    // const afterTokens = resolveToken({
+    //   startIndex: this.listContainer.initialNumToRender,
+    //   endIndex: this.listContainer.getData().length - 1,
+    //   reservedIndices: this.listContainer.reservedIndices,
+    //   stickyHeaderIndices: this.listContainer.stickyHeaderIndices,
+    //   persistenceIndices: this.listContainer.persistenceIndices,
+    // });
+
+    // afterTokens.forEach((token) => {
+    //   const { isSticky, isReserved, startIndex, endIndex } = token;
+    //   if (isSticky || isReserved) {
+    //     const item = this.listContainer.getData()[startIndex];
+    //     const itemMeta = this.listContainer.getFinalItemMeta(item);
+    //     spaceState.push({
+    //       item,
+    //       isSpace: false,
+    //       key: itemMeta?.getKey() || '',
+    //       itemMeta,
+    //       isSticky,
+    //       isReserved,
+    //       length: this.listContainer.getFinalIndexItemLength(startIndex),
+    //     });
+    //   } else {
+    //     const startIndexOffset =
+    //       this.listContainer.getFinalIndexKeyOffset(startIndex);
+    //     // should plus 1, use list total length
+    //     const endIndexOffset =
+    //       // this.listContainer.getFinalIndexKeyOffset(endIndex);
+
+    // this.listContainer.getFinalIndexKeyBottomOffset(endIndex);
+
+    //     console.log('start =======', buildStateTokenIndexKey(startIndex, endIndex - 1), startIndexOffset, endIndexOffset, endIndexOffset - startIndexOffset)
+    //     spaceState.push({
+    //       item: null,
+    //       isSpace: true,
+    //       isSticky: false,
+    //       isReserved: false,
+    //       length: endIndexOffset - startIndexOffset,
+    //       // endIndex is not included
+    //       itemMeta: null,
+    //       key: buildStateTokenIndexKey(startIndex, endIndex - 1),
+    //     });
+    //   }
+    // });
     return spaceState;
   }
 }

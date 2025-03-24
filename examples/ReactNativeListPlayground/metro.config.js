@@ -97,6 +97,25 @@ const groupModules = Object.keys({
   ...groupPkg.dependencies,
 });
 
+/**
+ * intersection observer
+ */
+const intersectionObserverPkg = JSON.parse(
+  fs.readFileSync(
+    path.join(root, 'core', 'intersection-observer', 'package.json'),
+    'utf8'
+  )
+);
+const intersectionObserverModules = Object.keys({
+  ...intersectionObserverPkg.dependencies,
+});
+const schedulerPkg = JSON.parse(
+  fs.readFileSync(path.join(root, 'core', 'scheduler', 'package.json'), 'utf8')
+);
+const schedulerModules = Object.keys({
+  ...schedulerPkg.dependencies,
+});
+
 const extraModules = []
   .concat(
     reactNativeModules,
@@ -104,7 +123,9 @@ const extraModules = []
     masonryModules,
     scrollerModules,
     listModules,
-    groupModules
+    groupModules,
+    schedulerModules,
+    intersectionObserverModules
   )
   .reduce((acc, name) => {
     acc[name] = path.join(root, 'packages', 'data-model', 'node_modules', name);
@@ -146,6 +167,14 @@ config.resolver.extraNodeModules = {
   '@infinite-list/types': path.join(root, 'core', 'types', 'src'),
   '@infinite-list/utils': path.join(root, 'core', 'utils', 'src'),
   '@infinite-list/viewable': path.join(root, 'core', 'viewable', 'src'),
+  '@infinite-list/intersection-observer': path.join(
+    root,
+    'core',
+    'intersection-observer',
+    'src'
+  ),
+  '@infinite-list/scheduler': path.join(root, 'core', 'scheduler', 'src'),
+  '@infinite-list/disposable': path.join(root, 'core', 'disposable', 'src'),
 
   /**
    * model
@@ -212,6 +241,12 @@ config.watchFolders = [
   path.join(root, 'core', 'utils', 'node_modules'),
   path.join(root, 'core', 'viewable', 'src'),
   path.join(root, 'core', 'viewable', 'node_modules'),
+  path.join(root, 'core', 'intersection-observer', 'src'),
+  path.join(root, 'core', 'intersection-observer', 'node_modules'),
+  path.join(root, 'core', 'scheduler', 'src'),
+  path.join(root, 'core', 'scheduler', 'node_modules'),
+  path.join(root, 'core', 'disposable', 'src'),
+  path.join(root, 'core', 'disposable', 'node_modules'),
 
   /**
    * model

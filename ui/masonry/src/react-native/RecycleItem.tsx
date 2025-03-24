@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { View, ViewStyle } from 'react-native';
 import { GenericItemT } from '@infinite-list/item-meta';
 import { RecycleItemProps } from './types';
-import { View, ViewStyle } from 'react-native';
 
 const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
   props: RecycleItemProps<ItemT>
@@ -11,6 +11,7 @@ const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
     dimensions,
     renderItem: RenderItem,
     columnDimension,
+    // @ts-ignore
     containerRef,
   } = props;
   const itemRef = useRef<View>(null);

@@ -1,4 +1,9 @@
-import { ForwardedRef, MutableRefObject, PropsWithChildren } from 'react';
+import {
+  ForwardedRef,
+  MutableRefObject,
+  PropsWithChildren,
+  RefObject,
+} from 'react';
 import {
   Animated,
   LayoutChangeEvent,
@@ -16,38 +21,36 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
-// @ts-ignore
-import PagerView from 'react-native-pager-view';
+import { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
+import { ScrollMetrics } from '@infinite-list/types';
 import {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
-} from '@infinite-list/data-model';
-
-import Marshal from '../Marshal';
-import ScrollEventHelper from '../ScrollEventHelper';
+} from '@infinite-list/viewable';
 import ScrollHelper from '../ScrollHelper';
+import ScrollerScrollView from '../ScrollView';
 import { StickyMode } from './stickyMarshal';
+
+// import PagerView from 'react-native-pager-view';
+// TODO
+type PagerView = any;
 
 export interface ViewRendererProps extends ViewProps {
   ref?: ForwardedRef<View>;
-  scrollViewKey: string;
 }
 
 export type GetScrollHelper = () => ScrollHelper;
 
-export type SpectrumScrollViewRef = MutableRefObject<
-  ScrollView | View | undefined
->;
+export type InfiniteListScrollViewRef = MutableRefObject<ScrollView>;
 
 export interface ViewRendererPropsWithForwardRef extends ScrollViewProps {
   forwardRef?: ForwardedRef<View>;
-  scrollViewKey: string;
 }
 
 export type RefreshControlProps = {
   refreshing?: boolean;
   useSmoothControl?: boolean;
-  onRefresh?: (() => void) | undefined;
+  onRefresh?: (() => void) | undefined | null;
   refreshControlStartCorrection?: number;
   triggerOnRefreshThresholdValue?: number;
   refreshControlContentContainerStyle?: ViewStyle;
@@ -61,7 +64,7 @@ export type SmoothControlProps = PropsWithChildren<
       x: number;
       y: number;
     }>;
-    animatedValue: MutableRefObject<Animated.Value>;
+    animatedValue: Animated.Value;
     lottieAnimatedValueRef: MutableRefObject<Animated.Value>;
   }
 >;
@@ -70,10 +73,6 @@ export interface ScrollRendererProps
   extends RefreshControlProps,
     ScrollViewProps {
   ref?: ForwardedRef<ScrollView>;
-  scrollViewKey: string;
-  getScrollHelper: GetScrollHelper;
-
-  scrollEventHelper: ScrollEventHelper;
 }
 
 export interface AnimatedScrollRendererProps extends ScrollRendererProps {
@@ -84,21 +83,15 @@ export interface ScrollRendererPropsWithForwardRef
   extends RefreshControlProps,
     ScrollViewProps {
   forwardRef?: ForwardedRef<ScrollView>;
-  scrollViewKey: string;
-  getScrollHelper: GetScrollHelper;
-
-  scrollEventHelper: ScrollEventHelper;
 }
 
 export interface AnimatedScrollRendererPropsWithForwardRef
   extends ScrollRendererPropsWithForwardRef {
-  animatedValue?: MutableRefObject<Animated.Value>;
+  forwardRef?: ForwardedRef<ScrollView>;
 }
 
 export interface AnimatedViewPagerRenderProps extends ViewPagerAndroidProps {
   ref?: ForwardedRef<PagerView>;
-  scrollViewKey: string;
-  getScrollHelper: GetScrollHelper;
   pagerOffsetRef?: MutableRefObject<Animated.Value>;
   pagerPositionRef?: MutableRefObject<Animated.Value>;
 }
@@ -109,10 +102,9 @@ export interface AnimatedViewPagerRenderPropsWithForwardRef
   scrollViewKey: string;
   pagerOffsetRef?: MutableRefObject<Animated.Value>;
   pagerPositionRef?: MutableRefObject<Animated.Value>;
-  getScrollHelper: GetScrollHelper;
 }
 
-export type SpectrumScrollViewProps = ScrollViewProps &
+export type InfiniteListScrollViewProps = ScrollViewProps &
   RefreshControlProps & {
     id?: string;
     /**
@@ -122,25 +114,38 @@ export type SpectrumScrollViewProps = ScrollViewProps &
 
     stickyMode?: StickyMode;
 
-    enableViewPager?: boolean;
+    // enableViewPager?: boolean;
+
+    // /**
+    //  * @platform android
+    //  */
+    // pagerOffsetRef?: MutableRefObject<Animated.Value>;
+
+    // /**
+    //  * @platform android
+    //  */
+    // pagerPositionRef?: MutableRefObject<Animated.Value>;
 
     /**
-     * @platform android
+     * enable / disable trigger scroll event in current ScrollView
      */
-    pagerOffsetRef?: MutableRefObject<Animated.Value>;
-
-    /**
-     * @platform android
-     */
-    pagerPositionRef?: MutableRefObject<Animated.Value>;
-
     scrollUpdating?: boolean;
-    setMarshal?: (marshal: Marshal) => void;
+    /**
+     *
+     * @param marshal
+     * @returns
+     *
+     * to get scroller marshal from passing props, just like `setRef`
+     */
+    // setMarshal?: (marshal: Marshal) => void;
+
+    /**
+     * support intersection observer in react-native
+     */
+    intersectionObserverCallback?: IntersectionObserverCallback;
 
     animatedX?: MutableRefObject<Animated.Value>;
     animatedY?: MutableRefObject<Animated.Value>;
-    onEndReachedThreshold?: number;
-    onEndReachedTimeoutThreshold?: number;
     viewabilityConfig?: ViewabilityConfig;
     viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
 
@@ -160,24 +165,18 @@ export type SpectrumScrollViewProps = ScrollViewProps &
       | undefined;
   };
 
-export type SpectrumScrollViewPropsWithRef = SpectrumScrollViewProps & {
-  ref?: ForwardedRef<ScrollView>;
+export type InfiniteListScrollViewPropsWithRef = InfiniteListScrollViewProps & {
+  ref?: RefObject<typeof ScrollerScrollView> | RefObject<ScrollView | null>;
 };
-export type SpectrumScrollViewPropsWithForwardRef = SpectrumScrollViewProps & {
-  forwardRef?: ForwardedRef<ScrollView>;
-};
+export type InfiniteListScrollViewPropsWithForwardRef =
+  InfiniteListScrollViewProps & {
+    forwardRef?: ForwardedRef<ScrollView>;
+  };
 
-export enum ScrollHandlerName {
-  onScroll = 'onScroll',
-  onScrollEndDrag = 'onScrollEndDrag',
-  onScrollBeginDrag = 'onScrollBeginDrag',
-  onMomentumScrollEnd = 'onMomentumScrollEnd',
-  onMomentumScrollBegin = 'onMomentumScrollBegin',
-}
+export type SyntheticEventHandlerEvent =
+  NativeSyntheticEvent<NativeScrollEvent>;
 
-export type SyntheticEventHandler = (
-  event: NativeSyntheticEvent<NativeScrollEvent>
-) => void;
+export type SyntheticEventHandler = (event: SyntheticEventHandlerEvent) => void;
 
 export type ContentSizeChangeHandler = (w: number, h: number) => void;
 export type EventHandler = SyntheticEventHandler;
@@ -186,18 +185,12 @@ export type ScrollHandler = SyntheticEventHandler;
 export type MomentumScrollEndHandler = () => void;
 export type OnEndReachedHandler = (opts: { distanceFromEnd: number }) => void;
 
-export interface ViewToken {
-  item: any;
-  key: string;
-  index: number | null;
-  isViewable: boolean;
-  section?: any;
-}
-export type OnViewableItemChangedInfo = {
-  viewableItems: ViewToken[];
-  changed: ViewToken[];
-};
+export type ScrollToOption =
+  | number
+  | {
+      x?: number | undefined;
+      y?: number | undefined;
+      animated?: boolean | undefined;
+    };
 
-export type OnViewableItemsChanged =
-  | ((info: OnViewableItemChangedInfo) => void)
-  | null;
+export type OnScrollMetricsChange = (scrollMetrics: ScrollMetrics) => void;

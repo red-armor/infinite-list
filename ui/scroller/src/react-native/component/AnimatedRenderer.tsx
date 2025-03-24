@@ -1,10 +1,9 @@
-import throttle from '@x-oasis/throttle';
 import React, {
   FC,
   ForwardedRef,
   PropsWithChildren,
   useCallback,
-  useEffect,
+  useContext,
   useMemo,
   useRef,
   useState,
@@ -16,15 +15,19 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-
-import { useNativeRefreshControl } from '../commons/platform';
+import throttle from '@x-oasis/throttle';
+import { DEFAULT_VIEW_LAYOUT } from '../commons/constants';
+import ScrollViewContext from '../context/ScrollViewContext';
+import RefreshControl from '../controller/RefreshControl';
 import useScrollEnabled from '../hooks/useScrollEnabled';
-import SmoothControl from '../refresh/SmoothControl';
-import { TRIGGER_ON_REFRESH_THRESHOLD_VALUE } from '../refresh/constants';
 import {
   AnimatedScrollRendererProps,
   AnimatedScrollRendererPropsWithForwardRef,
 } from '../types';
+
+const noop = () => {
+  // do nothing
+};
 
 const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
   props
@@ -33,37 +36,27 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     onScroll,
     children,
     forwardRef,
-    animatedValue,
     onLayout,
-    horizontal,
     scrollEventThrottle,
-    getScrollHelper,
     style = {},
-    onRefresh,
+    onRefresh = noop,
     refreshing,
     scrollEnabled,
     useSmoothControl,
-    scrollEventHelper,
     refreshControlStartCorrection,
-    triggerOnRefreshThresholdValue = TRIGGER_ON_REFRESH_THRESHOLD_VALUE,
     refreshControlContentContainerStyle,
     ...restProps
   } = props;
-
   const [loading, setLoading] = useState(false);
-  const scrollHelper = getScrollHelper();
-  const lottieAnimatedValueRef = useRef(
-    new Animated.Value(triggerOnRefreshThresholdValue)
-  );
-  const layoutRef = useRef({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  });
+  const contextValues = useContext(ScrollViewContext);
+  const { marshal, intersectionObserver } = contextValues;
+  const scrollHelper = marshal!.getScrollHelper();
+  const animatedValue = useMemo(() => marshal!.getAnimatedValue(), [marshal]);
+  const horizontal = marshal!.isHorizontal();
+
+  const layoutRef = useRef(DEFAULT_VIEW_LAYOUT);
   const [_scrollEnabled] = useScrollEnabled({
-    // @ts-ignore
-    scrollEnabled,
+    scrollEnabled: !!scrollEnabled,
     scrollHelper,
   });
 
@@ -84,124 +77,109 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     });
   }, [onScroll, scrollEventThrottle, scrollHelper]);
 
-  useEffect(() => {
-    // @ts-ignore
-    return scrollEventHelper.subscribeEventHandler('onScrollEndDrag', (e) => {
-      const { nativeEvent } = e;
-      const contentOffset = nativeEvent.contentOffset;
+  // useInitialEffect(() =>
+  //   marshal
+  //     ?.getScrollHelper()
+  //     .addEventListener(
+  //       'onScrollEndDrag',
+  //       (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  //         const { nativeEvent } = e;
+  //         const contentOffset = nativeEvent.contentOffset;
 
-      const { y } = contentOffset;
-      if (y < -triggerOnRefreshThresholdValue) {
-        setLoading(true);
-        lottieAnimatedValueRef.current.setValue(triggerOnRefreshThresholdValue);
-        if (typeof onRefresh === 'function') {
-          onRefresh();
-        }
-      }
-    });
-  }, []);
+  //         const { y } = contentOffset;
+
+  //         console.log('--------', y);
+
+  //         if (y < -triggerOnRefreshThresholdValue) {
+  //           console.log('set ----- tre');
+  //           setLoading(true);
+  //           lottieAnimatedValueRef.current.setValue(
+  //             triggerOnRefreshThresholdValue
+  //           );
+  //           if (typeof onRefresh === 'function') {
+  //             onRefresh();
+  //           }
+  //         }
+  //       }
+  //     )
+  // );
 
   const layoutHandler = useCallback((e: LayoutChangeEvent) => {
-    // @ts-ignore
     layoutRef.current = e.nativeEvent.layout;
     if (typeof onLayout === 'function') {
       onLayout(e);
     }
-    const {
-      nativeEvent: { layout },
-    } = e;
-
-    scrollHelper.setLayout(layout);
-    // scrollHelper.setLayoutMeasurement(layout);
+    scrollHelper.onLayout(e);
   }, []);
 
   const contentOffset = useMemo(() => {
     if (horizontal)
       return {
-        // @ts-ignore
-        x: animatedValue.current,
+        x: animatedValue,
       };
 
     return {
-      // @ts-ignore
-      y: animatedValue.current,
+      y: animatedValue,
     };
   }, [horizontal]);
 
   const scrollViewStyle = useMemo(() => {
     return [
       style,
-      !useNativeRefreshControl && typeof onRefresh === 'function'
-        ? {
-            transform: [
-              {
-                translateY: loading
-                  ? Animated.multiply(
-                      lottieAnimatedValueRef.current.interpolate({
-                        inputRange: [0, triggerOnRefreshThresholdValue],
-                        outputRange: [0, triggerOnRefreshThresholdValue],
-                      }),
-                      // @ts-ignore
-                      animatedValue.current.interpolate({
-                        inputRange: [
-                          triggerOnRefreshThresholdValue - 2,
-                          triggerOnRefreshThresholdValue - 1,
-                          triggerOnRefreshThresholdValue,
-                          triggerOnRefreshThresholdValue + 1,
-                        ],
-                        outputRange: [1, 1, 0, 0],
-                      })
-                    )
-                  : 0,
-              },
-            ],
-          }
-        : {},
+      // !useNativeRefreshControl && typeof onRefresh === 'function'
+      //   ? {
+      //       transform: [
+      //         {
+      //           translateY: loading
+      //             ? Animated.multiply(
+      //                 lottieAnimatedValueRef.current.interpolate({
+      //                   inputRange: [0, triggerOnRefreshThresholdValue],
+      //                   outputRange: [0, triggerOnRefreshThresholdValue],
+      //                 }),
+      //                 animatedValue.interpolate({
+      //                   inputRange: [
+      //                     triggerOnRefreshThresholdValue - 2,
+      //                     triggerOnRefreshThresholdValue - 1,
+      //                     triggerOnRefreshThresholdValue,
+      //                     triggerOnRefreshThresholdValue + 1,
+      //                   ],
+      //                   outputRange: [1, 1, 0, 0],
+      //                 })
+      //               )
+      //             : 0,
+      //         },
+      //       ],
+      //     }
+      //   : {},
     ];
   }, [loading]);
 
   return (
-    <>
-      {useSmoothControl && (
-        <SmoothControl
-          refreshing={refreshing}
-          setLoading={setLoading}
-          loading={loading}
-          layoutRef={layoutRef}
-          // @ts-ignore
-          animatedValue={animatedValue}
-          lottieAnimatedValueRef={lottieAnimatedValueRef}
-          refreshControlStartCorrection={refreshControlStartCorrection}
-          triggerOnRefreshThresholdValue={triggerOnRefreshThresholdValue}
-          refreshControlContentContainerStyle={
-            refreshControlContentContainerStyle
-          }
-        />
-      )}
-      <Animated.ScrollView
-        ref={forwardRef}
-        style={scrollViewStyle}
-        horizontal={horizontal}
-        {...restProps}
-        scrollEnabled={_scrollEnabled}
-        scrollEventThrottle={1}
-        onLayout={layoutHandler}
-        onScroll={Animated.event(
-          [
-            {
-              // @ts-ignore
-              nativeEvent: { contentOffset },
-            },
-          ],
+    <Animated.ScrollView
+      ref={forwardRef}
+      style={scrollViewStyle}
+      horizontal={horizontal}
+      {...restProps}
+      {...scrollHelper.getEventHandlers()}
+      scrollEnabled={_scrollEnabled}
+      scrollEventThrottle={1}
+      onLayout={layoutHandler}
+      onScroll={Animated.event(
+        [
           {
-            listener: throttledHandler,
-            useNativeDriver: true,
-          }
-        )}
-      >
-        {children}
-      </Animated.ScrollView>
-    </>
+            // @ts-ignore
+            nativeEvent: { contentOffset },
+          },
+        ],
+        {
+          listener: throttledHandler,
+          useNativeDriver: true,
+        }
+      )}
+    >
+      <RefreshControl />
+      {children}
+    </Animated.ScrollView>
   );
 };
 

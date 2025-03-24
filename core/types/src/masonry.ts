@@ -1,6 +1,6 @@
-import { GenericItemT } from './generic.types';
-import { IOnEndReachedHelper } from './OnEndReachedHelper';
 import { ListIndexInfo } from './ListDimensions';
+import { IOnEndReachedHelper } from './OnEndReachedHelper';
+import { GenericItemT } from './generic.types';
 
 export interface IMasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
   // getItemKey(item: ItemT, index?: number): string | null;
@@ -11,7 +11,7 @@ export interface IMasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
 }
 
 export interface IMasonryDimensionsModel<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > {
   getKeyItemOffset(key: string, exclusive: boolean): number;
   // getItemKey(item: ItemT, index?: number): string | null;

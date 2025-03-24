@@ -1,20 +1,16 @@
-import { useContext, useEffect, useMemo } from 'react';
-
+import { FC, PropsWithChildren, useContext, useEffect, useMemo } from 'react';
 import ScrollViewContext from '../context/ScrollViewContext';
 
 let count = 1;
-// @ts-ignore
-const FooterPortal = (props) => {
+const FooterPortal: FC<PropsWithChildren> = (props) => {
   const { portalManager } = useContext(ScrollViewContext);
   const { children } = props;
   const componentKey = useMemo(() => `footer_${count++}`, []);
 
   useEffect(() => {
-    // @ts-ignore
-    portalManager.setFooterInfo((info) => {
+    portalManager?.setFooterInfo((info: any) => {
       const { group = [] } = info;
-      // @ts-ignore
-      const index = group.findIndex((c) => c.key === componentKey);
+      const index = group.findIndex((c: any) => c.key === componentKey);
       const n = {
         key: componentKey,
         c: children,
@@ -26,8 +22,7 @@ const FooterPortal = (props) => {
       if (index !== -1)
         return {
           ...info,
-          // @ts-ignore
-          group: [].concat(before, n, after),
+          group: [].concat(before, n as any, after),
         };
 
       return {

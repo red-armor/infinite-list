@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import context, { ContextType } from '../context';
 import { Dimension, GenericItemT } from '@infinite-list/dimension';
 import { GroupDimensionItemProps } from '../../types';
+import context, { ContextType } from '../context';
 
 export default <ItemT extends GenericItemT>(
   props: GroupDimensionItemProps<ItemT>

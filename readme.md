@@ -30,6 +30,15 @@ cd packages/NAME
 npm run test
 ```
 
+## How to run website
+
+```bash
+# in root dir
+npm run docs:dev
+```
+
+open [http://localhost:5173/](http://localhost:5173/)
+
 ## How to bump and publish
 
 ```bash

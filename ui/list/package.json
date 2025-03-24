@@ -6,13 +6,14 @@
     "react-native": "0.74.1"
   },
   "dependencies": {
-    "@infinite-list/list-dimensions": "workspace:*",
-    "@infinite-list/strategies": "workspace:*",
-    "@infinite-list/item-meta": "workspace:*",
-    "@infinite-list/types": "workspace:*",
     "@infinite-list/dimensions-model": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/list-dimensions": "workspace:*",
+    "@infinite-list/scroller": "workspace:*",
+    "@infinite-list/strategies": "workspace:*",
+    "@infinite-list/types": "workspace:*",
     "@infinite-list/utils": "workspace:*",
-    "@infinite-list/scroller": "workspace:*"
+    "@x-oasis/select-value": "^0.1.14"
   },
   "exports": {
     "./react": {

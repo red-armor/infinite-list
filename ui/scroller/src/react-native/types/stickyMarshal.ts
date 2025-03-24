@@ -1,4 +1,5 @@
-import { DataModelDimensions } from './viewability';
+import { IClientRectReadOnly } from '@infinite-list/intersection-observer/react-native';
+import Marshal from '../Marshal';
 
 export enum StickyMode {
   fluid = 'fluid',
@@ -7,6 +8,7 @@ export enum StickyMode {
 
 export type StickyMarshalProps = {
   stickyMode?: StickyMode;
+  marshal: Marshal;
 };
 
 export type InterpolationConfig = {
@@ -14,14 +16,15 @@ export type InterpolationConfig = {
   outputRange: Array<number>;
 };
 
-export type StickyItemInfo<ItemT> = {
+export type StickyItemInfo = {
   itemKey: string;
   /**
    * 吸顶开始时，item顶部离ScrollHelper最顶部的高度，正常就是`containerOffset + itemOffsetToContainer`
    * 但是假如它是`StickyMode.stuck`的话，
    */
   startOffset: number;
-  dimensions: DataModelDimensions;
+  // dimensions: DataModelDimensions;
+  rect: IClientRectReadOnly;
   interpolationConfig?: InterpolationConfig;
   animatedValueConfig?: InterpolationConfig;
   startCorrection: number;

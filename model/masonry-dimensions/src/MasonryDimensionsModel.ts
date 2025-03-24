@@ -1,39 +1,41 @@
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal';
 import { ItemLayout } from '@infinite-list/dimensions-model';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
-
-import {
-  GenericItemT,
-  // ItemLayout,
-  MasonryDimensionsModelProps,
-  // ListDimensionsModel,
-} from './types';
-import MasonryDimensionStrategy from './MasonryDimensionStrategy';
-import defaultValue from '@x-oasis/default-value';
 import { KeyIndexManager } from '@infinite-list/utils';
+import defaultValue from '@x-oasis/default-value';
+import layoutEqual from '@x-oasis/layout-equal';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+import MasonryDimensionStrategy from './MasonryDimensionStrategy';
 import { LAYOUT_EQUAL_CORRECTION_VALUE } from './common';
+import { GenericItemT, MasonryDimensionsModelProps } from './types';
 
 /**
  * The key point is how to decorate `columnIntervalTree` and `columnKeyIndexManager`
  * value.
  */
 class MasonryDimensionsModel<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends ListDimensionsModel<ItemT> {
   readonly column: number;
   private _columnDataSource: ItemT[][];
   private _columnIntervalTree: PrefixIntervalTree[];
   private _columnKeyIndexManager: KeyIndexManager[];
   private _strategies: MasonryDimensionStrategy<ItemT>[];
+  // readonly persistenceIndices: number[];
+  // readonly initialNumToRender: number;
 
   constructor(props: MasonryDimensionsModelProps<ItemT>) {
     super(props);
-    const { column = 2 } = props;
+    const {
+      column = 2,
+      persistenceIndices = [],
+      initialNumToRender = 0,
+    } = props;
     const [strategies, dataSource, intervalTrees, keyIndexManagers] =
       this.initColumnValues(column, props);
     this.column = column;
     this._strategies = strategies;
+    this.persistenceIndices = persistenceIndices;
+    this.initialNumToRender = initialNumToRender;
     this._columnDataSource = dataSource;
     this._columnIntervalTree = intervalTrees;
     this._columnKeyIndexManager = keyIndexManagers;
@@ -59,7 +61,7 @@ class MasonryDimensionsModel<
     MasonryDimensionStrategy<ItemT>[],
     ItemT[][],
     PrefixIntervalTree[],
-    KeyIndexManager[]
+    KeyIndexManager[],
   ] {
     const dataSource: ItemT[][] = [];
     const intervalTrees: PrefixIntervalTree[] = [];
@@ -74,6 +76,8 @@ class MasonryDimensionsModel<
           columnIndex: idx,
           dataModel: this,
           recycleEnabled: true,
+          initialNumToRender: this.initialNumToRender,
+          persistenceIndices: this.persistenceIndices,
           ...props,
         })
       );

@@ -1,21 +1,21 @@
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import isObject from '@x-oasis/is-object';
+import { Container as BaseContainer } from '@infinite-list/container';
 import { ItemMeta } from '@infinite-list/item-meta';
 import { IDimension, ItemLayout } from '@infinite-list/types';
-import { Container as BaseContainer } from '@infinite-list/container';
-import {
-  INVALID_LENGTH,
-  DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
-  DEFAULT_RECYCLER_TYPE,
-} from './common';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import isObject from '@x-oasis/is-object';
 import layoutEqual from '@x-oasis/layout-equal';
 import {
+  DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
+  DEFAULT_RECYCLER_TYPE,
+  INVALID_LENGTH,
+} from './common';
+import {
   DimensionProps,
-  GetDimensionLength,
   GenericItemT,
+  GetDimensionLength,
   ListGroupChildDimensionsContainer,
-  ListGroupIndexInfo,
   ListGroupDimensions,
+  ListGroupIndexInfo,
 } from './types';
 
 /**
@@ -23,7 +23,7 @@ import {
  */
 class Dimension<
     ItemT extends GenericItemT = GenericItemT,
-    ExtraInfo extends {} = {}
+    ExtraInfo extends {} = {},
   >
   extends BaseContainer
   implements IDimension<ItemT, ExtraInfo>

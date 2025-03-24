@@ -1,10 +1,9 @@
-import BaseLayout from './BaseLayout';
 import { ItemMeta } from '@infinite-list/item-meta';
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import { ViewabilityConfigTuples } from '@infinite-list/viewable';
-import { log, KeyIndexManager } from '@infinite-list/utils';
 import { IBaseDimensions } from '@infinite-list/types';
-
+import { KeyIndexManager, log } from '@infinite-list/utils';
+import { ViewabilityConfigTuples } from '@infinite-list/viewable';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+import BaseLayout from './BaseLayout';
 import {
   BaseDimensionsProps,
   BoundInfo,

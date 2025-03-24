@@ -3,3 +3,13 @@
 /coverage
 /.nx/cache
 /.nx/workspace-data
+/packages
+./.vscode
+pnpm-lock.yaml
+/docs
+/examples
+.vscode
+.gitignore
+.prettierrc
+.prettierignore
+.gitignore

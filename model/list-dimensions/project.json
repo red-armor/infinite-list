@@ -20,9 +20,9 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-        "options": {
-          "config": "packages/data-model/vite.config.ts"
-        }
+      "options": {
+        "config": "model/list-dimensions/vite.config.ts"
+      }
     }
   }
 }

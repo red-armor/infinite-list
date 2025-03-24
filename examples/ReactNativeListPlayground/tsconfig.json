@@ -2,18 +2,18 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "jsx": "react-jsx",
     "paths": {
       "@/*": [
         "./*"
       ],
       "@infinite-list/react-native": ["../../packages/react-native/src"],
-      "@infinite-list/masonry": ["../../ui/masonry/src/react-native"],
-      "@infinite-list/scroller": ["../../ui/scroller/src/react-native"],
-      "@infinite-list/group": ["../../ui/group/src/react-native"],
-      "@infinite-list/list": ["../../ui/list/src/react-native"],
+      "@infinite-list/masonry/react-native": ["../../ui/masonry/src/react-native"],
+      "@infinite-list/scroller/react-native": ["../../ui/scroller/src/react-native"],
+      "@infinite-list/intersection-observer/react-native": ["../../core/intersection-observer/src/react-native"],
+      "@infinite-list/group/react-native": ["../../ui/group/src/react-native"],
+      "@infinite-list/list/react-native": ["../../ui/list/src/react-native"],
       "@infinite-list/utils": ["../../core/utils/src"],
-      "@infinite-list/dimensions-model": ["../../core/dimensions-model/src/react-native"],
-      "@infinite-list/types": ["../../core/types/src"],
     }
   },
   "include": [

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 describe('test', () => {
   it('basic', () => {
@@ -266,13 +266,13 @@ describe('test', () => {
 //     expect(stateResult).toBe(listDimensions.stateResult);
 //   });
 
-//   it('persistanceIndices', () => {
+//   it('persistenceIndices', () => {
 //     const data = buildData(100);
 
 //     const listDimensions = new ListDimensions({
 //       id: 'list_1',
 //       data,
-//       persistanceIndices: [1, 2, 10, 20],
+//       persistenceIndices: [1, 2, 10, 20],
 //       keyExtractor: defaultKeyExtractor,
 //       getItemLayout: (item, index) => ({
 //         index,
@@ -541,14 +541,14 @@ describe('test', () => {
 //     });
 //   });
 
-//   it('persistanceIndices and stickyIndices', () => {
+//   it('persistenceIndices and stickyIndices', () => {
 //     const data = buildData(100);
 
 //     const listDimensions = new ListDimensions({
 //       id: 'list_1',
 //       data,
 //       stickyHeaderIndices: [0, 1],
-//       persistanceIndices: [1, 2, 10, 20],
+//       persistenceIndices: [1, 2, 10, 20],
 //       keyExtractor: defaultKeyExtractor,
 //       getItemLayout: (item, index) => ({
 //         index,

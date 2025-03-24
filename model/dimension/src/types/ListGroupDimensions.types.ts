@@ -1,5 +1,6 @@
 import Dimension from '../Dimension';
 import { GenericItemT } from './generic.types';
+
 // import ListGroupDimensions from '../ListGroupDimensions';
 // import ListDimensionsModel from '../ListDimensionsModel';
 
@@ -62,11 +63,11 @@ type ListDimensionsModel<P> = any;
 // // > = ListGroupDimensions<ItemT> | ListDimensions<ItemT>;
 
 export type ListGroupChildDimensions<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = ListDimensionsModel<ItemT> | Dimension<ItemT>;
 
 export type ListGroupChildDimensionsContainer<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = ListGroupDimensions<ItemT>;
 
 export type ListGroupIndexInfo<ItemT extends GenericItemT = GenericItemT> = {

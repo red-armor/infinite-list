@@ -1,5 +1,4 @@
 import React, { useContext, useRef, useState } from 'react';
-
 import ScrollViewContext from '../context/ScrollViewContext';
 
 const FooterContainer = () => {
@@ -11,7 +10,7 @@ const FooterContainer = () => {
 
   if (initialRef.current) {
     initialRef.current = false;
-    portalManager.registerFooterInfoSetter(setInfo);
+    portalManager?.registerFooterInfoSetter(setInfo);
   }
 
   // @ts-ignore

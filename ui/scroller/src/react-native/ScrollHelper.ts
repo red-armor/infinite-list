@@ -1,193 +1,204 @@
-import { ItemMeta, ItemsDimensions } from '@infinite-list/data-model';
+import { MutableRefObject } from 'react';
+import {
+  Animated,
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+} from 'react-native';
+import {
+  ContainerObserver,
+  IClientRectReadOnly,
+  IntersectionObserver,
+  ReactNativeDocumentBase,
+} from '@infinite-list/intersection-observer/react-native';
+import { ContentSize, ScrollMetrics } from '@infinite-list/types';
 import SelectValue, {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-import { MutableRefObject } from 'react';
-import {
-  Animated,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
-  View,
-} from 'react-native';
-
 import Marshal from './Marshal';
 import ScrollEventHelper from './ScrollEventHelper';
-import StickyMarshal from './StickyMarshal';
+import Emitter from './commons/Emitter';
 import {
   DEFAULT_LAYOUT_MEASUREMENT,
   DEFAULT_SCROLL_EVENT_METRICS,
   DEFAULT_SCROLL_HELPER_LAYOUT,
+  DEFAULT_SCROLL_METRICS,
 } from './commons/constants';
 import { isIos } from './commons/platform';
+import RefreshControlService from './controller/RefreshControlService';
+import StickyMarshal from './sticky/StickyMarshal';
 import {
-  ContentSize,
-  ContentSizeChangeHandler,
+  InfiniteListScrollViewRef,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventMetrics,
-  ScrollHandler,
-  ScrollMetrics,
+  ScrollHelperProps,
   ScrollSize,
-  SpectrumScrollViewRef,
-  StickyMode,
   ViewableItemLayout,
 } from './types';
 
 /**
- * - nested scroller 对于嵌套的scrollHelper，处理视窗逻辑主要是分两种情况
- *   - 初始化
- *     - onContentSizeChanged: 解没有parentScrollHelper的情况，也就是自己就是顶层
- *     - onLayout: 解不是root的时候，这个时候要先知道自己的布局，才能够计算它的children
- *   - 有元素滚动
- *     - 这个时候主要就是通过ItemDimensions来解决了
+ * The same direction ScrollView only has one ScrollHelper, it only belongs to the root
+ * ScrollView. The usage of ScrollHelper is to trigger registered ScrollEventHelper
  *
- *   问题点：
- *     - 挂载的问题，现在ScrollView的整体设计是基于ScrollHelper来实现的。所以现在Item的话，
- *       同样是相对于parent scrollHelper来进行处理
+ * - For nested scrollers, there are two main scenarios for handling viewport logic:
+ *   - Initialization
+ *     - onContentSizeChanged: Handles cases without a parentScrollHelper (when it's the top level)
+ *     - onLayout: Handles non-root cases, where we need to know its own layout first to calculate its children
+ *   - Element scrolling
+ *     - This is mainly handled through ItemDimensions
+ *
+ *   Issues:
+ *     - Mounting: The current ScrollView design is based on ScrollHelper implementation.
+ *       Therefore, Items are also processed relative to the parent scrollHelper
  */
 class ScrollHelper {
-  public id: string;
+  id: string;
+
+  readonly intersectionObserver: IntersectionObserver;
+
+  readonly _horizontal: boolean;
 
   public selectValue: SelectValue;
 
-  private _reverseOrientationRootChildren: ScrollHelper[] = [];
-
-  readonly _parentScrollHelper: ScrollHelper;
-
-  private _animatedValue: MutableRefObject<Animated.Value>;
-
-  // @ts-ignore
   private _stickyMarshal: StickyMarshal;
 
-  // @ts-ignore
-  private _scrollMetrics: ScrollMetrics;
+  private _scrollMetrics: ScrollMetrics = DEFAULT_SCROLL_METRICS;
 
   private _contentSize: ContentSize;
 
   private _scrollEventMetrics: ScrollEventMetrics =
     DEFAULT_SCROLL_EVENT_METRICS;
 
-  // private _throttledMaybeCallOnEndReached: Function;
-
   private _layoutMeasurement: ScrollSize;
 
   private _layout: ViewableItemLayout = DEFAULT_SCROLL_HELPER_LAYOUT;
 
-  private _dimensionsMeta: ItemMeta;
-
   private _scrollEventHelpers: ScrollEventHelper[] = [];
 
-  // @ts-ignore
-  private _scrollEventHelper: ScrollEventHelper;
+  private _ref: InfiniteListScrollViewRef;
 
-  private _ref: SpectrumScrollViewRef;
-
-  readonly _horizontal: boolean;
-
-  // @ts-ignore
-  readonly _onEndReachedThreshold: number;
-
-  // @ts-ignore
-  readonly _onEndReachedTimeoutThreshold: number;
-
-  public viewable: boolean;
-
-  // @ts-ignore
   private _marshal: Marshal;
 
-  // @ts-ignore
-  private _scrollEnabledHandler: { (falsy: boolean): void };
+  private _scrollEnabledHandler?: { (falsy: boolean): void };
 
   public hasInteraction: boolean;
 
-  public onScroll: ScrollHandler;
-
-  public onScrollBeginDrag: ScrollHandler;
-
-  public onScrollEndDrag: ScrollHandler;
-
-  public onContentSizeChange: ContentSizeChangeHandler;
-
-  public onMomentumScrollEnd: ScrollHandler;
-
-  public onMomentumScrollBegin: ScrollHandler;
-
-  public onScrollToTop: ScrollHandler;
-
-  public setMarshal: (marshal: Marshal) => void;
-
   private onRefreshListeners: Function[] = [];
 
-  constructor(props: {
-    id: string;
-    stickyMode?: StickyMode;
-    horizontal: boolean;
-    animatedValue: MutableRefObject<Animated.Value>;
-    parentScrollHelper?: ScrollHelper;
-    // onEndReachedThreshold: number;
-    // onEndReachedTimeoutThreshold?: number;
-    ref: MutableRefObject<ScrollView | View | undefined>;
-  }) {
+  private _intersection: IClientRectReadOnly | null = null;
+
+  private _animatedValueX: Animated.Value;
+
+  private _animatedValueY: Animated.Value;
+
+  private _onScrollMetricsChangeEmitter = new Emitter();
+
+  private _intersectionObserverContainer: ContainerObserver | null | undefined;
+
+  private _refreshControlService: RefreshControlService;
+
+  ownerDocument: ReactNativeDocumentBase;
+
+  constructor(props: ScrollHelperProps) {
     const {
       id,
       ref,
       stickyMode,
-      animatedValue,
-      horizontal = false,
-      parentScrollHelper,
-      // onEndReachedThreshold,
-      // onEndReachedTimeoutThreshold,
+      horizontal,
+      marshal,
+      animatedValueX,
+      animatedValueY,
+      intersectionObserver,
+      intersectionObserverCallback,
     } = props;
+    this._marshal = marshal;
 
     this.id = id;
     this._ref = ref;
     this._stickyMarshal = new StickyMarshal({
       stickyMode,
+      marshal: this._marshal,
     });
-    this._animatedValue = animatedValue;
     this._horizontal = horizontal;
-    this._parentScrollHelper = parentScrollHelper!;
     this.selectValue = horizontal ? selectHorizontalValue : selectVerticalValue;
     this._layoutMeasurement = DEFAULT_LAYOUT_MEASUREMENT;
     this._contentSize = DEFAULT_SCROLL_EVENT_METRICS.contentSize;
+    this._refreshControlService = new RefreshControlService();
     this.resolveScrollMetrics();
-    // this._onEndReachedThreshold = onEndReachedThreshold;
-    // this._throttledMaybeCallOnEndReached = throttle(
-    //   this.maybeCallOnEndReached.bind(this),
-    //   onEndReachedTimeoutThreshold
-    // );
+
+    this._animatedValueY = animatedValueY?.current || new Animated.Value(0);
+    this._animatedValueX = animatedValueX?.current || new Animated.Value(0);
 
     this.hasInteraction = false;
-    this.viewable = !this._parentScrollHelper;
 
-    this.onContentSizeChange = this._onContentSizeChange.bind(this);
-    this.onScroll = this._onScroll.bind(this);
-    this.onMomentumScrollEnd = this._onMomentumScrollEnd.bind(this);
-    this.onScrollEndDrag = this._onScrollEndDrag.bind(this);
-    this.onScrollBeginDrag = this._onScrollBeginDrag.bind(this);
-    this.onMomentumScrollBegin = this._onMomentumScrollBegin.bind(this);
-    this.onScrollToTop = this._onScrollToTop.bind(this);
+    const parentMarshal = this._marshal.getParentMarshal();
 
-    this.onViewableHandler = this.onViewableHandler.bind(this);
+    this.ownerDocument = new ReactNativeDocumentBase({
+      id,
+      node: this._ref,
+      ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
+      onIntersectionChange: this.onIntersectionChangeHandler.bind(this),
+    });
+    this.getEventHandlers = this.getEventHandlers.bind(this);
+    this.onContentSizeChange = this.onContentSizeChange.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+    this.onMomentumScrollEnd = this.onMomentumScrollEnd.bind(this);
+    this.onScrollEndDrag = this.onScrollEndDrag.bind(this);
+    this.onScrollBeginDrag = this.onScrollBeginDrag.bind(this);
+    this.onMomentumScrollBegin = this.onMomentumScrollBegin.bind(this);
+    this.onScrollToTop = this.onScrollToTop.bind(this);
 
-    this.setMarshal = this._setMarshal.bind(this);
+    const nextIntersectionObserver =
+      intersectionObserverCallback ||
+      ((entries: any, observer: any) => {
+        // do nothing
+      });
 
-    this._dimensionsMeta = this.prepareNested();
+    this.intersectionObserver =
+      intersectionObserver ||
+      new IntersectionObserver(nextIntersectionObserver, {
+        root: this.ownerDocument,
+      });
+
+    const info = this.intersectionObserver.addDoc(this.ownerDocument);
+    this._intersectionObserverContainer = info.container;
+  }
+
+  get ownerScrollHelper() {
+    return this._marshal.scrollHelper;
+  }
+
+  get refreshControlService() {
+    return this._refreshControlService;
+  }
+
+  addEventListener(
+    eventName: ScrollEventHandlerSubscriptionKeys,
+    handler: Function
+  ) {
+    return this._marshal
+      .getScrollEventHelper()
+      .subscribeEventHandler(eventName, handler);
   }
 
   addListener(
     eventName: ScrollEventHandlerSubscriptionKeys,
     handler: Function
   ) {
-    if (!this._scrollEventHelper) {
-      this._scrollEventHelper = new ScrollEventHelper({
-        scrollHelper: this,
-        marshal: this.getMarshal(),
-      });
-    }
+    return this._marshal
+      .getScrollEventHelper()
+      .subscribeEventHandler(eventName, handler);
+  }
 
-    return this._scrollEventHelper.subscribeEventHandler(eventName, handler);
+  /**
+   * The nested ScrollView state result is updated by intersection change..
+   */
+  onIntersectionChangeHandler(intersection: IClientRectReadOnly | null) {
+    this._intersection = intersection;
+    this.resolveScrollMetrics();
+    this.onScrollMetricsChange();
   }
 
   addOnRefreshListener(fn: Function) {
@@ -208,19 +219,6 @@ class ScrollHelper {
     this.onRefreshListeners.forEach((fn) => fn.call(this));
   }
 
-  cleanup() {
-    if (this._dimensionsMeta) {
-      // do nothing, waiting for InfiniteList update..
-    }
-  }
-
-  _setMarshal(marshal: Marshal) {
-    if (!this._marshal) {
-      // set marshal only if this._marshal is null
-      this._marshal = marshal;
-    }
-  }
-
   getMarshal() {
     return this._marshal;
   }
@@ -233,16 +231,15 @@ class ScrollHelper {
     return this._horizontal;
   }
 
-  getAnimatedValue() {
-    return this._animatedValue;
-  }
-
   get contentSize() {
     return this._contentSize;
   }
 
-  // @ts-ignore
-  addScrollEnabledHandler(handler) {
+  getAnimatedValue() {
+    return this._horizontal ? this._animatedValueX : this._animatedValueY;
+  }
+
+  addScrollEnabledHandler(handler: { (falsy: boolean): void }) {
     this._scrollEnabledHandler = handler;
   }
 
@@ -274,43 +271,23 @@ class ScrollHelper {
     };
   }
 
-  registerReverseOrientationChild(child: ScrollHelper) {
-    const index = this._reverseOrientationRootChildren.findIndex(
-      (v) => v === child
-    );
-    if (index === -1) this._reverseOrientationRootChildren.push(child);
-
-    return () => {
-      const index = this._reverseOrientationRootChildren.findIndex(
-        (v) => v === child
-      );
-      if (index !== -1) this._reverseOrientationRootChildren.splice(index, 1);
-    };
-  }
-
-  onViewableHandler() {
-    // @ts-ignore
-    this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
-  }
-
-  prepareNested() {
-    const dimensions = this.getItemsDimensions();
-    if (!dimensions) return null;
-    // TODO
-    // @ts-ignore
-    const meta = dimensions.ensureKeyMeta(this.id, this.id);
-    meta.addStateEventListener('viewable', this.onViewableHandler);
-    return meta;
-  }
-
-  getItemsDimensions() {
-    if (!this._parentScrollHelper) return null;
-
-    const rootMarshal = this._parentScrollHelper.getMarshal();
-
-    // 这个肯定是ItemsDimensions
-    return rootMarshal.dimensions;
-  }
+  /**
+   *
+   * @returns
+   *
+   * To ensure the nested reverse direction ScrollView should be in considered..
+   * for example, vertical ScrollView include a horizontal ScrollView, when scrolling
+   * on vertical ScrollView, the horizontal ScrollView should be checked whether it
+   * is in viewport as well...
+   *
+   */
+  // prepareNested() {
+  //   const dimensions = this.getItemsDimensions();
+  //   if (!dimensions) return null;
+  //   const meta = dimensions.ensureKeyMeta(this.id, this.id);
+  //   meta.addStateEventListener('viewable', this.onViewableHandler);
+  //   return meta;
+  // }
 
   setLayout(layout: ViewableItemLayout | ScrollSize) {
     this._layout = this._layout
@@ -319,11 +296,8 @@ class ScrollHelper {
           ...DEFAULT_SCROLL_HELPER_LAYOUT,
           ...layout,
         };
-
-    const dimensions = this.getItemsDimensions();
-    if (dimensions)
-      (dimensions as ItemsDimensions).setKeyItemLayout(this.id, this._layout);
     this.resolveScrollMetrics();
+    this.onScrollMetricsChange();
   }
 
   getLayout() {
@@ -338,8 +312,10 @@ class ScrollHelper {
     return this.selectValue;
   }
 
-  // @ts-ignore
-  triggerScrollEventHelpers(handlerName: string, ...rest) {
+  triggerScrollEventHelpers(
+    handlerName: ScrollEventHandlerSubscriptionKeys,
+    ...rest: any[]
+  ) {
     this._scrollEventHelpers.forEach((helper) => {
       if (helper.marshal.scrollUpdateEnabled) {
         // @ts-ignore
@@ -353,14 +329,18 @@ class ScrollHelper {
    * @param scrollEventMetrics ScrollEventMetrics
    * @return null
    *
-   * To update `this._scrollMetrics`, should be triggered `onScroll` or `onContentSizeChange`
+   * To update `this._scrollMetrics`, should be triggered `onScroll` or
+   * `onContentSizeChange`
    */
   resolveScrollMetrics() {
     const timestamp = Date.now();
     const scrollEventMetrics = this.getScrollEventMetrics();
     const { contentOffset } = scrollEventMetrics;
     const contentLength = this.selectValue.selectLength(this.contentSize);
-    const visibleLength = this.selectValue.selectLength(this.getLayout());
+
+    const visibleLength = !this._intersection
+      ? 0
+      : this.selectValue.selectLength(this._intersection);
     const offset = this.selectValue.selectOffset(contentOffset);
     const dOffset = offset - this._scrollMetrics?.offset || 0;
     const dt = this._scrollMetrics?.timestamp
@@ -378,15 +358,30 @@ class ScrollHelper {
     };
   }
 
+  onScrollMetricsChange() {
+    this._onScrollMetricsChangeEmitter.fire(
+      'scroll-metrics-change',
+      this._scrollMetrics
+    );
+  }
+
+  addScrollMetricsChangeListener(cb: any) {
+    return this._onScrollMetricsChangeEmitter.on('scroll-metrics-change', cb);
+  }
+
   getScrollMetrics() {
     return this._scrollMetrics;
   }
 
+  /**
+   *
+   * @param metrics
+   */
   setScrollEventMetrics(metrics: ScrollEventMetrics) {
     const { layoutMeasurement } = metrics;
     this.setLayout(layoutMeasurement);
-    // this.setLayoutMeasurement(layoutMeasurement);
     this._scrollEventMetrics = metrics;
+    this.resolveScrollMetrics();
   }
 
   getScrollEventMetrics() {
@@ -400,39 +395,56 @@ class ScrollHelper {
     this.hasInteraction = true;
   }
 
-  _onScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
-    this.recordInteraction();
+  addScrollEventChangeListener(
+    cb: (metrics: NativeSyntheticEvent<NativeScrollEvent>) => void
+  ) {
+    this._onScrollMetricsChangeEmitter.on('scroll-event-change', cb);
+  }
 
-    this.setScrollEventMetrics(e.nativeEvent);
+  handleScrollEventChange(
+    scrollEvent: NativeSyntheticEvent<NativeScrollEvent>
+  ) {
+    const metrics = scrollEvent.nativeEvent;
+    this.setLayout(metrics.layoutMeasurement);
+    this._scrollEventMetrics = metrics;
     this.resolveScrollMetrics();
+    this._onScrollMetricsChangeEmitter.fire('scroll-event-change', scrollEvent);
+    this.onScrollMetricsChange();
+    this.ownerDocument.onScrollEventChange(scrollEvent);
+  }
 
+  onScroll(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.recordInteraction();
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onScroll', {
       nativeEvent: {
         ...e.nativeEvent,
       },
     });
-    // this._throttledMaybeCallOnEndReached();
-    // @ts-ignore
-    this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
+    this.refreshControlService.receiveOnScrollEvent(e);
   }
 
-  _onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onScrollBeginDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onScrollBeginDrag', {
       nativeEvent: {
         ...e.nativeEvent,
       },
     });
+    this.refreshControlService.receiveOnScrollBeginDragEvent(e);
   }
 
-  _onScrollEndDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onScrollEndDrag(e: NativeSyntheticEvent<NativeScrollEvent>) {
     this.triggerScrollEventHelpers('onScrollEndDrag', {
       nativeEvent: {
         ...e.nativeEvent,
       },
     });
+    this.refreshControlService.receiveOnScrollEndDragEvent(e);
   }
 
-  _onMomentumScrollBegin(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onMomentumScrollBegin(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onMomentumScrollBegin', {
       nativeEvent: {
         ...e.nativeEvent,
@@ -440,31 +452,47 @@ class ScrollHelper {
     });
   }
 
-  _onMomentumScrollEnd(e: NativeSyntheticEvent<NativeScrollEvent>) {
-    this.setScrollEventMetrics(e.nativeEvent);
-    this.resolveScrollMetrics();
+  onMomentumScrollEnd(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.handleScrollEventChange(e);
     this.triggerScrollEventHelpers('onMomentumScrollEnd', e);
-    // @ts-ignore
-    this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
   }
 
-  _onContentSizeChange(width: number, height: number) {
+  onContentSizeChange(width: number, height: number) {
     this._contentSize = { width, height };
     this.resolveScrollMetrics();
-    // this._throttledMaybeCallOnEndReached();
     this.triggerScrollEventHelpers('onContentSizeChange', width, height);
 
-    if (!this._horizontal)
-      // @ts-ignore
-      this._marshal.dimensions.updateScrollMetrics(this._scrollMetrics);
+    this._intersectionObserverContainer?.updateIntersection();
   }
 
-  _onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {
+  onScrollToTop(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    this.handleScrollEventChange(e);
+
     this.triggerScrollEventHelpers('onScrollToTop', {
       nativeEvent: {
         ...e.nativeEvent,
       },
     });
+  }
+
+  onLayout(e: LayoutChangeEvent) {
+    const {
+      nativeEvent: { layout },
+    } = e;
+    const scrollHelper = this._marshal?.getScrollHelper();
+    if (!this._marshal?.isRootScroller) {
+      const parentLayout = scrollHelper?.getLayout();
+      if (parentLayout)
+        scrollHelper.setLayout({
+          ...layout,
+          width: parentLayout.width,
+          height: parentLayout.height,
+        });
+    } else {
+      scrollHelper?.setLayout(layout);
+    }
+
+    this._intersectionObserverContainer?.updateIntersection();
   }
 
   getEventHandlers() {
@@ -487,16 +515,14 @@ class ScrollHelper {
 
   scrollTo(options: { x?: number; y?: number; animated?: boolean }) {
     const ref = this.getRef();
-    // @ts-ignore
-    if (ref.current?.getNode) {
-      // @ts-ignore
-      if (ref.current.scrollTo) {
-        // @ts-ignore
-        ref.current.scrollTo(options);
-      } else {
-        // @ts-ignore
-        ref.current.getNode().scrollTo(options);
-      }
+    if (ref.current.scrollTo) {
+      ref.current.scrollTo(options);
+    } else if (
+      // @ts-expect-error
+      ref.current?.getNode
+    ) {
+      // @ts-expect-error
+      ref.current.getNode().scrollTo(options);
     } else {
       (ref as MutableRefObject<ScrollView>).current.scrollTo(options);
     }

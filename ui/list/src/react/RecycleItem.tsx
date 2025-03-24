@@ -1,7 +1,7 @@
 import { CSSProperties, useEffect, useMemo, useRef } from 'react';
 import { GenericItemT } from '@infinite-list/strategies';
-
-import { RecycleItemProps } from '../types';
+import SelectValue from '@x-oasis/select-value';
+import { RecycleItemProps } from './types';
 
 const RecycleItem = <ItemT extends GenericItemT>(
   props: RecycleItemProps<ItemT>
@@ -9,12 +9,16 @@ const RecycleItem = <ItemT extends GenericItemT>(
   const { data, dimensions, renderItem: RenderItem, horizontal } = props;
   const itemRef = useRef<HTMLDivElement>(null);
   const { item, key, itemMeta, offset } = data;
+  const selectValue = useMemo(
+    () => new SelectValue({ horizontal }),
+    [horizontal]
+  );
   const style: CSSProperties = useMemo(() => {
     if (typeof offset !== 'number') return {};
     if (horizontal) {
       return {
         position: 'absolute',
-        transform: `translateX(${offset}px)`,
+        transform: `${selectValue.selectTranslate()}(${offset}px)`,
         left: 0,
         top: 0,
         bottom: 0,
@@ -22,7 +26,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
     }
     return {
       position: 'absolute',
-      transform: `translateY(${offset}px)`,
+      transform: `${selectValue.selectTranslate()}(${offset}px)`,
       left: 0,
       top: 0,
       right: 0,

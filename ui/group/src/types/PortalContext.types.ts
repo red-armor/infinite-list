@@ -1,13 +1,13 @@
+import { FC, PropsWithChildren } from 'react';
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import { ItemMeta } from '@infinite-list/item-meta';
 import {
   GenericItemT,
   RecycleRecycleState,
   SpaceStateResult,
 } from '@infinite-list/strategies';
-import { PropsWithChildren, FC } from 'react';
-import { ListGroupDimensions } from '@infinite-list/group-dimensions';
-import { ItemMeta } from '@infinite-list/item-meta';
 import { RenderItem } from './GroupListItemImpl.types';
-import { TeleportItemProps, ListItemWrapper } from './ListItem.types';
+import { ListItemWrapper, TeleportItemProps } from './ListItem.types';
 
 export type ExtraInfo<ItemT extends GenericItemT = GenericItemT> = {
   renderItem: RenderItem<ItemT>;
@@ -45,7 +45,7 @@ export type GroupSpaceContentProps<ItemT extends GenericItemT = GenericItemT> =
   };
 
 export type GroupRecycleContentProps<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > = {
   state: RecycleRecycleState<ItemT>;
   listKey: string;

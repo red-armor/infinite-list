@@ -1,5 +1,4 @@
 // import memoizeOne from 'memoize-one';
-
 // import { buildStateTokenIndexKey } from '../common';
 // import {
 //   ListState,
@@ -9,7 +8,6 @@
 //   SpaceStateImplProps,
 // } from '../types';
 // import BaseState from './BaseState';
-
 // /**
 //  * item should be first class data model; item's value reference change will
 //  * cause recalculation of item key. However, if key is not changed, its itemMeta
@@ -19,50 +17,40 @@
 //   ItemT extends GenericItemT = GenericItemT
 // > extends BaseState<ItemT> {
 //   private _stateResult?: SpaceStateResult<ItemT>;
-
 //   private memoizedResolveSpaceState: (
 //     state: ListState
 //   ) => SpaceStateResult<ItemT>;
-
 //   constructor(props: SpaceStateImplProps<ItemT>) {
 //     super(props);
-
 //     this.memoizedResolveSpaceState = memoizeOne(
 //       this.resolveSpaceState.bind(this)
 //     );
 //   }
-
 //   addStateListener(listener: StateListener<ItemT>) {
 //     if (typeof listener === 'function') this.stateListener = listener;
 //     return () => {
 //       if (typeof listener === 'function') this.stateListener = undefined;
 //     };
 //   }
-
 //   applyStateResult(stateResult: SpaceStateResult<ItemT>) {
 //     const shouldStateUpdate = true;
-
 //     if (shouldStateUpdate && typeof this.stateListener === 'function') {
 //       this.stateListener(stateResult, this._stateResult);
 //     }
-
 //     this._stateResult = {
 //       ...stateResult,
 //       rangeState: stateResult.rangeState,
 //     };
 //   }
-
 //   getStateResult() {
 //     return this._stateResult;
 //   }
-
 //   setState(state: ListState, force = false) {
 //     const stateResult = force
 //       ? this.resolveSpaceState(state)
 //       : this.memoizedResolveSpaceState(state);
 //     this.applyStateResult(stateResult);
 //   }
-
 //   resolveSpaceState(
 //     state: ListState,
 //     resolver?: {
@@ -83,19 +71,16 @@
 //       ? resolver?.bufferedStartIndex(state)
 //       : _bufferedStartIndex;
 //     const data = this.getData();
-
 //     const nextStart = bufferedStartIndex;
 //     const nextEnd = bufferedEndIndex + 1;
 //     const remainingData = data.slice(nextStart, nextEnd);
 //     const beforeTokens = this.resolveToken(0, nextStart);
 //     const spaceState = [];
-
 //     beforeTokens.forEach((token) => {
 //       const { isSticky, isReserved, startIndex, endIndex } = token;
 //       if (isSticky || isReserved) {
 //         const item = this._data[startIndex];
 //         const itemMeta = this.getFinalItemMeta(item);
-
 //         spaceState.push({
 //           item,
 //           itemMeta,
@@ -118,27 +103,21 @@
 //         });
 //       }
 //     });
-
 //     const indexToOffsetMap = this.getFinalIndexRangeOffsetMap(
 //       bufferedStartIndex,
 //       bufferedEndIndex
 //     );
-
 //     remainingData.forEach((item, _index) => {
 //       const index = bufferedStartIndex + _index;
 //       const itemMeta = this.getFinalItemMeta(item);
 //       if (!itemMeta) return;
 //       const isSticky = this.stickyHeaderIndices.indexOf(index) !== -1;
-//       const isReserved = this.persistanceIndices.indexOf(index) !== -1;
-
+//       const isReserved = this.persistenceIndices.indexOf(index) !== -1;
 //       const itemKey = itemMeta.getKey();
-
 //       const itemLength = itemMeta?.getFinalItemLength();
-
 //       // const itemLayout = itemMeta?.getLayout();
 //       // const itemLength =
 //       //   (itemLayout?.height || 0) + (itemMeta?.getSeparatorLength() || 0);
-
 //       const itemMetaState =
 //         !this._scrollMetrics || !itemMeta?.getLayout()
 //           ? itemMeta
@@ -149,9 +128,7 @@
 //               this._scrollMetrics,
 //               () => indexToOffsetMap[index]
 //             );
-
 //       itemMeta?.setItemMetaState(itemMetaState);
-
 //       spaceState.push({
 //         key: itemKey,
 //         item,
@@ -162,9 +139,7 @@
 //         length: itemLength,
 //       });
 //     });
-
 //     const afterTokens = this.resolveToken(nextEnd, data.length - 1);
-
 //     afterTokens.forEach((token) => {
 //       const { isSticky, isReserved, startIndex, endIndex } = token;
 //       if (isSticky || isReserved) {
@@ -193,23 +168,20 @@
 //         });
 //       }
 //     });
-
 //     return spaceState;
 //   }
 // }
-
 // export default SpaceStateImpl;
-
 import BaseState from './BaseState';
 import {
-  ListState,
   GenericItemT,
-  StateListener,
+  ListState,
   SpaceStateResult,
+  StateListener,
 } from './types';
 
 export default class SpaceStateImpl<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends BaseState<ItemT> {
   private _stateResult: SpaceStateResult<ItemT> = [];
   public stateListener?: StateListener<ItemT>;

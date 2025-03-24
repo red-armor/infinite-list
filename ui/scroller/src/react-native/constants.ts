@@ -1,4 +1,4 @@
-import { ViewabilityConfigCallbackPairs } from '@infinite-list/data-model';
+import { ViewabilityConfigCallbackPairs } from '@infinite-list/viewable';
 
 export const defaultViewabilityConfigCallbackPairs: ViewabilityConfigCallbackPairs =
   [

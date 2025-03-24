@@ -1,6 +1,5 @@
-// import { ListDimensionsModelContainer } from './ListDimensionsModel.types';
-import { GenericItemT } from './generic.types';
 import BaseImpl from '../BaseImpl';
+import { GenericItemT } from './generic.types';
 
 export type BaseStateImplProps<ItemT extends GenericItemT = GenericItemT> = {
   listContainer: BaseImpl<ItemT>;

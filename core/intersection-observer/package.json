@@ -1,0 +1,28 @@
+{
+  "name": "@infinite-list/intersection-observer",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "exports": {
+    "./react": {
+      "types": "./react.esm.d.ts",
+      "default": "./react.esm.js"
+    },
+    "./react-native": {
+      "types": "./react-native.esm.d.ts",
+      "import": "./react-native.esm.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/items-dimensions": "workspace:*",
+    "@infinite-list/scheduler": "workspace:*"
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts"
+}

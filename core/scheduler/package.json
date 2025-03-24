@@ -1,0 +1,12 @@
+{
+  "name": "@infinite-list/scheduler",
+  "version": "0.0.1",
+  "dependencies": {
+    "@x-oasis/default-boolean-value": "^0.1.14"
+  },
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,12 +1,12 @@
+import RecycleStateImpl from './RecycleStateImpl';
+import SpaceStateImpl from './SpaceStateImpl';
 import {
   GenericItemT,
   ListState,
-  StateListener,
-  StateHubProps,
   ListStateResult,
+  StateHubProps,
+  StateListener,
 } from './types';
-import RecycleStateImpl from './RecycleStateImpl';
-import SpaceStateImpl from './SpaceStateImpl';
 
 class StateHub<ItemT extends GenericItemT = GenericItemT> {
   private _handler: RecycleStateImpl<ItemT> | SpaceStateImpl<ItemT>;
@@ -14,7 +14,6 @@ class StateHub<ItemT extends GenericItemT = GenericItemT> {
   constructor(props: StateHubProps<ItemT>) {
     const {
       listContainer,
-
       recyclerTypes,
       onRecyclerProcess,
       recyclerBufferSize,

@@ -1,20 +1,19 @@
+import { IndexToOffsetMap, ItemLayout } from '@infinite-list/dimensions-model';
+import { ReducerResult, createStore } from '@infinite-list/state';
 import { BaseImpl } from '@infinite-list/strategies';
-import { ItemLayout, IndexToOffsetMap } from '@infinite-list/dimensions-model';
-
+import MasonryDimensionsModel from './MasonryDimensionsModel';
 import {
   GenericItemT,
-  ScrollMetrics,
-  MasonryIndexInfo,
   MasonryDimensionStrategyProps,
+  MasonryIndexInfo,
+  ScrollMetrics,
 } from './types';
-import MasonryDimensionsModel from './MasonryDimensionsModel';
-import { ReducerResult, createStore } from '@infinite-list/state';
 
 /**
  * a lite ListDimensionsModel version
  */
 class MasonryDimensionStrategy<
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 > extends BaseImpl<ItemT> {
   readonly columnIndex: number;
   readonly _dataModel: MasonryDimensionsModel<ItemT>;

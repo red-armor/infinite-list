@@ -1,10 +1,10 @@
+import BaseImpl from './BaseImpl';
 import {
+  BaseStateImplProps,
   GenericItemT,
   ListState,
-  BaseStateImplProps,
   ListStateResult,
 } from './types';
-import BaseImpl from './BaseImpl';
 
 abstract class BaseState<ItemT extends GenericItemT = GenericItemT> {
   public listContainer: BaseImpl<ItemT>;

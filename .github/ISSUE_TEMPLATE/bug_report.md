@@ -1,9 +1,8 @@
 ---
-name: "🐛 Bug Report"
+name: '🐛 Bug Report'
 about: Report a reproducible bug or regression.
 title: 'Bug: '
 labels: 'Status: Unconfirmed'
-
 ---
 
 ### To Reproduce
@@ -21,6 +20,7 @@ A description of what behavior you observed and why you consider it faulty.
 A clear and concise description of what you expected to happen instead.
 
 **Possible Solution**
+
 <!--- If you have suggestions on a fix for the bug -->
 
 **Additional context**

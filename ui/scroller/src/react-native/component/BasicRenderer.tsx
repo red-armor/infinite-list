@@ -1,9 +1,9 @@
-import throttle from '@x-oasis/throttle';
 import React, {
   FC,
   ForwardedRef,
   PropsWithChildren,
   useCallback,
+  useContext,
   useMemo,
 } from 'react';
 import {
@@ -12,7 +12,9 @@ import {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-
+import throttle from '@x-oasis/throttle';
+import ScrollViewContext from '../context/ScrollViewContext';
+import RefreshControl from '../controller/RefreshControl';
 import useScrollEnabled from '../hooks/useScrollEnabled';
 import {
   ScrollRendererProps,
@@ -26,21 +28,23 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
     forwardRef,
     onLayout,
     scrollEventThrottle,
-    getScrollHelper,
     scrollEnabled,
     ...restProps
   } = props;
-  const scrollHelper = getScrollHelper();
+
+  const contextValues = useContext(ScrollViewContext);
+  const { marshal, intersectionObserver } = contextValues;
+  const scrollHelper = marshal!.getScrollHelper();
+  const horizontal = marshal!.isHorizontal();
 
   const [_scrollEnabled] = useScrollEnabled({
-    // @ts-ignore
-    scrollEnabled,
+    scrollEnabled: !!scrollEnabled,
     scrollHelper,
   });
 
   const throttledHandler = useMemo(() => {
     function handler(e: NativeSyntheticEvent<NativeScrollEvent>) {
-      scrollHelper.onScroll(e);
+      scrollHelper?.onScroll(e);
     }
 
     return throttle(handler, scrollEventThrottle, {
@@ -62,22 +66,21 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
       onLayout(e);
     }
 
-    const {
-      nativeEvent: { layout },
-    } = e;
-
-    scrollHelper.setLayout(layout);
+    scrollHelper.onLayout(e);
   }, []);
 
   return (
     <ScrollView
+      {...scrollHelper.getEventHandlers()}
       {...restProps}
+      horizontal={horizontal}
       ref={forwardRef}
       onLayout={layoutHandler}
       onScroll={throttledHandler}
       scrollEnabled={_scrollEnabled}
       scrollEventThrottle={scrollEventThrottle}
     >
+      <RefreshControl />
       {children}
     </ScrollView>
   );

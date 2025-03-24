@@ -1,5 +1,5 @@
-import { ActionPayload, Ctx, ReducerResult } from '../types/types';
 import { log } from '@infinite-list/utils';
+import { ActionPayload, Ctx, ReducerResult } from '../types/types';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -18,11 +18,12 @@ export default <State extends ReducerResult = ReducerResult>(
     // it should be in consider
     contentLength
       ? Math.min(offset + visibleLength * (bufferSize + 1), contentLength)
-      : offset + visibleLength * (bufferSize + 1)
+      : offset + visibleLength * (bufferSize + 1),
+    true
   );
 
   const { minOffset: visibleMinOffset, maxOffset: visibleMaxOffset } =
-    dimension.resolveOffsetRange(offset, offset + visibleLength);
+    dimension.resolveOffsetRange(offset, offset + visibleLength, true);
 
   const visibleIndexRange = dimension.computeIndexRange(
     visibleMinOffset,
@@ -38,11 +39,18 @@ export default <State extends ReducerResult = ReducerResult>(
     minOffset: offset,
     maxOffset: offset + visibleLength,
   });
-  log.info('visibleRange ', { visibleMinOffset, visibleMaxOffset });
+  log.info('visibleRange ', {
+    visibleMinOffset,
+    visibleMaxOffset,
+    offset,
+    visibleLength,
+  });
   log.info('visibleIndexRange ', visibleIndexRange);
   log.info('bufferedRange ', {
     bufferedMinOffset: minOffset,
-    bufferedMaxOffset: Math.min(maxOffset, contentLength),
+    bufferedMaxOffset: contentLength
+      ? Math.min(maxOffset, contentLength)
+      : maxOffset,
   });
   log.info('bufferedIndexRange ', bufferedIndexRange);
 

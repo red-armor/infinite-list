@@ -1,6 +1,5 @@
 import React, { ForwardedRef } from 'react';
 import { ViewStyle } from 'react-native';
-
 import { OnLayout } from './scrollView';
 
 export type OnMeasureLayout =

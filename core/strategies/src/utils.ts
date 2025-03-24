@@ -1,12 +1,12 @@
-import {
-  SpaceStateTokenPosition,
-  SpaceStateToken,
-  GenericItemT,
-} from './types';
 import isClamped from '@x-oasis/is-clamped';
+import {
+  GenericItemT,
+  SpaceStateToken,
+  SpaceStateTokenPosition,
+} from './types';
 
 export const createSpaceStateToken = <
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 >(
   options?: Partial<SpaceStateToken<ItemT>>
 ) => {
@@ -32,14 +32,14 @@ export const resolveToken = (props: {
   endIndex: number;
   reservedIndices: number[];
   stickyHeaderIndices: number[];
-  persistanceIndices: number[];
+  persistenceIndices: number[];
 }) => {
   const {
     startIndex,
     endIndex,
     reservedIndices,
     stickyHeaderIndices,
-    persistanceIndices,
+    persistenceIndices,
   } = props;
 
   if (startIndex >= endIndex) return [];
@@ -56,7 +56,7 @@ export const resolveToken = (props: {
     const lastToken = tokens[tokens.length - 1];
     if (isClamped(startIndex, index, endIndex - 1)) {
       const isSticky = stickyHeaderIndices.indexOf(index) !== -1;
-      const isReserved = persistanceIndices.indexOf(index) !== -1;
+      const isReserved = persistenceIndices.indexOf(index) !== -1;
       if (lastToken.startIndex === index) {
         lastToken.isSticky = isSticky;
         lastToken.isReserved = isReserved;

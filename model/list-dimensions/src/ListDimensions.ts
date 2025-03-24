@@ -1,16 +1,16 @@
-import { BaseImpl } from '@infinite-list/strategies';
-import { ReducerResult } from '@infinite-list/state';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import { ScrollMetrics, GenericItemT } from './types';
-import { ListIndexInfo } from '@infinite-list/item-meta';
 import {
   ItemLayout,
   ListDimensionsModelProps,
 } from '@infinite-list/dimensions-model';
 import { IndexToOffsetMap } from '@infinite-list/dimensions-model';
+import { ListIndexInfo } from '@infinite-list/item-meta';
+import { ReducerResult } from '@infinite-list/state';
+import { BaseImpl } from '@infinite-list/strategies';
 import { IListDimensions } from '@infinite-list/types';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 import { createStore } from './state';
+import { GenericItemT, ScrollMetrics } from './types';
 
 class ListDimensions<ItemT extends GenericItemT = GenericItemT>
   extends BaseImpl<ItemT>
@@ -25,6 +25,7 @@ class ListDimensions<ItemT extends GenericItemT = GenericItemT>
       ...props,
       store: createStore<ReducerResult>(),
     });
+
     this._dataModel = new ListDimensionsModel<ItemT>({
       recycleEnabled: true,
       ...props,

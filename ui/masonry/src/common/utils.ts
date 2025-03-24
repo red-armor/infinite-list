@@ -1,4 +1,4 @@
-import { GetColumnWidth, ColumnDimensionInfo } from '../types';
+import { ColumnDimensionInfo, GetColumnWidth } from '../types';
 
 export const resolveColumnInfo = (options: {
   width?: number;

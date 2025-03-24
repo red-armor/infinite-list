@@ -1,35 +1,40 @@
 import {
+  useCallback,
+  useContext,
   useEffect,
   useMemo,
-  useState,
   useRef,
-  useContext,
-  useCallback,
+  useState,
 } from 'react';
-import {
-  View,
-  ViewStyle,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-} from 'react-native';
-import { ListProps } from './types';
-import { ListDimensions } from '@infinite-list/list-dimensions';
-import { RecycleStateResult } from '@infinite-list/strategies';
+import { LayoutChangeEvent, View, ViewStyle } from 'react-native';
 import { GenericItemT } from '@infinite-list/item-meta';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { ScrollViewContext } from '@infinite-list/scroller/react-native';
+import { RecycleStateResult } from '@infinite-list/strategies';
+import { ItemLayout, ScrollMetrics } from '@infinite-list/types';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-import { ScrollViewContext } from '@infinite-list/scroller/react-native';
+import { ListProps } from './types';
 
 const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const {
     renderItem,
     id,
     data,
-    containerRef,
+    scrollerRef,
+    horizontal = false,
     recycleEnabled = true,
-    horizontal,
+    getContainerLayout,
   } = props;
-  const listModel = useMemo(() => new ListDimensions(props), []);
+  const listModel = useMemo(
+    () =>
+      new ListDimensions({
+        ...props,
+        getContainerLayout:
+          getContainerLayout || (() => containerLayoutRef.current),
+      }),
+    []
+  );
   const [state, setState] = useState(listModel.getStateResult());
   const contextValues = useContext(ScrollViewContext);
 
@@ -39,7 +44,12 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     dataRef.current = data;
     listModel.setData(dataRef.current);
   }
-
+  const containerLayoutRef = useRef<ItemLayout>({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   const listRef = useRef<View>(null);
   const containerStyle = useMemo<ViewStyle>(() => {
     const style = {
@@ -54,7 +64,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
         display: 'flex',
         height: '100%',
         flexDirection: 'row',
-        backgroundColor: 'blue',
         position: 'relative',
       };
     return style;
@@ -67,95 +76,51 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     });
   }, []);
 
-  const offsetRef = useRef(0);
-  const tsRef = useRef(Date.now());
-
   /**
    * Trigger list render after initialization or content will be blank
    */
-  const onLayoutHandler = useCallback(() => {
-    const scrollMetrics = contextValues
-      .getScrollHelper()
-      .getScrollEventMetrics();
-    const timestamp = Date.now();
-    const offset = listModel
-      .getSelectValue()
-      .selectOffset(scrollMetrics.contentOffset);
+  const onLayoutHandler = useCallback((e: LayoutChangeEvent) => {
+    const scrollMetrics = contextValues.marshal
+      ?.getScrollHelper()
+      .getScrollMetrics();
+    listModel.updateScrollMetrics(scrollMetrics);
 
-    const dOffset = offset - offsetRef.current;
-    const dt = timestamp - tsRef.current;
-    const velocity = dOffset / dt;
+    const rect = e.nativeEvent.layout;
 
-    offsetRef.current = offset;
-    tsRef.current = timestamp;
-
-    listModel.updateScrollMetrics({
-      offset,
-      visibleLength: scrollMetrics.layoutMeasurement.height,
-      contentLength: scrollMetrics.contentSize.height,
-      velocity,
-    });
+    /**
+     * should use position relative to root scroller, or it will cause
+     * error when its closet ScrollView is not root scroller
+     */
+    if (contextValues.marshal?.getScrollHelper?.().getRef?.().current) {
+      listRef.current?.measureLayout(
+        // @ts-ignore
+        contextValues.marshal?.getScrollHelper?.().getRef().current,
+        (x, y, width, height) => {
+          containerLayoutRef.current = {
+            x,
+            y,
+            width,
+            height,
+          };
+        }
+      );
+    } else {
+      containerLayoutRef.current = rect;
+    }
   }, []);
 
   useEffect(
     () =>
-      contextValues
-        .getScrollHelper()
-        .addListener(
-          'onScroll',
-          (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-            const scrollMetrics = event.nativeEvent;
-            const timestamp = Date.now();
-            const offset = listModel
-              .getSelectValue()
-              .selectOffset(scrollMetrics.contentOffset);
-
-            const dOffset = offset - offsetRef.current;
-            const dt = timestamp - tsRef.current;
-            const velocity = dOffset / dt;
-
-            offsetRef.current = offset;
-            tsRef.current = timestamp;
-
-            listModel.updateScrollMetrics({
-              offset,
-              visibleLength: scrollMetrics.layoutMeasurement.height,
-              contentLength: scrollMetrics.contentSize.height,
-              velocity,
-            });
-          }
-        ),
+      contextValues.marshal
+        ?.getScrollHelper()
+        .addScrollMetricsChangeListener((scrollMetrics: ScrollMetrics) => {
+          listModel.updateScrollMetrics(scrollMetrics);
+        }),
     []
   );
 
   if (recycleEnabled) {
     const nextState = state as RecycleStateResult<ItemT>;
-
-    // return (
-    //   <>
-    //     {nextState.recycleState.map((data) => (
-    //       <RecycleItem
-    //         key={data.key}
-    //         data={data}
-    //         containerRef={containerRef}
-    //         renderItem={renderItem}
-    //         dimensions={listModel}
-    //         horizontal={!!horizontal}
-    //       />
-    //     ))}
-    //     {nextState.spaceState.map((data) => (
-    //       <SpaceItem
-    //         key={data.key}
-    //         data={data}
-    //         containerRef={containerRef}
-    //         renderItem={renderItem}
-    //         dimensions={listModel}
-    //         horizontal={!!horizontal}
-    //       />
-    //     ))}
-    //   </>
-    // );
-
     return (
       <View
         id={id}
@@ -167,7 +132,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
           <RecycleItem
             key={data.key}
             data={data}
-            containerRef={listRef}
+            scrollerRef={scrollerRef}
             renderItem={renderItem}
             dimensions={listModel}
             horizontal={!!horizontal}
@@ -177,7 +142,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
           <SpaceItem
             key={data.key}
             data={data}
-            containerRef={listRef}
+            scrollerRef={scrollerRef}
             renderItem={renderItem}
             dimensions={listModel}
             horizontal={!!horizontal}

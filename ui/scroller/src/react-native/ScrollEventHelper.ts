@@ -1,19 +1,23 @@
 import noop from '@x-oasis/noop';
-
 import Marshal from './Marshal';
-import ScrollHelper from './ScrollHelper';
 import {
   ContentSizeChangeHandler,
-  OnEndReachedHandler,
+  InternalScrollEventHandlerSubscriptionKeys,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventHandlerSubscriptions,
+  ScrollEventHelperProps,
   SyntheticEventHandler,
+  SyntheticEventHandlerEvent,
 } from './types';
 
+/**
+ * ScrollEventHelper is bound to ScrollView, Every ScrollView will has its own
+ * `ScrollEventHelper`. then ScrollEventHelper will register to ScrollHelper,
+ * the ScrollEventHelper event is actually triggered by root ScrollHelper.
+ */
 class ScrollEventHelper {
-  public marshal: Marshal;
   private _disposer: Function;
-  private _scrollHelper: ScrollHelper;
+  readonly marshal: Marshal;
   private _onScroll: SyntheticEventHandler | undefined;
   private _onScrollEndDrag: SyntheticEventHandler | undefined;
   private _onScrollBeginDrag: SyntheticEventHandler | undefined;
@@ -22,25 +26,11 @@ class ScrollEventHelper {
   private _onMomentumScrollBegin: SyntheticEventHandler | undefined;
   private _onScrollToTop: SyntheticEventHandler | undefined;
   private _subscriptions: ScrollEventHandlerSubscriptions;
-  private _onEndReached: (props: { distanceFromEnd: number }) => void;
 
-  constructor(props: {
-    marshal: Marshal;
-    scrollHelper: ScrollHelper;
-    onEndReached?: OnEndReachedHandler;
-    onScroll?: SyntheticEventHandler;
-    onScrollEndDrag?: SyntheticEventHandler;
-    onScrollBeginDrag?: SyntheticEventHandler;
-    onContentSizeChange?: ContentSizeChangeHandler;
-    onMomentumScrollEnd?: SyntheticEventHandler;
-    onMomentumScrollBegin?: SyntheticEventHandler;
-    onScrollToTop?: SyntheticEventHandler;
-  }) {
+  constructor(props: ScrollEventHelperProps) {
     const {
       marshal,
       onScroll,
-      scrollHelper,
-      onEndReached,
       onScrollToTop,
       onScrollEndDrag,
       onScrollBeginDrag,
@@ -50,10 +40,7 @@ class ScrollEventHelper {
     } = props;
 
     this.marshal = marshal;
-    // @ts-ignore
-    this._onEndReached = onEndReached;
     this._onScroll = onScroll;
-    this._scrollHelper = scrollHelper;
     this._onScrollBeginDrag = onScrollBeginDrag;
     this._onScrollEndDrag = onScrollEndDrag;
     this._onContentSizeChange = onContentSizeChange;
@@ -68,7 +55,6 @@ class ScrollEventHelper {
       onMomentumScrollEnd: [],
       onMomentumScrollBegin: [],
       onContentSizeChange: [],
-      onEndReached: [],
       onScrollToTop: [],
     };
 
@@ -77,25 +63,48 @@ class ScrollEventHelper {
   }
 
   register() {
-    this._disposer = this._scrollHelper.registerScrollEventHelper(this);
+    this._disposer = this.marshal
+      .getScrollHelper()
+      .registerScrollEventHelper(this);
   }
 
   dispose() {
     if (typeof this._disposer === 'function') this._disposer();
   }
 
+  /**
+   *
+   * @param fnName
+   * @param handler
+   * @returns
+   *
+   * Usage for the updating condition.
+   * Internal handler is passing from ScrollView Props, it may change any time.
+   *
+   */
   updateInternalHandler(
-    fnName: string,
-    handler: SyntheticEventHandler | ContentSizeChangeHandler
+    fnName: ScrollEventHandlerSubscriptionKeys,
+    handler?: SyntheticEventHandler | ContentSizeChangeHandler
   ) {
-    const internalName = `_${fnName}`;
-    // @ts-ignore
-    if (this[internalName] !== handler) {
-      // @ts-ignore
-      this[internalName] = handler;
+    const key = `_${fnName}` as InternalScrollEventHandlerSubscriptionKeys;
+    if (this[key] !== handler) {
+      this[key] = handler as any;
       return true;
     }
     return false;
+  }
+
+  updateInternalHandlers(handlersMap: {
+    [key in ScrollEventHandlerSubscriptionKeys]:
+      | SyntheticEventHandler
+      | ContentSizeChangeHandler
+      | undefined;
+  }) {
+    Object.keys(handlersMap).forEach((key) => {
+      const typedKey = key as ScrollEventHandlerSubscriptionKeys;
+      const handler = handlersMap[typedKey];
+      this.updateInternalHandler(typedKey, handler);
+    });
   }
 
   // @ts-ignore
@@ -105,56 +114,47 @@ class ScrollEventHelper {
     handlers.forEach((handler) => {
       // @ts-ignore
       if (typeof handler === 'function') handler.apply(this, rest);
+      // if (typeof handler === 'function') handler.apply(this, rest);
     });
   }
 
-  // @ts-ignore
-  onScroll(e) {
+  onScroll(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScroll === 'function') this._onScroll(e);
     this._dispatchEvent('onScroll', e);
   }
-  // @ts-ignore
-  onScrollBeginDrag(e) {
+
+  onScrollBeginDrag(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScrollBeginDrag === 'function')
       this._onScrollBeginDrag(e);
     this._dispatchEvent('onScrollBeginDrag', e);
   }
-  // @ts-ignore
-  onScrollEndDrag(e) {
+
+  onScrollEndDrag(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScrollEndDrag === 'function') this._onScrollEndDrag(e);
     this._dispatchEvent('onScrollEndDrag', e);
   }
+
   onContentSizeChange(w: number, h: number) {
     if (typeof this._onContentSizeChange === 'function')
       this._onContentSizeChange(w, h);
     this._dispatchEvent('onContentSizeChange', w, h);
   }
-  // @ts-ignore
-  onMomentumScrollBegin(e) {
+
+  onMomentumScrollBegin(e: SyntheticEventHandlerEvent) {
     if (typeof this._onMomentumScrollBegin === 'function')
       this._onMomentumScrollBegin(e);
     this._dispatchEvent('onMomentumScrollBegin', e);
   }
-  // @ts-ignore
-  onMomentumScrollEnd(e) {
+
+  onMomentumScrollEnd(e: SyntheticEventHandlerEvent) {
     if (typeof this._onMomentumScrollEnd === 'function')
       this._onMomentumScrollEnd(e);
     this._dispatchEvent('onMomentumScrollEnd', e);
   }
-  // @ts-ignore
-  onScrollToTop(e) {
+
+  onScrollToTop(e: SyntheticEventHandlerEvent) {
     if (typeof this._onScrollToTop === 'function') this._onScrollToTop(e);
     this._dispatchEvent('onScrollToTop', e);
-  }
-
-  onEndReached(props: {
-    distanceFromEnd: number;
-    contentLength: number;
-    visibleLength: number;
-    offset: number;
-  }) {
-    if (typeof this._onEndReached === 'function') this._onEndReached(props);
-    this._dispatchEvent('onEndReached', props);
   }
 
   subscribeEventHandler(

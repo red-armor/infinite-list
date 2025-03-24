@@ -1,12 +1,12 @@
-import {
-  OnEndReachedHelperProps,
-  ViewabilityConfig,
-  OnViewableItemsChanged,
-  ViewabilityConfigCallbackPairs,
-  GenericItemT,
-} from '@infinite-list/viewable';
 import { ComponentType, PropsWithChildren } from 'react';
 import { RecyclerProps } from '@infinite-list/strategies';
+import {
+  GenericItemT,
+  OnEndReachedHelperProps,
+  OnViewableItemsChanged,
+  ViewabilityConfig,
+  ViewabilityConfigCallbackPairs,
+} from '@infinite-list/viewable';
 
 export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<
   {
@@ -19,7 +19,7 @@ export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<
     windowSize?: number;
     maxToRenderPerBatch?: number;
     onRenderFinished?: () => void;
-    persistanceIndices?: number[];
+    persistenceIndices?: number[];
 
     scrollComponentContext?: any;
     GroupListSeparatorComponent?: ComponentType<ItemT> | null | undefined;

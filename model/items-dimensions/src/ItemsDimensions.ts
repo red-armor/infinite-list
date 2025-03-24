@@ -1,12 +1,11 @@
+import { BaseDimensions } from '@infinite-list/base-dimensions';
+import { ItemMeta } from '@infinite-list/item-meta';
+import { IItemDimensions } from '@infinite-list/types';
+import { ListSpyUtils } from '@infinite-list/utils';
 import Batchinator from '@x-oasis/batchinator';
 import layoutEqual from '@x-oasis/layout-equal';
-import { ItemMeta } from '@infinite-list/item-meta';
-import { BaseDimensions } from '@infinite-list/base-dimensions';
 import SortedItems from './SortedItems';
-
 import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
-import { ListSpyUtils } from '@infinite-list/utils';
-import { IItemDimensions } from '@infinite-list/types';
 
 class ItemsDimensions<ExtraInfo extends {} = {}>
   extends BaseDimensions
@@ -33,9 +32,15 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
     );
   }
 
+  dispose(metaKey: string) {
+    const meta = this.getKeyMeta(metaKey);
+    if (meta) {
+      this._sortedItems.remove(meta);
+    }
+  }
+
   _setKeyItemLayout(key: string, info: ItemLayout | number) {
-    const meta = this.getKeyMeta(key);
-    if (!meta) return false;
+    const meta = this.ensureKeyMeta(key);
     const layout = meta.ensureLayout();
 
     if (typeof info === 'number') {
@@ -61,7 +66,7 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
     return false;
   }
 
-  ensureKeyMeta(key: string) {
+  ensureKeyMeta(key: string): ItemMeta {
     const meta = this.getKeyMeta(key);
     if (!meta) {
       this.setKeyMeta(
@@ -74,7 +79,7 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
       );
     }
 
-    return this.getKeyMeta(key);
+    return this.getKeyMeta(key)!;
   }
 
   getIndexInfo() {

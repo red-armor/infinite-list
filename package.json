@@ -7,7 +7,7 @@
     "url": "git+https://github.com/red-armor/infinite-list.git"
   },
   "scripts": {
-    "clean": "rm -rf dist && pnpm run -r clean",
+    "clean": "rm -rf dist && rm -rf .nx && pnpm run -r clean",
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
     "lint": "eslint --ext js,ts,tsx .",
@@ -16,20 +16,18 @@
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "publish": "pnpm publish -r --access public",
     "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
-    "dev:web": "nx storybook react"
+    "dev:web": "nx storybook react",
+    "dev:rn": "cd ./examples/ReactNativeListPlayground && npm run start",
+    "dev:docs": "vitepress dev docs --host",
+    "build:docs": "vitepress build docs",
+    "preview:docs": "vitepress preview docs"
   },
   "private": true,
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --cache --fix",
-      "prettier --ignore-path ./.gitignore --write "
+      "prettier . --write"
     ]
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
   },
   "packageManager": "pnpm@9.3.0",
   "author": "youchao liu",
@@ -67,7 +65,8 @@
     "@testing-library/jest-native": "~5.4.3",
     "@testing-library/react": "15.0.6",
     "@testing-library/react-native": "~12.5.0",
-    "@types/jest": "^29.5.12",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/jest": "^29.5.14",
     "@types/node": "18.16.9",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
@@ -90,7 +89,7 @@
     "jsdom": "~22.1.0",
     "lint-staged": "^13.0.3",
     "nx": "19.8.0",
-    "prettier": "^2.8.4",
+    "prettier": "^3.5.3",
     "react-native-svg": "15.3.0",
     "react-native-svg-transformer": "1.3.0",
     "react-test-renderer": "18.2.0",
@@ -108,6 +107,7 @@
     "vite": "^5.0.0",
     "vite-plugin-dts": "~3.8.1",
     "vite-tsconfig-paths": "4.0.5",
+    "vitepress": "^1.6.3",
     "vitest": "^1.3.1"
   },
   "bugs": {

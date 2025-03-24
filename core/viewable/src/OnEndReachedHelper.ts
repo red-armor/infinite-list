@@ -1,4 +1,5 @@
 import Batchinator from '@x-oasis/batchinator';
+import isClamped from '@x-oasis/is-clamped';
 import {
   ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD,
   ON_END_REACHED_THRESHOLD,
@@ -10,7 +11,6 @@ import {
   ScrollMetrics,
   SendOnEndReachedDistanceFromBottomStack,
 } from './types';
-import isClamped from '@x-oasis/is-clamped';
 
 class OnEndReachedHelper {
   readonly id: string;
@@ -102,8 +102,8 @@ class OnEndReachedHelper {
       const handler = Array.isArray(this.onEndReached)
         ? this.onEndReached
         : this.onEndReached
-        ? [this.onEndReached]
-        : [];
+          ? [this.onEndReached]
+          : [];
       const index = handler.findIndex((v) => v === onEndReached);
       if (index === -1) handler.push(onEndReached);
       this.onEndReached = handler;

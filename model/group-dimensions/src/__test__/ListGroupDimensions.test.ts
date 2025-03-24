@@ -1,9 +1,9 @@
-import ListGroupDimensions from '../ListGroupDimensions';
-import Batchinator from '@x-oasis/batchinator';
+import { afterEach, describe, expect, it, test, vi } from 'vitest';
 import { defaultKeyExtractor } from '@infinite-list/utils';
-import { describe, expect, it, test, vi, afterEach } from 'vitest';
-import { DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from '../common';
+import Batchinator from '@x-oasis/batchinator';
 import Inspector from '../Inspector';
+import ListGroupDimensions from '../ListGroupDimensions';
+import { DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from '../common';
 
 vi.useFakeTimers();
 
@@ -1014,13 +1014,13 @@ function testSuite(isFixedLength: boolean) {
     });
   });
 
-  // describe('persistanceIndices', () => {
-  //   test.only('updatePersistanceIndicesDueToListGroup', () => {
+  // describe('persistenceIndices', () => {
+  //   test.only('updatepersistenceIndicesDueToListGroup', () => {
   //     const listGroupDimensions = new ListGroupDimensions({
   //       id: 'list_group',
   //       isFixedLength,
   //       maxToRenderPerBatch: 10,
-  //       persistanceIndices: [1, 2, 7, 10, 20],
+  //       persistenceIndices: [1, 2, 7, 10, 20],
   //       getContainerLayout: () => ({
   //         x: 0,
   //         y: 2000,
@@ -1060,9 +1060,9 @@ function testSuite(isFixedLength: boolean) {
   //       getItemLayout: (item, index) => ({ length: 150, index }),
   //     });
 
-  //     expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
-  //     expect(list_2_dimensions.persistanceIndices).toEqual([4]);
-  //     expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
+  //     expect(list_1_dimensions.persistenceIndices).toEqual([1, 2]);
+  //     expect(list_2_dimensions.persistenceIndices).toEqual([4]);
+  //     expect(list_3_dimensions.persistenceIndices).toEqual([2, 12]);
   //   });
   // });
 
@@ -1233,7 +1233,7 @@ function testSuite(isFixedLength: boolean) {
       ]);
     });
 
-    it('update persistanceIndices after inspection', () => {
+    it('update persistenceIndices after inspection', () => {
       const {
         listGroupDimensions,
         list_1_dimensions,
@@ -1243,7 +1243,7 @@ function testSuite(isFixedLength: boolean) {
       } = buildListGroup({
         id: 'list_group',
         maxToRenderPerBatch: 10,
-        persistanceIndices: [1, 2, 7, 10, 20],
+        persistenceIndices: [1, 2, 7, 10, 20],
         getContainerLayout: () => ({
           x: 0,
           y: 2000,
@@ -1252,9 +1252,9 @@ function testSuite(isFixedLength: boolean) {
         }),
       });
 
-      // expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
-      // expect(list_2_dimensions.persistanceIndices).toEqual([4]);
-      // expect(list_3_dimensions.persistanceIndices).toEqual([2, 12]);
+      // expect(list_1_dimensions.persistenceIndices).toEqual([1, 2]);
+      // expect(list_2_dimensions.persistenceIndices).toEqual([4]);
+      // expect(list_3_dimensions.persistenceIndices).toEqual([2, 12]);
 
       const { heartBeat, inspectingTime } =
         listGroupDimensions.inspector.getAPI();
@@ -1263,10 +1263,10 @@ function testSuite(isFixedLength: boolean) {
       heartBeat({ listKey: 'list_4', inspectingTime });
       heartBeat({ listKey: 'list_3', inspectingTime });
       heartBeat({ listKey: 'list_2', inspectingTime });
-      // expect(list_1_dimensions.persistanceIndices).toEqual([1, 2]);
-      // expect(list_2_dimensions.persistanceIndices).toEqual([]);
-      // expect(list_3_dimensions.persistanceIndices).toEqual([]);
-      // expect(list_4_dimensions.persistanceIndices).toEqual([3, 6, 16]);
+      // expect(list_1_dimensions.persistenceIndices).toEqual([1, 2]);
+      // expect(list_2_dimensions.persistenceIndices).toEqual([]);
+      // expect(list_3_dimensions.persistenceIndices).toEqual([]);
+      // expect(list_4_dimensions.persistenceIndices).toEqual([3, 6, 16]);
     });
   });
 }

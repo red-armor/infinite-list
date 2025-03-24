@@ -1,10 +1,9 @@
-import { GenericItemT } from './types';
 import { KeysChangedType } from '@infinite-list/base-dimensions';
-
-import MasonryDimensionsModel from './MasonryDimensionsModel';
 // import KeyIndexManager from '../utils/KeyIndexManager';
 import { KeyIndexManager } from '@infinite-list/utils';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+import MasonryDimensionsModel from './MasonryDimensionsModel';
+import { GenericItemT } from './types';
 
 /**
  *
@@ -20,7 +19,7 @@ import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
  * `keyIndexManagers` should be shuffled...
  */
 export const chunkifyDataSource = <
-  ItemT extends GenericItemT = GenericItemT
+  ItemT extends GenericItemT = GenericItemT,
 >(props: {
   data: ItemT[];
   oldData: ItemT[];

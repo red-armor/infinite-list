@@ -1,9 +1,10 @@
-import { BaseLayoutProps } from './BaseLayout.types';
 import {
   OnViewableItemsChanged,
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/viewable';
+import { BaseLayoutProps } from './BaseLayout.types';
+
 // import ListDimensions from '../ListDimensions';
 // import ListDimensionsModel from '../ListDimensionsModel';
 // import Dimension from '../Dimension';

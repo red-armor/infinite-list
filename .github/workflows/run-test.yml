@@ -26,7 +26,7 @@ defaults:
 jobs:
   # Build primes out Turbo build cache and pnpm cache
   build:
-    name: "Build: ${{ matrix.os }}"
+    name: 'Build: ${{ matrix.os }}'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 3
     strategy:
@@ -45,10 +45,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.NODE_VERSION }}
-          cache: "pnpm"
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: test 
+      - name: test
         run: pnpm run test

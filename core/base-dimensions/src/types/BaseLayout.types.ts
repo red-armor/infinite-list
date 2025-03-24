@@ -26,7 +26,7 @@ export interface BaseLayoutProps extends BaseContainerProps {
   windowSize?: number;
   maxToRenderPerBatch?: number;
   initialNumToRender?: number;
-  persistanceIndices?: Array<number>;
+  persistenceIndices?: Array<number>;
   stickyHeaderIndices?: Array<number>;
 
   recycleThreshold?: number;

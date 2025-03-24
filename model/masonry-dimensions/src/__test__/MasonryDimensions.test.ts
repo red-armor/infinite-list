@@ -1,8 +1,9 @@
-import MasonryDimensions from '../MasonryDimensions';
-import Batchinator from '@x-oasis/batchinator';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetContext } from '@infinite-list/item-meta';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
+import Batchinator from '@x-oasis/batchinator';
+import MasonryDimensions from '../MasonryDimensions';
 import { MasonryStateResults } from '../types';
+
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index + startIndex,
@@ -158,7 +159,7 @@ describe('basic', () => {
       '38',
     ]);
     expect(stateResult[0][0].spaceState.map((state) => state.key)).toEqual([
-      'space_0_28',
+      'space_0_30',
     ]);
 
     expect(
@@ -186,7 +187,7 @@ describe('basic', () => {
       '39',
     ]);
     expect(stateResult[1][0].spaceState.map((state) => state.key)).toEqual([
-      'space_0_28',
+      'space_0_30',
     ]);
 
     masonryDimensions.updateScrollMetrics({

@@ -1,6 +1,5 @@
 // import ListDimensions from '../ListDimensions';
 // import ListGroupDimensions from '../ListGroupDimensions';
-
 import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
 import { ScrollMetrics } from './scrollMetrics.types';
 
@@ -90,7 +89,7 @@ export type ApplyMiddleware<State extends ReducerResult = ReducerResult> = (
 ) => void;
 
 export type HydrationWithBatchUpdate<
-  State extends ReducerResult = ReducerResult
+  State extends ReducerResult = ReducerResult,
 > = (
   reducers: {
     preCheck: ReducerAtom<State>;

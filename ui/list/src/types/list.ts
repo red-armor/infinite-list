@@ -1,10 +1,8 @@
-import { GenericItemT } from '@infinite-list/types';
-import { ListDimensions } from '@infinite-list/list-dimensions';
-import { SpaceStateToken, RecycleStateToken } from '@infinite-list/strategies';
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
-
 import { ItemMeta } from '@infinite-list/item-meta';
-// import { IDefaultKeyExtra } from '@infinite-list/utils';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
+import { GenericItemT } from '@infinite-list/types';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   /**

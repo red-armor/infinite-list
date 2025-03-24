@@ -1,8 +1,6 @@
 // import ListDimensions from '../ListDimensions';
 // import ListGroupDimensions from '../ListGroupDimensions';
-
 import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
-
 import { ScrollMetrics } from '../types';
 
 export type ReducerResult = {

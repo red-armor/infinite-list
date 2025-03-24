@@ -2,8 +2,8 @@
 // import ListDimensionsModel from '../../ListDimensionsModel';
 // import ListDimensions from '../../ListDimensions';
 // import ListGroupDimensions from '../../ListGroupDimensions';
-import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 import { isValidMetaLayout } from '@infinite-list/item-meta';
+import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 import { log } from '@infinite-list/utils';
 
 // recalculate buffer

@@ -1,0 +1,8 @@
+{
+  "name": "intersection-observer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "core/intersection-observer/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}

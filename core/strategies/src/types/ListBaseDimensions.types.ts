@@ -1,15 +1,12 @@
-import { ItemMeta } from '@infinite-list/item-meta';
-
-import {
-  ViewabilityConfigTuplesProps,
-  OnEndReachedHelperProps,
-} from '@infinite-list/viewable';
-
 import { BaseLayoutProps } from '@infinite-list/base-dimensions';
-
+import { ItemMeta } from '@infinite-list/item-meta';
+import {
+  OnEndReachedHelperProps,
+  ViewabilityConfigTuplesProps,
+} from '@infinite-list/viewable';
 import { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
-import { ReducerResult, Store, ActionType } from './types';
 import { GenericItemT } from './generic.types';
+import { ActionType, ReducerResult, Store } from './types';
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
@@ -60,7 +57,7 @@ export type StateListener<ItemT extends GenericItemT = GenericItemT> = (
 
 // export type ListBaseDimensionsProvider = ListGroupDimensions | ListDimensions;
 export type ListBaseDimensionsStore<
-  ReducerResultT extends ReducerResult = ReducerResult
+  ReducerResultT extends ReducerResult = ReducerResult,
 > = Store<ReducerResultT>;
 
 export interface ListBaseDimensionsProps

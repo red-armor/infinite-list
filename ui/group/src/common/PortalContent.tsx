@@ -1,14 +1,13 @@
-import { useEffect, useMemo, memo, useState, PropsWithChildren } from 'react';
+import { PropsWithChildren, memo, useEffect, useMemo, useState } from 'react';
 import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
 import { ItemMetaOwner } from '@infinite-list/types';
 import {
-  PortalContextProps,
+  ExtraInfo,
   GroupRecycleContentProps,
   GroupSpaceContentProps,
+  PortalContextProps,
   TRecycleContentItem,
-  ExtraInfo,
 } from '../types';
-
 import GroupListItemImpl from './GroupListItemImpl';
 
 const RecycleContentItem = <ItemT extends GenericItemT = GenericItemT>(
@@ -65,9 +64,12 @@ const RecycleContentItem = <ItemT extends GenericItemT = GenericItemT>(
     </RecycleContentItemWrapper>
   );
 };
-const MemoedRecycleContentItem = memo(
-  RecycleContentItem
-) as typeof RecycleContentItem;
+/**
+ * could not use memo, because itemMeta change may not trigger update..
+ */
+// const MemoedRecycleContentItem = memo(
+//   RecycleContentItem
+// ) as typeof RecycleContentItem;
 
 const RecycleContent = <ItemT extends GenericItemT = GenericItemT>(
   props: GroupRecycleContentProps<ItemT>
@@ -80,7 +82,7 @@ const RecycleContent = <ItemT extends GenericItemT = GenericItemT>(
         const metaOwner = itemMeta!.getOwner();
         const info = metaOwner.extraInfo as ExtraInfo<ItemT>;
         return (
-          <MemoedRecycleContentItem
+          <RecycleContentItem
             key={key}
             renderItem={info.renderItem}
             item={item!}

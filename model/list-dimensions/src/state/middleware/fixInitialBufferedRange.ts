@@ -1,5 +1,5 @@
-import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 import { isValidMetaLayout } from '@infinite-list/item-meta';
+import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 import { log } from '@infinite-list/utils';
 
 // recalculate buffer

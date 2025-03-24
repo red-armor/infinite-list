@@ -5,9 +5,8 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-
-import { DefaultItemT, ListItemProps } from '../types';
 import { ItemLayout } from '@infinite-list/types';
+import { DefaultItemT, ListItemProps } from '../types';
 
 /**
  *
