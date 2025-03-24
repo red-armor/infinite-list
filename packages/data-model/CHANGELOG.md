@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 3.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
 ## 2.2.10
 
 ### Patch Changes

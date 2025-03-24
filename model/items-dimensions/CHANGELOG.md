@@ -1,5 +1,20 @@
 # @infinite-list/items-dimensions
 
+## 1.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
+### Patch Changes
+
+- Updated dependencies [4e4ff34]
+  - @infinite-list/base-dimensions@1.0.0
+  - @infinite-list/container@1.0.0
+  - @infinite-list/item-meta@1.0.0
+  - @infinite-list/viewable@1.0.0
+  - @infinite-list/utils@1.0.0
+
 ## 0.0.5
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @infinite-list/list
 
+## 2.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
+### Patch Changes
+
+- Updated dependencies [4e4ff34]
+  - @infinite-list/dimensions-model@1.0.0
+  - @infinite-list/list-dimensions@1.0.0
+  - @infinite-list/strategies@1.0.0
+  - @infinite-list/item-meta@1.0.0
+  - @infinite-list/scroller@2.0.0
+  - @infinite-list/types@1.0.0
+  - @infinite-list/utils@1.0.0
+
 ## 1.1.4
 
 ### Patch Changes

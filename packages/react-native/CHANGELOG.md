@@ -1,5 +1,16 @@
 # @infinite-list/react-native
 
+## 3.0.0
+
+### Major Changes
+
+- 4e4ff34: refactor list
+
+### Patch Changes
+
+- Updated dependencies [4e4ff34]
+  - @infinite-list/data-model@3.0.0
+
 ## 2.2.10
 
 ### Patch Changes

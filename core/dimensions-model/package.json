@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/dimensions-model",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "dependencies": {
     "@infinite-list/base-dimensions": "workspace:*",
     "@infinite-list/item-meta": "workspace:*",
