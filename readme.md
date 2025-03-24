@@ -41,10 +41,14 @@ open [http://localhost:5173/](http://localhost:5173/)
 
 ## How to bump and publish
 
-```bash
-# in root dir
-npm run version
-```
+- merge feature to `next` branch
+- update local `next` branch to latest
+- run `pnpm changeset` to create version change
+  - select need to publish repo with version type ('major' | 'minor' | 'patch')
+  - then commit change
+  - push to origin
+- `next` will trigger `github automation`, if run success it will create `[ci] release` in pull request tab
+- merge `[ci] release` request, then it will trigger publish
 
 ## How to add module to specified workspace
 
