@@ -1,5 +1,12 @@
 # @infinite-list/viewable
 
+## 1.0.2
+
+### Patch Changes
+
+- 353796a: feat: bump version
+- a1549a1: feat: bump version
+
 ## 1.0.1
 
 ### Patch Changes

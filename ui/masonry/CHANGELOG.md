@@ -1,5 +1,19 @@
 # @infinite-list/masonry
 
+## 1.0.3
+
+### Patch Changes
+
+- 353796a: feat: bump version
+- a1549a1: feat: bump version
+- Updated dependencies [353796a]
+- Updated dependencies [a1549a1]
+  - @infinite-list/masonry-dimensions@1.0.2
+  - @infinite-list/strategies@1.0.2
+  - @infinite-list/item-meta@1.0.2
+  - @infinite-list/scroller@2.0.3
+  - @infinite-list/types@1.0.2
+
 ## 1.0.2
 
 ### Patch Changes
