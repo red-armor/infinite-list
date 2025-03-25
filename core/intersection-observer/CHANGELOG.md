@@ -1,5 +1,17 @@
 # @infinite-list/intersection-observer
 
+## 1.0.3
+
+### Patch Changes
+
+- 353796a: feat: bump version
+- a1549a1: feat: bump version
+- Updated dependencies [353796a]
+- Updated dependencies [a1549a1]
+  - @infinite-list/items-dimensions@1.0.2
+  - @infinite-list/item-meta@1.0.2
+  - @infinite-list/scheduler@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

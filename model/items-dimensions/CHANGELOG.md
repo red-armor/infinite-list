@@ -1,5 +1,19 @@
 # @infinite-list/items-dimensions
 
+## 1.0.2
+
+### Patch Changes
+
+- 353796a: feat: bump version
+- a1549a1: feat: bump version
+- Updated dependencies [353796a]
+- Updated dependencies [a1549a1]
+  - @infinite-list/base-dimensions@1.0.2
+  - @infinite-list/container@1.0.2
+  - @infinite-list/item-meta@1.0.2
+  - @infinite-list/viewable@1.0.2
+  - @infinite-list/utils@1.0.2
+
 ## 1.0.1
 
 ### Patch Changes
