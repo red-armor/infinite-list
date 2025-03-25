@@ -1,5 +1,11 @@
 # @infinite-list/pseudo-list-dimensions
 
+## 1.0.1
+
+### Patch Changes
+
+- 7c6eeb5: bump version
+
 ## 1.0.0
 
 ### Major Changes

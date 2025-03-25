@@ -1,5 +1,11 @@
 # @infinite-list/data-model
 
+## 3.0.1
+
+### Patch Changes
+
+- 7c6eeb5: bump version
+
 ## 3.0.0
 
 ### Major Changes

@@ -1,5 +1,13 @@
 # @infinite-list/react-native
 
+## 3.0.1
+
+### Patch Changes
+
+- 7c6eeb5: bump version
+- Updated dependencies [7c6eeb5]
+  - @infinite-list/data-model@3.0.1
+
 ## 3.0.0
 
 ### Major Changes
