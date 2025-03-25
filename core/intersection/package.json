@@ -3,5 +3,6 @@
   "version": "1.0.1",
   "dependencies": {},
   "main": "./index.cjs",
-  "module": "./index.js"
+  "module": "./index.js",
+  "private": true
 }
