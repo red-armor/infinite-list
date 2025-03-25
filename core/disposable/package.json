@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/disposable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {},
   "main": "./index.cjs",
   "module": "./index.js",

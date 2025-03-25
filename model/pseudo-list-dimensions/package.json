@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/pseudo-list-dimensions",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {},
   "main": "./index.cjs",
   "module": "./index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/scroller",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "./src/react-native/index.ts",
   "types": "./src/react-native/index.ts",
   "publishConfig": {

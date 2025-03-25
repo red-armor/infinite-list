@@ -1,5 +1,19 @@
 # @infinite-list/list
 
+## 2.0.2
+
+### Patch Changes
+
+- 7c6eeb5: bump version
+- Updated dependencies [7c6eeb5]
+  - @infinite-list/dimensions-model@1.0.1
+  - @infinite-list/list-dimensions@1.0.1
+  - @infinite-list/strategies@1.0.1
+  - @infinite-list/item-meta@1.0.1
+  - @infinite-list/scroller@2.0.2
+  - @infinite-list/types@1.0.1
+  - @infinite-list/utils@1.0.1
+
 ## 2.0.1
 
 ### Patch Changes

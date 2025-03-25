@@ -1,5 +1,14 @@
 # @infinite-list/dimension
 
+## 1.0.1
+
+### Patch Changes
+
+- 7c6eeb5: bump version
+- Updated dependencies [7c6eeb5]
+  - @infinite-list/container@1.0.1
+  - @infinite-list/item-meta@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

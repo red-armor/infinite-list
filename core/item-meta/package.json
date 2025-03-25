@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/item-meta",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dependencies": {
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/default-boolean-value": "^0.1.14",
