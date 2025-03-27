@@ -5,7 +5,6 @@ import type {
   ListStateResult,
 } from '@infinite-list/strategies';
 import type { TheHostProps } from '@infinite-list/types';
-
 import type MasonryDimensionsModel from '../MasonryDimensionsModel';
 import type { GenericItemT } from './generic.types';
 

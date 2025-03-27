@@ -1,6 +1,6 @@
-import type { GenericItemT } from './generic.types';
 import type { ListIndexInfo } from './ListDimensions';
 import type { IOnEndReachedHelper } from './OnEndReachedHelper';
+import type { GenericItemT } from './generic.types';
 
 export interface IMasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
   // getItemKey(item: ItemT, index?: number): string | null;

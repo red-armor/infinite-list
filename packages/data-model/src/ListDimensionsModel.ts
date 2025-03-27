@@ -375,8 +375,9 @@ class ListDimensionsModel<
     // TODO: optimization
     const data = _data.filter((item, index) => {
       const itemKey = this.getItemKey(item, index);
+      if (!itemKey) return false;
       const _index = keyToIndexArray.indexOf(itemKey);
-      if (_index === -1 && itemKey) {
+      if (_index === -1) {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);

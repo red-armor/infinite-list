@@ -1,8 +1,7 @@
-import type { GenericItemT } from '@infinite-list/item-meta';
 import { useEffect, useMemo, useRef } from 'react';
 import type { ViewStyle } from 'react-native';
 import { View } from 'react-native';
-
+import type { GenericItemT } from '@infinite-list/item-meta';
 import type { RecycleItemProps } from './types';
 
 const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(

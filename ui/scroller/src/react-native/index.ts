@@ -1,6 +1,6 @@
+import type ScrollerScrollView from './ScrollView';
 import FooterPortal from './portal/FooterPortal';
 import HeaderPortal from './portal/HeaderPortal';
-import type ScrollerScrollView from './ScrollView';
 
 export { default as ScrollViewContext } from './context/ScrollViewContext';
 export { default as IntersectionObserverTouchableOpacity } from './intersection/IntersectionObserverTouchableOpacity';
@@ -23,5 +23,4 @@ export * from './constants';
  */
 export type ScrollView = typeof ScrollerScrollView;
 
-
-export {default as ScrollView} from './ScrollView';
+export { default as ScrollView } from './ScrollView';

@@ -3,18 +3,15 @@ import type { IBaseDimensions } from '@infinite-list/types';
 import { KeyIndexManager, log } from '@infinite-list/utils';
 import { ViewabilityConfigTuples } from '@infinite-list/viewable';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-
 import BaseLayout from './BaseLayout';
 import type {
   BaseDimensionsProps,
   BoundInfo,
   GenericItemT,
   ItemLayout,
-  ScrollMetrics} from './types';
-import {
-  BoundInfoType,
-  KeysChangedType
+  ScrollMetrics,
 } from './types';
+import { BoundInfoType, KeysChangedType } from './types';
 
 abstract class BaseDimensions<ItemT extends GenericItemT = GenericItemT>
   extends BaseLayout

@@ -1,7 +1,6 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { resetContext } from '@infinite-list/item-meta';
 import Batchinator from '@x-oasis/batchinator';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
 import MasonryDimensions from '../MasonryDimensions';
 import type { MasonryStateResults } from '../types';
 

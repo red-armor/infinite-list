@@ -1,7 +1,6 @@
 import Batchinator from '@x-oasis/batchinator';
 import findLastIndex from '@x-oasis/find-last-index';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
-
 import type ListGroupDimensions from './ListGroupDimensions';
 import type {
   GenericItemT,

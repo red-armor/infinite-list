@@ -1,13 +1,4 @@
-import type {
-  GenericItemT,
-  MasonryStateResults} from '@infinite-list/masonry-dimensions';
-import {
-  MasonryDimensions as MasonryDimension
-} from '@infinite-list/masonry-dimensions';
-import { ScrollViewContext } from '@infinite-list/scroller/react-native';
-import type { ItemLayout } from '@infinite-list/types';
-import type {
-  ForwardedRef} from 'react';
+import type { ForwardedRef } from 'react';
 import {
   forwardRef as ReactForwardRef,
   useCallback,
@@ -21,11 +12,16 @@ import type {
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ViewStyle} from 'react-native';
-import {
-  View
+  ViewStyle,
 } from 'react-native';
-
+import { View } from 'react-native';
+import type {
+  GenericItemT,
+  MasonryStateResults,
+} from '@infinite-list/masonry-dimensions';
+import { MasonryDimensions as MasonryDimension } from '@infinite-list/masonry-dimensions';
+import { ScrollViewContext } from '@infinite-list/scroller/react-native';
+import type { ItemLayout } from '@infinite-list/types';
 import { resolveColumnInfo } from '../common/utils';
 import ColumnStateRenderer from './ColumnStateRender';
 import type { MasonryListProps } from './types';

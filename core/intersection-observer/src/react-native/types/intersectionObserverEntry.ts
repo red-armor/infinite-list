@@ -1,6 +1,5 @@
-import type { ItemsDimensions } from '@infinite-list/items-dimensions';
 import type { View } from 'react-native';
-
+import type { ItemsDimensions } from '@infinite-list/items-dimensions';
 import type { IClientRectReadOnly, IRectIntersection } from '../../types';
 import type Observer from '../Observer';
 

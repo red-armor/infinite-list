@@ -1,8 +1,10 @@
-import type { IndexToOffsetMap, ItemLayout } from '@infinite-list/dimensions-model';
-import type {ReducerResult } from '@infinite-list/state';
+import type {
+  IndexToOffsetMap,
+  ItemLayout,
+} from '@infinite-list/dimensions-model';
+import type { ReducerResult } from '@infinite-list/state';
 import { createStore } from '@infinite-list/state';
 import { BaseImpl } from '@infinite-list/strategies';
-
 import type MasonryDimensionsModel from './MasonryDimensionsModel';
 import type {
   GenericItemT,

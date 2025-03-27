@@ -4,8 +4,10 @@ import type {
   MasonryDimensions as MasonryDimension,
   MasonryDimensionsModelProps,
 } from '@infinite-list/masonry-dimensions';
-import type { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
-
+import type {
+  RecycleStateToken,
+  SpaceStateToken,
+} from '@infinite-list/strategies';
 import type { RenderItem } from './list';
 
 export type GetColumnWidth = (columnIndex: number) => number;

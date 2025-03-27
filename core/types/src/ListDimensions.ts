@@ -1,7 +1,7 @@
-import type { GenericItemT } from './generic.types';
-import type { IItemMeta } from './itemMeta';
 import type { IListDimensionsModel } from './ListDimensionsModel';
 import type { IOnEndReachedHelper } from './OnEndReachedHelper';
+import type { GenericItemT } from './generic.types';
+import type { IItemMeta } from './itemMeta';
 
 export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
   maxToRenderPerBatch: number;

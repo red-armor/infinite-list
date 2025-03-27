@@ -1,6 +1,5 @@
-import type { GenericItemT } from '@infinite-list/strategies';
 import { useEffect, useMemo, useRef } from 'react';
-
+import type { GenericItemT } from '@infinite-list/strategies';
 import type { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
@@ -15,7 +14,8 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   useEffect(() => {
     const rect = itemRef.current?.getBoundingClientRect();
 
-    if (rect && itemMeta) dimensions.setFinalKeyItemLayout(itemMeta.getKey(), rect);
+    if (rect && itemMeta)
+      dimensions.setFinalKeyItemLayout(itemMeta.getKey(), rect);
   }, [itemMeta]);
 
   if (isSpace) {

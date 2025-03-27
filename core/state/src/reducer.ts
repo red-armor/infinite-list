@@ -18,10 +18,9 @@ import type {
   Recalculate,
   ReducerResult,
   ScrollDown,
-  ScrollUp} from './types/types';
-import {
-  ActionType
+  ScrollUp,
 } from './types/types';
+import { ActionType } from './types/types';
 
 const initialize = <State extends ReducerResult = ReducerResult>(
   state: State,

@@ -1,20 +1,11 @@
+import type { CSSProperties, RefObject } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import type { GenericItemT } from '@infinite-list/item-meta';
 import { ScrollTracker } from '@infinite-list/scroller/web';
-import type {
-  CSSProperties,
-  RefObject} from 'react';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-
+import PortalContent from '../common/PortalContent';
 import { ClockEnd, ClockStart } from '../common/clock';
 import context from '../common/context';
-import PortalContent from '../common/PortalContent';
 import {
   RecycleContentItemWrapper,
   SpaceRendererComponent,

@@ -1,6 +1,5 @@
 import type { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
 import type { OnEndReachedHelperProps } from '@infinite-list/viewable';
-
 import type { RenderItem } from './GroupListItemImpl.types';
 import type { DefaultItemT, TeleportItemProps } from './ListItem.types';
 

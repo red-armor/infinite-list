@@ -1,5 +1,4 @@
 import { Container } from '@infinite-list/container';
-
 import {
   INITIAL_NUM_TO_RENDER,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,

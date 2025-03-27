@@ -1,12 +1,11 @@
 import type { View } from 'react-native';
-
-import { generateRandomKey } from './generateRandom';
 import type Observer from './Observer';
+import { generateRandomKey } from './generateRandom';
 import type {
   IClientRectReadOnly,
   IIntersectionObserverEntry,
-  IntersectionObserverEntryProps,
   IRectIntersection,
+  IntersectionObserverEntryProps,
 } from './types';
 
 class IntersectionObserverEntry {
@@ -57,7 +56,7 @@ class IntersectionObserverEntry {
     // Calculates the intersection ratio.
     const targetRect = this.boundingClientRect;
     const targetArea = targetRect.width * targetRect.height;
-    const {intersectionRect} = this;
+    const { intersectionRect } = this;
     const intersectionArea = intersectionRect.width * intersectionRect.height;
 
     // Sets intersection ratio.

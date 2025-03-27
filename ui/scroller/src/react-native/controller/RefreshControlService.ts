@@ -1,6 +1,6 @@
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { DisposableService, Event } from '@infinite-list/disposable';
 import { TaskRunner } from '@infinite-list/scheduler';
-import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 
 type RefreshControlState = {
   isRefreshing: boolean;

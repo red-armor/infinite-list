@@ -1,6 +1,5 @@
-import type { GenericItemT, ItemLayout } from '@infinite-list/types';
 import type { CSSProperties } from 'react';
-
+import type { GenericItemT, ItemLayout } from '@infinite-list/types';
 import type { ListItemProps } from '../../types';
 
 export interface CompatListItemProps<ItemT extends GenericItemT>

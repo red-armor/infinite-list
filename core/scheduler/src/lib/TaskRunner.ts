@@ -1,5 +1,4 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-
 import { getNow } from './utils';
 
 class TaskRunner {

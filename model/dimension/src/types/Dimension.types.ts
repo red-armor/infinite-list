@@ -1,7 +1,6 @@
 import type { BaseContainerProps } from '@infinite-list/container';
-
-import type { GenericItemT } from './generic.types';
 import type { ListGroupChildDimensionsContainer } from './ListGroupDimensions.types';
+import type { GenericItemT } from './generic.types';
 
 export type GetDimensionLength = () => number;
 

@@ -1,15 +1,12 @@
-import type { GenericItemT } from '@infinite-list/item-meta';
 import type { ForwardedRef, RefObject } from 'react';
 import type { ScrollView, View } from 'react-native';
-
+import type { GenericItemT } from '@infinite-list/item-meta';
 import type {
   ColumnStateRendererProps as CommonColumnStateRendererProps,
   MasonryListProps as CommonMasonryListProps,
   RecycleItemProps as CommonRecycleItemProps,
-  SpaceItemProps as CommonSpaceItemProps} from '../../types/masonryList';
-
-
-
+  SpaceItemProps as CommonSpaceItemProps,
+} from '../../types/masonryList';
 
 export type ScrollerRef = RefObject<ScrollView | View | any>;
 export type MasonryListProps<ItemT extends GenericItemT = GenericItemT> =
@@ -37,4 +34,4 @@ export type ColumnStateRendererProps<
   containerRef: any;
 };
 
-export {ColumnDimensionInfo} from '../../types/masonryList';
+export { ColumnDimensionInfo } from '../../types/masonryList';

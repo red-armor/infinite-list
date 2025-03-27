@@ -1,5 +1,4 @@
 import type { ScrollView, View } from 'react-native';
-
 import type { IClientRectReadOnly } from '../../types';
 import type ContainerObserver from '../ContainerObserver';
 import type ReactNativeDocument from '../ReactNativeDocument';

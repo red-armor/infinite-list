@@ -1,5 +1,4 @@
 import { TouchableOpacity } from 'react-native';
-
 import createObserverComponent from './createInterObserverComponent';
 
 const IntersectionObserverTouchableOpacity =

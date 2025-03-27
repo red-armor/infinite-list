@@ -7,7 +7,7 @@ export default <State extends ReducerResult = ReducerResult>(
 ) => {
   const { dimension } = payload;
 
-  const {initialNumToRender} = dimension;
+  const { initialNumToRender } = dimension;
   // const dataLength = dimension.getDataLength()
 
   if (initialNumToRender && dimension.getTotalLength()) {

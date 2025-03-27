@@ -1,5 +1,3 @@
-import { ListGroupDimensions } from '@infinite-list/group-dimensions';
-import type { GenericItemT } from '@infinite-list/item-meta';
 import {
   useCallback,
   useContext,
@@ -9,10 +7,11 @@ import {
   useState,
 } from 'react';
 import { Platform, View } from 'react-native';
-
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import type { GenericItemT } from '@infinite-list/item-meta';
+import PortalContent from '../common/PortalContent';
 import { ClockEnd, ClockStart } from '../common/clock';
 import context from '../common/context';
-import PortalContent from '../common/PortalContent';
 import type { ListItemWrapper as TListItemWrapper } from '../types';
 import {
   RecycleContentItemWrapper,

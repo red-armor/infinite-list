@@ -1,5 +1,4 @@
 import type { TouchableHighlight, TouchableOpacity, View } from 'react-native';
-
 import type { IClientRectReadOnly } from '../../types';
 import type IntersectionObserver from '../IntersectionObserver';
 import type ReactNativeDocument from '../ReactNativeDocument';
@@ -63,6 +62,6 @@ export type ObservedComponent = View | TouchableHighlight | TouchableOpacity;
 // }
 
 export type IntersectionObserverCallback = (
-    entries: IIntersectionObserverEntry[],
-    observer?: IntersectionObserver
-  ) => void;
+  entries: IIntersectionObserverEntry[],
+  observer?: IntersectionObserver
+) => void;

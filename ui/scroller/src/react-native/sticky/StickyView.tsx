@@ -1,10 +1,4 @@
-import type {
-  IClientRectReadOnly,
-  Observer,
-} from '@infinite-list/intersection-observer/react-native';
-import type {
-  FC,
-  PropsWithChildren} from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import {
   useCallback,
   useContext,
@@ -13,19 +7,14 @@ import {
   useRef,
   useState,
 } from 'react';
+import type { StyleProp, View, ViewProps, ViewStyle } from 'react-native';
+import { Animated, Platform, StyleSheet } from 'react-native';
 import type {
-  StyleProp,
-  View,
-  ViewProps,
-  ViewStyle} from 'react-native';
-import {
-  Animated,
-  Platform,
-  StyleSheet
-} from 'react-native';
-
+  IClientRectReadOnly,
+  Observer,
+} from '@infinite-list/intersection-observer/react-native';
 import ScrollViewContext from '../context/ScrollViewContext';
-import type { InterpolationConfig} from '../types';
+import type { InterpolationConfig } from '../types';
 
 const noop = () => {
   // do nothing

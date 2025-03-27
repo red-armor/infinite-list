@@ -1,13 +1,15 @@
-import type { ItemLayout} from '@infinite-list/base-dimensions';
-import { BaseDimensions, KeysChangedType  } from '@infinite-list/base-dimensions';
-import type { IndexInfo  } from '@infinite-list/item-meta';
-import { ItemMeta  } from '@infinite-list/item-meta';
+import type { ItemLayout } from '@infinite-list/base-dimensions';
+import {
+  BaseDimensions,
+  KeysChangedType,
+} from '@infinite-list/base-dimensions';
+import type { IndexInfo } from '@infinite-list/item-meta';
+import { ItemMeta } from '@infinite-list/item-meta';
 import type { IListDimensionsModel } from '@infinite-list/types';
 import { log } from '@infinite-list/utils';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import layoutEqual from '@x-oasis/layout-equal';
 import type PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-
 import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
@@ -373,16 +375,14 @@ class ListDimensionsModel<
     const keyToIndexMap = new Map<string, number>();
     const keyToIndexArray: Array<string> = [];
     const itemToKeyMap = new WeakMap<ItemT, string>();
-    const itemToDimensionMap = new WeakMap<
-      ItemT,
-      BaseDimensions<ItemT>
-    >();
+    const itemToDimensionMap = new WeakMap<ItemT, BaseDimensions<ItemT>>();
     let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {
       const itemKey = this.getItemKey(item, index);
+      if (!itemKey) return false;
       const _index = keyToIndexArray.indexOf(itemKey);
-      if (_index === -1 && itemKey) {
+      if (_index === -1) {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);
         itemToKeyMap.set(item, itemKey);

@@ -4,14 +4,13 @@ import { log } from '@infinite-list/utils';
 import defaultValue from '@x-oasis/default-value';
 import type { OnRecyclerProcess } from '@x-oasis/recycler';
 import Recycler from '@x-oasis/recycler';
-
 // import { resolveToken } from './utils';
 import BaseState from './BaseState';
 import {
-  buildStateTokenIndexKey,
   DEFAULT_RECYCLER_TYPE,
   RECYCLER_BUFFER_SIZE,
   RECYCLER_RESERVED_BUFFER_PER_BATCH,
+  buildStateTokenIndexKey,
 } from './common';
 import type {
   GenericItemT,
@@ -142,7 +141,8 @@ class RecycleStateImpl<
 
       // TODO: when to reset
       if (
-        (this._stateResult as RecycleStateResult<ItemT>).recycleState.length > 0 &&
+        (this._stateResult as RecycleStateResult<ItemT>).recycleState.length >
+          0 &&
         recycleState.length === 0
       ) {
         this._recycler.reset();
@@ -293,67 +293,62 @@ class RecycleStateImpl<
 
     log.info('target indices ', { ...state }, targetIndices.slice());
 
-    targetIndices
-      .filter(Boolean)
-      .forEach((info) => {
-        const { meta: itemMeta, targetIndex, recyclerKey } = info;
-        const item = this.listContainer.getData()[targetIndex];
+    targetIndices.filter(Boolean).forEach((info) => {
+      const { meta: itemMeta, targetIndex, recyclerKey } = info;
+      const item = this.listContainer.getData()[targetIndex];
 
-        let itemMetaState = null;
+      let itemMetaState = null;
 
-        if (indexToOffsetMap[targetIndex] != null) {
-          /**
-           * [TODO]: maybe only sensitive item should calculate...
-           */
-          if (itemMeta.isApproximateLayout) {
-            const itemOffset = this.listContainer.getFinalIndexKeyOffset(
-              targetIndex,
-              true
-            );
+      if (indexToOffsetMap[targetIndex] != null) {
+        /**
+         * [TODO]: maybe only sensitive item should calculate...
+         */
+        if (itemMeta.isApproximateLayout) {
+          const itemOffset = this.listContainer.getFinalIndexKeyOffset(
+            targetIndex,
+            true
+          );
 
-            itemMetaState =
-              this.listContainer._configTuple.resolveItemMetaState(
-                itemMeta,
-                this.listContainer._scrollMetrics,
-                () => itemOffset + this.listContainer.getContainerOffset()
-              );
-          }
-          if (!itemMetaState) {
-            itemMetaState =
-              this.listContainer._configTuple.resolveItemMetaState(
-                itemMeta,
-                this.listContainer._scrollMetrics,
-                () =>
-                  indexToOffsetMap[targetIndex] +
-                  this.listContainer.getContainerOffset()
-              );
+          itemMetaState = this.listContainer._configTuple.resolveItemMetaState(
+            itemMeta,
+            this.listContainer._scrollMetrics,
+            () => itemOffset + this.listContainer.getContainerOffset()
+          );
+        }
+        if (!itemMetaState) {
+          itemMetaState = this.listContainer._configTuple.resolveItemMetaState(
+            itemMeta,
+            this.listContainer._scrollMetrics,
+            () =>
+              indexToOffsetMap[targetIndex] +
+              this.listContainer.getContainerOffset()
+          );
 
-            // console.log('update =====', this.listContainer._scrollMetrics, indexToOffsetMap[targetIndex], itemMetaState)
-          }
-
-          itemMeta?.setItemMetaState(itemMetaState);
+          // console.log('update =====', this.listContainer._scrollMetrics, indexToOffsetMap[targetIndex], itemMetaState)
         }
 
-        recycleRecycleStateResult.push({
-          key: recyclerKey,
-          targetKey: itemMeta.getKey(),
-          targetIndex,
-          isSpace: false,
-          isSticky:
-            this.listContainer.stickyHeaderIndices.includes(targetIndex),
-          item,
-          itemMeta,
+        itemMeta?.setItemMetaState(itemMetaState);
+      }
 
-          /**
-           * itemMeta should get from parent
-           */
-          viewable: !!itemMeta.getState()['viewable'],
-          // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
-          // position: 'buffered',
-          offset: indexToOffsetMap[targetIndex],
-          length: itemMeta.getFinalItemLength(),
-        });
+      recycleRecycleStateResult.push({
+        key: recyclerKey,
+        targetKey: itemMeta.getKey(),
+        targetIndex,
+        isSpace: false,
+        isSticky: this.listContainer.stickyHeaderIndices.includes(targetIndex),
+        item,
+        itemMeta,
+
+        /**
+         * itemMeta should get from parent
+         */
+        viewable: !!itemMeta.getState()['viewable'],
+        // 如果没有offset，说明item是新增的，那么它渲染就在最开始位置好了
+        // position: 'buffered',
+        offset: indexToOffsetMap[targetIndex],
+        length: itemMeta.getFinalItemLength(),
       });
+    });
     return recycleRecycleStateResult;
   }
 

@@ -1,5 +1,4 @@
 import noop from '@x-oasis/noop';
-
 import type Marshal from './Marshal';
 import type {
   ContentSizeChangeHandler,
@@ -95,9 +94,12 @@ class ScrollEventHelper {
     return false;
   }
 
-  updateInternalHandlers(handlersMap: Record<ScrollEventHandlerSubscriptionKeys, | SyntheticEventHandler
-      | ContentSizeChangeHandler
-      | undefined>) {
+  updateInternalHandlers(
+    handlersMap: Record<
+      ScrollEventHandlerSubscriptionKeys,
+      SyntheticEventHandler | ContentSizeChangeHandler | undefined
+    >
+  ) {
     Object.keys(handlersMap).forEach((key) => {
       const typedKey = key as ScrollEventHandlerSubscriptionKeys;
       const handler = handlersMap[typedKey];

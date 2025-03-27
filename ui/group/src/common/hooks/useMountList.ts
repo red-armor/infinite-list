@@ -1,7 +1,6 @@
+import { useContext, useEffect, useRef } from 'react';
 import type { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import { defaultKeyExtractor } from '@infinite-list/utils';
-import { useContext, useEffect, useRef } from 'react';
-
 import type { DefaultItemT, GroupListProps } from '../../types';
 import type { ContextType } from '../context';
 import context from '../context';

@@ -1,6 +1,5 @@
 import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
-
 import {
   ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD,
   ON_END_REACHED_THRESHOLD,
@@ -185,9 +184,7 @@ class OnEndReachedHelper {
   }
 
   get lastStack() {
-    return this.sendOnEndReachedDistanceFromEndStack.at(
-      -1
-    );
+    return this.sendOnEndReachedDistanceFromEndStack.at(-1);
   }
 
   getStack() {
@@ -202,7 +199,9 @@ class OnEndReachedHelper {
   }
 
   shouldResetCountLimitation(distanceFromEnd: number) {
-    const { distancesFromEnd } = this.lastStack;
+    const lastStack = this.lastStack;
+    if (!lastStack) return false;
+    const { distancesFromEnd } = lastStack;
     const distance = distancesFromEnd.at(-1);
     if (distanceFromEnd <= 0) return false;
     if (distance !== distanceFromEnd) {
@@ -214,16 +213,13 @@ class OnEndReachedHelper {
   }
 
   isConsecutiveDistance(distanceFromEnd: number) {
-    const lastStack =
-      this.sendOnEndReachedDistanceFromEndStack.at(
-        -1
-      );
+    const lastStack = this.sendOnEndReachedDistanceFromEndStack.at(-1);
 
     if (lastStack) {
       const { distancesFromEnd, ts } = lastStack;
 
       const base = distancesFromEnd[0];
-      const _ts = ts.at(-1);
+      const _ts = ts.at(-1)!;
       const now = Date.now();
       if (
         isClamped(
@@ -245,21 +241,20 @@ class OnEndReachedHelper {
     const { isEndReached, distanceFromEnd } = info;
 
     if (!this.hasHandler()) return;
-    if (isEndReached && !this.isConsecutiveDistance(distanceFromEnd) && (
-        !this.reachCountLimitation() ||
-        this.shouldResetCountLimitation(distanceFromEnd)
-      )) {
-        this.onEndReachedHandlerBatchinator.schedule({
-          distanceFromEnd,
-        });
-      }
+    if (
+      isEndReached &&
+      !this.isConsecutiveDistance(distanceFromEnd) &&
+      (!this.reachCountLimitation() ||
+        this.shouldResetCountLimitation(distanceFromEnd))
+    ) {
+      this.onEndReachedHandlerBatchinator.schedule({
+        distanceFromEnd,
+      });
+    }
   }
 
   updateStack(distanceFromEnd: number) {
-    const lastStack =
-      this.sendOnEndReachedDistanceFromEndStack.at(
-        -1
-      );
+    const lastStack = this.sendOnEndReachedDistanceFromEndStack.at(-1);
 
     if (lastStack) {
       const { distancesFromEnd } = lastStack;

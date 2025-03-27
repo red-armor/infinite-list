@@ -1,22 +1,13 @@
-import throttle from '@x-oasis/throttle';
-import type {
-  FC,
-  ForwardedRef,
-  PropsWithChildren} from 'react';
+import type { FC, ForwardedRef, PropsWithChildren } from 'react';
 import * as React from 'react';
-import {
-  useCallback,
-  useContext,
-  useMemo,
-} from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import type {
   LayoutChangeEvent,
   NativeScrollEvent,
-  NativeSyntheticEvent} from 'react-native';
-import {
-  ScrollView,
+  NativeSyntheticEvent,
 } from 'react-native';
-
+import { ScrollView } from 'react-native';
+import throttle from '@x-oasis/throttle';
 import ScrollViewContext from '../context/ScrollViewContext';
 import RefreshControl from '../controller/RefreshControl';
 import useScrollEnabled from '../hooks/useScrollEnabled';

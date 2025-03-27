@@ -1,7 +1,10 @@
 import { KeysChangedType } from '@infinite-list/base-dimensions';
 import { Dimension } from '@infinite-list/dimension';
-import type { IndexToOffsetMap, ItemLayout} from '@infinite-list/dimensions-model';
-import {ListDimensionsModel  } from '@infinite-list/dimensions-model';
+import type {
+  IndexToOffsetMap,
+  ItemLayout,
+} from '@infinite-list/dimensions-model';
+import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import type { ItemMeta } from '@infinite-list/item-meta';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { BaseImpl } from '@infinite-list/strategies';
@@ -11,7 +14,6 @@ import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isClamped from '@x-oasis/is-clamped';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-
 import Inspector from './Inspector';
 import { createStore } from './state';
 import type {
@@ -30,7 +32,7 @@ import type {
 // import { info } from './utils/logger';
 // import createStore from './state/createStore';
 
-const {info} = log;
+const { info } = log;
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -290,9 +292,7 @@ class ListGroupDimensions<
   }
 
   getKeyIndex(key: string, listKey: string) {
-    const listIndex = this.indexKeys.indexOf(
-      listKey
-    );
+    const listIndex = this.indexKeys.indexOf(listKey);
 
     if (listIndex !== -1) {
       const listDimensions = this.getDimension(listKey);
@@ -307,9 +307,7 @@ class ListGroupDimensions<
   }
 
   getIndexKey(index: number, listKey: string) {
-    const listIndex = this.indexKeys.indexOf(
-      listKey
-    );
+    const listIndex = this.indexKeys.indexOf(listKey);
 
     if (listIndex !== -1) {
       const dimensions = this.getDimension(listKey);
@@ -519,7 +517,7 @@ class ListGroupDimensions<
     >((acc, key) => {
       const dimensions = this.getDimension(key);
       if (!dimensions) return acc;
-      const {recyclerType} = dimensions;
+      const { recyclerType } = dimensions;
       if (rangeMap[recyclerType] == null) rangeMap[recyclerType] = 0;
 
       const endIndex = startIndex + dimensions.length;
@@ -890,9 +888,7 @@ class ListGroupDimensions<
     const startDimensionIndex = this.indexKeys.indexOf(
       startPosition.dimensionKey
     );
-    const endDimensionIndex = this.indexKeys.indexOf(
-      endPosition.dimensionKey
-    );
+    const endDimensionIndex = this.indexKeys.indexOf(endPosition.dimensionKey);
     const result: ListRangeResult<ItemT> = [];
 
     for (let index = startDimensionIndex; index <= endDimensionIndex; index++) {

@@ -9,9 +9,8 @@ import type {
   IMasonryDimensions,
   IMasonryDimensionsModel,
 } from '@infinite-list/types';
-
-import type { GenericItemT } from './generic.types';
 import type { ListBaseDimensionsProps } from './ListBaseDimensions.types';
+import type { GenericItemT } from './generic.types';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,

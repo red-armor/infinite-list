@@ -1,17 +1,16 @@
 import resolveChanged from '@x-oasis/resolve-changed';
-
+import type ViewabilityItemMeta from './ViewabilityItemMeta';
 import type {
   NormalizedViewablityConfig,
   OnViewableItemsChanged,
   ScrollMetrics,
+  ViewAreaModeConfig,
   ViewabilityConfig,
   ViewabilityConfigCallbackPair,
   ViewabilityHelperChangedToken,
   ViewabilityScrollMetrics,
-  ViewAreaModeConfig,
   VisiblePercentModeConfig,
 } from './types';
-import type ViewabilityItemMeta from './ViewabilityItemMeta';
 import { isItemViewable } from './viewabilityUtils';
 
 const createChangedToken = (opts: {

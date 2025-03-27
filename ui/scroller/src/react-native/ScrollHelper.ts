@@ -1,6 +1,15 @@
+import type { MutableRefObject } from 'react';
+import type {
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView,
+} from 'react-native';
+import { Animated } from 'react-native';
 import type {
   ContainerObserver,
-  IClientRectReadOnly} from '@infinite-list/intersection-observer/react-native';
+  IClientRectReadOnly,
+} from '@infinite-list/intersection-observer/react-native';
 import {
   IntersectionObserver,
   ReactNativeDocumentBase,
@@ -11,27 +20,17 @@ import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-import type { MutableRefObject } from 'react';
-import type {
-  LayoutChangeEvent,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView} from 'react-native';
-import {
-  Animated
-} from 'react-native';
-
+import type Marshal from './Marshal';
+import type ScrollEventHelper from './ScrollEventHelper';
+import Emitter from './commons/Emitter';
 import {
   DEFAULT_LAYOUT_MEASUREMENT,
   DEFAULT_SCROLL_EVENT_METRICS,
   DEFAULT_SCROLL_HELPER_LAYOUT,
   DEFAULT_SCROLL_METRICS,
 } from './commons/constants';
-import Emitter from './commons/Emitter';
 import { isIos } from './commons/platform';
 import RefreshControlService from './controller/RefreshControlService';
-import type Marshal from './Marshal';
-import type ScrollEventHelper from './ScrollEventHelper';
 import StickyMarshal from './sticky/StickyMarshal';
 import type {
   InfiniteListScrollViewRef,
@@ -206,15 +205,11 @@ class ScrollHelper {
   }
 
   addOnRefreshListener(fn: Function) {
-    const index = this.onRefreshListeners.indexOf(
-      fn
-    );
+    const index = this.onRefreshListeners.indexOf(fn);
 
     if (index === -1) this.onRefreshListeners.push(fn);
     return () => {
-      const index = this.onRefreshListeners.indexOf(
-        fn
-      );
+      const index = this.onRefreshListeners.indexOf(fn);
       if (index !== -1) this.onRefreshListeners.splice(index, 1);
     };
   }
@@ -260,17 +255,13 @@ class ScrollHelper {
   }
 
   registerScrollEventHelper(scrollEventHelper: ScrollEventHelper) {
-    const index = this._scrollEventHelpers.indexOf(
-      scrollEventHelper
-    );
+    const index = this._scrollEventHelpers.indexOf(scrollEventHelper);
     if (index === -1) {
       this._scrollEventHelpers.push(scrollEventHelper);
     }
 
     return () => {
-      const index = this._scrollEventHelpers.indexOf(
-        scrollEventHelper
-      );
+      const index = this._scrollEventHelpers.indexOf(scrollEventHelper);
       if (index !== -1) this._scrollEventHelpers.splice(index, 1);
     };
   }

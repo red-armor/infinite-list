@@ -1,6 +1,5 @@
-import type { GenericItemT } from '@infinite-list/types';
 import type { RefObject } from 'react';
-
+import type { GenericItemT } from '@infinite-list/types';
 import type { ListGroupProps as CommonListGroupProps } from '../../types';
 
 // export type ScrollComponentUseMeasureLayout = (

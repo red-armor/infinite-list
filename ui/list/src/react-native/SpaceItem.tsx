@@ -1,7 +1,6 @@
-import type { GenericItemT } from '@infinite-list/types';
 import { useEffect, useMemo, useRef } from 'react';
 import { View } from 'react-native';
-
+import type { GenericItemT } from '@infinite-list/types';
 import type { SpaceItemProps } from './types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {

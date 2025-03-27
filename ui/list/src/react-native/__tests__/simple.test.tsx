@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react-native';
 import { Button, Text, View } from 'react-native';
+import { render, screen } from '@testing-library/react-native';
 
 // import { describe, expect, test } from '@jest/globals';
 

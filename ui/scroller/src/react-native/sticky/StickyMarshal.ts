@@ -1,13 +1,11 @@
 import { TaskRunner } from '@infinite-list/scheduler';
-
 import type Marshal from '../Marshal';
 import type {
   InterpolationConfig,
   StickyItemInfo,
-  StickyMarshalProps} from '../types';
-import {
-  StickyMode,
+  StickyMarshalProps,
 } from '../types';
+import { StickyMode } from '../types';
 
 export function checkValidInputRange(arr: Array<number>) {
   if (arr.length < 2) {
@@ -16,7 +14,7 @@ export function checkValidInputRange(arr: Array<number>) {
   }
   for (let i = 1; i < arr.length; ++i) {
     if (arr[i] < arr[i - 1]) {
-      console.debug(`inputRange must be monotonically non-decreasing ${  arr}`);
+      console.debug(`inputRange must be monotonically non-decreasing ${arr}`);
       return false;
     }
   }
@@ -76,7 +74,7 @@ class StickyMarshal {
     const len = this.stickyItemsQueue.length;
     const _interpolationConfig: Record<string, InterpolationConfig> = {};
     const _animatedValueConfig: Record<string, InterpolationConfig> = {};
-    const {selectValue} = this.marshal.getScrollHelper();
+    const { selectValue } = this.marshal.getScrollHelper();
 
     // console.log('this mode ', this.mode, this.stickyItemsQueue.slice());
 
@@ -188,7 +186,7 @@ class StickyMarshal {
 
     for (let idx = 0; idx < len; idx++) {
       const current = this.stickyItemsQueue[idx];
-      const {itemKey} = current;
+      const { itemKey } = current;
       const prevConfig = current.interpolationConfig;
       const nextConfig = _interpolationConfig[itemKey];
 
@@ -200,22 +198,25 @@ class StickyMarshal {
         animatedValueConfig?: InterpolationConfig;
       } = {};
 
-      if (checkValidInputRange(nextConfig.inputRange) && // @ts-ignore
-        !this.interpolatedConfigEqual(prevConfig, nextConfig)) {
-          current.interpolationConfig = nextConfig;
-          config.interpolationConfig = nextConfig;
-        }
+      if (
+        checkValidInputRange(nextConfig.inputRange) && // @ts-ignore
+        !this.interpolatedConfigEqual(prevConfig, nextConfig)
+      ) {
+        current.interpolationConfig = nextConfig;
+        config.interpolationConfig = nextConfig;
+      }
 
-      if (checkValidInputRange(nextAnimatedValueConfig.inputRange) && 
-          !this.interpolatedConfigEqual(
-            // @ts-ignore
-            prevAnimatedValueConfig,
-            nextAnimatedValueConfig
-          )
-        ) {
-          current.animatedValueConfig = nextAnimatedValueConfig;
-          config.animatedValueConfig = nextAnimatedValueConfig;
-        }
+      if (
+        checkValidInputRange(nextAnimatedValueConfig.inputRange) &&
+        !this.interpolatedConfigEqual(
+          // @ts-ignore
+          prevAnimatedValueConfig,
+          nextAnimatedValueConfig
+        )
+      ) {
+        current.animatedValueConfig = nextAnimatedValueConfig;
+        config.animatedValueConfig = nextAnimatedValueConfig;
+      }
 
       // Only update the config if it has changed
       if (Object.keys(config).length > 0) {

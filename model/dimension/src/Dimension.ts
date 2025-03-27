@@ -5,7 +5,6 @@ import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isObject from '@x-oasis/is-object';
 import layoutEqual from '@x-oasis/layout-equal';
 import type SelectValue from '@x-oasis/select-value';
-
 import {
   DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,

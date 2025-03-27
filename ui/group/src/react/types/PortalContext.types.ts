@@ -1,5 +1,5 @@
-
-
-
-
-export {GroupRecycleContentProps, GroupSpaceContentProps, PortalContextProps} from '../../types/PortalContext.types';
+export {
+  GroupRecycleContentProps,
+  GroupSpaceContentProps,
+  PortalContextProps,
+} from '../../types/PortalContext.types';

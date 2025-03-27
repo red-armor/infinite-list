@@ -6,7 +6,6 @@ import { Dimension } from '@infinite-list/dimension';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import { isValidMetaLayout } from '@infinite-list/item-meta';
 import type { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
-
 import type ListGroupDimensions from '../../ListGroupDimensions';
 
 // recalculate buffer
@@ -20,7 +19,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const {maxToRenderPerBatch} = dimension;
+  const { maxToRenderPerBatch } = dimension;
   let _nextBufferedEndIndex = bufferedIndexRange.endIndex;
 
   // if (dimension instanceof ListGroupDimensions) {
@@ -28,7 +27,7 @@ export default <State extends ReducerResult = ReducerResult>(
   // start from visibleIndexRange which means the below has high priority
   // but... if jump to a position, two directions should be considered...
   for (
-    let {startIndex} = visibleIndexRange;
+    let { startIndex } = visibleIndexRange;
     startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
     startIndex++
   ) {

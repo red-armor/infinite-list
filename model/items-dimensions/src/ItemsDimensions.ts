@@ -4,7 +4,6 @@ import type { IItemDimensions } from '@infinite-list/types';
 import { ListSpyUtils } from '@infinite-list/utils';
 import Batchinator from '@x-oasis/batchinator';
 import layoutEqual from '@x-oasis/layout-equal';
-
 import SortedItems from './SortedItems';
 import type { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
 

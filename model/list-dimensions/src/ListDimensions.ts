@@ -1,13 +1,14 @@
 import type {
-IndexToOffsetMap,  ItemLayout,
-  ListDimensionsModelProps  } from '@infinite-list/dimensions-model';
-import { ListDimensionsModel  } from '@infinite-list/dimensions-model';
+  IndexToOffsetMap,
+  ItemLayout,
+  ListDimensionsModelProps,
+} from '@infinite-list/dimensions-model';
+import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import type { ListIndexInfo } from '@infinite-list/item-meta';
 import type { ReducerResult } from '@infinite-list/state';
 import { BaseImpl } from '@infinite-list/strategies';
 import type { IListDimensions } from '@infinite-list/types';
 import type PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-
 import { createStore } from './state';
 import type { GenericItemT, ScrollMetrics } from './types';
 

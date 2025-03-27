@@ -12,7 +12,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const {initialNumToRender} = dimension;
+  const { initialNumToRender } = dimension;
 
   const { startIndex, endIndex } = visibleIndexRange;
 
@@ -31,7 +31,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   let count = 0;
   for (
-    let {startIndex} = visibleIndexRange;
+    let { startIndex } = visibleIndexRange;
     startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
     startIndex++
   ) {

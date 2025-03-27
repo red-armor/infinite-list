@@ -1,23 +1,24 @@
 import { BaseLayout } from '@infinite-list/base-dimensions';
-import type { IndexInfo,ItemMeta  } from '@infinite-list/item-meta';
+import type { IndexInfo, ItemMeta } from '@infinite-list/item-meta';
 import {
   EnabledSelector,
   ListSpyUtils,
   StillnessHelper,
 } from '@infinite-list/utils';
-import type { OnEndReached,
+import {
+  OnEndReached,
   OnEndReachedHelper,
-  ViewabilityConfigTuples } from '@infinite-list/viewable';
+  ViewabilityConfigTuples,
+} from '@infinite-list/viewable';
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-
+import StateHub from './StateHub';
 import {
   DISPATCH_METRICS_THRESHOLD,
-  isEmpty,
   ON_END_REACHED_THRESHOLD,
   STILLNESS_THRESHOLD,
+  isEmpty,
 } from './common';
-import StateHub from './StateHub';
 import type {
   GenericItemT,
   IndexToOffsetMap,

@@ -4,14 +4,10 @@ import type {
   FC,
   ForwardedRef,
   PropsWithChildren,
-  RefObject} from 'react';
-import * as React from 'react';
-import {
-  useContext,
-  useEffect,
-  useRef,
+  RefObject,
 } from 'react';
-
+import * as React from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import ScrollViewContext from '../context/ScrollViewContext';
 import type { ObserverComponentProps } from '../types';
 

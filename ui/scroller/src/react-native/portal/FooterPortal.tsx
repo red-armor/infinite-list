@@ -1,6 +1,5 @@
-import type { FC, PropsWithChildren} from 'react';
+import type { FC, PropsWithChildren } from 'react';
 import { useContext, useEffect, useMemo } from 'react';
-
 import ScrollViewContext from '../context/ScrollViewContext';
 
 let count = 1;

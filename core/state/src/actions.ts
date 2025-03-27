@@ -1,7 +1,9 @@
-import type { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
+import type {
+  IListDimensions,
+  IListGroupDimensions,
+} from '@infinite-list/types';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import defaultValue from '@x-oasis/default-value';
-
 import { INVALID_LENGTH } from './common';
 import type { ScrollMetrics } from './types';
 import type { Action, ReducerResult } from './types/types';

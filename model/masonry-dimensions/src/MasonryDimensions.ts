@@ -1,11 +1,13 @@
 import type { KeysChangedType } from '@infinite-list/base-dimensions';
-import type { ItemLayout,ListDimensionsModel  } from '@infinite-list/dimensions-model';
+import type {
+  ItemLayout,
+  ListDimensionsModel,
+} from '@infinite-list/dimensions-model';
 import { OnEndReachedHelper } from '@infinite-list/viewable';
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-
-import { DISPATCH_METRICS_THRESHOLD } from './common';
 import MasonryDimensionsModel from './MasonryDimensionsModel';
+import { DISPATCH_METRICS_THRESHOLD } from './common';
 import type {
   DimensionsModelContainer,
   GenericItemT,

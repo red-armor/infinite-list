@@ -4,7 +4,6 @@ import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-
 import { DEFAULT_LAYOUT } from './common';
 import type { BaseContainerProps, ContainerLayoutGetter } from './types';
 

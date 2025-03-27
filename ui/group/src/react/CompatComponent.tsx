@@ -1,6 +1,5 @@
-import type { CSSProperties, FC, PropsWithChildren} from 'react';
+import type { CSSProperties, FC, PropsWithChildren } from 'react';
 import { useMemo } from 'react';
-
 import type { CompatStyle } from '../types';
 
 /**

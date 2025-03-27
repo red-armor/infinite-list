@@ -1,14 +1,7 @@
-import type { ItemLayout } from '@infinite-list/types';
-import type {
-  ForwardedRef,
-  PropsWithChildren} from 'react';
+import type { ForwardedRef, PropsWithChildren } from 'react';
 import * as React from 'react';
-import {
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
-
+import { useCallback, useEffect, useRef } from 'react';
+import type { ItemLayout } from '@infinite-list/types';
 import type { DefaultItemT, ListItemProps } from '../types';
 
 /**
@@ -55,8 +48,10 @@ const ListItem = <ItemT extends DefaultItemT>(
       if (
         itemMetaRef.current &&
         (!itemMetaRef.current?.getLayout() ||
-          itemMetaRef.current.isApproximateLayout)
-       && itemChangeHandlerRef.current) itemChangeHandlerRef.current();
+          itemMetaRef.current.isApproximateLayout) &&
+        itemChangeHandlerRef.current
+      )
+        itemChangeHandlerRef.current();
     }
   }, [itemMeta]);
 

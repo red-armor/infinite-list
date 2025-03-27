@@ -1,10 +1,9 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { KeysChangedType } from '@infinite-list/base-dimensions';
 import { resetContext } from '@infinite-list/item-meta';
 import type { RecycleStateResult } from '@infinite-list/strategies';
 import { defaultKeyExtractor } from '@infinite-list/utils';
 import Batchinator from '@x-oasis/batchinator';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
 import ListDimensions from '../ListDimensions';
 
 const buildData = (count: number, startIndex = 0) =>

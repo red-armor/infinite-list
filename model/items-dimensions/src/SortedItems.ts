@@ -135,8 +135,8 @@ export default class SortedItems {
       const prev = data[startIndex - 1];
       const layout = prev.getLayout();
       if (layout && minOffset < selectLength(layout) + selectOffset(layout)) {
-          startIndex = startIndex - 1;
-        }
+        startIndex = startIndex - 1;
+      }
     }
 
     return data.slice(startIndex, endIndex);

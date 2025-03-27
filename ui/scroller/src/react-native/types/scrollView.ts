@@ -1,9 +1,3 @@
-import type { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
-import type { ScrollMetrics } from '@infinite-list/types';
-import type {
-  ViewabilityConfig,
-  ViewabilityConfigCallbackPairs,
-} from '@infinite-list/viewable';
 import type {
   ForwardedRef,
   MutableRefObject,
@@ -27,7 +21,12 @@ import type {
   ViewProps,
   ViewStyle,
 } from 'react-native';
-
+import type { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
+import type { ScrollMetrics } from '@infinite-list/types';
+import type {
+  ViewabilityConfig,
+  ViewabilityConfigCallbackPairs,
+} from '@infinite-list/viewable';
 import type ScrollHelper from '../ScrollHelper';
 import type ScrollerScrollView from '../ScrollView';
 import type { StickyMode } from './stickyMarshal';

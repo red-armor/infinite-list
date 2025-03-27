@@ -1,5 +1,4 @@
 import isClamped from '@x-oasis/is-clamped';
-
 import type {
   GenericItemT,
   SpaceStateToken,

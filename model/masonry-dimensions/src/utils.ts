@@ -2,7 +2,6 @@ import { KeysChangedType } from '@infinite-list/base-dimensions';
 // import KeyIndexManager from '../utils/KeyIndexManager';
 import { KeyIndexManager } from '@infinite-list/utils';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-
 import type MasonryDimensionsModel from './MasonryDimensionsModel';
 import type { GenericItemT } from './types';
 
@@ -41,8 +40,10 @@ export const chunkifyDataSource = <
   // as temp values
   const dataSource: ItemT[][] = [];
 
-  const shouldShuffle =
-    ![KeysChangedType.Append, KeysChangedType.Initial].includes(dataChangedType);
+  const shouldShuffle = ![
+    KeysChangedType.Append,
+    KeysChangedType.Initial,
+  ].includes(dataChangedType);
 
   if (!shouldShuffle) {
     startIndex = oldData.length;

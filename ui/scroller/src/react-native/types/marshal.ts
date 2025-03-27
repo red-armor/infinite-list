@@ -1,16 +1,19 @@
-import type {
-  IntersectionObserver,
-  IntersectionObserverCallback,
-} from '@infinite-list/intersection-observer/react-native';
 import type { MutableRefObject } from 'react';
 import type {
   Animated,
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
-
+import type {
+  IntersectionObserver,
+  IntersectionObserverCallback,
+} from '@infinite-list/intersection-observer/react-native';
 import type Marshal from '../Marshal';
-import type { ContentSizeChangeHandler, InfiniteListScrollViewRef,SyntheticEventHandler  } from './scrollView';
+import type {
+  ContentSizeChangeHandler,
+  InfiniteListScrollViewRef,
+  SyntheticEventHandler,
+} from './scrollView';
 import type { StickyMode } from './stickyMarshal';
 
 export type SetScrollUpdating = (falsy: boolean) => void;

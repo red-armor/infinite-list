@@ -1,15 +1,4 @@
-import type {
-  GenericItemT,
-  MasonryStateResults} from '@infinite-list/masonry-dimensions';
-import {
-  MasonryDimensions as MasonryDimension
-} from '@infinite-list/masonry-dimensions';
-import { ScrollTracker } from '@infinite-list/scroller/web';
-import type { ItemLayout } from '@infinite-list/types';
-import type {
-  CSSProperties,
-  ForwardedRef,
-  RefObject} from 'react';
+import type { CSSProperties, ForwardedRef, RefObject } from 'react';
 import {
   forwardRef as ReactForwardRef,
   useCallback,
@@ -18,7 +7,13 @@ import {
   useRef,
   useState,
 } from 'react';
-
+import type {
+  GenericItemT,
+  MasonryStateResults,
+} from '@infinite-list/masonry-dimensions';
+import { MasonryDimensions as MasonryDimension } from '@infinite-list/masonry-dimensions';
+import { ScrollTracker } from '@infinite-list/scroller/web';
+import type { ItemLayout } from '@infinite-list/types';
 import { resolveColumnInfo } from '../common/utils';
 import ColumnStateRenderer from './ColumnStateRender';
 import type { MasonryListProps } from './types';

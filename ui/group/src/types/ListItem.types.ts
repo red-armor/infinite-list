@@ -1,10 +1,10 @@
+import type { FC, ForwardedRef, PropsWithChildren } from 'react';
+import type * as React from 'react';
 import type { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import type { GenericItemT, ItemMeta } from '@infinite-list/item-meta';
 import type { ListDimensions } from '@infinite-list/list-dimensions';
 // import { ViewStyle, LayoutChangeEvent } from 'react-native';
 import type { ItemLayout } from '@infinite-list/types';
-import type { FC, ForwardedRef, PropsWithChildren } from 'react';
-import type * as React from 'react';
 
 // type OnLayout = (event: LayoutChangeEvent) => void;
 

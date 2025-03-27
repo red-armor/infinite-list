@@ -1,8 +1,3 @@
-import type { GenericItemT } from '@infinite-list/item-meta';
-import { ListDimensions } from '@infinite-list/list-dimensions';
-import { ScrollViewContext } from '@infinite-list/scroller/react-native';
-import type { RecycleStateResult } from '@infinite-list/strategies';
-import type { ItemLayout, ScrollMetrics } from '@infinite-list/types';
 import {
   useCallback,
   useContext,
@@ -13,7 +8,11 @@ import {
 } from 'react';
 import type { LayoutChangeEvent, ViewStyle } from 'react-native';
 import { View } from 'react-native';
-
+import type { GenericItemT } from '@infinite-list/item-meta';
+import { ListDimensions } from '@infinite-list/list-dimensions';
+import { ScrollViewContext } from '@infinite-list/scroller/react-native';
+import type { RecycleStateResult } from '@infinite-list/strategies';
+import type { ItemLayout, ScrollMetrics } from '@infinite-list/types';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
 import type { ListProps } from './types';

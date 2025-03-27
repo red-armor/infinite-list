@@ -1,11 +1,13 @@
-import type { ItemLayout, ListDimensionsModel  } from '@infinite-list/dimensions-model';
+import type {
+  ItemLayout,
+  ListDimensionsModel,
+} from '@infinite-list/dimensions-model';
 import { KeyIndexManager } from '@infinite-list/utils';
 import defaultValue from '@x-oasis/default-value';
 import layoutEqual from '@x-oasis/layout-equal';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-
-import { LAYOUT_EQUAL_CORRECTION_VALUE } from './common';
 import MasonryDimensionStrategy from './MasonryDimensionStrategy';
+import { LAYOUT_EQUAL_CORRECTION_VALUE } from './common';
 import type { GenericItemT, MasonryDimensionsModelProps } from './types';
 
 /**

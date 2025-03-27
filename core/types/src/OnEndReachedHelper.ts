@@ -1,5 +1,4 @@
 import type Batchinator from '@x-oasis/batchinator';
-
 import type { ScrollMetrics } from './scrollMetrics.types';
 
 export interface IOnEndReachedHelper {
@@ -13,7 +12,8 @@ export interface IOnEndReachedHelper {
   perform: (
     scrollMetrics?: ScrollMetrics | undefined,
     positive?: boolean
-  ) => | {
+  ) =>
+    | {
         distanceFromEnd: number;
         isEndReached: boolean;
       }

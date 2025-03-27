@@ -3,7 +3,6 @@ import type {
   ItemMetaOwner,
   ListGroupIndexInfo,
 } from '@infinite-list/types';
-
 import type { ItemLayout } from './BaseLayout.types';
 import type { GenericItemT } from './generic.types';
 

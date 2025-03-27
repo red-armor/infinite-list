@@ -1,11 +1,10 @@
 import type SelectValue from '@x-oasis/select-value';
-
 import type { IDimension } from './Dimension';
+import type { IListDimensionsModel } from './ListDimensionsModel';
 import type { GenericItemT } from './generic.types';
 // import { IPseudoListDimensions } from './pseudoListDimensions';
 import type { IItemDimensions } from './itemDimensions';
 import type { ItemLayout } from './layout';
-import type { IListDimensionsModel } from './ListDimensionsModel';
 
 export type IItemMeta<
   ItemT extends GenericItemT = GenericItemT,
@@ -27,7 +26,9 @@ export type ItemMetaOwner<
 export type ItemMetaOwnerRequiredProps<
   ItemT extends GenericItemT = GenericItemT,
 > = {
-  resolveConfigTuplesDefaultState: (defaultValue?: boolean) => Record<string, boolean>;
+  resolveConfigTuplesDefaultState: (
+    defaultValue?: boolean
+  ) => Record<string, boolean>;
   getContainerOffset: () => number;
   getSelectValue: () => SelectValue;
   getItemOffset?: () => number;

@@ -1,7 +1,10 @@
 import type { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
 import type { ItemMeta } from '@infinite-list/item-meta';
 import type { ListDimensions } from '@infinite-list/list-dimensions';
-import type { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
+import type {
+  RecycleStateToken,
+  SpaceStateToken,
+} from '@infinite-list/strategies';
 import type { GenericItemT } from '@infinite-list/types';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {

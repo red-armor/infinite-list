@@ -4,16 +4,14 @@ import type {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-
 import Emitter from './Emitter';
 import type {
   OnIntersectionChange,
   ReactNativeDocumentBaseProps,
   ReactNativeDocumentNode,
-  ScrollEventHandler} from './types';
-import {
-  ReactNativeDocument
+  ScrollEventHandler,
 } from './types';
+import { ReactNativeDocument } from './types';
 
 export function getNode(node: ReactNativeDocumentNode) {
   return (node as RefObject<ScrollView>)?.current || (node as ScrollView);
@@ -75,6 +73,4 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
 
 export { ReactNativeDocumentBase };
 
-
-
-export {ReactNativeDocument as default} from './types';
+export { ReactNativeDocument as default } from './types';

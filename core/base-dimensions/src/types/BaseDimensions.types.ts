@@ -3,7 +3,6 @@ import type {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/viewable';
-
 import type { BaseLayoutProps } from './BaseLayout.types';
 
 // import ListDimensions from '../ListDimensions';

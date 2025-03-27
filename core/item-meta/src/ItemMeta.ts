@@ -2,9 +2,8 @@ import type { IItemMeta, ItemMetaOwner } from '@infinite-list/types';
 import { ViewabilityItemMeta } from '@infinite-list/viewable';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import noop from '@x-oasis/noop';
-
-import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
+import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
 import type {
   GenericItemT,
   ItemLayout,
@@ -17,7 +16,10 @@ import type {
 export const isValidMetaLayout = (meta: IItemMeta | null | undefined) =>
   !!(meta && !meta.isApproximateLayout && meta.getLayout());
 
-type ItemMetaContext<T extends GenericItemT = GenericItemT> = Record<string, ItemMeta<T>>;
+type ItemMetaContext<T extends GenericItemT = GenericItemT> = Record<
+  string,
+  ItemMeta<T>
+>;
 
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
@@ -215,9 +217,7 @@ class ItemMeta<
    *
    * trigger state change listener, such as viewable / impression
    */
-  setItemMetaState(
-    state: Record<string, boolean> = {}
-  ) {
+  setItemMetaState(state: Record<string, boolean> = {}) {
     if (state === this._state) return;
     Object.keys({ ...state }).forEach((key) => {
       const helper = this._stateEventSubscriptions.get(key);

@@ -5,7 +5,6 @@ import type {
   ViewabilityConfigTuplesProps,
 } from '@infinite-list/viewable';
 import type { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
-
 import type { GenericItemT } from './generic.types';
 import type { ActionType, ReducerResult, Store } from './types';
 

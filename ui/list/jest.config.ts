@@ -11,7 +11,7 @@ module.exports = {
     '^.+.(js|ts|tsx)$': [
       'babel-jest',
       {
-        configFile: `${__dirname  }/.babelrc.js`,
+        configFile: `${__dirname}/.babelrc.js`,
       },
     ],
     '^.+.(bmp|gif|jpg|jpeg|mp4|png|psd|svg|webp)$': require.resolve(

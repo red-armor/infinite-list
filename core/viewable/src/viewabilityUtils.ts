@@ -1,6 +1,6 @@
 // import SelectValue from '@x-oasis/select-value';
-import type { IsItemViewableOptions } from './types';
 import ViewabilityItemMeta from './ViewabilityItemMeta';
+import type { IsItemViewableOptions } from './types';
 
 // export function resolveMeasureMetrics(
 //   scrollEventMetrics: ScrollEventMetrics,

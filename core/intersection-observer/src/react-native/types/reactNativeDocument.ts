@@ -4,7 +4,6 @@ import type {
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-
 import type { IClientRectReadOnly } from '../../types';
 
 export type ScrollEventHandler = (

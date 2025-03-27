@@ -1,5 +1,6 @@
 import uniqueArrayObject from '@x-oasis/unique-array-object';
-
+import type ViewabilityItemMeta from './ViewabilityItemMeta';
+import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 import type {
   GenericItemT,
@@ -10,8 +11,6 @@ import type {
 } from './types';
 // TODO ------
 import type { ItemMeta } from './types';
-import type ViewabilityItemMeta from './ViewabilityItemMeta';
-import ViewablityHelper from './ViewablityHelper';
 
 class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   private _tuple: ViewabilityConfigCallbackPairs = [];
@@ -114,17 +113,20 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
     if (!viewabilityScrollMetrics || !itemMeta)
       return itemMeta.getState() || {};
     if (!itemMeta.getLayout()) return itemMeta?.getState() || {};
-    return this.viewabilityHelpers.reduce<Record<string, boolean>>((value, helper) => {
-      const falsy = helper.checkItemViewability(
-        // @ts-ignore [TODO]
-        itemMeta,
-        viewabilityScrollMetrics,
-        getItemOffset
-      );
-      const key = helper.configName;
-      value[key] = falsy;
-      return value;
-    }, {});
+    return this.viewabilityHelpers.reduce<Record<string, boolean>>(
+      (value, helper) => {
+        const falsy = helper.checkItemViewability(
+          // @ts-ignore [TODO]
+          itemMeta,
+          viewabilityScrollMetrics,
+          getItemOffset
+        );
+        const key = helper.configName;
+        value[key] = falsy;
+        return value;
+      },
+      {}
+    );
   }
 }
 

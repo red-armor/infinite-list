@@ -1,6 +1,5 @@
-import type { GenericItemT, ItemLayout } from '@infinite-list/types';
 import type { ViewStyle } from 'react-native';
-
+import type { GenericItemT, ItemLayout } from '@infinite-list/types';
 import type { ListItemProps } from '../../types';
 import type { ContainerRef } from './ListGroup.types';
 

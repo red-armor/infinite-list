@@ -1,10 +1,9 @@
+import { afterEach, describe, expect, it, test, vi } from 'vitest';
 import { defaultKeyExtractor } from '@infinite-list/utils';
 import Batchinator from '@x-oasis/batchinator';
-import { afterEach, describe, expect, it, test, vi } from 'vitest';
-
-import { DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from '../common';
 import Inspector from '../Inspector';
 import ListGroupDimensions from '../ListGroupDimensions';
+import { DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH } from '../common';
 
 vi.useFakeTimers();
 
@@ -24,7 +23,7 @@ vi.spyOn(Batchinator.prototype, 'schedule').mockImplementation(function (
   this._callback.apply(this, args);
 });
 
-const {startInspection} = Inspector.prototype;
+const { startInspection } = Inspector.prototype;
 // https://jestjs.io/docs/es6-class-mocks#mocking-a-specific-method-of-a-class
 vi.spyOn(Inspector.prototype, 'startInspection').mockImplementation(function (
   ...args

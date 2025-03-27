@@ -2,8 +2,10 @@ import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import getMapKeyByValue from '@x-oasis/get-map-key-by-value';
 import noop from '@x-oasis/noop';
-
-import type { ItemMetaStateEventHelperProps, StateEventListener } from './types';
+import type {
+  ItemMetaStateEventHelperProps,
+  StateEventListener,
+} from './types';
 
 let canIUseRIC = false;
 let finished = false;
@@ -267,8 +269,8 @@ class ItemMetaStateEventHelper {
 
   cancelIdleCallbackPolyfill(callbackId: number) {
     if (this._canIUseRIC && typeof cancelIdleCallback === 'function') {
-        cancelIdleCallback(callbackId);
-      }
+      cancelIdleCallback(callbackId);
+    }
 
     this._callbackId = undefined;
   }

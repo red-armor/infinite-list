@@ -16,7 +16,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const {maxToRenderPerBatch} = dimension;
+  const { maxToRenderPerBatch } = dimension;
   let _nextBufferedEndIndex = bufferedIndexRange.endIndex;
 
   // if (dimension instanceof ListGroupDimensions) {
@@ -55,7 +55,7 @@ export default <State extends ReducerResult = ReducerResult>(
   // if (dimension instanceof ListDimensions) {
   let count = 0;
   for (
-    let {startIndex} = visibleIndexRange;
+    let { startIndex } = visibleIndexRange;
     startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
     startIndex++
   ) {

@@ -1,5 +1,4 @@
 import type { IClientRectReadOnly } from '@infinite-list/intersection-observer/react-native';
-
 import type Marshal from '../Marshal';
 
 export enum StickyMode {

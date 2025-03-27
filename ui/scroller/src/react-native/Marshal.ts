@@ -1,5 +1,4 @@
 import type { ScrollView } from 'react-native';
-
 import ScrollEventHelper from './ScrollEventHelper';
 import ScrollHelper from './ScrollHelper';
 import type {

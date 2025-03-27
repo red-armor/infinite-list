@@ -1,20 +1,15 @@
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { Platform } from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { TaskRunner } from '@infinite-list/scheduler';
-import type {
-  NativeScrollEvent,
-  NativeSyntheticEvent} from 'react-native';
-import {
-  Platform,
-} from 'react-native';
-
 import {
   compareIntersection,
   computeIntersection,
 } from '../common/intersection';
-import { measureInWindowAsync } from './measure';
 import type Observer from './Observer';
 import type ReactNativeDocument from './ReactNativeDocument';
 import { getNode } from './ReactNativeDocument';
+import { measureInWindowAsync } from './measure';
 import type {
   ContainerObserverProps,
   IClientRectReadOnly,
@@ -185,7 +180,7 @@ class ContainerObserver {
           height,
         });
 
-        let {ownerContainerObserver} = this;
+        let { ownerContainerObserver } = this;
         let intersection: IRectIntersection | null = convertRectToIntersection(
           this.rect
         );

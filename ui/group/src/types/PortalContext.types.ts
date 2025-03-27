@@ -1,3 +1,4 @@
+import type { FC, PropsWithChildren } from 'react';
 import type { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import type { ItemMeta } from '@infinite-list/item-meta';
 import type {
@@ -5,8 +6,6 @@ import type {
   RecycleRecycleState,
   SpaceStateResult,
 } from '@infinite-list/strategies';
-import type { FC, PropsWithChildren } from 'react';
-
 import type { RenderItem } from './GroupListItemImpl.types';
 import type { ListItemWrapper, TeleportItemProps } from './ListItem.types';
 

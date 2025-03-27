@@ -1,10 +1,9 @@
-import { TaskRunner } from '@infinite-list/scheduler';
 import type { View } from 'react-native';
-
+import { TaskRunner } from '@infinite-list/scheduler';
 import ContainerObserver from './ContainerObserver';
-import { generateRandomKey } from './generateRandom';
 import Observer from './Observer';
 import ReactNativeDocument from './ReactNativeDocument';
+import { generateRandomKey } from './generateRandom';
 import type {
   ClientRect,
   IIntersectionObserver,
@@ -13,8 +12,8 @@ import type {
   IntersectionObserverProps,
   ItemLayout,
   MonitorDisposer,
-  ObservedComponent,
   ObserveOptions,
+  ObservedComponent,
   ReactNativeDocumentNode,
 } from './types';
 import { parseRootMargin } from './utils';
@@ -62,7 +61,7 @@ class IntersectionObserver implements IIntersectionObserver {
 
   getNode(doc: ReactNativeDocument) {
     if (!doc) return null;
-    const {node} = doc;
+    const { node } = doc;
     return node;
   }
 
@@ -82,9 +81,9 @@ class IntersectionObserver implements IIntersectionObserver {
 
   ensureContainerObserver(doc: ReactNativeDocument | undefined | null) {
     if (!doc) return null;
-    const {node} = doc;
+    const { node } = doc;
     if (!node) return null;
-    const {ownerDocument} = doc;
+    const { ownerDocument } = doc;
 
     if (this.nodeToContainerObserverMap.has(node))
       return this.nodeToContainerObserverMap.get(node);
