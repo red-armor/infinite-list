@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/disposable",
-  "version": "0.4.11-beta.8",
+  "version": "0.4.11-beta.9",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

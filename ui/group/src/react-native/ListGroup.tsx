@@ -7,9 +7,9 @@ import {
   useState,
 } from 'react';
 import { Platform, View } from 'react-native';
-import ScrollViewContext from 'ui/scroller/src/react-native/context/ScrollViewContext';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import type { GenericItemT } from '@infinite-list/item-meta';
+import { ScrollViewContext } from '@infinite-list/scroller';
 import PortalContent from '../common/PortalContent';
 import { ClockEnd, ClockStart } from '../common/clock';
 import context from '../common/context';
