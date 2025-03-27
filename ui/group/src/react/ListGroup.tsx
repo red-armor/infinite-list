@@ -1,24 +1,26 @@
-import {
+import { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import type { GenericItemT } from '@infinite-list/item-meta';
+import { ScrollTracker } from '@infinite-list/scroller/web';
+import type {
   CSSProperties,
-  RefObject,
+  RefObject} from 'react';
+import {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { ListGroupDimensions } from '@infinite-list/group-dimensions';
-import { GenericItemT } from '@infinite-list/item-meta';
-import { ScrollTracker } from '@infinite-list/scroller/web';
-import PortalContent from '../common/PortalContent';
+
 import { ClockEnd, ClockStart } from '../common/clock';
 import context from '../common/context';
+import PortalContent from '../common/PortalContent';
 import {
   RecycleContentItemWrapper,
   SpaceRendererComponent,
 } from './CompatComponent';
 import CompatListItem from './CompatListItem';
-import { ListGroupProps } from './types';
+import type { ListGroupProps } from './types';
 
 const ListGroup = <ItemT extends GenericItemT>(
   props: ListGroupProps<ItemT>

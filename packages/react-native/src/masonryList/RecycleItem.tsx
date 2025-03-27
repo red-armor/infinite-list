@@ -1,7 +1,9 @@
+import type { GenericItemT } from '@infinite-list/data-model';
 import { useEffect, useMemo, useRef } from 'react';
-import { GenericItemT } from '@infinite-list/data-model';
-import { RecycleItemProps } from './types';
-import { View, ViewStyle } from 'react-native';
+import type { ViewStyle } from 'react-native';
+import { View } from 'react-native';
+
+import type { RecycleItemProps } from './types';
 
 const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
   props: RecycleItemProps<ItemT>
@@ -45,7 +47,7 @@ const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
     };
 
     const onMeasureFailed = () => {
-      console.error('[measureLayout error] ', itemMeta?.getKey());
+      console.error('[measureLayout error]', itemMeta?.getKey());
     };
 
     setTimeout(() => {

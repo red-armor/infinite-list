@@ -1,6 +1,8 @@
-import { CSSProperties, useEffect, useMemo, useRef } from 'react';
-import { GenericItemT } from '@infinite-list/data-model';
-import { RecycleItemProps } from '../types';
+import type { GenericItemT } from '@infinite-list/data-model';
+import type { CSSProperties} from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+
+import type { RecycleItemProps } from '../types';
 
 const RecycleItem = <ItemT extends GenericItemT>(
   props: RecycleItemProps<ItemT>

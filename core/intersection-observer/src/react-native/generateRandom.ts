@@ -1,6 +1,4 @@
-export interface SeenKeys {
-  [key: string]: boolean;
-}
+export type SeenKeys = Record<string, boolean>;
 
 const seenKeys: SeenKeys = {};
 const MULTIPLIER = Math.pow(2, 24);

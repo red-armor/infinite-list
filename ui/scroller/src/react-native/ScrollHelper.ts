@@ -1,35 +1,39 @@
-import { MutableRefObject } from 'react';
-import {
-  Animated,
-  LayoutChangeEvent,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  ScrollView,
-} from 'react-native';
-import {
+import type {
   ContainerObserver,
-  IClientRectReadOnly,
+  IClientRectReadOnly} from '@infinite-list/intersection-observer/react-native';
+import {
   IntersectionObserver,
   ReactNativeDocumentBase,
 } from '@infinite-list/intersection-observer/react-native';
-import { ContentSize, ScrollMetrics } from '@infinite-list/types';
-import SelectValue, {
+import type { ContentSize, ScrollMetrics } from '@infinite-list/types';
+import type SelectValue from '@x-oasis/select-value';
+import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-import Marshal from './Marshal';
-import ScrollEventHelper from './ScrollEventHelper';
-import Emitter from './commons/Emitter';
+import type { MutableRefObject } from 'react';
+import type {
+  LayoutChangeEvent,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ScrollView} from 'react-native';
+import {
+  Animated
+} from 'react-native';
+
 import {
   DEFAULT_LAYOUT_MEASUREMENT,
   DEFAULT_SCROLL_EVENT_METRICS,
   DEFAULT_SCROLL_HELPER_LAYOUT,
   DEFAULT_SCROLL_METRICS,
 } from './commons/constants';
+import Emitter from './commons/Emitter';
 import { isIos } from './commons/platform';
 import RefreshControlService from './controller/RefreshControlService';
+import type Marshal from './Marshal';
+import type ScrollEventHelper from './ScrollEventHelper';
 import StickyMarshal from './sticky/StickyMarshal';
-import {
+import type {
   InfiniteListScrollViewRef,
   ScrollEventHandlerSubscriptionKeys,
   ScrollEventMetrics,
@@ -81,7 +85,7 @@ class ScrollHelper {
 
   private _marshal: Marshal;
 
-  private _scrollEnabledHandler?: { (falsy: boolean): void };
+  private _scrollEnabledHandler?: (falsy: boolean) => void;
 
   public hasInteraction: boolean;
 
@@ -202,14 +206,14 @@ class ScrollHelper {
   }
 
   addOnRefreshListener(fn: Function) {
-    const index = this.onRefreshListeners.findIndex(
-      (listener) => fn === listener
+    const index = this.onRefreshListeners.indexOf(
+      fn
     );
 
     if (index === -1) this.onRefreshListeners.push(fn);
     return () => {
-      const index = this.onRefreshListeners.findIndex(
-        (listener) => fn === listener
+      const index = this.onRefreshListeners.indexOf(
+        fn
       );
       if (index !== -1) this.onRefreshListeners.splice(index, 1);
     };
@@ -239,7 +243,7 @@ class ScrollHelper {
     return this._horizontal ? this._animatedValueX : this._animatedValueY;
   }
 
-  addScrollEnabledHandler(handler: { (falsy: boolean): void }) {
+  addScrollEnabledHandler(handler: (falsy: boolean) => void) {
     this._scrollEnabledHandler = handler;
   }
 
@@ -256,16 +260,16 @@ class ScrollHelper {
   }
 
   registerScrollEventHelper(scrollEventHelper: ScrollEventHelper) {
-    const index = this._scrollEventHelpers.findIndex(
-      (e) => scrollEventHelper === e
+    const index = this._scrollEventHelpers.indexOf(
+      scrollEventHelper
     );
     if (index === -1) {
       this._scrollEventHelpers.push(scrollEventHelper);
     }
 
     return () => {
-      const index = this._scrollEventHelpers.findIndex(
-        (e) => scrollEventHelper === e
+      const index = this._scrollEventHelpers.indexOf(
+        scrollEventHelper
       );
       if (index !== -1) this._scrollEventHelpers.splice(index, 1);
     };

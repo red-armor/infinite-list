@@ -1,9 +1,9 @@
 import Event from './Event';
-import { EventListener } from './types';
+import type { EventListener } from './types';
 
 export interface NodeEventEmitter {
-  on(event: string | symbol, listener: EventListener): unknown;
-  removeListener(event: string | symbol, listener: EventListener): unknown;
+  on: (event: string | symbol, listener: EventListener) => unknown;
+  removeListener: (event: string | symbol, listener: EventListener) => unknown;
 }
 
 /**

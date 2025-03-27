@@ -1,20 +1,21 @@
-import React, {
+import type { GenericItemT, RecycleStateResult } from '@infinite-list/data-model';
+import type {
+  CSSProperties,  PropsWithChildren} from 'react';
+import * as React from 'react';
+import {
+  memo,
   useEffect,
   useMemo,
-  memo,
-  useState,
-  PropsWithChildren,
-  CSSProperties,
+  useState
 } from 'react';
-import { GenericItemT, RecycleStateResult } from '@infinite-list/data-model';
-import {
-  PortalContextProps,
-  GroupRecycleContentProps,
-  GroupSpaceContentProps,
-  genericMemo,
-} from './types';
 
 import GroupListItemImpl from './GroupListItemImpl';
+import type {
+  GroupRecycleContentProps,
+  GroupSpaceContentProps,  PortalContextProps} from './types';
+import {
+  genericMemo,
+} from './types';
 
 // @ts-ignore
 const RecycleContentItem = (props) => {

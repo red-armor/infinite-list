@@ -1,4 +1,4 @@
-import { IClientRectReadOnly, IRectIntersection } from '../types';
+import type { IClientRectReadOnly, IRectIntersection } from '../types';
 
 export const computeIntersection = (
   rect1: IClientRectReadOnly | IRectIntersection,

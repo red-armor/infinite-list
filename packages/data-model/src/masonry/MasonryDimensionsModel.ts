@@ -1,16 +1,16 @@
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+import defaultValue from '@x-oasis/default-value';
 import layoutEqual from '@x-oasis/layout-equal';
+import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
 
-import {
+import { LAYOUT_EQUAL_CORRECTION_VALUE } from '../common';
+import ListDimensionsModel from '../ListDimensionsModel';
+import type {
   GenericItemT,
   ItemLayout,
   MasonryDimensionsModelProps,
 } from '../types';
-import ListDimensionsModel from '../ListDimensionsModel';
 import KeyIndexManager from '../utils/KeyIndexManager';
 import MasonryDimensionStrategy from './MasonryDimensionStrategy';
-import { LAYOUT_EQUAL_CORRECTION_VALUE } from '../common';
-import defaultValue from '@x-oasis/default-value';
 
 /**
  * The key point is how to decorate `columnIntervalTree` and `columnKeyIndexManager`

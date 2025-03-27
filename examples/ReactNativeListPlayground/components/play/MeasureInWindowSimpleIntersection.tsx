@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { ScrollView, View, Text } from 'react-native';
 import {
   IntersectionObserver,
   ReactNativeDocumentBase,
 } from '@infinite-list/intersection-observer/react-native';
+import * as React from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { ScrollView, Text,View } from 'react-native';
 
 const MeasureInWindowSimpleIntersection = () => {
   const greenRef = useRef<View>(null);
@@ -43,7 +44,7 @@ const MeasureInWindowSimpleIntersection = () => {
         console.log('hello');
       },
       {
-        root: root,
+        root,
         // document: root,
       }
     );
@@ -82,17 +83,17 @@ const MeasureInWindowSimpleIntersection = () => {
 
   useEffect(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestScrollViewRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nestScrollViewRef ref ', x, y, width, height);
+      console.log('nestScrollViewRef ref', x, y, width, height);
     });
   }, []);
 
   const scrollHandler = useCallback((scrollEvent) => {
     root.onScrollEventChange(scrollEvent);
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
   }, []);
   const horizontalScrollHandler = useCallback((scrollEvent) => {
@@ -100,10 +101,10 @@ const MeasureInWindowSimpleIntersection = () => {
     console.log('horizontalScrollHandler ');
 
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nest ref ', x, y, width, height);
+      console.log('nest ref', x, y, width, height);
     });
   }, []);
   const horizontalScrollHandler2 = useCallback((scrollEvent) => {
@@ -111,20 +112,20 @@ const MeasureInWindowSimpleIntersection = () => {
     console.log('horizontalScrollHandler 2');
 
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nest ref ', x, y, width, height);
+      console.log('nest ref', x, y, width, height);
     });
   }, []);
   const nestVerticalScrollHandler = useCallback((scrollEvent) => {
     verticalRoot.onScrollEventChange(scrollEvent);
 
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nest ref ', x, y, width, height);
+      console.log('nest ref', x, y, width, height);
     });
   }, []);
 
@@ -172,29 +173,29 @@ const MeasureInWindowSimpleIntersection = () => {
           >
             <View
               style={{ height: 50, width: 200, backgroundColor: 'red' }}
-            ></View>
+             />
             <View
               style={{ height: 30, width: 200, backgroundColor: 'yellow' }}
-            ></View>
+             />
             <View
               style={{ height: 40, width: 200, backgroundColor: 'green' }}
-            ></View>
+             />
             <View
               style={{ height: 100, width: 200, backgroundColor: '#000' }}
-            ></View>
+             />
             <View
               ref={nestRef}
               style={{ height: 100, width: 200, backgroundColor: '#fff' }}
-            ></View>
+             />
             <View
               style={{ height: 200, width: 200, backgroundColor: '#888' }}
-            ></View>
+             />
             <View
               style={{ height: 70, width: 200, backgroundColor: '#aaa' }}
-            ></View>
+             />
             <View
               style={{ height: 80, width: 200, backgroundColor: '#bbb' }}
-            ></View>
+             />
           </ScrollView>
         </View>
         <View

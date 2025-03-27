@@ -5,20 +5,19 @@ import createStickyComponent from './item/sticky-item/createStickyComponent';
 import FooterPortal from './portal/FooterPortal';
 import HeaderPortal from './portal/HeaderPortal';
 
-export { default as ScrollView } from './ScrollView';
-export { default as ViewableItem } from './item/ViewableItem';
-export { default as StickyItem } from './item/sticky-item/StickyItem';
-export { default as ScrollViewContext } from './context/ScrollViewContext';
 export { default as ScrollUpdatingContext } from './context/ScrollUpdatingContext';
+export { default as ScrollViewContext } from './context/ScrollViewContext';
 export { default as ViewabilityContext } from './context/ViewabilityContext';
 export { default as ViewableItemContext } from './context/ViewableItemContext';
-export { default as ScrollHelper } from './ScrollHelper';
-
+export { default as StickyItem } from './item/sticky-item/StickyItem';
+export { default as ViewableItem } from './item/ViewableItem';
 export { default as Marshal } from './Marshal';
-export * from './types';
 export { default as RefreshControl } from './refresh/Control';
+export { default as ScrollHelper } from './ScrollHelper';
+export { default as ScrollView } from './ScrollView';
+export * from './types';
 
-export { createViewableComponent, createStickyComponent };
+
 
 export const Viewable = {
   View: createViewableComponent(View),
@@ -40,6 +39,8 @@ export const ScrollViewPortal = {
   Footer: FooterPortal,
 };
 
-export * from './constants';
 export * from './commons/platform';
+export * from './constants';
 export { default as useMeasureLayout } from './hooks/useMeasureLayout';
+export {default as createViewableComponent} from './item/createViewableComponent';
+export {default as createStickyComponent} from './item/sticky-item/createStickyComponent';

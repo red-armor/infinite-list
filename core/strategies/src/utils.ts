@@ -1,5 +1,6 @@
 import isClamped from '@x-oasis/is-clamped';
-import {
+
+import type {
   GenericItemT,
   SpaceStateToken,
   SpaceStateTokenPosition,
@@ -53,10 +54,10 @@ export const resolveToken = (props: {
   const tokens = [createToken(startIndex)];
 
   reservedIndices.forEach((index) => {
-    const lastToken = tokens[tokens.length - 1];
+    const lastToken = tokens.at(-1);
     if (isClamped(startIndex, index, endIndex - 1)) {
-      const isSticky = stickyHeaderIndices.indexOf(index) !== -1;
-      const isReserved = persistenceIndices.indexOf(index) !== -1;
+      const isSticky = stickyHeaderIndices.includes(index);
+      const isReserved = persistenceIndices.includes(index);
       if (lastToken.startIndex === index) {
         lastToken.isSticky = isSticky;
         lastToken.isReserved = isReserved;
@@ -76,7 +77,7 @@ export const resolveToken = (props: {
     }
   });
 
-  const lastToken = tokens[tokens.length - 1];
+  const lastToken = tokens.at(-1);
   if (lastToken.endIndex !== endIndex) lastToken.endIndex = endIndex;
 
   return tokens;

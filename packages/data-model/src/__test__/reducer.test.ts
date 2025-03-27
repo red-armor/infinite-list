@@ -1,10 +1,12 @@
+import Batchinator from '@x-oasis/batchinator';
+import { beforeEach,describe, expect, it, vi } from 'vitest';
+
+import { defaultKeyExtractor } from '../exportedUtils';
+import { context as itemMetaContext } from '../ItemMeta';
 import ListDimensions from '../ListDimensions';
 import ListGroupDimensions from '../ListGroupDimensions';
-import Batchinator from '@x-oasis/batchinator';
-import { defaultKeyExtractor } from '../exportedUtils';
 import { ActionType } from '../state/types';
-import { context as itemMetaContext } from '../ItemMeta';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
     key: index,

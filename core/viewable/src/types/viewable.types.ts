@@ -1,4 +1,4 @@
-import ViewabilityItemMeta from '../ViewabilityItemMeta';
+import type ViewabilityItemMeta from '../ViewabilityItemMeta';
 
 export type CommonViewabilityConfig = {
   name: string;

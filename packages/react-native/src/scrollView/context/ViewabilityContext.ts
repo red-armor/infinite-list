@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { DataModelDimensions } from '../types';
+import type { DataModelDimensions } from '../types';
 
 // import { ViewabilityGeneral } from '../types';
 

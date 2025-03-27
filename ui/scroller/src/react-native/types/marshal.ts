@@ -1,17 +1,17 @@
-import { MutableRefObject } from 'react';
-import {
+import type {
+  IntersectionObserver,
+  IntersectionObserverCallback,
+} from '@infinite-list/intersection-observer/react-native';
+import type { MutableRefObject } from 'react';
+import type {
   Animated,
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native';
-import {
-  IntersectionObserver,
-  IntersectionObserverCallback,
-} from '@infinite-list/intersection-observer/react-native';
-import Marshal from '../Marshal';
-import { ContentSizeChangeHandler, SyntheticEventHandler } from './scrollView';
-import { InfiniteListScrollViewRef } from './scrollView';
-import { StickyMode } from './stickyMarshal';
+
+import type Marshal from '../Marshal';
+import type { ContentSizeChangeHandler, InfiniteListScrollViewRef,SyntheticEventHandler  } from './scrollView';
+import type { StickyMode } from './stickyMarshal';
 
 export type SetScrollUpdating = (falsy: boolean) => void;
 

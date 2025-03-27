@@ -1,9 +1,11 @@
 import { ListGroupDimensions } from '@infinite-list/data-model';
 import shallowEqual from '@x-oasis/shallow-equal';
-import React, {
+import type {
   FC,
   ForwardedRef,
-  PropsWithChildren,
+  PropsWithChildren} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   useContext,
   useEffect,
@@ -16,7 +18,7 @@ import ViewabilityContext from '../context/ViewabilityContext';
 import ViewableItemContext from '../context/ViewableItemContext';
 import useBindGeneral from '../hooks/useBindGeneral';
 import useMeasureLayout from '../hooks/useMeasureLayout';
-import { ViewableItemProps } from '../types';
+import type { ViewableItemProps } from '../types';
 import MemoedViewableItem from './Item';
 
 const createViewableComponent = <T extends React.ComponentType<any>>(

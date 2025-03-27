@@ -1,9 +1,8 @@
-import { GenericItemT } from './generic.types';
-import { ListDimensionsModelProps } from './ListDimensionsModel.types';
-import { ListStateResult } from './ListBaseDimensions.types';
-import MasonryDimensionsModel from '../masonry/MasonryDimensionsModel';
-import { ListIndexInfo } from './ItemMeta.types';
-import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
+import type MasonryDimensionsModel from '../masonry/MasonryDimensionsModel';
+import type { GenericItemT } from './generic.types';
+import type { ListIndexInfo } from './ItemMeta.types';
+import type { ListBaseDimensionsProps,ListStateResult  } from './ListBaseDimensions.types';
+import type { ListDimensionsModelProps } from './ListDimensionsModel.types';
 
 export interface MasonryDimensionsProps<
   ItemT extends GenericItemT = GenericItemT

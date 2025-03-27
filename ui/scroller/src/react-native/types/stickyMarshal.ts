@@ -1,5 +1,6 @@
-import { IClientRectReadOnly } from '@infinite-list/intersection-observer/react-native';
-import Marshal from '../Marshal';
+import type { IClientRectReadOnly } from '@infinite-list/intersection-observer/react-native';
+
+import type Marshal from '../Marshal';
 
 export enum StickyMode {
   fluid = 'fluid',

@@ -1,15 +1,16 @@
 import uniqueArrayObject from '@x-oasis/unique-array-object';
-import {
+
+import type ItemMeta from '../ItemMeta';
+import type {
   GenericItemT,
-  ViewabilityConfig,
   OnViewableItemsChanged,
+  ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
   ViewabilityScrollMetrics,
 } from '../types';
-import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
-import ItemMeta from '../ItemMeta';
-import ViewabilityItemMeta from './ViewabilityItemMeta';
+import type ViewabilityItemMeta from './ViewabilityItemMeta';
+import ViewablityHelper from './ViewablityHelper';
 
 class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   private _tuple: ViewabilityConfigCallbackPairs = [];
@@ -28,7 +29,7 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
       viewabilityConfigCallbackPairs = [],
     } = props;
 
-    if (viewabilityConfigCallbackPairs.length) {
+    if (viewabilityConfigCallbackPairs.length > 0) {
       if (
         viewabilityConfigCallbackPairs.length === 1 &&
         viewabilityConfigCallbackPairs[0].viewabilityConfig
@@ -92,9 +93,7 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   }
 
   getDefaultState(defaultValue?: boolean) {
-    return this.tuple.reduce<{
-      [key: string]: boolean;
-    }>((acc, pair) => {
+    return this.tuple.reduce<Record<string, boolean>>((acc, pair) => {
       const { viewabilityConfig } = pair;
       const { name } = viewabilityConfig || {};
       if (name) acc[name] = !!defaultValue;
@@ -114,9 +113,7 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
     if (!viewabilityScrollMetrics || !itemMeta)
       return itemMeta.getState() || {};
     if (!itemMeta.getLayout()) return itemMeta?.getState() || {};
-    return this.viewabilityHelpers.reduce<{
-      [key: string]: boolean;
-    }>((value, helper) => {
+    return this.viewabilityHelpers.reduce<Record<string, boolean>>((value, helper) => {
       const falsy = helper.checkItemViewability(
         itemMeta,
         viewabilityScrollMetrics,

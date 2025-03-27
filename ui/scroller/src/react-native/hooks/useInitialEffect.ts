@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 
-type Fn = { (): void };
+type Fn = () => void;
 type Disposer = Fn | undefined;
 
-const useInitialEffect = (fn: { (): Disposer }) => {
+const useInitialEffect = (fn: () => Disposer) => {
   const isInitialRef = useRef(true);
   const disposerRef = useRef<Fn | null | undefined>(null);
 

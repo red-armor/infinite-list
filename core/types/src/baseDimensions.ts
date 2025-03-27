@@ -1,4 +1,4 @@
-import { GenericItemT } from './generic.types';
+import type { GenericItemT } from './generic.types';
 
 export type IBaseDimensions<ItemT extends GenericItemT = GenericItemT> = {
   /**
@@ -8,5 +8,5 @@ export type IBaseDimensions<ItemT extends GenericItemT = GenericItemT> = {
    *                  will not be included on calculating item offset.
    * @returns
    */
-  getKeyItemOffset(key: string, exclusive: boolean): number;
+  getKeyItemOffset: (key: string, exclusive: boolean) => number;
 };

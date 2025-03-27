@@ -1,12 +1,13 @@
-import { BaseLayoutProps } from '@infinite-list/base-dimensions';
-import { ItemMeta } from '@infinite-list/item-meta';
-import {
+import type { BaseLayoutProps } from '@infinite-list/base-dimensions';
+import type { ItemMeta } from '@infinite-list/item-meta';
+import type {
   OnEndReachedHelperProps,
   ViewabilityConfigTuplesProps,
 } from '@infinite-list/viewable';
-import { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
-import { GenericItemT } from './generic.types';
-import { ActionType, ReducerResult, Store } from './types';
+import type { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
+
+import type { GenericItemT } from './generic.types';
+import type { ActionType, ReducerResult, Store } from './types';
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
@@ -88,6 +89,4 @@ export type ListState = {
   // data: Array<ItemT>;
 } & PreStateResult;
 
-export type IndexToOffsetMap = {
-  [key: number]: number;
-};
+export type IndexToOffsetMap = Record<number, number>;

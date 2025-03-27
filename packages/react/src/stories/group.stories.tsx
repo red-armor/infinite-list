@@ -1,9 +1,11 @@
-import type { Meta } from '@storybook/react';
+import type {KeyExtractor} from '@infinite-list/data-model';
 import {
-  defaultKeyExtractor,
-  type KeyExtractor,
+  defaultKeyExtractor
 } from '@infinite-list/data-model';
-import { ListGroup, GroupList, RenderItem, RenderItemInfo } from '../';
+import type { Meta } from '@storybook/react';
+
+import type { RenderItemInfo } from '../';
+import { GroupList, ListGroup } from '../';
 
 type Item = {
   key: string;

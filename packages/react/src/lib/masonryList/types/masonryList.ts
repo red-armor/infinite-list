@@ -1,13 +1,14 @@
-import {
+import type {
   GenericItemT,
+  MasonryColumnStateResults,
+  MasonryDimension,
+  MasonryDimensionsModelProps,
   RecycleStateToken,
   SpaceStateToken,
-  MasonryDimension,
-  MasonryColumnStateResults,
-  MasonryDimensionsModelProps,
 } from '@infinite-list/data-model';
-import { RenderItem } from '../../types';
-import { ForwardedRef } from 'react';
+import type { ForwardedRef } from 'react';
+
+import type { RenderItem } from '../../types';
 
 export type GetColumnWidth = (columnIndex: number) => number;
 

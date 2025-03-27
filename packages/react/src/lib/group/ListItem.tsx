@@ -1,15 +1,16 @@
-import shallowEqual from '@x-oasis/shallow-equal';
-import React, {
+import type {
   ForwardedRef,
-  PropsWithChildren,
+  PropsWithChildren} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   useEffect,
   useMemo,
   useRef,
 } from 'react';
 
-import { DefaultItemT } from '../types';
-import { ListItemProps } from './types';
+import type { DefaultItemT } from '../types';
+import type { ListItemProps } from './types';
 
 /**
  *

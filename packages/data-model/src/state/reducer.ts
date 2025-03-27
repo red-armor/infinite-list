@@ -1,13 +1,14 @@
-import preCheck from './middleware/preCheck';
-import hydrateOnEndReached from './middleware/hydrateOnEndReached';
-import makeIndexMeaningful from './middleware/makeIndexMeaningful';
-import resolveIndexRange from './middleware/resolveIndexRange';
-import resolveMaxIndex from './middleware/resolveMaxIndex';
-import fixVisibleRange from './middleware/fixVisibleRange';
 import fixBufferedRange from './middleware/fixBufferedRange';
 import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
+import fixVisibleRange from './middleware/fixVisibleRange';
+import hydrateOnEndReached from './middleware/hydrateOnEndReached';
+import makeIndexMeaningful from './middleware/makeIndexMeaningful';
+import preCheck from './middleware/preCheck';
+import resolveIndexRange from './middleware/resolveIndexRange';
 import resolveInitialState from './middleware/resolveInitialState';
-import { Action, ActionPayload, ActionType, Ctx, ReducerResult } from './types';
+import resolveMaxIndex from './middleware/resolveMaxIndex';
+import type { Action, ActionPayload, Ctx, ReducerResult } from './types';
+import { ActionType } from './types';
 
 const initialize = <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -193,15 +194,20 @@ export default <State extends ReducerResult = ReducerResult>(
 ) => {
   const { type, payload } = action;
   switch (type) {
-    case ActionType.HydrationWithBatchUpdate:
+    case ActionType.HydrationWithBatchUpdate: {
       return hydrationWithBatchUpdate(state, payload);
-    case ActionType.ScrollDown:
+    }
+    case ActionType.ScrollDown: {
       return scrollDown(state, payload);
-    case ActionType.ScrollUp:
+    }
+    case ActionType.ScrollUp: {
       return scrollUp(state, payload);
-    case ActionType.Initial:
+    }
+    case ActionType.Initial: {
       return initialize(state, payload);
-    case ActionType.Recalculate:
+    }
+    case ActionType.Recalculate: {
       return recalculate(state, payload);
+    }
   }
 };

@@ -1,15 +1,15 @@
-import BaseImpl from '../strategies/BaseImpl';
-import {
-  ItemLayout,
-  GenericItemT,
-  ScrollMetrics,
-  MasonryIndexInfo,
-  IndexToOffsetMap,
-  MasonryDimensionStrategyProps,
-} from '../types';
-import MasonryDimensionsModel from './MasonryDimensionsModel';
-import { ReducerResult } from '../state/types';
 import createStore from '../state/createStore';
+import type { ReducerResult } from '../state/types';
+import BaseImpl from '../strategies/BaseImpl';
+import type {
+  GenericItemT,
+  IndexToOffsetMap,
+  ItemLayout,
+  MasonryDimensionStrategyProps,
+  MasonryIndexInfo,
+  ScrollMetrics,
+} from '../types';
+import type MasonryDimensionsModel from './MasonryDimensionsModel';
 
 /**
  * a lite ListDimensionsModel version

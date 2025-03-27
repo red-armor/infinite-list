@@ -1,28 +1,31 @@
-import {
-  useCallback,
-  useState,
-  useRef,
-  useMemo,
-  useEffect,
-  forwardRef as ReactForwardRef,
-  ForwardedRef,
-  useContext,
-} from 'react';
-import {
-  View,
-  ViewStyle,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-  LayoutChangeEvent,
-} from 'react-native';
-import {
+import type {
   GenericItemT,
-  MasonryDimension,
-  MasonryStateResults,
+  MasonryStateResults} from '@infinite-list/data-model';
+import {
+  MasonryDimension
 } from '@infinite-list/data-model';
-import { ColumnDimensionInfo, MasonryListProps } from './types';
-import ColumnStateRenderer from './ColumnStateRender';
+import type {
+  ForwardedRef} from 'react';
+import {
+  forwardRef as ReactForwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import type {
+  LayoutChangeEvent,  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ViewStyle} from 'react-native';
+import {
+  View
+} from 'react-native';
+
 import { ScrollViewContext } from '../scrollView';
+import ColumnStateRenderer from './ColumnStateRender';
+import type { ColumnDimensionInfo, MasonryListProps } from './types';
 
 let count = 0;
 
@@ -48,7 +51,7 @@ const MasonryList = <ItemT extends GenericItemT>(
         acc.push(current);
         return acc;
       }
-      const last = acc[acc.length - 1];
+      const last = acc.at(-1);
       if (last) {
         current.left = last.left + last.width;
         current.right = nextWidth - current.left - last.width;
@@ -62,9 +65,7 @@ const MasonryList = <ItemT extends GenericItemT>(
 
   const listRef = useRef<View>(null);
 
-  const style: {
-    [key: string]: ViewStyle;
-  } = useMemo(
+  const style: Record<string, ViewStyle> = useMemo(
     () => ({
       container: {
         width: '100%',

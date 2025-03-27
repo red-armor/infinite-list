@@ -1,7 +1,9 @@
-import { GenericItemT, KeysChangedType } from '../types';
-import MasonryDimensionsModel from './MasonryDimensionsModel';
-import KeyIndexManager from '../utils/KeyIndexManager';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+
+import type { GenericItemT} from '../types';
+import { KeysChangedType } from '../types';
+import KeyIndexManager from '../utils/KeyIndexManager';
+import type MasonryDimensionsModel from './MasonryDimensionsModel';
 
 /**
  *
@@ -39,9 +41,7 @@ export const chunkifyDataSource = <
   const dataSource: ItemT[][] = [];
 
   const shouldShuffle =
-    [KeysChangedType.Append, KeysChangedType.Initial].indexOf(
-      dataChangedType
-    ) === -1;
+    ![KeysChangedType.Append, KeysChangedType.Initial].includes(dataChangedType);
 
   if (!shouldShuffle) {
     startIndex = oldData.length;
@@ -50,7 +50,7 @@ export const chunkifyDataSource = <
       const length = dataModel.getTotalLength();
 
       if (typeof length === 'number') return length;
-      if (typeof length === 'string') return parseFloat(length);
+      if (typeof length === 'string') return Number.parseFloat(length);
       return 0;
     });
   } else {

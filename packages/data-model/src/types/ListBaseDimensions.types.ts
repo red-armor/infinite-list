@@ -1,10 +1,11 @@
-import ItemMeta from '../ItemMeta';
-import { BaseLayoutProps } from './BaseLayout.types';
-import { OnEndReachedHelperProps } from './onEndReachedHelper.types';
-import { ViewabilityConfigTuplesProps } from './viewable.types';
-import { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
-import { ReducerResult, Store, ActionType } from '../state/types';
-import { GenericItemT } from './generic.types';
+import type { OnRecyclerProcess, RecyclerProps } from '@x-oasis/recycler';
+
+import type ItemMeta from '../ItemMeta';
+import type { ActionType,ReducerResult, Store } from '../state/types';
+import type { BaseLayoutProps } from './BaseLayout.types';
+import type { GenericItemT } from './generic.types';
+import type { OnEndReachedHelperProps } from './onEndReachedHelper.types';
+import type { ViewabilityConfigTuplesProps } from './viewable.types';
 
 export type SpaceStateTokenPosition = 'before' | 'buffered' | 'after';
 
@@ -86,6 +87,4 @@ export type ListState = {
   // data: Array<ItemT>;
 } & PreStateResult;
 
-export type IndexToOffsetMap = {
-  [key: number]: number;
-};
+export type IndexToOffsetMap = Record<number, number>;

@@ -1,10 +1,11 @@
-import { RefObject } from 'react';
-import {
+import type { RefObject } from 'react';
+import type {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
-import { IClientRectReadOnly } from '../../types';
+
+import type { IClientRectReadOnly } from '../../types';
 
 export type ScrollEventHandler = (
   e: NativeSyntheticEvent<NativeScrollEvent>
@@ -57,7 +58,5 @@ export abstract class ReactNativeDocument {
   //   (): void;
   // };
 
-  abstract addScrollEventChangeListener(cb: ScrollEventHandler): {
-    (): void;
-  };
+  abstract addScrollEventChangeListener(cb: ScrollEventHandler): () => void;
 }

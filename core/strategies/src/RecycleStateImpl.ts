@@ -1,17 +1,19 @@
-import { ItemMeta } from '@infinite-list/item-meta';
-import { ListGroupIndexInfo } from '@infinite-list/types';
+import type { ItemMeta } from '@infinite-list/item-meta';
+import type { ListGroupIndexInfo } from '@infinite-list/types';
 import { log } from '@infinite-list/utils';
 import defaultValue from '@x-oasis/default-value';
-import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
+import type { OnRecyclerProcess } from '@x-oasis/recycler';
+import Recycler from '@x-oasis/recycler';
+
 // import { resolveToken } from './utils';
 import BaseState from './BaseState';
 import {
+  buildStateTokenIndexKey,
   DEFAULT_RECYCLER_TYPE,
   RECYCLER_BUFFER_SIZE,
   RECYCLER_RESERVED_BUFFER_PER_BATCH,
-  buildStateTokenIndexKey,
 } from './common';
-import {
+import type {
   GenericItemT,
   ListState,
   RecycleRecycleState,
@@ -140,8 +142,8 @@ class RecycleStateImpl<
 
       // TODO: when to reset
       if (
-        (this._stateResult as RecycleStateResult<ItemT>).recycleState.length &&
-        !recycleState.length
+        (this._stateResult as RecycleStateResult<ItemT>).recycleState.length > 0 &&
+        recycleState.length === 0
       ) {
         this._recycler.reset();
       }
@@ -166,8 +168,8 @@ class RecycleStateImpl<
     const spaceStateResult = this.resolveRecycleSpaceState();
 
     const stateResult = {
-      recycleState: recycleStateResult.filter((v) => v),
-      spaceState: spaceStateResult.filter((v) => v),
+      recycleState: recycleStateResult.filter(Boolean),
+      spaceState: spaceStateResult.filter(Boolean),
       rangeState: state,
     };
 
@@ -292,7 +294,7 @@ class RecycleStateImpl<
     log.info('target indices ', { ...state }, targetIndices.slice());
 
     targetIndices
-      .filter((v) => v)
+      .filter(Boolean)
       .forEach((info) => {
         const { meta: itemMeta, targetIndex, recyclerKey } = info;
         const item = this.listContainer.getData()[targetIndex];
@@ -338,7 +340,7 @@ class RecycleStateImpl<
           targetIndex,
           isSpace: false,
           isSticky:
-            this.listContainer.stickyHeaderIndices.indexOf(targetIndex) !== -1,
+            this.listContainer.stickyHeaderIndices.includes(targetIndex),
           item,
           itemMeta,
 

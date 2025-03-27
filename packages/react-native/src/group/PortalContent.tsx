@@ -1,18 +1,21 @@
-import React, {
+import type { RecycleStateResult } from '@infinite-list/data-model';
+import type {
+  PropsWithChildren} from 'react';
+import * as React from 'react';
+import {
+  memo,
   useEffect,
   useMemo,
-  memo,
-  useState,
-  PropsWithChildren,
+  useState
 } from 'react';
-import { RecycleStateResult } from '@infinite-list/data-model';
-import {
-  PortalContextProps,
+import type { ViewStyle } from 'react-native';
+import { View } from 'react-native';
+
+import type {
   GroupRecycleContentProps,
   GroupSpaceContentProps,
+  PortalContextProps,
 } from '../types';
-import { View, ViewStyle } from 'react-native';
-
 import GroupListItemImpl from './GroupListItemImpl';
 
 // @ts-ignore

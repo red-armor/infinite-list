@@ -1,9 +1,7 @@
-import type { Meta } from '@storybook/react';
+import { GroupList,ListGroup } from '@infinite-list/group/react';
+import type { RenderItemInfo } from '@infinite-list/types';
 import { defaultKeyExtractor } from '@infinite-list/utils';
-import { KeyExtractor } from '@infinite-list/dimensions-model';
-import { RenderItemInfo } from '@infinite-list/types';
-
-import { ListGroup, GroupList } from '@infinite-list/group/react';
+import type { Meta } from '@storybook/react';
 
 type Item = {
   key: string;
@@ -17,7 +15,7 @@ const buildData = (count: number, startIndex = 0) =>
 const renderItem = (props: RenderItemInfo<Item>) => {
   const { item, itemMeta } = props;
   if (itemMeta.getState().viewable)
-    console.log('item meta ', itemMeta.getKey(), itemMeta.getState().viewable);
+    console.log('item meta', itemMeta.getKey(), itemMeta.getState().viewable);
   return (
     <div
       style={{

@@ -3,7 +3,7 @@
 // import ListDimensions from '../../ListDimensions';
 // import ListGroupDimensions from '../../ListGroupDimensions';
 import { isValidMetaLayout } from '@infinite-list/item-meta';
-import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
+import type { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 import { log } from '@infinite-list/utils';
 
 // recalculate buffer
@@ -16,7 +16,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const maxToRenderPerBatch = dimension.maxToRenderPerBatch;
+  const {maxToRenderPerBatch} = dimension;
   let _nextBufferedEndIndex = bufferedIndexRange.endIndex;
 
   // if (dimension instanceof ListGroupDimensions) {
@@ -55,7 +55,7 @@ export default <State extends ReducerResult = ReducerResult>(
   // if (dimension instanceof ListDimensions) {
   let count = 0;
   for (
-    let startIndex = visibleIndexRange.startIndex;
+    let {startIndex} = visibleIndexRange;
     startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
     startIndex++
   ) {

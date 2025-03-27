@@ -1,10 +1,11 @@
-import SelectValue, {
+import type SelectValue from '@x-oasis/select-value';
+import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-import { DEFAULT_LAYOUT } from './common';
 
-import { ItemLayout, BaseContainerProps, ContainerLayoutGetter } from './types';
+import { DEFAULT_LAYOUT } from './common';
+import type { BaseContainerProps, ContainerLayoutGetter,ItemLayout } from './types';
 
 class BaseContainer {
   public id: string;

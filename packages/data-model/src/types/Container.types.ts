@@ -1,5 +1,5 @@
-import { GenericItemT } from './generic.types';
-import { ListIndexInfo } from './ItemMeta.types';
+import type { GenericItemT } from './generic.types';
+import type { ListIndexInfo } from './ItemMeta.types';
 
 export interface DimensionsModelContainer<
   ItemT extends GenericItemT = GenericItemT

@@ -1,4 +1,4 @@
-import { DataModelDimensions } from './viewability';
+import type { DataModelDimensions } from './viewability';
 
 export enum StickyMode {
   fluid = 'fluid',

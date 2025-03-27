@@ -1,10 +1,10 @@
 import Batchinator from '@x-oasis/batchinator';
 import layoutEqual from '@x-oasis/layout-equal';
+
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
 import SortedItems from './SortedItems';
-
-import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
+import type { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
 import ListSpyUtils from './utils/ListSpyUtils';
 
 class ItemsDimensions extends BaseDimensions {

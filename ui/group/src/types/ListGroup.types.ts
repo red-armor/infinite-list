@@ -1,12 +1,12 @@
-import { ComponentType, PropsWithChildren } from 'react';
-import { RecyclerProps } from '@infinite-list/strategies';
-import {
+import type { RecyclerProps } from '@infinite-list/strategies';
+import type {
   GenericItemT,
   OnEndReachedHelperProps,
   OnViewableItemsChanged,
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/viewable';
+import type { ComponentType, PropsWithChildren } from 'react';
 
 export type ListGroupProps<ItemT extends GenericItemT> = PropsWithChildren<
   {

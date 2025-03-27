@@ -1,15 +1,15 @@
-import { BaseLayoutProps } from './BaseLayout.types';
-import { DimensionProps } from './Dimension.types';
-import { ListDimensionsModelProps } from './ListDimensionsModel.types';
-import {
+import type Dimension from '../Dimension';
+import type ListDimensionsModel from '../ListDimensionsModel';
+import type ListGroupDimensions from '../ListGroupDimensions';
+import type { BaseLayoutProps } from './BaseLayout.types';
+import type { DimensionProps } from './Dimension.types';
+import type { GenericItemT } from './generic.types';
+import type { ListDimensionsModelProps } from './ListDimensionsModel.types';
+import type {
   OnEndReached,
   OnEndReachedHelperProps,
 } from './onEndReachedHelper.types';
-import { ViewabilityConfigTuplesProps } from './viewable.types';
-import ListDimensionsModel from '../ListDimensionsModel';
-import Dimension from '../Dimension';
-import { GenericItemT } from './generic.types';
-import ListGroupDimensions from '../ListGroupDimensions';
+import type { ViewabilityConfigTuplesProps } from './viewable.types';
 
 export type ListRangeResult<ItemT> = ListRange<ItemT>[];
 export type ListRange<ItemT> =

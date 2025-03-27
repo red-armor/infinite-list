@@ -1,7 +1,8 @@
-import React, { FC, ForwardedRef, PropsWithChildren } from 'react';
+import type { FC, ForwardedRef, PropsWithChildren } from 'react';
+import * as React from 'react';
 import { View } from 'react-native';
 
-import { ViewRendererProps, ViewRendererPropsWithForwardRef } from '../types';
+import type { ViewRendererProps, ViewRendererPropsWithForwardRef } from '../types';
 
 const ViewRenderer: FC<ViewRendererPropsWithForwardRef> = (props) => {
   const {

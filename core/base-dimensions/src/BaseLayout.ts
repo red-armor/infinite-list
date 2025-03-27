@@ -1,4 +1,5 @@
 import { Container } from '@infinite-list/container';
+
 import {
   INITIAL_NUM_TO_RENDER,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
@@ -7,7 +8,8 @@ import {
   RECYCLER_RESERVED_BUFFER_PER_BATCH,
   WINDOW_SIZE,
 } from './common';
-import { BaseLayoutProps, FillingMode, ItemLayout } from './types';
+import type { BaseLayoutProps, ItemLayout } from './types';
+import { FillingMode } from './types';
 
 abstract class BaseLayout extends Container {
   readonly _windowSize: number;

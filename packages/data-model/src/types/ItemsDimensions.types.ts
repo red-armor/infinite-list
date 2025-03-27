@@ -1,3 +1,3 @@
-import { BaseDimensionsProps } from './BaseDimensions.types';
+import type { BaseDimensionsProps } from './BaseDimensions.types';
 
 export type ItemsDimensionsProps = BaseDimensionsProps;

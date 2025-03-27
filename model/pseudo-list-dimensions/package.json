@@ -1,10 +1,31 @@
 {
   "name": "@infinite-list/pseudo-list-dimensions",
   "version": "1.0.2",
-  "dependencies": {},
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/types": "workspace:*",
+    "@infinite-list/utils": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./src/index.ts"
   }
 }

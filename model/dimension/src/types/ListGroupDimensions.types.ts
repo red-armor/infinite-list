@@ -1,5 +1,5 @@
-import Dimension from '../Dimension';
-import { GenericItemT } from './generic.types';
+import type Dimension from '../Dimension';
+import type { GenericItemT } from './generic.types';
 
 // import ListGroupDimensions from '../ListGroupDimensions';
 // import ListDimensionsModel from '../ListDimensionsModel';

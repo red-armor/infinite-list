@@ -43,12 +43,8 @@ export const removeItemsKeyword = (configKey: string) =>
 // Pulled from react-compat
 // https://github.com/developit/preact-compat/blob/7c5de00e7c85e2ffd011bf3af02899b63f699d3a/src/index.js#L349
 export function shallowDiffers(
-  prev: {
-    [key: string]: any;
-  },
-  next: {
-    [key: string]: any;
-  }
+  prev: Record<string, any>,
+  next: Record<string, any>
 ): boolean {
   for (const attribute in prev) {
     if (!(attribute in next)) {
@@ -65,7 +61,7 @@ export function shallowDiffers(
 
 export const isEmpty = (obj: any) => {
   if (Object.prototype.toString.call(obj) === '[object Object]') {
-    return !Object.keys.length;
+    return Object.keys.length === 0;
   }
   return true;
 };

@@ -1,15 +1,15 @@
-import {
+import type {
   GenericItemT,
+  MasonryColumnStateResults,
+  MasonryDimension,
+  MasonryDimensionsModelProps,
   RecycleStateToken,
   SpaceStateToken,
-  MasonryDimension,
-  MasonryColumnStateResults,
-  MasonryDimensionsModelProps,
 } from '@infinite-list/data-model';
-import { ScrollView, View } from 'react-native';
-import { RefObject } from 'react';
-import { RenderItem } from '../../types';
-import { ForwardedRef } from 'react';
+import type { ForwardedRef,RefObject  } from 'react';
+import type { ScrollView, View } from 'react-native';
+
+import type { RenderItem } from '../../types';
 
 export type GetColumnWidth = (columnIndex: number) => number;
 

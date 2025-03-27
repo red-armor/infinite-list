@@ -1,5 +1,6 @@
-import { GenericItemT } from '@infinite-list/types';
-import {
+import type { GenericItemT } from '@infinite-list/types';
+
+import type {
   GroupRecycleContentProps as CommonGroupRecycleContentProps,
   GroupSpaceContentProps as CommonGroupSpaceContentProps,
   PortalContextProps as CommonPortalContextProps,

@@ -1,6 +1,7 @@
-import { PropsWithChildren, memo, useContext, useRef } from 'react';
-import { DefaultItemT } from '../types';
-import { GroupListProps } from '../types';
+import type { PropsWithChildren} from 'react';
+import { memo, useContext, useRef } from 'react';
+
+import type { DefaultItemT, GroupListProps  } from '../types';
 import context from './context';
 import useMountList from './hooks/useMountList';
 

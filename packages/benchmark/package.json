@@ -5,11 +5,12 @@
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "clean": "rimraf ./dist"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "devDependencies": {
+    "@types/node": "18.16.9",
     "rimraf": "~4.4.0",
     "tsdx": "^0.14.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

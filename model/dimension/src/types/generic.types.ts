@@ -1,4 +1,2 @@
-export type GenericItemT = {
-  [key: string]: any;
-};
+export type GenericItemT = Record<string, any>;
 export type GenericStateResult = any;

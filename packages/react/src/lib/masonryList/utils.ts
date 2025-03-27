@@ -1,4 +1,4 @@
-import { ViewabilityConfigCallbackPairs } from '@infinite-list/data-model';
+import type { ViewabilityConfigCallbackPairs } from '@infinite-list/data-model';
 
 export function shuffleData(data, getItemLayout) {
   let lengthLeft = 0;

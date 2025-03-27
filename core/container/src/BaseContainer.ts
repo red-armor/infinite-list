@@ -1,10 +1,12 @@
-import { ItemLayout } from '@infinite-list/types';
-import SelectValue, {
+import type { ItemLayout } from '@infinite-list/types';
+import type SelectValue from '@x-oasis/select-value';
+import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
+
 import { DEFAULT_LAYOUT } from './common';
-import { BaseContainerProps, ContainerLayoutGetter } from './types';
+import type { BaseContainerProps, ContainerLayoutGetter } from './types';
 
 class BaseContainer {
   public id: string;

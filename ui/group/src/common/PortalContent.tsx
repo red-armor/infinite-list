@@ -1,7 +1,9 @@
-import { PropsWithChildren, memo, useEffect, useMemo, useState } from 'react';
-import { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
-import { ItemMetaOwner } from '@infinite-list/types';
-import {
+import type { GenericItemT, RecycleStateResult } from '@infinite-list/strategies';
+import type { ItemMetaOwner } from '@infinite-list/types';
+import type { PropsWithChildren} from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
+
+import type {
   ExtraInfo,
   GroupRecycleContentProps,
   GroupSpaceContentProps,

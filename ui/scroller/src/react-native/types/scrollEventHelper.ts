@@ -1,4 +1,4 @@
-import { ContentSizeChangeHandler, SyntheticEventHandler } from './scrollView';
+import type { ContentSizeChangeHandler, SyntheticEventHandler } from './scrollView';
 
 export type EventHandlerName =
   | 'onScroll'

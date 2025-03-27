@@ -1,4 +1,6 @@
-import React, { useContext, useRef } from 'react';
+import * as React from 'react';
+import { useContext, useRef } from 'react';
+
 import context from './context';
 import useMountItem from './hooks/useMountItem';
 
@@ -13,8 +15,7 @@ const MemoedGroupListItem = React.memo(GroupListItem, (prev, cur) => {
 
   const keys = Object.keys(prev);
 
-  for (let index = 0; index < keys.length; index++) {
-    const key = keys[index];
+  for (const key of keys) {
     if (prev[key] !== cur[key]) {
       return false;
     }

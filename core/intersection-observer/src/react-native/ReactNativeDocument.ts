@@ -1,16 +1,18 @@
-import { RefObject } from 'react';
-import {
+import type { RefObject } from 'react';
+import type {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
 } from 'react-native';
+
 import Emitter from './Emitter';
-import {
+import type {
   OnIntersectionChange,
-  ReactNativeDocument,
   ReactNativeDocumentBaseProps,
   ReactNativeDocumentNode,
-  ScrollEventHandler,
+  ScrollEventHandler} from './types';
+import {
+  ReactNativeDocument
 } from './types';
 
 export function getNode(node: ReactNativeDocumentNode) {
@@ -48,7 +50,7 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
     type: string,
     listener: ScrollEventHandler,
     options?: boolean | AddEventListenerOptions
-  ): { (): void } {
+  ): () => void {
     return this.emitter.on(type, listener);
   }
 
@@ -73,4 +75,6 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
 
 export { ReactNativeDocumentBase };
 
-export default ReactNativeDocument;
+
+
+export {ReactNativeDocument as default} from './types';

@@ -1,4 +1,4 @@
-import { ClientRect, IClientRectReadOnly, ItemLayout } from './types';
+import type { ClientRect, IClientRectReadOnly, ItemLayout } from './types';
 
 export function getEmptyRect() {
   return {
@@ -25,13 +25,13 @@ export function getEmptyIntersection() {
 
 export const parseRootMargin = function (opt_rootMargin?: string) {
   const marginString = opt_rootMargin || '0';
-  const margins = marginString.split(/\s+/).map(function (margin) {
+  const margins = marginString.split(/\s+/).map((margin) => {
     // const parts = /^(-?\d*\.?\d+)(px|%)$/.exec(margin);
-    const parts = /^(-?\d*\.?\d+)$/.exec(margin);
+    const parts = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/.exec(margin);
     if (!parts) {
       throw new Error('rootMargin must be specified in pixels or percent');
     }
-    return { value: parseFloat(parts[1]), unit: parts[2] };
+    return { value: Number.parseFloat(parts[1]), unit: parts[2] };
   });
 
   // Handles shorthand.

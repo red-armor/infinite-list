@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useRef } from 'react';
 import { List } from '@infinite-list/list/react-native';
 import { ScrollView } from '@infinite-list/scroller/react-native';
-import { ScrollView as NativeScrollView, Text, View } from 'react-native';
+import { useCallback, useMemo, useRef } from 'react';
+import type { ScrollView as NativeScrollView} from 'react-native';
+import { Text, View } from 'react-native';
 
 const buildData = (count: number, startIndex = 0) =>
   new Array(count).fill(1).map((v, index) => ({
@@ -17,7 +18,7 @@ export default () => {
     const { item, itemMeta } = props;
     if (itemMeta.getState().viewable)
       console.log(
-        'item meta ',
+        'item meta',
         itemMeta.getKey(),
         itemMeta.getState().viewable
       );

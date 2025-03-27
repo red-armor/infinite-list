@@ -1,19 +1,20 @@
 import { KeysChangedType } from '@infinite-list/base-dimensions';
 import { Dimension } from '@infinite-list/dimension';
-import { ListDimensionsModel } from '@infinite-list/dimensions-model';
-import { IndexToOffsetMap, ItemLayout } from '@infinite-list/dimensions-model';
-import { ItemMeta } from '@infinite-list/item-meta';
+import type { IndexToOffsetMap, ItemLayout} from '@infinite-list/dimensions-model';
+import {ListDimensionsModel  } from '@infinite-list/dimensions-model';
+import type { ItemMeta } from '@infinite-list/item-meta';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { BaseImpl } from '@infinite-list/strategies';
 import { log } from '@infinite-list/utils';
-import { OnEndReached } from '@infinite-list/viewable';
+import type { OnEndReached } from '@infinite-list/viewable';
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isClamped from '@x-oasis/is-clamped';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+
 import Inspector from './Inspector';
 import { createStore } from './state';
-import {
+import type {
   DimensionsIndexRange,
   GenericItemT,
   KeyToOnEndReachedMap,
@@ -29,7 +30,7 @@ import {
 // import { info } from './utils/logger';
 // import createStore from './state/createStore';
 
-const info = log.info;
+const {info} = log;
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -289,8 +290,8 @@ class ListGroupDimensions<
   }
 
   getKeyIndex(key: string, listKey: string) {
-    const listIndex = this.indexKeys.findIndex(
-      (indexKey) => indexKey === listKey
+    const listIndex = this.indexKeys.indexOf(
+      listKey
     );
 
     if (listIndex !== -1) {
@@ -306,8 +307,8 @@ class ListGroupDimensions<
   }
 
   getIndexKey(index: number, listKey: string) {
-    const listIndex = this.indexKeys.findIndex(
-      (indexKey) => indexKey === listKey
+    const listIndex = this.indexKeys.indexOf(
+      listKey
     );
 
     if (listIndex !== -1) {
@@ -422,7 +423,7 @@ class ListGroupDimensions<
   }
 
   removeListDimensions(listKey: string) {
-    const index = this.indexKeys.findIndex((indexKey) => indexKey === listKey);
+    const index = this.indexKeys.indexOf(listKey);
     if (index !== -1) {
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
@@ -512,15 +513,13 @@ class ListGroupDimensions<
    */
   calculateDimensionsIndexRange() {
     let startIndex = 0;
-    const rangeMap: {
-      [key: string]: number;
-    } = {};
+    const rangeMap: Record<string, number> = {};
     this._dimensionsIndexRange = this.indexKeys.reduce<
       DimensionsIndexRange<ItemT>[]
     >((acc, key) => {
       const dimensions = this.getDimension(key);
       if (!dimensions) return acc;
-      const recyclerType = dimensions.recyclerType;
+      const {recyclerType} = dimensions;
       if (rangeMap[recyclerType] == null) rangeMap[recyclerType] = 0;
 
       const endIndex = startIndex + dimensions.length;
@@ -673,7 +672,7 @@ class ListGroupDimensions<
           KeysChangedType.Add,
           KeysChangedType.Remove,
           KeysChangedType.Append,
-        ].indexOf(changedType) !== -1
+        ].includes(changedType)
       ) {
         // 这个得跟removeItem对应都得做个延迟，不然的话会存在一个可能性，比如替换整个list的数据，
         // remove callback一般会慢，如果不做延迟的话，你会发现data可能存在已经unmount的数据
@@ -888,11 +887,11 @@ class ListGroupDimensions<
 
     if (startPosition === -1 || endPosition === -1) return [];
 
-    const startDimensionIndex = this.indexKeys.findIndex(
-      (key) => key === startPosition.dimensionKey
+    const startDimensionIndex = this.indexKeys.indexOf(
+      startPosition.dimensionKey
     );
-    const endDimensionIndex = this.indexKeys.findIndex(
-      (key) => key === endPosition.dimensionKey
+    const endDimensionIndex = this.indexKeys.indexOf(
+      endPosition.dimensionKey
     );
     const result: ListRangeResult<ItemT> = [];
 

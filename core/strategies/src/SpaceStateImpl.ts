@@ -173,7 +173,7 @@
 // }
 // export default SpaceStateImpl;
 import BaseState from './BaseState';
-import {
+import type {
   GenericItemT,
   ListState,
   SpaceStateResult,

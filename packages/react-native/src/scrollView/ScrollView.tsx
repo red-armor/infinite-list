@@ -1,10 +1,12 @@
 import { ItemsDimensions } from '@infinite-list/data-model';
 import isRefObject from '@x-oasis/is-ref';
-import React, {
+import type {
   FC,
   ForwardedRef,
   MutableRefObject,
-  PropsWithChildren,
+  PropsWithChildren} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   useContext,
   useEffect,
@@ -12,17 +14,15 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import type {
+  ScrollView as RNScrollView,
+  View as RNView} from 'react-native';
 import {
   Animated,
-  RefreshControl as RNRefreshControl,
-  ScrollView as RNScrollView,
-  View as RNView,
   Platform,
+  RefreshControl as RNRefreshControl
 } from 'react-native';
 
-import Marshal from './Marshal';
-import ScrollEventHelper from './ScrollEventHelper';
-import ScrollHelper from './ScrollHelper';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { isIos } from './commons/platform';
 import AnimatedRenderer from './component/AnimatedRenderer';
@@ -33,10 +33,13 @@ import { defaultViewabilityConfigCallbackPairs } from './constants';
 import ScrollUpdatingContext from './context/ScrollUpdatingContext';
 import ScrollViewContext from './context/ScrollViewContext';
 import ViewabilityContext from './context/ViewabilityContext';
+import Marshal from './Marshal';
 import FooterPortalContainer from './portal/FooterContainer';
 import HeaderPortalContainer from './portal/HeaderContainer';
 import PortalManager from './portal/Manager';
-import {
+import ScrollEventHelper from './ScrollEventHelper';
+import ScrollHelper from './ScrollHelper';
+import type {
   SpectrumScrollViewProps,
   SpectrumScrollViewPropsWithForwardRef,
   SpectrumScrollViewPropsWithRef,

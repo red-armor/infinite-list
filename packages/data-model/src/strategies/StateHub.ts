@@ -1,9 +1,9 @@
-import {
+import type {
   GenericItemT,
   ListState,
-  StateListener,
-  StateHubProps,
   ListStateResult,
+  StateHubProps,
+  StateListener,
 } from '../types';
 import RecycleStateImpl from './RecycleStateImpl';
 import SpaceStateImpl from './SpaceStateImpl';

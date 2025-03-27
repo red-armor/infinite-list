@@ -1,12 +1,13 @@
-import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
-import { ListIndexInfo } from '@infinite-list/item-meta';
-import {
+import type { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
+import type { ListIndexInfo } from '@infinite-list/item-meta';
+import type {
   ListBaseDimensionsProps,
   ListStateResult,
 } from '@infinite-list/strategies';
-import { TheHostProps } from '@infinite-list/types';
-import MasonryDimensionsModel from '../MasonryDimensionsModel';
-import { GenericItemT } from './generic.types';
+import type { TheHostProps } from '@infinite-list/types';
+
+import type MasonryDimensionsModel from '../MasonryDimensionsModel';
+import type { GenericItemT } from './generic.types';
 
 export interface MasonryDimensionsProps<
   ItemT extends GenericItemT = GenericItemT,

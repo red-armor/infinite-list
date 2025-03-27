@@ -1,7 +1,8 @@
-import { View } from 'react-native';
-import { ItemsDimensions } from '@infinite-list/items-dimensions';
-import { IClientRectReadOnly, IRectIntersection } from '../../types';
-import Observer from '../Observer';
+import type { ItemsDimensions } from '@infinite-list/items-dimensions';
+import type { View } from 'react-native';
+
+import type { IClientRectReadOnly, IRectIntersection } from '../../types';
+import type Observer from '../Observer';
 
 export type IntersectionObserverEntryProps = {
   target: View;

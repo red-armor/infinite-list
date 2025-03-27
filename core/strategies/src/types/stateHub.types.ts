@@ -1,5 +1,5 @@
-import BaseImpl from '../BaseImpl';
-import { GenericItemT } from './generic.types';
+import type BaseImpl from '../BaseImpl';
+import type { GenericItemT } from './generic.types';
 
 export type BaseStateImplProps<ItemT extends GenericItemT = GenericItemT> = {
   listContainer: BaseImpl<ItemT>;

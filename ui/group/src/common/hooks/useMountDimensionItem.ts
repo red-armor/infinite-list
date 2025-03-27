@@ -1,15 +1,17 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { Dimension, GenericItemT } from '@infinite-list/dimension';
-import { GroupDimensionItemProps } from '../../types';
-import context, { ContextType } from '../context';
+import type { Dimension, GenericItemT } from '@infinite-list/dimension';
+import * as React from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
+
+import type { GroupDimensionItemProps } from '../../types';
+import type { ContextType } from '../context';
+import context from '../context';
 
 export default <ItemT extends GenericItemT>(
   props: GroupDimensionItemProps<ItemT>
 ) => {
   const disposerRef = useRef<Function>();
   const initialRef = useRef(true);
-  const listGroupDimensions =
-    useContext<ContextType<ItemT>>(context).listGroupDimensions;
+  const {listGroupDimensions} = useContext<ContextType<ItemT>>(context);
   const { itemKey, children, ...rest } = props;
 
   const dimensionRef = useRef<Dimension>();

@@ -1,10 +1,16 @@
-import {
+import type { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
+import type { ScrollMetrics } from '@infinite-list/types';
+import type {
+  ViewabilityConfig,
+  ViewabilityConfigCallbackPairs,
+} from '@infinite-list/viewable';
+import type {
   ForwardedRef,
   MutableRefObject,
   PropsWithChildren,
   RefObject,
 } from 'react';
-import {
+import type {
   Animated,
   LayoutChangeEvent,
   NativeScrollEvent,
@@ -21,15 +27,10 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
-import { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
-import { ScrollMetrics } from '@infinite-list/types';
-import {
-  ViewabilityConfig,
-  ViewabilityConfigCallbackPairs,
-} from '@infinite-list/viewable';
-import ScrollHelper from '../ScrollHelper';
-import ScrollerScrollView from '../ScrollView';
-import { StickyMode } from './stickyMarshal';
+
+import type ScrollHelper from '../ScrollHelper';
+import type ScrollerScrollView from '../ScrollView';
+import type { StickyMode } from './stickyMarshal';
 
 // import PagerView from 'react-native-pager-view';
 // TODO

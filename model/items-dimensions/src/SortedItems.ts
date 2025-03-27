@@ -1,6 +1,6 @@
 // import ItemMeta from './ItemMeta';
-import { ItemMeta } from '@infinite-list/item-meta';
-import SelectValue from '@x-oasis/select-value';
+import type { ItemMeta } from '@infinite-list/item-meta';
+import type SelectValue from '@x-oasis/select-value';
 
 export default class SortedItems {
   readonly selectValue: SelectValue;
@@ -14,7 +14,7 @@ export default class SortedItems {
   }
 
   has(itemMeta: ItemMeta) {
-    const index = this._items.findIndex((i) => i === itemMeta);
+    const index = this._items.indexOf(itemMeta);
     return index !== -1;
   }
 
@@ -26,7 +26,7 @@ export default class SortedItems {
    */
 
   add(itemMeta: ItemMeta) {
-    const index = this._items.findIndex((v) => v === itemMeta);
+    const index = this._items.indexOf(itemMeta);
     if (index === -1) {
       this._items.push(itemMeta);
       this._headValues.push(itemMeta);
@@ -56,13 +56,13 @@ export default class SortedItems {
   }
 
   remove(itemMeta: ItemMeta) {
-    const index = this._items.findIndex((i) => i === itemMeta);
+    const index = this._items.indexOf(itemMeta);
     if (index !== -1) this._items.splice(index, 1);
 
-    const headValueIndex = this._headValues.findIndex((i) => i === itemMeta);
+    const headValueIndex = this._headValues.indexOf(itemMeta);
     if (headValueIndex !== -1) this._headValues.splice(index, 1);
 
-    const tailValueIndex = this._tailValues.findIndex((i) => i === itemMeta);
+    const tailValueIndex = this._tailValues.indexOf(itemMeta);
     if (tailValueIndex !== -1) this._tailValues.splice(index, 1);
   }
 
@@ -110,7 +110,7 @@ export default class SortedItems {
     const { minOffset, maxOffset } = props;
     const getValue = (item: ItemMeta) => selectOffset(item.getLayout()!);
     const data = this._headValues;
-    if (!data.length) return [];
+    if (data.length === 0) return [];
 
     const min = 0;
     const max = data.length - 1;
@@ -134,11 +134,9 @@ export default class SortedItems {
     if (startIndex > 0) {
       const prev = data[startIndex - 1];
       const layout = prev.getLayout();
-      if (layout) {
-        if (minOffset < selectLength(layout) + selectOffset(layout)) {
+      if (layout && minOffset < selectLength(layout) + selectOffset(layout)) {
           startIndex = startIndex - 1;
         }
-      }
     }
 
     return data.slice(startIndex, endIndex);

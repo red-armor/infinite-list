@@ -1,6 +1,8 @@
-import React, { PropsWithChildren, useContext, useRef, FC } from 'react';
+import type { PropsWithChildren} from 'react';
+import * as React from 'react';
+import { useContext, useRef } from 'react';
 
-import { DefaultItemT, GroupListProps } from '../types';
+import type { DefaultItemT, GroupListProps } from '../types';
 import context from './context';
 import useMountList from './hooks/useMountList';
 
@@ -19,8 +21,7 @@ const MemoedGroupList = React.memo<PropsWithChildren<GroupListProps<any>>>(
 
     const keys = Object.keys(prev);
 
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
+    for (const key of keys) {
       // @ts-ignore
       if (prev[key] !== cur[key]) {
         return false;

@@ -1,8 +1,9 @@
-import type { Meta } from '@storybook/react';
+import type {KeyExtractor} from '@infinite-list/data-model';
 import {
-  defaultKeyExtractor,
-  type KeyExtractor,
+  defaultKeyExtractor
 } from '@infinite-list/data-model';
+import type { Meta } from '@storybook/react';
+
 import { List } from '../';
 
 const buildData = (count: number) =>

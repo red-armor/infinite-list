@@ -1,19 +1,19 @@
-import { ListIndexInfo } from './ListDimensions';
-import { IOnEndReachedHelper } from './OnEndReachedHelper';
-import { GenericItemT } from './generic.types';
+import type { GenericItemT } from './generic.types';
+import type { ListIndexInfo } from './ListDimensions';
+import type { IOnEndReachedHelper } from './OnEndReachedHelper';
 
 export interface IMasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
   // getItemKey(item: ItemT, index?: number): string | null;
-  onItemLayoutChanged(): void;
-  onDataSourceChanged(): void;
+  onItemLayoutChanged: () => void;
+  onDataSourceChanged: () => void;
   onEndReachedHelper: IOnEndReachedHelper;
-  getFinalKeyIndexInfo(key: string): MasonryIndexInfo<ItemT>;
+  getFinalKeyIndexInfo: (key: string) => MasonryIndexInfo<ItemT>;
 }
 
 export interface IMasonryDimensionsModel<
   ItemT extends GenericItemT = GenericItemT,
 > {
-  getKeyItemOffset(key: string, exclusive: boolean): number;
+  getKeyItemOffset: (key: string, exclusive: boolean) => number;
   // getItemKey(item: ItemT, index?: number): string | null;
 }
 

@@ -1,6 +1,7 @@
-import { RefObject } from 'react';
-import { GenericItemT } from '@infinite-list/types';
-import {
+import type { GenericItemT } from '@infinite-list/types';
+import type { RefObject } from 'react';
+
+import type {
   ListProps as CommonListProps,
   RecycleItemProps as CommonRecycleItemProps,
   SpaceItemProps as CommonSpaceItemProps,

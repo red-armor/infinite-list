@@ -1,11 +1,11 @@
-import { BaseDimensionsProps, KeysChangedType } from './BaseDimensions.types';
-import { GenericItemT } from './generic.types';
-import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
-import ListGroupDimensions from '../ListGroupDimensions';
-import ListDimensions from '../ListDimensions';
-import MasonryDimensions from '../masonry/MasonryDimensions';
-import ListDimensionsModel from '../ListDimensionsModel';
-import MasonryDimensionsModel from '../masonry/MasonryDimensionsModel';
+import type ListDimensions from '../ListDimensions';
+import type ListDimensionsModel from '../ListDimensionsModel';
+import type ListGroupDimensions from '../ListGroupDimensions';
+import type MasonryDimensions from '../masonry/MasonryDimensions';
+import type MasonryDimensionsModel from '../masonry/MasonryDimensionsModel';
+import type { BaseDimensionsProps, KeysChangedType } from './BaseDimensions.types';
+import type { GenericItemT } from './generic.types';
+import type { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,

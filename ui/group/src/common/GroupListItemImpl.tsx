@@ -1,6 +1,7 @@
-import React from 'react';
-import { GenericItemT } from '@infinite-list/strategies';
-import { GroupListItemImplProps } from '../types';
+import type { GenericItemT } from '@infinite-list/strategies';
+import * as React from 'react';
+
+import type { GroupListItemImplProps } from '../types';
 import ListItem from './ListItem';
 
 const GroupListItemImpl = <ItemT extends GenericItemT>(

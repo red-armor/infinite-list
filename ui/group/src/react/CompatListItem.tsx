@@ -1,13 +1,14 @@
+import type { GenericItemT } from '@infinite-list/types';
+import type {
+  PropsWithChildren} from 'react';
 import {
-  FC,
-  PropsWithChildren,
   useCallback,
   useEffect,
   useMemo,
   useRef,
 } from 'react';
-import { GenericItemT } from '@infinite-list/types';
-import { CompatListItemProps } from './types';
+
+import type { CompatListItemProps } from './types';
 
 const CompatListItem = <ItemT extends GenericItemT>(
   props: PropsWithChildren<CompatListItemProps<ItemT>>

@@ -1,6 +1,6 @@
-import { ListGroupDimensions } from '@infinite-list/data-model';
-import { createContext } from 'react';
+import type { ListGroupDimensions } from '@infinite-list/data-model';
 import noop from '@x-oasis/noop';
+import { createContext } from 'react';
 
 export default createContext<{
   inspectingTimes: number;

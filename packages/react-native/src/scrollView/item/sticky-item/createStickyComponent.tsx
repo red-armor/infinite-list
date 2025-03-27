@@ -1,8 +1,10 @@
 import { ListGroupDimensions } from '@infinite-list/data-model';
 import shallowEqual from '@x-oasis/shallow-equal';
-import React, {
+import type {
   FC,
-  ForwardedRef,
+  ForwardedRef} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   useContext,
   useEffect,
@@ -10,14 +12,15 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Animated, Platform, View, ViewStyle } from 'react-native';
+import type { Animated, View, ViewStyle } from 'react-native';
+import { Platform } from 'react-native';
 
 import ScrollViewContext from '../../context/ScrollViewContext';
 import ViewabilityContext from '../../context/ViewabilityContext';
 import ViewableItemContext from '../../context/ViewableItemContext';
 import useBindGeneral from '../../hooks/useBindGeneral';
 import useMeasureLayout from '../../hooks/useMeasureLayout';
-import { InterpolationConfig, StickyItemProps } from '../../types';
+import type { InterpolationConfig, StickyItemProps } from '../../types';
 import Item from '../Item';
 
 const createStickyComponent = <
@@ -53,7 +56,7 @@ const createStickyComponent = <
     const contextValue = useContext(ScrollViewContext);
     const { marshal, scrollEventHelper } = contextValue;
     const scrollHelper = contextValue.getScrollHelper();
-    const selectValue = scrollHelper.selectValue;
+    const {selectValue} = scrollHelper;
     const selectedAnimatedValue = scrollHelper.getAnimatedValue();
     const defaultRef = useRef<View>();
 
@@ -75,14 +78,12 @@ const createStickyComponent = <
     }, []);
 
     if (initialRef.current) {
-      if (Platform.OS === 'android') {
-        if (scrollHelper.getMarshal()._removeClippedSubviews) {
+      if (Platform.OS === 'android' && scrollHelper.getMarshal()._removeClippedSubviews) {
           console.error(
             'StickyComponent should be wrapped in `ScrollView`' +
               ' with `removeClippedSubviews = true` in Android.'
           );
         }
-      }
 
       stickyDisposerRef.current = stickyMarshal.registerStickyItem(
         viewableItemHelperKey,
@@ -248,9 +249,7 @@ const createStickyComponent = <
                       config?.interpolationConfig
                     )
                   : 0,
-              } as {
-                [key in 'translateX' | 'translateY']: any;
-              },
+              } as Record<'translateX' | 'translateY', any>,
             ],
           },
         ] as any as ViewStyle[]

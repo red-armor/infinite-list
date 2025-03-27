@@ -1,7 +1,8 @@
-import { ItemMeta } from '@infinite-list/data-model';
-import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
+import type { ItemMeta } from '@infinite-list/data-model';
 
-import { ListItemProps, DefaultItemT } from './ListItem.types';
+import type { ScrollComponentUseMeasureLayout } from './ListGroup.types';
+import type { DefaultItemT,ListItemProps } from './ListItem.types';
+
 export type RenderItemInfo<ItemT extends DefaultItemT = DefaultItemT> = {
   item: ItemT;
   itemMeta: ItemMeta<ItemT>;

@@ -1,13 +1,31 @@
 {
   "name": "@infinite-list/types",
   "version": "1.0.2",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
   "dependencies": {
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
   "publishConfig": {
+    "main": "./src/index.ts",
+    "module": "./src/index.ts",
     "access": "public"
   }
 }

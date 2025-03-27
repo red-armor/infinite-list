@@ -1,10 +1,11 @@
-import {
+import type {
   GenericItemT,
+  ListGroupDimensions,
   ListStateResult,
   SpaceStateResult,
-  ListGroupDimensions,
 } from '@infinite-list/data-model';
-import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
+
+import type { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
 export type PortalContextProps<ItemT extends GenericItemT = GenericItemT> = {
   id: string;

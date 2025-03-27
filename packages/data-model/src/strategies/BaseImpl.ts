@@ -1,33 +1,33 @@
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 
+import BaseLayout from '../BaseLayout';
 import {
-  isEmpty,
   DISPATCH_METRICS_THRESHOLD,
+  isEmpty,
   ON_END_REACHED_THRESHOLD,
   STILLNESS_THRESHOLD,
 } from '../common';
-import {
-  ListBaseDimensionsProps,
-  OnEndReached,
-  ScrollMetrics,
-  ItemLayout,
-  StateListener,
-  ListBaseDimensionsStore,
+import type ItemMeta from '../ItemMeta';
+import type { ReducerResult } from '../state/types';
+import type {
   GenericItemT,
   IndexInfo,
   IndexToOffsetMap,
+  ItemLayout,
+  ListBaseDimensionsProps,
+  ListBaseDimensionsStore,
   ListStateResult,
+  OnEndReached,
+  ScrollMetrics,
+  StateListener,
 } from '../types';
-import ListSpyUtils from '../utils/ListSpyUtils';
-import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
 import EnabledSelector from '../utils/EnabledSelector';
+import ListSpyUtils from '../utils/ListSpyUtils';
 import StillnessHelper from '../utils/StillnessHelper';
+import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
 import ViewabilityConfigTuples from '../viewable/ViewabilityConfigTuples';
-import ItemMeta from '../ItemMeta';
-import BaseLayout from '../BaseLayout';
 import StateHub from './StateHub';
-import { ReducerResult } from '../state/types';
 
 /**
  * item should be first class data model; item's value reference change will

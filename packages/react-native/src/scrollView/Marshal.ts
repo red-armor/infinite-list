@@ -1,13 +1,13 @@
-import { MutableRefObject } from 'react';
-import {
+import type { MutableRefObject } from 'react';
+import type {
   NativeScrollEvent,
   NativeSyntheticEvent,
   ScrollView,
   View,
 } from 'react-native';
 
-import ScrollHelper from './ScrollHelper';
-import {
+import type ScrollHelper from './ScrollHelper';
+import type {
   ContentSizeChangeHandler,
   DataModelDimensions,
   EventHandler,
@@ -210,7 +210,7 @@ class Marshal {
     const children = isReverse
       ? this._reverseOrientationChildren
       : this._children;
-    const index = children.findIndex((t) => t === child);
+    const index = children.indexOf(child);
     if (index === -1) children.push(child);
     return () => {
       this.unregisterAsNestedChild(child, isReverse);
@@ -222,7 +222,7 @@ class Marshal {
       ? this._reverseOrientationChildren
       : this._children;
 
-    const index = children.findIndex((t) => t === child);
+    const index = children.indexOf(child);
     if (index !== -1) children.splice(index, 1);
   }
 

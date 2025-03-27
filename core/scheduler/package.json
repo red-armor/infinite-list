@@ -1,12 +1,31 @@
 {
   "name": "@infinite-list/scheduler",
   "version": "1.0.3",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
   "dependencies": {
+    "@infinite-list/types": "workspace:*",
+    "@infinite-list/utils": "workspace:*",
     "@x-oasis/default-boolean-value": "^0.1.14"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./src/index.ts"
   }
 }

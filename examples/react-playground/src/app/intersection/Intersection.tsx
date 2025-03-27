@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
 import './intersection.css';
+
+import * as React from 'react';
+import { useEffect } from 'react';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#thresholds
 
@@ -26,11 +28,11 @@ export const Intersection = () => {
       const thresholdSets = [
         [],
         [0.5],
-        [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
-        [0, 0.25, 0.5, 0.75, 1.0],
+        [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+        [0, 0.25, 0.5, 0.75, 1],
       ];
 
-      for (let i = 0; i <= 1.0; i += 0.01) {
+      for (let i = 0; i <= 1; i += 0.01) {
         thresholdSets[0].push(i);
       }
 
@@ -80,10 +82,10 @@ export const Intersection = () => {
     <React.Fragment>
       <template id="boxTemplate">
         <div className="sampleBox">
-          <div className="label topLeft"></div>
-          <div className="label topRight"></div>
-          <div className="label bottomLeft"></div>
-          <div className="label bottomRight"></div>
+          <div className="label topLeft" />
+          <div className="label topRight" />
+          <div className="label bottomLeft" />
+          <div className="label bottomRight" />
         </div>
       </template>
 
@@ -93,10 +95,10 @@ export const Intersection = () => {
             {[0, 1, 2, 3].map((key) => {
               return (
                 <div className="sampleBox" id={`box${key + 1}`} key={key}>
-                  <div className="label topLeft"></div>
-                  <div className="label topRight"></div>
-                  <div className="label bottomLeft"></div>
-                  <div className="label bottomRight"></div>
+                  <div className="label topLeft" />
+                  <div className="label topRight" />
+                  <div className="label bottomLeft" />
+                  <div className="label bottomRight" />
                 </div>
               );
             })}

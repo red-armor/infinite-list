@@ -1,17 +1,40 @@
 {
   "name": "@infinite-list/strategies",
   "version": "1.0.2",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
   "dependencies": {
+    "@infinite-list/base-dimensions": "workspace:*",
+    "@infinite-list/container": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/types": "workspace:*",
+    "@infinite-list/utils": "workspace:*",
+    "@infinite-list/viewable": "workspace:*",
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/default-boolean-value": "^0.1.14",
     "@x-oasis/default-value": "^0.1.35",
     "@x-oasis/is-clamped": "^0.1.14",
     "@x-oasis/recycler": "^0.1.37"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
   "publishConfig": {
+    "main": "./src/index.ts",
+    "module": "./src/index.ts",
     "access": "public"
   }
 }

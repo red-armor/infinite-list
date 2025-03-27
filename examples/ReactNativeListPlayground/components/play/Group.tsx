@@ -1,12 +1,11 @@
-import { useRef, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView as NativeScrollView } from 'react-native';
-
+import { GroupList,ListGroup } from '@infinite-list/group/react-native';
 import {
   ScrollView,
   ScrollViewContext,
 } from '@infinite-list/scroller/react-native';
-
-import { ListGroup, GroupList } from '@infinite-list/group/react-native';
+import { useCallback, useEffect,useRef } from 'react';
+import type { ScrollView as NativeScrollView} from 'react-native';
+import {Text, View } from 'react-native';
 
 type Item = {
   key: string;
@@ -34,7 +33,7 @@ export default () => {
 
     if (itemMeta.getState().viewable)
       console.log(
-        'item meta ',
+        'item meta',
         itemMeta.getKey(),
         itemMeta.getState().viewable
       );
@@ -46,16 +45,16 @@ export default () => {
     }, []);
 
     useEffect(() => {
-      if (initRef.current) console.log('mount ', itemMeta.getKey());
+      if (initRef.current) console.log('mount', itemMeta.getKey());
       else {
-        console.log('update to ', itemMeta.getKey());
+        console.log('update to', itemMeta.getKey());
       }
 
       initRef.current = false;
 
       return () => {
         console.log(
-          'unmount ',
+          'unmount',
           itemMeta.getKey(),
           itemMetaRef.current.getKey()
         );

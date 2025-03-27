@@ -1,8 +1,26 @@
 {
   "name": "@infinite-list/intersection",
   "version": "1.0.1",
-  "dependencies": {},
-  "main": "./index.cjs",
-  "module": "./index.js",
-  "private": true
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
+  "publishConfig": {
+    "main": "./src/index.ts"
+  }
 }

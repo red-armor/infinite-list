@@ -1,10 +1,11 @@
-import {
+import type {
   IListDimensionsModel,
   ItemMetaOwner,
   ListGroupIndexInfo,
 } from '@infinite-list/types';
-import { ItemLayout } from './BaseLayout.types';
-import { GenericItemT } from './generic.types';
+
+import type { ItemLayout } from './BaseLayout.types';
+import type { GenericItemT } from './generic.types';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 
@@ -19,14 +20,10 @@ export type ItemMetaStateEventHelperProps = {
   /**
    * for spawn
    */
-  strictListenerKeyToHandleCountMap?: {
-    [key: string]: number;
-  };
+  strictListenerKeyToHandleCountMap?: Record<string, number>;
 };
 
-export type ItemMetaState = {
-  [key: string]: boolean;
-};
+export type ItemMetaState = Record<string, boolean>;
 
 export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   /**
@@ -47,9 +44,7 @@ export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   recyclerType?: string;
   ignoredToPerBatch?: boolean;
 
-  spawnProps?: {
-    [key: string]: ItemMetaStateEventHelperProps;
-  };
+  spawnProps?: Record<string, ItemMetaStateEventHelperProps>;
 
   isApproximateLayout?: boolean;
 };

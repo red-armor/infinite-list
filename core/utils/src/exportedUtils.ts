@@ -1,4 +1,4 @@
-import { GenericItemT } from '@infinite-list/types';
+import type { GenericItemT } from '@infinite-list/types';
 
 export type ItemPossibleT<T> =
   | T

@@ -1,5 +1,6 @@
-import type { Meta } from '@storybook/react';
 import { defaultKeyExtractor } from '@infinite-list/data-model';
+import type { Meta } from '@storybook/react';
+
 import { MasonryList } from '../';
 
 const buildData = (count: number) =>

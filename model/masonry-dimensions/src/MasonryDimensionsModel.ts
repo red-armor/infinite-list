@@ -1,12 +1,12 @@
-import { ItemLayout } from '@infinite-list/dimensions-model';
-import { ListDimensionsModel } from '@infinite-list/dimensions-model';
+import type { ItemLayout, ListDimensionsModel  } from '@infinite-list/dimensions-model';
 import { KeyIndexManager } from '@infinite-list/utils';
 import defaultValue from '@x-oasis/default-value';
 import layoutEqual from '@x-oasis/layout-equal';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import MasonryDimensionStrategy from './MasonryDimensionStrategy';
+
 import { LAYOUT_EQUAL_CORRECTION_VALUE } from './common';
-import { GenericItemT, MasonryDimensionsModelProps } from './types';
+import MasonryDimensionStrategy from './MasonryDimensionStrategy';
+import type { GenericItemT, MasonryDimensionsModelProps } from './types';
 
 /**
  * The key point is how to decorate `columnIntervalTree` and `columnKeyIndexManager`

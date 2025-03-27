@@ -1,25 +1,26 @@
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+import layoutEqual from '@x-oasis/layout-equal';
+import type PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+
 import BaseDimensions from './BaseDimensions';
-import ItemMeta from './ItemMeta';
 import {
   DEFAULT_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
   LAYOUT_EQUAL_CORRECTION_VALUE,
 } from './common';
-
-import {
+import ItemMeta from './ItemMeta';
+import type {
+  GenericItemT,
   GetItemLayout,
   GetItemSeparatorLength,
   IndexInfo,
   ItemLayout,
   KeyExtractor,
-  KeysChangedType,
-  ListDimensionsModelProps,
   ListDimensionsModelContainer,
-  GenericItemT,
-  OnListDimensionsModelDataChanged,
+  ListDimensionsModelProps,
+  OnListDimensionsModelDataChanged} from './types';
+import {
+  KeysChangedType
 } from './types';
 import * as log from './utils/logger';
 
@@ -34,7 +35,7 @@ class ListDimensionsModel<
   private _getItemLayout?: GetItemLayout<ItemT>;
   private _getItemSeparatorLength?: GetItemSeparatorLength<ItemT>;
 
-  private _itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
+  private _itemToKeyMap = new WeakMap<ItemT, string>();
 
   private _container: ListDimensionsModelContainer<ItemT>;
   private _offsetInListGroup: number;
@@ -324,7 +325,7 @@ class ListDimensionsModel<
     // If data is empty, then trigger onEndReached one time..
     // TODO: maybe there is a bug... if the list the beneath viewport, the trigger
     // may not required...
-    if (!data.length && this.initialNumToRender) {
+    if (data.length === 0 && this.initialNumToRender) {
       this._container.onEndReachedHelper.attemptToHandleOnEndReachedBatchinator.schedule();
     }
 
@@ -340,37 +341,41 @@ class ListDimensionsModel<
    */
   handleDataChange(dataChangedType: KeysChangedType, data: ItemT[]) {
     switch (dataChangedType) {
-      case KeysChangedType.Equal:
+      case KeysChangedType.Equal: {
         break;
-      case KeysChangedType.Append:
+      }
+      case KeysChangedType.Append: {
         this.updateTheLastItemIntervalValue();
         this.append(data);
         break;
-      case KeysChangedType.Initial:
+      }
+      case KeysChangedType.Initial: {
         this.append(data);
         break;
+      }
       case KeysChangedType.Add:
       case KeysChangedType.Remove:
-      case KeysChangedType.Reorder:
+      case KeysChangedType.Reorder: {
         this.shuffle(data);
         break;
+      }
     }
   }
 
   _setData(_data: Array<ItemT>) {
     if (_data === this._data) return KeysChangedType.Equal;
-    const keyToIndexMap: Map<string, number> = new Map();
+    const keyToIndexMap = new Map<string, number>();
     const keyToIndexArray: Array<string> = [];
-    const itemToKeyMap: WeakMap<ItemT, string> = new WeakMap();
-    const itemToDimensionMap: WeakMap<
+    const itemToKeyMap = new WeakMap<ItemT, string>();
+    const itemToDimensionMap = new WeakMap<
       ItemT,
       BaseDimensions<ItemT>
-    > = new WeakMap();
+    >();
     let duplicateKeyCount = 0;
     // TODO: optimization
     const data = _data.filter((item, index) => {
       const itemKey = this.getItemKey(item, index);
-      const _index = keyToIndexArray.findIndex((key) => key === itemKey);
+      const _index = keyToIndexArray.indexOf(itemKey);
       if (_index === -1 && itemKey) {
         keyToIndexMap.set(itemKey, index - duplicateKeyCount);
         keyToIndexArray.push(itemKey);

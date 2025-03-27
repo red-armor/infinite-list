@@ -1,13 +1,16 @@
-import { useEffect, useMemo, useState, useRef, CSSProperties } from 'react';
-import { ListProps } from '../types';
-import {
+import type {
   GenericItemT,
-  ListDimensions,
-  RecycleStateResult,
+  RecycleStateResult} from '@infinite-list/data-model';
+import {
+  ListDimensions
 } from '@infinite-list/data-model';
+import type { CSSProperties } from 'react';
+import { useEffect, useMemo, useRef,useState } from 'react';
+
+import ScrollTracker from '../events/ScrollTracker';
+import type { ListProps } from '../types';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-import ScrollTracker from '../events/ScrollTracker';
 
 export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const { renderItem, id, data, recycleEnabled = true } = props;
@@ -23,9 +26,7 @@ export const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   }
 
   const listRef = useRef<HTMLDivElement>(null);
-  const style: {
-    [key: string]: CSSProperties;
-  } = useMemo(
+  const style: Record<string, CSSProperties> = useMemo(
     () => ({
       container: {
         width: '100%',

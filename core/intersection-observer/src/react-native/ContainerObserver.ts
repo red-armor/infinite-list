@@ -1,18 +1,21 @@
-import {
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  Platform,
-} from 'react-native';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { TaskRunner } from '@infinite-list/scheduler';
+import type {
+  NativeScrollEvent,
+  NativeSyntheticEvent} from 'react-native';
+import {
+  Platform,
+} from 'react-native';
+
 import {
   compareIntersection,
   computeIntersection,
 } from '../common/intersection';
-import Observer from './Observer';
-import ReactNativeDocument, { getNode } from './ReactNativeDocument';
 import { measureInWindowAsync } from './measure';
-import {
+import type Observer from './Observer';
+import type ReactNativeDocument from './ReactNativeDocument';
+import { getNode } from './ReactNativeDocument';
+import type {
   ContainerObserverProps,
   IClientRectReadOnly,
   IIntersectionObserverEntry,
@@ -41,7 +44,7 @@ class ContainerObserver {
   public scrollOffsetX = 0;
   public scrollOffsetY = 0;
   private children: ContainerObserver[] = [];
-  private keyToObserverMap: Map<string, Observer> = new Map();
+  private keyToObserverMap = new Map<string, Observer>();
   private records: IIntersectionObserverEntry[] = [];
   updateIntersectionTaskRunner: TaskRunner;
   private listenersDisposers: Function[] = [];
@@ -90,13 +93,13 @@ class ContainerObserver {
   }
 
   addChild(child: ContainerObserver) {
-    const index = this.children.findIndex((item) => item === child);
+    const index = this.children.indexOf(child);
     if (index === -1) {
       this.children.push(child);
     }
 
     return () => {
-      const index = this.children.findIndex((item) => item === child);
+      const index = this.children.indexOf(child);
       if (index !== -1) {
         this.children.splice(index, 1);
       }
@@ -182,7 +185,7 @@ class ContainerObserver {
           height,
         });
 
-        let ownerContainerObserver = this.ownerContainerObserver;
+        let {ownerContainerObserver} = this;
         let intersection: IRectIntersection | null = convertRectToIntersection(
           this.rect
         );
@@ -274,7 +277,7 @@ class ContainerObserver {
         }
         return [];
       })
-      .filter((v) => v);
+      .filter(Boolean);
 
     this.children.forEach((child) => {
       const childRecords = child.updateObserversIntersectionsInSmartWay();

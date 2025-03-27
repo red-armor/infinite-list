@@ -200,13 +200,13 @@
 
 // export default SpaceStateImpl;
 
-import BaseState from './BaseState';
-import {
-  ListState,
+import type {
   GenericItemT,
-  StateListener,
+  ListState,
   SpaceStateResult,
+  StateListener,
 } from '../types';
+import BaseState from './BaseState';
 
 export default class SpaceStateImpl<
   ItemT extends GenericItemT = GenericItemT

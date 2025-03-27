@@ -1,5 +1,5 @@
-import ContainerObserver from '../ContainerObserver';
-import ReactNativeDocument from '../ReactNativeDocument';
+import type ContainerObserver from '../ContainerObserver';
+import type ReactNativeDocument from '../ReactNativeDocument';
 
 export type OwnerContainerObserver = ContainerObserver | null | undefined;
 

@@ -1,13 +1,12 @@
 {
   "name": "@infinite-list/data-model",
+  "type": "commonjs",
   "version": "3.0.1",
+  "main": "./src/index.ts",
   "files": [
     "dist",
     "src"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@x-oasis/batchinate-last": "^0.1.14",
     "@x-oasis/batchinator": "^0.1.14",
@@ -31,6 +30,10 @@
     "memoize-one": "^6.0.0",
     "tslib": "^2.3.0"
   },
-  "type": "commonjs",
-  "main": "./src/index.ts"
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

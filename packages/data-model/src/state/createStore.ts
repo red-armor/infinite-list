@@ -1,9 +1,10 @@
-import ListDimensions from '../ListDimensions';
-import ListGroupDimensions from '../ListGroupDimensions';
-import { ScrollMetrics } from '../types';
+import type ListDimensions from '../ListDimensions';
+import type ListGroupDimensions from '../ListGroupDimensions';
+import type { ScrollMetrics } from '../types';
 import { resolveAction } from './actions';
 import reducer from './reducer';
-import { Action, ActionType, Reducer, ReducerResult } from './types';
+import type { Action, Reducer, ReducerResult } from './types';
+import { ActionType } from './types';
 
 function createStore<State extends ReducerResult = ReducerResult>(
   _reducer: Reducer<State> = reducer

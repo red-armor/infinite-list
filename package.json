@@ -1,41 +1,47 @@
 {
   "name": "infinite-list",
   "version": "0.4.10",
+  "private": true,
+  "packageManager": "pnpm@9.3.0",
   "description": "Data model for list rendering",
+  "author": "youchao liu",
+  "license": "ISC",
+  "homepage": "https://github.com/red-armor/infinite-list#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/red-armor/infinite-list.git"
   },
+  "bugs": {
+    "url": "https://github.com/red-armor/infinite-list/issues"
+  },
   "scripts": {
-    "clean": "rm -rf dist && rm -rf .nx && pnpm run -r clean",
-    "build": "nx run-many -t build",
-    "test": "nx run-many -t test",
-    "lint": "eslint --ext js,ts,tsx .",
-    "format": "nx run-many -t prettier --write ",
-    "prepare": "husky install",
-    "version": "changeset version && pnpm install --no-frozen-lockfile",
-    "publish": "pnpm publish -r --access public",
-    "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
-    "dev:web": "nx storybook react",
-    "dev:rn": "cd ./examples/ReactNativeListPlayground && npm run start",
-    "dev:docs": "vitepress dev docs --host",
+    "build": "pnpm run -r build",
     "build:docs": "vitepress build docs",
-    "preview:docs": "vitepress preview docs"
+    "clean": "rm -rf dist && rm -rf .nx && pnpm run -r clean",
+    "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
+    "dev:docs": "vitepress dev docs --host",
+    "dev:rn": "cd ./examples/ReactNativeListPlayground && npm run start",
+    "dev:web": "nx storybook react",
+    "format": "nx run-many -t prettier --write ",
+    "lint": "eslint --ext js,ts,tsx .",
+    "prepare": "husky install",
+    "preview:docs": "vitepress preview docs",
+    "publish": "pnpm publish -r --access public",
+    "test": "nx run-many -t test",
+    "version": "changeset version && pnpm install --no-frozen-lockfile"
   },
-  "private": true,
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --cache --fix",
-      "prettier . --write"
-    ]
+  "dependencies": {
+    "@babel/runtime": "^7.25.7",
+    "@storybook/addon-essentials": "^8.4.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.74.1"
   },
-  "packageManager": "pnpm@9.3.0",
-  "author": "youchao liu",
-  "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
     "@changesets/cli": "^2.27.8",
+    "@eslint/compat": "1.2.7",
     "@eslint/js": "^9.8.0",
     "@nx/eslint": "19.8.0",
     "@nx/eslint-plugin": "19.8.0",
@@ -43,7 +49,7 @@
     "@nx/js": "19.8.0",
     "@nx/react": "19.8.0",
     "@nx/react-native": "19.8.0",
-    "@nx/rollup": "19.8.0",
+    "@nx/rollup": "20.6.4",
     "@nx/storybook": "19.8.0",
     "@nx/vite": "19.8.0",
     "@nx/web": "19.8.0",
@@ -58,8 +64,8 @@
     "@storybook/test-runner": "^0.13.0",
     "@storybook/testing-library": "^0.2.2",
     "@swc-node/register": "~1.9.1",
-    "@swc/cli": "~0.3.12",
-    "@swc/core": "~1.5.7",
+    "@swc/cli": "~0.6.0",
+    "@swc/core": "~1.11.13",
     "@swc/helpers": "~0.5.11",
     "@swc/jest": "~0.2.36",
     "@testing-library/jest-native": "~5.4.3",
@@ -75,12 +81,9 @@
     "@vitest/coverage-v8": "^1.0.4",
     "@vitest/ui": "^1.3.1",
     "babel-jest": "^29.7.0",
-    "eslint": "^9.8.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-import": "2.30.0",
-    "eslint-plugin-jsx-a11y": "6.7.1",
-    "eslint-plugin-react": "7.35.0",
-    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint": "^9.23.0",
+    "eslint-config-hyoban": "4.0.2",
+    "eslint-plugin-react-native": "5.0.0",
     "husky": "^8.0.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -88,20 +91,20 @@
     "jest-react-native": "18.0.0",
     "jsdom": "~22.1.0",
     "lint-staged": "^13.0.3",
-    "nx": "19.8.0",
+    "nx": "20.6.4",
     "prettier": "^3.5.3",
     "react-native-svg": "15.3.0",
     "react-native-svg-transformer": "1.3.0",
     "react-test-renderer": "18.2.0",
     "rimraf": "^3.0.2",
-    "rollup": "^4.14.0",
+    "rollup": "^4.37.0",
     "storybook": "8.4.7",
-    "swc-loader": "0.1.15",
+    "swc-loader": "0.2.6",
     "ts-jest": "^29.1.0",
-    "ts-node": "10.9.1",
+    "ts-node": "10.9.2",
     "tslib": "^2.3.0",
     "tsup": "^6.6.3",
-    "typescript": "~5.5.2",
+    "typescript": "~5.8.2",
     "typescript-eslint": "^8.0.0",
     "verdaccio": "^5.0.4",
     "vite": "^5.0.0",
@@ -110,16 +113,11 @@
     "vitepress": "^1.6.3",
     "vitest": "^1.3.1"
   },
-  "bugs": {
-    "url": "https://github.com/red-armor/infinite-list/issues"
-  },
-  "homepage": "https://github.com/red-armor/infinite-list#readme",
-  "dependencies": {
-    "@babel/runtime": "^7.25.7",
-    "@storybook/addon-essentials": "^8.4.7",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-native": "0.74.1"
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier . --write"
+    ]
   },
   "nx": {
     "includedScripts": []

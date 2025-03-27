@@ -1,10 +1,10 @@
-import { ItemLayout } from './BaseLayout.types';
-import ListDimensionsModel from '../ListDimensionsModel';
-import Dimension from '../Dimension';
-import { GenericItemT } from './generic.types';
-import { ListGroupIndexInfo } from './ListGroupDimensions.types';
-import PseudoListDimensions from '../PseudoListDimensions';
-import ItemsDimensions from '../ItemsDimensions';
+import type Dimension from '../Dimension';
+import type ItemsDimensions from '../ItemsDimensions';
+import type ListDimensionsModel from '../ListDimensionsModel';
+import type PseudoListDimensions from '../PseudoListDimensions';
+import type { ItemLayout } from './BaseLayout.types';
+import type { GenericItemT } from './generic.types';
+import type { ListGroupIndexInfo } from './ListGroupDimensions.types';
 
 export type StateEventListener = (eventValue?: boolean) => void;
 
@@ -19,14 +19,10 @@ export type ItemMetaStateEventHelperProps = {
   /**
    * for spawn
    */
-  strictListenerKeyToHandleCountMap?: {
-    [key: string]: number;
-  };
+  strictListenerKeyToHandleCountMap?: Record<string, number>;
 };
 
-export type ItemMetaState = {
-  [key: string]: boolean;
-};
+export type ItemMetaState = Record<string, boolean>;
 
 export type ItemMetaOwner<ItemT extends GenericItemT = GenericItemT> =
   | ListDimensionsModel<ItemT>
@@ -53,9 +49,7 @@ export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   recyclerType?: string;
   ignoredToPerBatch?: boolean;
 
-  spawnProps?: {
-    [key: string]: ItemMetaStateEventHelperProps;
-  };
+  spawnProps?: Record<string, ItemMetaStateEventHelperProps>;
 
   isApproximateLayout?: boolean;
 };

@@ -1,6 +1,8 @@
 import { ListGroupDimensions } from '@infinite-list/data-model';
-import React, {
-  FC,
+import type {
+  FC} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   useContext,
   useEffect,
@@ -8,9 +10,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { View, Platform } from 'react-native';
+import { Platform,View } from 'react-native';
 
-import { ListGroupProps } from '../types';
+import type { ListGroupProps } from '../types';
 import context from './context';
 import PortalContent from './PortalContent';
 

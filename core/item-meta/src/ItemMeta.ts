@@ -1,10 +1,11 @@
-import { IItemMeta, ItemMetaOwner } from '@infinite-list/types';
+import type { IItemMeta, ItemMetaOwner } from '@infinite-list/types';
 import { ViewabilityItemMeta } from '@infinite-list/viewable';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import noop from '@x-oasis/noop';
-import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
+
 import { DEFAULT_LAYOUT, DEFAULT_RECYCLER_TYPE } from './common';
-import {
+import ItemMetaStateEventHelper from './ItemMetaStateEventHelper';
+import type {
   GenericItemT,
   ItemLayout,
   ItemMetaProps,
@@ -16,9 +17,7 @@ import {
 export const isValidMetaLayout = (meta: IItemMeta | null | undefined) =>
   !!(meta && !meta.isApproximateLayout && meta.getLayout());
 
-type ItemMetaContext<T extends GenericItemT = GenericItemT> = {
-  [key: string]: ItemMeta<T>;
-};
+type ItemMetaContext<T extends GenericItemT = GenericItemT> = Record<string, ItemMeta<T>>;
 
 // make itemMeta could be shared, such as data source ref change, but it's value
 // not changed.
@@ -53,9 +52,7 @@ class ItemMeta<
   private _isApproximateLayout: boolean;
   private _ignoredToPerBatch: boolean;
   private _useSeparatorLength: boolean;
-  private _spawnProps: {
-    [key: string]: ItemMetaStateEventHelperProps;
-  };
+  private _spawnProps: Record<string, ItemMetaStateEventHelperProps>;
 
   constructor(props: ItemMetaProps<ItemT>) {
     super(props);
@@ -104,9 +101,7 @@ class ItemMeta<
     const ancestor = context[props.key];
     if (ancestor) {
       const layout = ancestor.getLayout();
-      const spawnProps: {
-        [key: string]: any;
-      } = {};
+      const spawnProps: Record<string, any> = {};
       for (const [key, value] of ancestor._stateEventSubscriptions) {
         const _props = ItemMetaStateEventHelper.spawn(value);
         if (_props) spawnProps[key] = _props;
@@ -178,7 +173,7 @@ class ItemMeta<
     return this._owner.getContainerOffset();
   }
 
-  getItemLength() {
+  override getItemLength() {
     const selectValue = this._owner.getSelectValue();
     return this._layout ? selectValue.selectLength(this._layout) : 0;
   }
@@ -195,7 +190,7 @@ class ItemMeta<
     return this.getItemLength();
   }
 
-  getItemOffset(exclusive?: boolean) {
+  override getItemOffset(exclusive?: boolean) {
     if (this._isListItem) {
       const offset = this._owner.getKeyItemOffset(this._key, exclusive);
 
@@ -221,9 +216,7 @@ class ItemMeta<
    * trigger state change listener, such as viewable / impression
    */
   setItemMetaState(
-    state: {
-      [key: string]: boolean;
-    } = {}
+    state: Record<string, boolean> = {}
   ) {
     if (state === this._state) return;
     Object.keys({ ...state }).forEach((key) => {
@@ -254,7 +247,7 @@ class ItemMeta<
   ): ItemMetaStateEventHelper {
     if (!this._stateEventSubscriptions.get(eventName)) {
       const helper = new ItemMetaStateEventHelper({
-        ...(this._spawnProps[eventName] || {}),
+        ...this._spawnProps[eventName],
         eventName,
         key: this._key,
         defaultValue: value,

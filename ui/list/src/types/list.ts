@@ -1,8 +1,8 @@
-import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
-import { ItemMeta } from '@infinite-list/item-meta';
-import { ListDimensions } from '@infinite-list/list-dimensions';
-import { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
-import { GenericItemT } from '@infinite-list/types';
+import type { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
+import type { ItemMeta } from '@infinite-list/item-meta';
+import type { ListDimensions } from '@infinite-list/list-dimensions';
+import type { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
+import type { GenericItemT } from '@infinite-list/types';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   /**
@@ -15,9 +15,7 @@ export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   itemMeta: ItemMeta<ItemT>;
 };
 
-export type DefaultItemT = {
-  [key: string]: any;
-};
+export type DefaultItemT = Record<string, any>;
 
 export type RenderItem<ItemT extends DefaultItemT> = (
   info: RenderItemInfo<ItemT>

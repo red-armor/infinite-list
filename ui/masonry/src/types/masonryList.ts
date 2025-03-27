@@ -1,11 +1,12 @@
-import { GenericItemT } from '@infinite-list/item-meta';
-import {
+import type { GenericItemT } from '@infinite-list/item-meta';
+import type {
   MasonryColumnStateResults,
   MasonryDimensions as MasonryDimension,
   MasonryDimensionsModelProps,
 } from '@infinite-list/masonry-dimensions';
-import { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
-import { RenderItem } from './list';
+import type { RecycleStateToken, SpaceStateToken } from '@infinite-list/strategies';
+
+import type { RenderItem } from './list';
 
 export type GetColumnWidth = (columnIndex: number) => number;
 

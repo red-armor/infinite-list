@@ -26,8 +26,8 @@
 
 // module.exports = config;
 
-const path = require('path');
-const fs = require('fs');
+const path = require('node:path');
+const fs = require('node:fs');
 const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
@@ -330,6 +330,6 @@ config.resolver = {
   },
 };
 
-console.log('confing ==== ', config.resolver.extraNodeModules);
+console.log('confing ====', config.resolver.extraNodeModules);
 
 module.exports = config;

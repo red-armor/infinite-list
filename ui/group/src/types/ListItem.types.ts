@@ -1,9 +1,10 @@
-import React, { FC, ForwardedRef, PropsWithChildren } from 'react';
-import { ListGroupDimensions } from '@infinite-list/group-dimensions';
-import { GenericItemT, ItemMeta } from '@infinite-list/item-meta';
-import { ListDimensions } from '@infinite-list/list-dimensions';
+import type { ListGroupDimensions } from '@infinite-list/group-dimensions';
+import type { GenericItemT, ItemMeta } from '@infinite-list/item-meta';
+import type { ListDimensions } from '@infinite-list/list-dimensions';
 // import { ViewStyle, LayoutChangeEvent } from 'react-native';
-import { ItemLayout } from '@infinite-list/types';
+import type { ItemLayout } from '@infinite-list/types';
+import type { FC, ForwardedRef, PropsWithChildren } from 'react';
+import type * as React from 'react';
 
 // type OnLayout = (event: LayoutChangeEvent) => void;
 
@@ -19,9 +20,7 @@ type OnMeasureLayout =
 // };
 
 export type TeleportItemProps<ItemT extends GenericItemT> =
-  | ((opts: { index: number; item: ItemT }) => {
-      [key: string]: any;
-    })
+  | ((opts: { index: number; item: ItemT }) => Record<string, any>)
   | undefined;
 
 export interface ListItemProps<ItemT extends GenericItemT> {
@@ -44,8 +43,8 @@ export interface ListItemProps<ItemT extends GenericItemT> {
 
 export interface CompatListItemProps<ItemT extends GenericItemT>
   extends Omit<ListItemProps<ItemT>, 'ListItemWrapper'> {
-  setDimensionItemLayout(key: string, values: ItemLayout): void;
-  addItemChangedListener(fn: Function): void;
+  setDimensionItemLayout: (key: string, values: ItemLayout) => void;
+  addItemChangedListener: (fn: Function) => void;
 }
 
 export type ListItemWrapper<ItemT extends GenericItemT> = FC<

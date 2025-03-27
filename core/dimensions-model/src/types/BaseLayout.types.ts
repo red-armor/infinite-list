@@ -1,4 +1,4 @@
-import { BaseContainerProps } from '@infinite-list/container';
+import type { BaseContainerProps } from '@infinite-list/container';
 
 export enum BoundInfoType {
   'Hover' = 'hover',

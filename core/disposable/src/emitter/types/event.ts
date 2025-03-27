@@ -12,15 +12,11 @@ export type EventProps = {
 };
 
 export type EventListener<T = any> =
-  | { (): void }
-  | {
-      (a1: T, a2: T): void;
-    };
+  | (() => void)
+  | ((a1: T, a2: T) => void);
 
 // export type EventListener<T = any> = {
 //   (args: T | null): void;
 // };
 
-export type TheFunction = {
-  (): void;
-};
+export type TheFunction = () => void;

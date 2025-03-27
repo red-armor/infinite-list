@@ -1,11 +1,12 @@
 import { BaseDimensions } from '@infinite-list/base-dimensions';
 import { ItemMeta } from '@infinite-list/item-meta';
-import { IItemDimensions } from '@infinite-list/types';
+import type { IItemDimensions } from '@infinite-list/types';
 import { ListSpyUtils } from '@infinite-list/utils';
 import Batchinator from '@x-oasis/batchinator';
 import layoutEqual from '@x-oasis/layout-equal';
+
 import SortedItems from './SortedItems';
-import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
+import type { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
 
 class ItemsDimensions<ExtraInfo extends {} = {}>
   extends BaseDimensions

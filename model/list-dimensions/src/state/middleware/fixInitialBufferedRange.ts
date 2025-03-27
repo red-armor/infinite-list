@@ -1,5 +1,5 @@
 import { isValidMetaLayout } from '@infinite-list/item-meta';
-import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
+import type { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 import { log } from '@infinite-list/utils';
 
 // recalculate buffer
@@ -12,7 +12,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const initialNumToRender = dimension.initialNumToRender;
+  const {initialNumToRender} = dimension;
 
   const { startIndex, endIndex } = visibleIndexRange;
 
@@ -31,7 +31,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   let count = 0;
   for (
-    let startIndex = visibleIndexRange.startIndex;
+    let {startIndex} = visibleIndexRange;
     startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
     startIndex++
   ) {

@@ -1,22 +1,23 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isObject from '@x-oasis/is-object';
-import ItemMeta from './ItemMeta';
+import layoutEqual from '@x-oasis/layout-equal';
+
+import BaseContainer from './BaseContainer';
 import {
-  INVALID_LENGTH,
   DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
+  INVALID_LENGTH,
 } from './common';
-import layoutEqual from '@x-oasis/layout-equal';
-import {
+import ItemMeta from './ItemMeta';
+import type ListGroupDimensions from './ListGroupDimensions';
+import type {
   DimensionProps,
-  ItemLayout,
-  GetDimensionLength,
   GenericItemT,
+  GetDimensionLength,
+  ItemLayout,
   ListGroupChildDimensionsContainer,
   ListGroupIndexInfo,
 } from './types';
-import BaseContainer from './BaseContainer';
-import ListGroupDimensions from './ListGroupDimensions';
 
 /**
  * Abstraction of singleton item, It is used in ListGroup Condition.

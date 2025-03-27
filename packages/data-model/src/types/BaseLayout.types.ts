@@ -1,4 +1,4 @@
-import { BaseContainerProps } from './BaseContainer.types';
+import type { BaseContainerProps } from './BaseContainer.types';
 
 export enum BoundInfoType {
   'Hover' = 'hover',

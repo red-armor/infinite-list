@@ -1,7 +1,8 @@
-import { RefObject } from 'react';
-import { ScrollView } from 'react-native';
-import { GenericItemT } from '@infinite-list/types';
-import {
+import type { GenericItemT } from '@infinite-list/types';
+import type { RefObject } from 'react';
+import type { ScrollView } from 'react-native';
+
+import type {
   ListProps as CommonListProps,
   RecycleItemProps as CommonRecycleItemProps,
   SpaceItemProps as CommonSpaceItemProps,

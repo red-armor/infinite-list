@@ -1,8 +1,9 @@
-import React, { useCallback, useState, useRef, useEffect } from 'react';
-import type { Meta } from '@storybook/react';
-import { defaultKeyExtractor } from '@infinite-list/utils';
+import type { KeyExtractor } from '@infinite-list/dimensions-model';
 import { List } from '@infinite-list/list/react';
-import { KeyExtractor } from '@infinite-list/dimensions-model';
+import { defaultKeyExtractor } from '@infinite-list/utils';
+import type { Meta } from '@storybook/react';
+import * as React from 'react';
+import { useCallback, useEffect,useRef, useState } from 'react';
 
 type Item = {
   key: string;
@@ -54,15 +55,15 @@ const meta: Meta<typeof List> = {
             const initRef = useRef(true);
 
             useEffect(() => {
-              if (initRef.current) console.log('mount ', itemMeta.getKey());
+              if (initRef.current) console.log('mount', itemMeta.getKey());
               else {
-                console.log('update to ', itemMeta.getKey());
+                console.log('update to', itemMeta.getKey());
               }
 
               initRef.current = false;
 
               return () => {
-                console.log('unmount ', itemMeta.getKey());
+                console.log('unmount', itemMeta.getKey());
               };
             }, [itemMeta]);
 

@@ -1,10 +1,10 @@
 import Dimension from '../../Dimension';
-import ListDimensionsModel from '../../ListDimensionsModel';
-import ListDimensions from '../../ListDimensions';
-import ListGroupDimensions from '../../ListGroupDimensions';
-import { ActionPayload, Ctx, ReducerResult } from '../types';
 import { isValidMetaLayout } from '../../ItemMeta';
+import ListDimensions from '../../ListDimensions';
+import ListDimensionsModel from '../../ListDimensionsModel';
+import ListGroupDimensions from '../../ListGroupDimensions';
 import { info } from '../../utils/logger';
+import type { ActionPayload, Ctx, ReducerResult } from '../types';
 
 // recalculate buffer
 export default <State extends ReducerResult = ReducerResult>(
@@ -16,7 +16,7 @@ export default <State extends ReducerResult = ReducerResult>(
 
   const { visibleIndexRange, bufferedIndexRange, maxIndex } = ctx;
 
-  const maxToRenderPerBatch = dimension.maxToRenderPerBatch;
+  const {maxToRenderPerBatch} = dimension;
   let _nextBufferedEndIndex = bufferedIndexRange.endIndex;
 
   if (dimension instanceof ListGroupDimensions) {
@@ -24,7 +24,7 @@ export default <State extends ReducerResult = ReducerResult>(
     // start from visibleIndexRange which means the below has high priority
     // but... if jump to a position, two directions should be considered...
     for (
-      let startIndex = visibleIndexRange.startIndex;
+      let {startIndex} = visibleIndexRange;
       startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
       startIndex++
     ) {
@@ -55,7 +55,7 @@ export default <State extends ReducerResult = ReducerResult>(
   if (dimension instanceof ListDimensions) {
     let count = 0;
     for (
-      let startIndex = visibleIndexRange.startIndex;
+      let {startIndex} = visibleIndexRange;
       startIndex <= Math.min(_nextBufferedEndIndex, maxIndex);
       startIndex++
     ) {

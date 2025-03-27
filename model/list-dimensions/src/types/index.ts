@@ -1,2 +1,2 @@
-export * from './scrollMetrics.types';
 export * from './generic.types';
+export * from './scrollMetrics.types';

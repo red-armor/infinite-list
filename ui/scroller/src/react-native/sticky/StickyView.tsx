@@ -1,6 +1,11 @@
-import {
+import type {
+  IClientRectReadOnly,
+  Observer,
+} from '@infinite-list/intersection-observer/react-native';
+import type {
   FC,
-  PropsWithChildren,
+  PropsWithChildren} from 'react';
+import {
   useCallback,
   useContext,
   useEffect,
@@ -8,21 +13,19 @@ import {
   useRef,
   useState,
 } from 'react';
+import type {
+  StyleProp,
+  View,
+  ViewProps,
+  ViewStyle} from 'react-native';
 import {
   Animated,
   Platform,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewProps,
-  ViewStyle,
+  StyleSheet
 } from 'react-native';
-import {
-  IClientRectReadOnly,
-  Observer,
-} from '@infinite-list/intersection-observer/react-native';
+
 import ScrollViewContext from '../context/ScrollViewContext';
-import { InterpolationConfig, StickyItemProps } from '../types';
+import type { InterpolationConfig} from '../types';
 
 const noop = () => {
   // do nothing
@@ -128,9 +131,7 @@ const StickyView: FC<
             [selectedTranslate]: config?.interpolationConfig
               ? selectedAnimatedValue.interpolate(config?.interpolationConfig)
               : 0,
-          } as {
-            [key in 'translateX' | 'translateY']: any;
-          },
+          } as Record<'translateX' | 'translateY', any>,
         ],
       },
       nextStyle,

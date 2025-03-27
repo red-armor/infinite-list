@@ -1,8 +1,11 @@
-import React, { useContext, useRef } from 'react';
-import { GenericItemT } from '@infinite-list/data-model';
+import type { GenericItemT } from '@infinite-list/data-model';
+import * as React from 'react';
+import { useContext, useRef } from 'react';
+
 import context from './context';
 import useMountItem from './hooks/useMountItem';
-import { genericMemo, GroupListItemImplProps } from './types';
+import type { GroupListItemImplProps } from './types';
+import { genericMemo } from './types';
 
 const MemoedGroupListItem = genericMemo(
   <ItemT extends GenericItemT>(props: GroupListItemImplProps<ItemT>) => {
@@ -14,8 +17,7 @@ const MemoedGroupListItem = genericMemo(
 
     const keys = Object.keys(prev);
 
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
+    for (const key of keys) {
       if (prev[key] !== cur[key]) {
         return false;
       }

@@ -1,14 +1,14 @@
-import { BaseLayoutProps } from '@infinite-list/base-dimensions';
-import { Dimension, DimensionProps } from '@infinite-list/dimension';
-import { ListDimensionsModel } from '@infinite-list/dimensions-model';
-import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
-import {
+import type { BaseLayoutProps } from '@infinite-list/base-dimensions';
+import type { Dimension, DimensionProps } from '@infinite-list/dimension';
+import type { ListDimensionsModel, ListDimensionsModelProps  } from '@infinite-list/dimensions-model';
+import type {
   OnEndReached,
   OnEndReachedHelperProps,
   ViewabilityConfigTuplesProps,
 } from '@infinite-list/viewable';
-import ListGroupDimensions from '../ListGroupDimensions';
-import { GenericItemT } from './generic.types';
+
+import type ListGroupDimensions from '../ListGroupDimensions';
+import type { GenericItemT } from './generic.types';
 
 export type ListRangeResult<ItemT> = ListRange<ItemT>[];
 export type ListRange<ItemT> =

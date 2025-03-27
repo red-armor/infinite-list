@@ -1,9 +1,10 @@
 import Batchinator from '@x-oasis/batchinator';
 
-import {
+import type {
   InterpolationConfig,
   StickyItemInfo,
-  StickyMarshalProps,
+  StickyMarshalProps} from './types';
+import {
   StickyMode,
 } from './types';
 
@@ -14,7 +15,7 @@ export function checkValidInputRange(arr: Array<number>) {
   }
   for (let i = 1; i < arr.length; ++i) {
     if (arr[i] < arr[i - 1]) {
-      console.debug('inputRange must be monotonically non-decreasing ' + arr);
+      console.debug(`inputRange must be monotonically non-decreasing ${  arr}`);
       return false;
     }
   }
@@ -68,12 +69,8 @@ class StickyMarshal<ItemT> {
 
   _calculateRangeValues(ownerId?: string) {
     const len = this.stickyItemsQueue.length;
-    const _interpolationConfig: {
-      [key: string]: InterpolationConfig;
-    } = {};
-    const _animatedValueConfig: {
-      [key: string]: InterpolationConfig;
-    } = {};
+    const _interpolationConfig: Record<string, InterpolationConfig> = {};
+    const _animatedValueConfig: Record<string, InterpolationConfig> = {};
 
     for (let idx = 0; idx < len; idx++) {
       const current = this.stickyItemsQueue[idx];
@@ -91,7 +88,7 @@ class StickyMarshal<ItemT> {
       };
       const _currentAnimatedValueConfig = _animatedValueConfig[itemKey];
 
-      if (typeof itemOffsetLengthRelativeToContainer !== 'undefined') {
+      if (itemOffsetLengthRelativeToContainer !== undefined) {
         const totalOffset =
           containerOffset || 0 + itemOffsetLengthRelativeToContainer;
 
@@ -115,7 +112,7 @@ class StickyMarshal<ItemT> {
               const collisionPoint = totalOffset - prevItemLength!;
               const config = _interpolationConfig[prevItemKey];
               const last = Math.max(
-                config.inputRange[config.inputRange.length - 1] || 0,
+                config.inputRange.at(-1) || 0,
                 collisionPoint
               );
               config.inputRange = ([] as Array<number>).concat(
@@ -194,7 +191,7 @@ class StickyMarshal<ItemT> {
 
     for (let idx = 0; idx < len; idx++) {
       const current = this.stickyItemsQueue[idx];
-      const itemKey = current.itemKey;
+      const {itemKey} = current;
       const prevConfig = current.interpolationConfig;
       const nextConfig = _interpolationConfig[itemKey];
 
@@ -206,16 +203,13 @@ class StickyMarshal<ItemT> {
         animatedValueConfig?: InterpolationConfig;
       } = {};
 
-      if (checkValidInputRange(nextConfig.inputRange)) {
-        // @ts-ignore
-        if (!this.interpolatedConfigEqual(prevConfig, nextConfig)) {
+      if (checkValidInputRange(nextConfig.inputRange) && // @ts-ignore
+        !this.interpolatedConfigEqual(prevConfig, nextConfig)) {
           current.interpolationConfig = nextConfig;
           config.interpolationConfig = nextConfig;
         }
-      }
 
-      if (checkValidInputRange(nextAnimatedValueConfig.inputRange)) {
-        if (
+      if (checkValidInputRange(nextAnimatedValueConfig.inputRange) && 
           !this.interpolatedConfigEqual(
             // @ts-ignore
             prevAnimatedValueConfig,
@@ -225,10 +219,9 @@ class StickyMarshal<ItemT> {
           current.animatedValueConfig = nextAnimatedValueConfig;
           config.animatedValueConfig = nextAnimatedValueConfig;
         }
-      }
 
       // 只有config发生变化的，才进行config的更新
-      if (Object.keys(config).length) {
+      if (Object.keys(config).length > 0) {
         current.setConfig(config);
       }
     }

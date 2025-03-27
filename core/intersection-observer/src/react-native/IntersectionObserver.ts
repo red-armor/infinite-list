@@ -1,10 +1,11 @@
-import { View } from 'react-native';
 import { TaskRunner } from '@infinite-list/scheduler';
+import type { View } from 'react-native';
+
 import ContainerObserver from './ContainerObserver';
+import { generateRandomKey } from './generateRandom';
 import Observer from './Observer';
 import ReactNativeDocument from './ReactNativeDocument';
-import { generateRandomKey } from './generateRandom';
-import {
+import type {
   ClientRect,
   IIntersectionObserver,
   IIntersectionObserverEntry,
@@ -12,8 +13,8 @@ import {
   IntersectionObserverProps,
   ItemLayout,
   MonitorDisposer,
-  ObserveOptions,
   ObservedComponent,
+  ObserveOptions,
   ReactNativeDocumentNode,
 } from './types';
 import { parseRootMargin } from './utils';
@@ -24,15 +25,15 @@ class IntersectionObserver implements IIntersectionObserver {
   private root: ReactNativeDocument;
   private rootMargin: string;
   private threshold?: number | number[];
-  private observerMap: WeakMap<View, Observer> = new WeakMap();
+  private observerMap = new WeakMap<View, Observer>();
   private ownerDocument: ReactNativeDocument | undefined;
-  private keyToObserverMap: Map<string, Observer> = new Map();
+  private keyToObserverMap = new Map<string, Observer>();
   private monitorDisposers: MonitorDisposer[] = [];
   private updateIntersectionsTask: TaskRunner;
-  private nodeToContainerObserverMap: Map<
+  private nodeToContainerObserverMap = new Map<
     ReactNativeDocumentNode,
     ContainerObserver
-  > = new Map();
+  >();
 
   private containers: ContainerObserver[] = [];
 
@@ -53,7 +54,7 @@ class IntersectionObserver implements IIntersectionObserver {
       50
     );
     this.rootMargin = marginValues
-      .map(function (margin) {
+      .map((margin) => {
         return margin.value + (margin.unit || '');
       })
       .join(' ');
@@ -61,18 +62,18 @@ class IntersectionObserver implements IIntersectionObserver {
 
   getNode(doc: ReactNativeDocument) {
     if (!doc) return null;
-    const node = doc.node;
+    const {node} = doc;
     return node;
   }
 
   addContainer(container: ContainerObserver) {
-    const index = this.containers.findIndex((item) => item === container);
+    const index = this.containers.indexOf(container);
     if (index === -1) {
       this.containers.push(container);
     }
 
     return () => {
-      const index = this.containers.findIndex((item) => item === container);
+      const index = this.containers.indexOf(container);
       if (index !== -1) {
         this.containers.splice(index, 1);
       }
@@ -81,9 +82,9 @@ class IntersectionObserver implements IIntersectionObserver {
 
   ensureContainerObserver(doc: ReactNativeDocument | undefined | null) {
     if (!doc) return null;
-    const node = doc.node;
+    const {node} = doc;
     if (!node) return null;
-    const ownerDocument = doc.ownerDocument;
+    const {ownerDocument} = doc;
 
     if (this.nodeToContainerObserverMap.has(node))
       return this.nodeToContainerObserverMap.get(node);

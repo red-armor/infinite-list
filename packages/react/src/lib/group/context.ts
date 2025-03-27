@@ -1,6 +1,6 @@
-import { GenericItemT, ListGroupDimensions } from '@infinite-list/data-model';
-import { createContext } from 'react';
+import type { GenericItemT, ListGroupDimensions } from '@infinite-list/data-model';
 import noop from '@x-oasis/noop';
+import { createContext } from 'react';
 
 type ContextType<ItemT extends GenericItemT> = {
   inspectingTimes: number;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import ScrollHelper from '../ScrollHelper';
+import type ScrollHelper from '../ScrollHelper';
 
 export default (props: {
   scrollEnabled: boolean;

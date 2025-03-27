@@ -1,7 +1,8 @@
-import React, { ForwardedRef } from 'react';
-import { ViewStyle } from 'react-native';
+import type { ForwardedRef } from 'react';
+import type * as React from 'react';
+import type { ViewStyle } from 'react-native';
 
-import { OnLayout } from './scrollView';
+import type { OnLayout } from './scrollView';
 
 export type OnMeasureLayout =
   | ((x: number, y: number, width: number, height: number) => void)
@@ -15,9 +16,7 @@ export type MeasurementShape = {
 };
 
 export type SetMeasureLayoutHandler = (handler: Function) => void;
-export type GetMetaOnViewableItemsChanged = () => {
-  [key: string]: any;
-};
+export type GetMetaOnViewableItemsChanged = () => Record<string, any>;
 
 export interface ViewableItemProps {
   ownerId?: string;

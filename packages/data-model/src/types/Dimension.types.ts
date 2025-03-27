@@ -1,6 +1,6 @@
-import { BaseContainerProps } from './BaseContainer.types';
-import { ListGroupChildDimensionsContainer } from './ListGroupDimensions.types';
-import { GenericItemT } from './generic.types';
+import type { BaseContainerProps } from './BaseContainer.types';
+import type { GenericItemT } from './generic.types';
+import type { ListGroupChildDimensionsContainer } from './ListGroupDimensions.types';
 
 export type GetDimensionLength = () => number;
 

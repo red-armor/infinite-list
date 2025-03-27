@@ -28,7 +28,7 @@ export default class Emitter {
     this._events.set(
       eventName,
       new Event({
-        ...(eventProps || {}),
+        ...eventProps,
         name: eventName,
       })
     );

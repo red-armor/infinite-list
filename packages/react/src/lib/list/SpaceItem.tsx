@@ -1,6 +1,7 @@
+import type { GenericItemT } from '@infinite-list/data-model';
 import { useEffect, useMemo, useRef } from 'react';
-import { SpaceItemProps } from '../types';
-import { GenericItemT } from '@infinite-list/data-model';
+
+import type { SpaceItemProps } from '../types';
 
 const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
   const { data, dimensions, renderItem: RenderItem } = props;

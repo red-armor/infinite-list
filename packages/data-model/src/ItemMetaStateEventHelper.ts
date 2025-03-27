@@ -1,8 +1,9 @@
 import Batchinator from '@x-oasis/batchinator';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import noop from '@x-oasis/noop';
 import getMapKeyByValue from '@x-oasis/get-map-key-by-value';
-import { StateEventListener, ItemMetaStateEventHelperProps } from './types';
+import noop from '@x-oasis/noop';
+
+import type { ItemMetaStateEventHelperProps,StateEventListener } from './types';
 
 let canIUseRIC = false;
 let finished = false;
@@ -56,9 +57,7 @@ class ItemMetaStateEventHelper {
   private _callbackId?: number | void;
   private _callbackStartMinMs?: number;
   readonly _canIUseRIC: boolean;
-  private _strictListenerKeyToHandleCountMap: {
-    [key: string]: number;
-  };
+  private _strictListenerKeyToHandleCountMap: Record<string, number>;
 
   constructor(props: ItemMetaStateEventHelperProps) {
     const {
@@ -104,7 +103,7 @@ class ItemMetaStateEventHelper {
   static spawn(ins: ItemMetaStateEventHelper) {
     const strictListenerKeyToHandleCountMap = Object.create(null);
     const l = ins._strictListeners;
-    if (!l.length) return null;
+    if (l.length === 0) return null;
     l.forEach((_l) => {
       const count = ins._handleCountMap.get(_l);
       for (const [key, value] of ins._reusableEventListenerMap) {
@@ -120,7 +119,7 @@ class ItemMetaStateEventHelper {
 
   remover(listener: StateEventListener, key?: string) {
     return () => {
-      const index = this._listeners.findIndex((cb) => cb === listener);
+      const index = this._listeners.indexOf(listener);
       if (index !== -1) {
         this._listeners.splice(index, 1);
         this._handleCountMap.delete(listener);
@@ -141,7 +140,7 @@ class ItemMetaStateEventHelper {
 
     this._reusableEventListenerMap.set(key, listener);
 
-    const index = this._listeners.findIndex((cb) => cb === listener);
+    const index = this._listeners.indexOf(listener);
     if (index === -1) {
       this._handleCountMap.set(listener, 0);
       this._listeners.push(listener);
@@ -164,12 +163,12 @@ class ItemMetaStateEventHelper {
     triggerOnceIfTrue: boolean
   ) {
     const count = this._strictListenerKeyToHandleCountMap[key] || 0;
-    const index = this._strictListeners.findIndex((cb) => cb === listener);
+    const index = this._strictListeners.indexOf(listener);
 
     const prevListener = this._reusableStrictEventListenerMap.get(key);
     if (prevListener) {
       this._handleCountMap.delete(listener);
-      const idx = this._strictListeners.findIndex((l) => l === prevListener);
+      const idx = this._strictListeners.indexOf(prevListener);
       if (idx !== -1) this._strictListeners.splice(idx, 1);
     }
 
@@ -203,7 +202,7 @@ class ItemMetaStateEventHelper {
    * @returns
    */
   addListener(listener: StateEventListener, triggerOnceIfTrue: boolean) {
-    const index = this._listeners.findIndex((cb) => cb === listener);
+    const index = this._listeners.indexOf(listener);
     if (index === -1) {
       this._handleCountMap.set(listener, 0);
       this._listeners.push(listener);
@@ -267,11 +266,9 @@ class ItemMetaStateEventHelper {
   }
 
   cancelIdleCallbackPolyfill(callbackId: number) {
-    if (this._canIUseRIC) {
-      if (typeof cancelIdleCallback === 'function') {
+    if (this._canIUseRIC && typeof cancelIdleCallback === 'function') {
         cancelIdleCallback(callbackId);
       }
-    }
 
     this._callbackId = undefined;
   }

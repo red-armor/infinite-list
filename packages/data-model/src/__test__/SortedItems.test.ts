@@ -1,8 +1,9 @@
-import SortedItems from '../SortedItems';
-import SelectValue from '@x-oasis/select-value';
-import ItemMeta from '../ItemMeta';
 import Batchinator from '@x-oasis/batchinator';
-import { vi, describe, expect, it } from 'vitest';
+import SelectValue from '@x-oasis/select-value';
+import { describe, expect, it,vi } from 'vitest';
+
+import ItemMeta from '../ItemMeta';
+import SortedItems from '../SortedItems';
 
 vi.useFakeTimers();
 

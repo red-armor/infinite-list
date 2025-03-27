@@ -1,5 +1,5 @@
-import BaseImpl from './BaseImpl';
-import {
+import type BaseImpl from './BaseImpl';
+import type {
   BaseStateImplProps,
   GenericItemT,
   ListState,

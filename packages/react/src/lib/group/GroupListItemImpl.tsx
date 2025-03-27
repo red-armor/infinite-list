@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import * as React from 'react';
+import { useCallback } from 'react';
 
+import type { DefaultItemT } from '../types';
 import ListItem from './ListItem';
-import { DefaultItemT } from '../types';
-import { GroupListItemImplProps } from './types';
+import type { GroupListItemImplProps } from './types';
 
 const GroupListItemImpl = <ItemT extends DefaultItemT>(
   props: GroupListItemImplProps<ItemT>

@@ -1,5 +1,5 @@
-import { BaseLayoutProps } from './BaseLayout.types';
-import {
+import type { BaseLayoutProps } from './BaseLayout.types';
+import type {
   OnViewableItemsChanged,
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,

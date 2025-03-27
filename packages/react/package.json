@@ -1,8 +1,6 @@
 {
   "name": "@infinite-list/react",
   "version": "3.0.1",
-  "main": "./index.js",
-  "types": "./index.d.ts",
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -10,10 +8,15 @@
       "require": "./index.js"
     }
   },
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@infinite-list/data-model": "workspace:*",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/shallow-equal": "^0.1.14"
+  },
+  "devDependencies": {
+    "@types/node": "18.16.9"
   },
   "publishConfig": {
     "access": "public"

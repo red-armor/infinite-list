@@ -1,12 +1,14 @@
-import {
-  ItemMeta,
-  ListGroupDimensions,
-  ListDimensions,
+import type {
   GenericItemT,
+  ItemMeta,
+  ListDimensions,
+  ListGroupDimensions,
 } from '@infinite-list/data-model';
-import React, { CSSProperties, ForwardedRef } from 'react';
-import { LayoutChangeEvent } from 'react-native';
-import { ScrollComponentUseMeasureLayout } from './ListGroup.types';
+import type { CSSProperties, ForwardedRef } from 'react';
+import type * as React from 'react';
+import type { LayoutChangeEvent } from 'react-native';
+
+import type { ScrollComponentUseMeasureLayout } from './ListGroup.types';
 
 type OnLayout = (event: LayoutChangeEvent) => void;
 
@@ -17,14 +19,10 @@ type OnMeasureLayout =
   | null;
 
 type SetMeasureLayoutHandler = (handler: Function) => void;
-type GetMetaOnViewableItemsChanged = () => {
-  [key: string]: any;
-};
+type GetMetaOnViewableItemsChanged = () => Record<string, any>;
 
 export type TeleportItemProps =
-  | ((opts: { index: number; item: any }) => {
-      [key: string]: any;
-    })
+  | ((opts: { index: number; item: any }) => Record<string, any>)
   | undefined;
 
 export interface ListItemProps<ItemT extends DefaultItemT> {

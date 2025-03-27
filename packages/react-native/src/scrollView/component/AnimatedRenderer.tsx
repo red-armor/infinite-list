@@ -1,27 +1,30 @@
 import throttle from '@x-oasis/throttle';
-import React, {
+import type {
   FC,
   ForwardedRef,
-  PropsWithChildren,
+  PropsWithChildren} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import {
-  Animated,
+import type {
   LayoutChangeEvent,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
+  ScrollView} from 'react-native';
+import {
+  Animated
 } from 'react-native';
 
 import { useNativeRefreshControl } from '../commons/platform';
 import useScrollEnabled from '../hooks/useScrollEnabled';
-import SmoothControl from '../refresh/SmoothControl';
 import { TRIGGER_ON_REFRESH_THRESHOLD_VALUE } from '../refresh/constants';
-import {
+import SmoothControl from '../refresh/SmoothControl';
+import type {
   AnimatedScrollRendererProps,
   AnimatedScrollRendererPropsWithForwardRef,
 } from '../types';
@@ -88,7 +91,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     // @ts-ignore
     return scrollEventHelper.subscribeEventHandler('onScrollEndDrag', (e) => {
       const { nativeEvent } = e;
-      const contentOffset = nativeEvent.contentOffset;
+      const {contentOffset} = nativeEvent;
 
       const { y } = contentOffset;
       if (y < -triggerOnRefreshThresholdValue) {

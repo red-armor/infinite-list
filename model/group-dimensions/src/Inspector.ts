@@ -1,8 +1,9 @@
 import Batchinator from '@x-oasis/batchinator';
 import findLastIndex from '@x-oasis/find-last-index';
 import shallowArrayEqual from '@x-oasis/shallow-array-equal';
-import ListGroupDimensions from './ListGroupDimensions';
-import {
+
+import type ListGroupDimensions from './ListGroupDimensions';
+import type {
   GenericItemT,
   InspectingAPI,
   InspectingListener,
@@ -82,7 +83,7 @@ class Inspector<ItemT extends GenericItemT = GenericItemT> {
   }
 
   remove(key: string) {
-    const index = this._indexKeys.findIndex((v) => v === key);
+    const index = this._indexKeys.indexOf(key);
     if (index !== -1) {
       this._indexKeys.splice(index, 1);
       this.updateAnchorKeys();
@@ -91,7 +92,7 @@ class Inspector<ItemT extends GenericItemT = GenericItemT> {
   }
 
   findIndex(key: string) {
-    return this._indexKeys.findIndex((indexKey) => indexKey === key);
+    return this._indexKeys.indexOf(key);
   }
 
   addStartInspectingHandler(cb: InspectingListener) {

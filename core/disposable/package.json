@@ -1,10 +1,26 @@
 {
   "name": "@infinite-list/disposable",
   "version": "1.0.2",
-  "dependencies": {},
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "main": "./src/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup"
+  },
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./src/index.ts"
   }
 }

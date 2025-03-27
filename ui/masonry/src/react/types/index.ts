@@ -1,2 +1,2 @@
-export * from './masonryList';
 export * from './list';
+export * from './masonryList';

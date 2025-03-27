@@ -1,21 +1,17 @@
-import {
+import type {
   GenericItemT,
+ItemMeta, 
   ListDimensions,
-  RecycleStateToken,
-  SpaceStateToken,
   ListDimensionsModelProps,
-} from '@infinite-list/data-model';
-
-import { ItemMeta } from '@infinite-list/data-model';
+  RecycleStateToken,
+  SpaceStateToken} from '@infinite-list/data-model';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   item: ItemT;
   itemMeta: ItemMeta<ItemT>;
 };
 
-export type DefaultItemT = {
-  [key: string]: any;
-};
+export type DefaultItemT = Record<string, any>;
 
 export type RenderItem<ItemT extends DefaultItemT> = (
   info: RenderItemInfo<ItemT>

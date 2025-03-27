@@ -1,4 +1,4 @@
-import { ColumnDimensionInfo, GetColumnWidth } from '../types';
+import type { ColumnDimensionInfo, GetColumnWidth } from '../types';
 
 export const resolveColumnInfo = (options: {
   width?: number;
@@ -19,7 +19,7 @@ export const resolveColumnInfo = (options: {
       acc.push(current);
       return acc;
     }
-    const last = acc[acc.length - 1];
+    const last = acc.at(-1);
     if (last) {
       current.left = last.left + last.width;
       current.right = nextWidth - current.left - last.width;

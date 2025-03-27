@@ -1,11 +1,11 @@
-import {
+import type {
   OnEndReachedHelperProps,
-  ViewabilityConfig,
   OnViewableItemsChanged,
+  ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/data-model';
-import { ComponentType, PropsWithChildren, MutableRefObject } from 'react';
-import { View, LayoutChangeEvent } from 'react-native';
+import type { ComponentType, MutableRefObject,PropsWithChildren } from 'react';
+import type { LayoutChangeEvent,View } from 'react-native';
 
 export type ScrollComponentUseMeasureLayout = (
   itemRef: MutableRefObject<View | null>,

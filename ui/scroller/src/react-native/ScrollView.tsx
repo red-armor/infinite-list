@@ -1,30 +1,31 @@
-import React, {
+import isRefObject from '@x-oasis/is-ref';
+import type {
   FC,
-  ForwardedRef,
-  MutableRefObject,
-  PropsWithChildren,
+  MutableRefObject} from 'react';
+import * as React from 'react';
+import {
   useContext,
   useEffect,
   useMemo,
   useRef,
 } from 'react';
-import { ScrollView as RNScrollView, View as RNView } from 'react-native';
-import isRefObject from '@x-oasis/is-ref';
-import Marshal from './Marshal';
+import type { ScrollView as RNScrollView, View as RNView } from 'react-native';
+
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
 import { resolveScrollViewKey } from './commons/utils';
 import AnimatedRenderer from './component/AnimatedRenderer';
 import BasicRenderer from './component/BasicRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';
 import ScrollViewContext from './context/ScrollViewContext';
+import Marshal from './Marshal';
 import FooterPortalContainer from './portal/FooterContainer';
 import HeaderPortalContainer from './portal/HeaderContainer';
 import PortalManager from './portal/Manager';
-import {
+import type {
   InfiniteListScrollViewProps,
-  InfiniteListScrollViewPropsWithForwardRef,
-  InfiniteListScrollViewPropsWithRef,
-} from './types';
+  InfiniteListScrollViewPropsWithForwardRef} from './types';
+
+
 
 const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
   const {

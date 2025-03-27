@@ -1,28 +1,35 @@
 {
   "name": "@infinite-list/intersection-observer",
   "version": "1.0.3",
+  "exports": {
+    "./react": {
+      "types": "./src/react/index.ts",
+      "default": "./dist/react/index.mjs"
+    },
+    "./react-native": {
+      "types": "./src/react-native/index.ts",
+      "default": "./dist/react-native/index.mjs"
+    }
+  },
+  "main": "./src/react-native/index.ts",
+  "types": "./src/react-native/index.ts",
+  "scripts": {
+    "build": "tsup"
+  },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
-  },
-  "exports": {
-    "./react": {
-      "types": "./react.esm.d.ts",
-      "default": "./react.esm.js"
-    },
-    "./react-native": {
-      "types": "./react-native.esm.d.ts",
-      "import": "./react-native.esm.js"
-    }
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "dependencies": {
     "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/items-dimensions": "workspace:*",
     "@infinite-list/scheduler": "workspace:*"
   },
-  "main": "./index.js",
-  "types": "./index.d.ts"
+  "devDependencies": {
+    "@types/node": "18.16.9"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "./src/react-native/index.ts"
+  }
 }

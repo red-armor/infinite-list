@@ -1,5 +1,5 @@
-import DisposableStore from './DisposableStore';
 import { isFunction, isObject } from './assertion/types';
+import DisposableStore from './DisposableStore';
 import type { DisposableFunction, IDisposable } from './types/disposable';
 
 export function isDisposable<T extends object>(

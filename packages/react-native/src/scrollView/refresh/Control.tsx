@@ -1,15 +1,18 @@
-import React, {
-  FC,
+import type {
+  FC} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
 } from 'react';
-import { Animated, View, ViewStyle } from 'react-native';
+import type { ViewStyle } from 'react-native';
+import { Animated, View } from 'react-native';
 
 import ScrollViewContext from '../context/ScrollViewContext';
-import { ControlProps } from '../types';
+import type { ControlProps } from '../types';
 
 const TRIGGER_ON_REFRESH_THRESHOLD_VALUE = 40;
 const LOCK_REFRESH_TIMEOUT = 500;
@@ -72,15 +75,13 @@ const Control: FC<ControlProps> = (props) => {
     return scrollEventHelper.subscribeEventHandler('onScroll', (e) => {
       if (!onRefreshEnabledRef.current || refreshingRef.current) return;
       const { nativeEvent } = e;
-      const contentOffset = nativeEvent.contentOffset;
+      const {contentOffset} = nativeEvent;
       const { y } = contentOffset;
-      if (y < -refreshThresholdValue) {
-        if (typeof onRefresh === 'function') {
+      if (y < -refreshThresholdValue && typeof onRefresh === 'function') {
           onRefreshEnabledRef.current = false;
           onRefresh();
           animatedGhostRef.current.setValue(refreshThresholdValue);
         }
-      }
     });
   }, []);
 

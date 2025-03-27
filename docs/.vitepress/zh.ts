@@ -1,5 +1,7 @@
-import { createRequire } from 'module';
-import { defineConfig, type DefaultTheme } from 'vitepress';
+import { createRequire } from 'node:module';
+
+import type {DefaultTheme} from 'vitepress';
+import { defineConfig } from 'vitepress';
 
 const require = createRequire(import.meta.url);
 const pkg = require('vitepress/package.json');

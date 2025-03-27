@@ -1,13 +1,14 @@
+import BaseContainer from './BaseContainer';
 import {
   INITIAL_NUM_TO_RENDER,
-  MAX_TO_RENDER_PER_BATCH,
-  WINDOW_SIZE,
-  RECYCLER_RESERVED_BUFFER_PER_BATCH,
-  LENGTH_PRECISION,
   ITEM_OFFSET_BEFORE_LAYOUT_READY,
+  LENGTH_PRECISION,
+  MAX_TO_RENDER_PER_BATCH,
+  RECYCLER_RESERVED_BUFFER_PER_BATCH,
+  WINDOW_SIZE,
 } from './common';
-import { ItemLayout, FillingMode, BaseLayoutProps } from './types';
-import BaseContainer from './BaseContainer';
+import type { BaseLayoutProps, ItemLayout } from './types';
+import {FillingMode } from './types';
 
 abstract class BaseLayout extends BaseContainer {
   readonly _windowSize: number;

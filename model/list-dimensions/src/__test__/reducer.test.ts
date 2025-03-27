@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { context as itemMetaContext } from '@infinite-list/item-meta';
-import { ActionType } from '@infinite-list/state';
 import { defaultKeyExtractor } from '@infinite-list/utils';
 // import ListGroupDimensions from '../ListGroupDimensions';
 import Batchinator from '@x-oasis/batchinator';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import ListDimensions from '../ListDimensions';
 
 const buildData = (count: number) =>

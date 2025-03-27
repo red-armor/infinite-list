@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useRef, useEffect } from 'react';
-import { MasonryList, RenderItem } from '@infinite-list/masonry/react-native';
+import type { RenderItem } from '@infinite-list/masonry/react-native';
+import { MasonryList } from '@infinite-list/masonry/react-native';
 import { ScrollView } from '@infinite-list/scroller/react-native';
+import { useCallback, useEffect,useMemo, useRef } from 'react';
 import { Text, View } from 'react-native';
 
 const buildData = (count: number, startIndex = 0) =>
@@ -18,20 +19,20 @@ export default () => {
     value: number;
   }> = useCallback((props) => {
     const { item, itemMeta } = props;
-    const index = itemMeta.getIndexInfo().index;
+    const {index} = itemMeta.getIndexInfo();
     const totalIndex = itemMeta.getIndexInfo().indexInTotal;
     const initRef = useRef(true);
 
     useEffect(() => {
-      if (initRef.current) console.log('mount ', itemMeta.getKey());
+      if (initRef.current) console.log('mount', itemMeta.getKey());
       else {
-        console.log('update to ', itemMeta.getKey());
+        console.log('update to', itemMeta.getKey());
       }
 
       initRef.current = false;
 
       return () => {
-        console.log('unmount ', itemMeta.getKey());
+        console.log('unmount', itemMeta.getKey());
       };
     }, [itemMeta]);
 

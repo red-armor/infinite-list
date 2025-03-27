@@ -1,14 +1,13 @@
-import ScrollerScrollView from './ScrollView';
 import FooterPortal from './portal/FooterPortal';
 import HeaderPortal from './portal/HeaderPortal';
+import type ScrollerScrollView from './ScrollView';
 
 export { default as ScrollViewContext } from './context/ScrollViewContext';
-export { default as ScrollHelper } from './ScrollHelper';
-export { default as IntersectionObserverView } from './intersection/IntersectionObserverView';
 export { default as IntersectionObserverTouchableOpacity } from './intersection/IntersectionObserverTouchableOpacity';
-export { default as StickyView } from './sticky/StickyView';
-
+export { default as IntersectionObserverView } from './intersection/IntersectionObserverView';
 export { default as Marshal } from './Marshal';
+export { default as ScrollHelper } from './ScrollHelper';
+export { default as StickyView } from './sticky/StickyView';
 export * from './types';
 
 export const ScrollViewPortal = {
@@ -16,11 +15,13 @@ export const ScrollViewPortal = {
   Footer: FooterPortal,
 };
 
-export * from './constants';
 export * from './commons/platform';
+export * from './constants';
 
 /**
  * to make exported ScrollView type compatible with react-native
  */
 export type ScrollView = typeof ScrollerScrollView;
-export { ScrollerScrollView as ScrollView };
+
+
+export {default as ScrollView} from './ScrollView';

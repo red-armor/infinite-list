@@ -1,6 +1,9 @@
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import Batchinator from '@x-oasis/batchinator';
-import {
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
+
+import { DISPATCH_METRICS_THRESHOLD } from '../common';
+import type ListDimensionsModel from '../ListDimensionsModel';
+import type {
   GenericItemT,
   ItemLayout,
   KeysChangedType,
@@ -9,12 +12,10 @@ import {
   MasonryStateListener,
   ScrollMetrics,
 } from '../types';
-import MasonryDimensionsModel from './MasonryDimensionsModel';
-import { DISPATCH_METRICS_THRESHOLD } from '../common';
+import type { DimensionsModelContainer } from '../types/Container.types';
 import OnEndReachedHelper from '../viewable/OnEndReachedHelper';
-import { DimensionsModelContainer } from '../types/Container.types';
+import MasonryDimensionsModel from './MasonryDimensionsModel';
 import { chunkifyDataSource } from './utils';
-import ListDimensionsModel from '../ListDimensionsModel';
 
 const DEFAULT_MASONRY_COLUMN = 2;
 let count = 0;

@@ -1,13 +1,14 @@
+import layoutEqual from '@x-oasis/layout-equal';
+import type PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+
 import BaseDimensions from './BaseDimensions';
 import ItemMeta from './ItemMeta';
-import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import layoutEqual from '@x-oasis/layout-equal';
-
-import {
+import type {
   IndexInfo,
   ItemLayout,
-  KeysChangedType,
-  PseudoListDimensionsProps,
+  PseudoListDimensionsProps} from './types';
+import {
+  KeysChangedType
 } from './types';
 
 class PseudoListDimensions extends BaseDimensions {
@@ -24,16 +25,19 @@ class PseudoListDimensions extends BaseDimensions {
     const keysChangedType = this.resolveKeysChangedType(keys);
 
     switch (keysChangedType) {
-      case KeysChangedType.Equal:
+      case KeysChangedType.Equal: {
         break;
-      case KeysChangedType.Append:
+      }
+      case KeysChangedType.Append: {
         this.append(keys);
         break;
+      }
       case KeysChangedType.Add:
       case KeysChangedType.Remove:
-      case KeysChangedType.Reorder:
+      case KeysChangedType.Reorder: {
         this.shuffle(keys);
         break;
+      }
     }
     this.keyIndexManager.setIndexKeys(keys);
     // this._indexKeys = keys;

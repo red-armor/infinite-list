@@ -2,7 +2,7 @@
 // import ListGroupDimensions from '../../ListGroupDimensions';
 // import ListDimensionsModel from '../../ListDimensionsModel';
 // import ListDimensions from '../../ListDimensions';
-import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
+import type { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
 // import { isValidMetaLayout } from '../../ItemMeta';
 // import { info } from '../../utils/logger';
 import { log } from '@infinite-list/utils';

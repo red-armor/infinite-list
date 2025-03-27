@@ -1,18 +1,19 @@
-import {
+import type {
   BaseDimensionsProps,
   KeysChangedType,
 } from '@infinite-list/base-dimensions';
-import { RecyclerProps } from '@infinite-list/strategies';
-import {
+import type { RecyclerProps } from '@infinite-list/strategies';
+import type {
   IListDimensions,
   IListDimensionsModel,
   IListGroupDimensions,
   IMasonryDimensions,
   IMasonryDimensionsModel,
 } from '@infinite-list/types';
-import { IDefaultKeyExtra } from '@infinite-list/utils';
-import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
-import { GenericItemT } from './generic.types';
+import type { IDefaultKeyExtra } from '@infinite-list/utils';
+
+import type { GenericItemT } from './generic.types';
+import type { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,

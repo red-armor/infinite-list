@@ -1,8 +1,8 @@
-import ListGroupDimensions from '../ListGroupDimensions';
-import { GenericItemT } from './generic.types';
+import type ListGroupDimensions from '../ListGroupDimensions';
+import type { GenericItemT } from './generic.types';
 
 export type IndexKeys = Array<string>;
-export type OnIndexKeysChanged = { (props?: { indexKeys: IndexKeys }): void };
+export type OnIndexKeysChanged = (props?: { indexKeys: IndexKeys }) => void;
 
 export type InspectorProps<ItemT extends GenericItemT = GenericItemT> = {
   owner: ListGroupDimensions<ItemT>;
@@ -14,9 +14,7 @@ export type AnchorLocation = {
   endIndex: number;
 };
 
-export type AnchorRange = {
-  [key: string]: AnchorLocation;
-};
+export type AnchorRange = Record<string, AnchorLocation>;
 
 export type InspectingAPI = {
   inspectingTimes: number;

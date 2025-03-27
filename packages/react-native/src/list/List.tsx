@@ -1,19 +1,22 @@
-import { useEffect, useMemo, useState, useRef, useContext } from 'react';
-import {
-  View,
-  ViewStyle,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
-} from 'react-native';
-import { ListProps } from './types';
-import {
-  ListDimensions,
+import type {
   GenericItemT,
-  RecycleStateResult,
+  RecycleStateResult} from '@infinite-list/data-model';
+import {
+  ListDimensions
 } from '@infinite-list/data-model';
+import { useContext,useEffect, useMemo, useRef, useState } from 'react';
+import type {
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  ViewStyle} from 'react-native';
+import {
+  View
+} from 'react-native';
+
+import { ScrollViewContext } from '../scrollView';
 import RecycleItem from './RecycleItem';
 import SpaceItem from './SpaceItem';
-import { ScrollViewContext } from '../scrollView';
+import type { ListProps } from './types';
 
 const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const { renderItem, id, data, containerRef, recycleEnabled = true } = props;
@@ -29,9 +32,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   }
 
   const listRef = useRef<View>(null);
-  const style: {
-    [key: string]: ViewStyle;
-  } = useMemo(
+  const style: Record<string, ViewStyle> = useMemo(
     () => ({
       container: {
         width: '100%',

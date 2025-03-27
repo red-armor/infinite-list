@@ -1,10 +1,11 @@
-import { ItemMeta, ItemsDimensions } from '@infinite-list/data-model';
-import SelectValue, {
+import type { ItemMeta, ItemsDimensions } from '@infinite-list/data-model';
+import type SelectValue from '@x-oasis/select-value';
+import {
   selectHorizontalValue,
   selectVerticalValue,
 } from '@x-oasis/select-value';
-import { MutableRefObject } from 'react';
-import {
+import type { MutableRefObject } from 'react';
+import type {
   Animated,
   NativeScrollEvent,
   NativeSyntheticEvent,
@@ -12,16 +13,16 @@ import {
   View,
 } from 'react-native';
 
-import Marshal from './Marshal';
-import ScrollEventHelper from './ScrollEventHelper';
-import StickyMarshal from './StickyMarshal';
 import {
   DEFAULT_LAYOUT_MEASUREMENT,
   DEFAULT_SCROLL_EVENT_METRICS,
   DEFAULT_SCROLL_HELPER_LAYOUT,
 } from './commons/constants';
 import { isIos } from './commons/platform';
-import {
+import type Marshal from './Marshal';
+import ScrollEventHelper from './ScrollEventHelper';
+import StickyMarshal from './StickyMarshal';
+import type {
   ContentSize,
   ContentSizeChangeHandler,
   ScrollEventHandlerSubscriptionKeys,
@@ -97,7 +98,7 @@ class ScrollHelper {
   private _marshal: Marshal;
 
   // @ts-ignore
-  private _scrollEnabledHandler: { (falsy: boolean): void };
+  private _scrollEnabledHandler: (falsy: boolean) => void;
 
   public hasInteraction: boolean;
 
@@ -191,14 +192,14 @@ class ScrollHelper {
   }
 
   addOnRefreshListener(fn: Function) {
-    const index = this.onRefreshListeners.findIndex(
-      (listener) => fn === listener
+    const index = this.onRefreshListeners.indexOf(
+      fn
     );
 
     if (index === -1) this.onRefreshListeners.push(fn);
     return () => {
-      const index = this.onRefreshListeners.findIndex(
-        (listener) => fn === listener
+      const index = this.onRefreshListeners.indexOf(
+        fn
       );
       if (index !== -1) this.onRefreshListeners.splice(index, 1);
     };
@@ -259,30 +260,30 @@ class ScrollHelper {
   }
 
   registerScrollEventHelper(scrollEventHelper: ScrollEventHelper) {
-    const index = this._scrollEventHelpers.findIndex(
-      (e) => scrollEventHelper === e
+    const index = this._scrollEventHelpers.indexOf(
+      scrollEventHelper
     );
     if (index === -1) {
       this._scrollEventHelpers.push(scrollEventHelper);
     }
 
     return () => {
-      const index = this._scrollEventHelpers.findIndex(
-        (e) => scrollEventHelper === e
+      const index = this._scrollEventHelpers.indexOf(
+        scrollEventHelper
       );
       if (index !== -1) this._scrollEventHelpers.splice(index, 1);
     };
   }
 
   registerReverseOrientationChild(child: ScrollHelper) {
-    const index = this._reverseOrientationRootChildren.findIndex(
-      (v) => v === child
+    const index = this._reverseOrientationRootChildren.indexOf(
+      child
     );
     if (index === -1) this._reverseOrientationRootChildren.push(child);
 
     return () => {
-      const index = this._reverseOrientationRootChildren.findIndex(
-        (v) => v === child
+      const index = this._reverseOrientationRootChildren.indexOf(
+        child
       );
       if (index !== -1) this._reverseOrientationRootChildren.splice(index, 1);
     };

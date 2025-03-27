@@ -1,16 +1,17 @@
 import resolveChanged from '@x-oasis/resolve-changed';
-import ViewabilityItemMeta from './ViewabilityItemMeta';
-import {
+
+import type {
+  NormalizedViewablityConfig,
+  OnViewableItemsChanged,
   ScrollMetrics,
+  ViewabilityConfig,
+  ViewabilityConfigCallbackPair,
+  ViewabilityHelperChangedToken,
   ViewabilityScrollMetrics,
   ViewAreaModeConfig,
-  ViewabilityConfig,
-  OnViewableItemsChanged,
-  NormalizedViewablityConfig,
-  ViewabilityConfigCallbackPair,
   VisiblePercentModeConfig,
-  ViewabilityHelperChangedToken,
 } from '../types';
+import type ViewabilityItemMeta from './ViewabilityItemMeta';
 import { isItemViewable } from './viewabilityUtils';
 
 const createChangedToken = (opts: {
@@ -219,9 +220,7 @@ class ViewablityHelper {
   mergeState(nextViewableItems: Array<ViewabilityItemMeta>) {
     const itemMetaStateMap = new Map<
       ViewabilityItemMeta,
-      {
-        [key: string]: boolean;
-      }
+      Record<string, boolean>
     >();
 
     this._changed.forEach((itemMeta) => {
@@ -232,7 +231,7 @@ class ViewablityHelper {
 
     nextViewableItems.forEach((itemMeta) => {
       itemMetaStateMap.set(itemMeta, {
-        ...(itemMetaStateMap.get(itemMeta) || {}),
+        ...itemMetaStateMap.get(itemMeta),
         [this._configName]: true,
       });
     });

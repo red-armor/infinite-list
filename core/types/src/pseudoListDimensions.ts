@@ -1,4 +1,4 @@
-import { ItemMetaOwnerRequiredProps } from './itemMeta';
+import type { ItemMetaOwnerRequiredProps } from './itemMeta';
 
 export interface IPseudoListDimensions<ExtraInfo extends {} = {}>
   extends ItemMetaOwnerRequiredProps {

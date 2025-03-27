@@ -1,23 +1,25 @@
-import BaseLayout from './BaseLayout';
-import ItemMeta from './ItemMeta';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
-import {
+
+import BaseLayout from './BaseLayout';
+import type ItemMeta from './ItemMeta';
+import type {
   BaseDimensionsProps,
   BoundInfo,
-  BoundInfoType,
   GenericItemT,
   ItemLayout,
-  KeysChangedType,
-  ScrollMetrics,
+  ScrollMetrics} from './types';
+import {
+  BoundInfoType,
+  KeysChangedType
 } from './types';
-import * as log from './utils/logger';
 import KeyIndexManager from './utils/KeyIndexManager';
+import * as log from './utils/logger';
+import ViewabilityConfigTuples from './viewable/ViewabilityConfigTuples';
 
 abstract class BaseDimensions<
   ItemT extends GenericItemT = GenericItemT
 > extends BaseLayout {
-  _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
+  _keyToMetaMap = new Map<string, ItemMeta<ItemT>>();
   _configTuple: ViewabilityConfigTuples;
 
   _onUpdateItemLayout?: Function;

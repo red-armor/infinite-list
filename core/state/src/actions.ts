@@ -1,9 +1,11 @@
-import { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
+import type { IListDimensions, IListGroupDimensions } from '@infinite-list/types';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import defaultValue from '@x-oasis/default-value';
+
 import { INVALID_LENGTH } from './common';
-import { ScrollMetrics } from './types';
-import { Action, ActionType, ReducerResult } from './types/types';
+import type { ScrollMetrics } from './types';
+import type { Action, ReducerResult } from './types/types';
+import { ActionType } from './types/types';
 
 export const resolveAction = <State extends ReducerResult = ReducerResult>(
   state: State,

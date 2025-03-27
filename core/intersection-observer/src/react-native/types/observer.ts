@@ -1,7 +1,8 @@
-import { ScrollView, View } from 'react-native';
-import { IClientRectReadOnly } from '../../types';
-import ContainerObserver from '../ContainerObserver';
-import ReactNativeDocument from '../ReactNativeDocument';
+import type { ScrollView, View } from 'react-native';
+
+import type { IClientRectReadOnly } from '../../types';
+import type ContainerObserver from '../ContainerObserver';
+import type ReactNativeDocument from '../ReactNativeDocument';
 
 export type OnRectChange = (rect: IClientRectReadOnly) => void;
 

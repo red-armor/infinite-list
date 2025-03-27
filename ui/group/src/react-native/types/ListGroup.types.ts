@@ -1,8 +1,9 @@
 // import { MutableRefObject } from 'react';
-import { RefObject } from 'react';
-import { ScrollView, View } from 'react-native';
-import { GenericItemT } from '@infinite-list/types';
-import { ListGroupProps as CommonListGroupProps } from '../../types';
+import type { GenericItemT } from '@infinite-list/types';
+import type { RefObject } from 'react';
+import type { ScrollView, View } from 'react-native';
+
+import type { ListGroupProps as CommonListGroupProps } from '../../types';
 
 // export type ScrollComponentUseMeasureLayout = (
 //   itemRef: MutableRefObject<View | null>,

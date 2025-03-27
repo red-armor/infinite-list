@@ -1,12 +1,13 @@
 // @ts-ignore
 // import LottieView from '@xhs/lottie-react-native';
-import React, { useEffect, useRef } from 'react';
+import * as React from 'react';
+import { useEffect, useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 // @ts-ignore
-import sourceRed from './loading-red.json';
-// @ts-ignore
 import sourceGray from './loading.json';
+// @ts-ignore
+import sourceRed from './loading-red.json';
 
 const styles = StyleSheet.create({
   image: {

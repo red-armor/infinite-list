@@ -2,8 +2,9 @@ import { KeysChangedType } from '@infinite-list/base-dimensions';
 // import KeyIndexManager from '../utils/KeyIndexManager';
 import { KeyIndexManager } from '@infinite-list/utils';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
-import MasonryDimensionsModel from './MasonryDimensionsModel';
-import { GenericItemT } from './types';
+
+import type MasonryDimensionsModel from './MasonryDimensionsModel';
+import type { GenericItemT } from './types';
 
 /**
  *
@@ -41,9 +42,7 @@ export const chunkifyDataSource = <
   const dataSource: ItemT[][] = [];
 
   const shouldShuffle =
-    [KeysChangedType.Append, KeysChangedType.Initial].indexOf(
-      dataChangedType
-    ) === -1;
+    ![KeysChangedType.Append, KeysChangedType.Initial].includes(dataChangedType);
 
   if (!shouldShuffle) {
     startIndex = oldData.length;
@@ -52,7 +51,7 @@ export const chunkifyDataSource = <
       const length = dataModel.getTotalLength();
 
       if (typeof length === 'number') return length;
-      if (typeof length === 'string') return parseFloat(length);
+      if (typeof length === 'string') return Number.parseFloat(length);
       return 0;
     });
   } else {

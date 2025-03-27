@@ -1,9 +1,11 @@
-import { MutableRefObject, useCallback, useEffect, useMemo } from 'react';
+import type { MutableRefObject} from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
+import type {
+  LayoutChangeEvent} from 'react-native';
 import {
-  Platform,
-  LayoutChangeEvent,
-  UIManager,
   findNodeHandle,
+  Platform,
+  UIManager,
 } from 'react-native';
 
 type Layout = {

@@ -1,6 +1,8 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import type { Dimension } from '@infinite-list/data-model';
+import * as React from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
+
 import context from '../context';
-import { Dimension } from '@infinite-list/data-model';
 
 // @ts-ignore
 export default (props) => {

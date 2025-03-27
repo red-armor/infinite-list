@@ -1,9 +1,10 @@
-import {
+import type {
   ListDimensionsModelProps,
   OnEndReachedHelperProps,
 } from '@infinite-list/data-model';
-import { DefaultItemT, TeleportItemProps } from './ListItem.types';
-import { RenderItem } from './GroupListItemImpl.types';
+
+import type { RenderItem } from './GroupListItemImpl.types';
+import type { DefaultItemT, TeleportItemProps } from './ListItem.types';
 
 export interface GroupListProps<ItemT extends DefaultItemT>
   extends ListDimensionsModelProps<ItemT>,

@@ -1,4 +1,4 @@
-import { ActionPayload, ReducerResult } from '../types/types';
+import type { ActionPayload, ReducerResult } from '../types/types';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
@@ -7,7 +7,7 @@ export default <State extends ReducerResult = ReducerResult>(
 ) => {
   const { dimension } = payload;
 
-  const initialNumToRender = dimension.initialNumToRender;
+  const {initialNumToRender} = dimension;
   // const dataLength = dimension.getDataLength()
 
   if (initialNumToRender && dimension.getTotalLength()) {

@@ -1,6 +1,7 @@
+import type { GenericItemT } from '@infinite-list/types';
 import { memo, useContext, useRef } from 'react';
-import { GenericItemT } from '@infinite-list/types';
-import { GroupDimensionItemProps } from '../types';
+
+import type { GroupDimensionItemProps } from '../types';
 import context from './context';
 import useMountItem from './hooks/useMountDimensionItem';
 

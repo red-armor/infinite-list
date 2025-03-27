@@ -1,4 +1,4 @@
-import { ItemMeta } from '@infinite-list/data-model';
+import type { ItemMeta } from '@infinite-list/data-model';
 import { createContext } from 'react';
 
 export default createContext<{

@@ -1,9 +1,9 @@
-import {
+import type {
   HostComponent,
   MeasureLayoutOnSuccessCallback,
-  NativeMethods,
-  UIManager,
-} from 'react-native';
+  NativeMethods} from 'react-native';
+
+
 
 // https://github.com/facebook/react-native/blob/main/packages/react-native/Libraries/ReactNative/UIManager.d.ts#L17
 // https://github.com/facebook/react-native/blob/main/packages/react-native/types/public/ReactNativeTypes.d.ts#L45

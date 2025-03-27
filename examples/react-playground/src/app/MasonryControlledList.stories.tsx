@@ -1,7 +1,7 @@
-import type { Meta } from '@storybook/react';
-import { defaultKeyExtractor } from '@infinite-list/utils';
+import type { KeyExtractor } from '@infinite-list/dimensions-model';
 import { MasonryList } from '@infinite-list/masonry/react';
-import { KeyExtractor } from '@infinite-list/dimensions-model';
+import { defaultKeyExtractor } from '@infinite-list/utils';
+import type { Meta } from '@storybook/react';
 import { useRef } from 'react';
 
 type Item = {
@@ -42,7 +42,7 @@ const meta: Meta<typeof MasonryList> = {
 
             if (itemMeta.getState().viewable)
               console.log(
-                'item meta ',
+                'item meta',
                 itemMeta.getKey(),
                 itemMeta.getState().viewable
               );

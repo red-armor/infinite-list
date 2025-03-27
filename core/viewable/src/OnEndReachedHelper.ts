@@ -1,11 +1,12 @@
 import Batchinator from '@x-oasis/batchinator';
 import isClamped from '@x-oasis/is-clamped';
+
 import {
   ON_END_REACHED_HANDLER_TIMEOUT_THRESHOLD,
   ON_END_REACHED_THRESHOLD,
   ON_END_REACHED_TIMEOUT_THRESHOLD,
 } from './common';
-import {
+import type {
   OnEndReached,
   OnEndReachedHelperProps,
   ScrollMetrics,
@@ -90,7 +91,7 @@ class OnEndReachedHelper {
 
   removeHandler(onEndReached: OnEndReached) {
     const next = ([] as OnEndReached[]).concat(this.onEndReached || []);
-    const index = next.findIndex((handler) => handler === onEndReached);
+    const index = next.indexOf(onEndReached);
     if (index !== -1) {
       next.splice(index, 1);
       this.onEndReached = next;
@@ -104,14 +105,14 @@ class OnEndReachedHelper {
         : this.onEndReached
           ? [this.onEndReached]
           : [];
-      const index = handler.findIndex((v) => v === onEndReached);
+      const index = handler.indexOf(onEndReached);
       if (index === -1) handler.push(onEndReached);
       this.onEndReached = handler;
     }
 
     return () => {
       if (Array.isArray(this.onEndReached)) {
-        const index = this.onEndReached.findIndex((v) => v === onEndReached);
+        const index = this.onEndReached.indexOf(onEndReached);
         if (index !== -1) this.onEndReached.splice(index, 1);
       }
     };
@@ -173,7 +174,7 @@ class OnEndReachedHelper {
 
   timeoutReleaseHandlerMutex(now: number) {
     console.warn(
-      'OnEndReachedHelper ',
+      'OnEndReachedHelper',
       this.id,
       now,
       Date.now() - now,
@@ -184,9 +185,9 @@ class OnEndReachedHelper {
   }
 
   get lastStack() {
-    return this.sendOnEndReachedDistanceFromEndStack[
-      this.sendOnEndReachedDistanceFromEndStack.length - 1
-    ];
+    return this.sendOnEndReachedDistanceFromEndStack.at(
+      -1
+    );
   }
 
   getStack() {
@@ -202,7 +203,7 @@ class OnEndReachedHelper {
 
   shouldResetCountLimitation(distanceFromEnd: number) {
     const { distancesFromEnd } = this.lastStack;
-    const distance = distancesFromEnd[distancesFromEnd.length - 1];
+    const distance = distancesFromEnd.at(-1);
     if (distanceFromEnd <= 0) return false;
     if (distance !== distanceFromEnd) {
       this.lastStack.resetCount += 1;
@@ -214,15 +215,15 @@ class OnEndReachedHelper {
 
   isConsecutiveDistance(distanceFromEnd: number) {
     const lastStack =
-      this.sendOnEndReachedDistanceFromEndStack[
-        this.sendOnEndReachedDistanceFromEndStack.length - 1
-      ];
+      this.sendOnEndReachedDistanceFromEndStack.at(
+        -1
+      );
 
     if (lastStack) {
       const { distancesFromEnd, ts } = lastStack;
 
       const base = distancesFromEnd[0];
-      const _ts = ts[ts.length - 1];
+      const _ts = ts.at(-1);
       const now = Date.now();
       if (
         isClamped(
@@ -244,23 +245,21 @@ class OnEndReachedHelper {
     const { isEndReached, distanceFromEnd } = info;
 
     if (!this.hasHandler()) return;
-    if (isEndReached && !this.isConsecutiveDistance(distanceFromEnd)) {
-      if (
+    if (isEndReached && !this.isConsecutiveDistance(distanceFromEnd) && (
         !this.reachCountLimitation() ||
         this.shouldResetCountLimitation(distanceFromEnd)
-      ) {
+      )) {
         this.onEndReachedHandlerBatchinator.schedule({
           distanceFromEnd,
         });
       }
-    }
   }
 
   updateStack(distanceFromEnd: number) {
     const lastStack =
-      this.sendOnEndReachedDistanceFromEndStack[
-        this.sendOnEndReachedDistanceFromEndStack.length - 1
-      ];
+      this.sendOnEndReachedDistanceFromEndStack.at(
+        -1
+      );
 
     if (lastStack) {
       const { distancesFromEnd } = lastStack;

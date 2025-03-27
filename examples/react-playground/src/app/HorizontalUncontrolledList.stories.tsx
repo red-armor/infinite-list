@@ -1,7 +1,7 @@
+import { List } from '@infinite-list/list/react';
+import { defaultKeyExtractor } from '@infinite-list/utils';
 import type { Meta } from '@storybook/react';
 import { useRef } from 'react';
-import { defaultKeyExtractor } from '@infinite-list/utils';
-import { List } from '@infinite-list/list/react';
 
 const buildData = (count: number) =>
   new Array(count).fill(1).map((v, index) => ({
@@ -35,7 +35,7 @@ const meta: Meta<typeof List> = {
             const { item, itemMeta } = props;
             if (itemMeta.getState().viewable)
               console.log(
-                'item meta ',
+                'item meta',
                 itemMeta.getKey(),
                 itemMeta.getState().viewable
               );

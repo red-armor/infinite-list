@@ -1,8 +1,8 @@
 import noop from '@x-oasis/noop';
 
-import Marshal from './Marshal';
-import ScrollHelper from './ScrollHelper';
-import {
+import type Marshal from './Marshal';
+import type ScrollHelper from './ScrollHelper';
+import type {
   ContentSizeChangeHandler,
   OnEndReachedHandler,
   ScrollEventHandlerSubscriptionKeys,
@@ -163,11 +163,11 @@ class ScrollEventHelper {
   ) {
     const target = this._subscriptions[eventName];
     if (target) {
-      const index = target.findIndex((t) => t === handler);
+      const index = target.indexOf(handler);
       if (index === -1) target.push(handler as any);
       return () => {
         const target = this._subscriptions[eventName];
-        const index = target.findIndex((t) => t === handler);
+        const index = target.indexOf(handler);
         if (index !== -1) target.splice(index, 1);
       };
     }

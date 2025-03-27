@@ -1,31 +1,33 @@
 import Batchinator from '@x-oasis/batchinator';
+import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isClamped from '@x-oasis/is-clamped';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+
 import Dimension from './Dimension';
-import ItemMeta from './ItemMeta';
+import Inspector from './Inspector';
+import type ItemMeta from './ItemMeta';
 import ItemsDimensions from './ItemsDimensions';
 import ListDimensionsModel from './ListDimensionsModel';
-import {
-  ListGroupIndexInfo,
-  ItemLayout,
-  KeysChangedType,
-  ListGroupDimensionsProps,
-  ListRangeResult,
-  OnEndReached,
-  ScrollMetrics,
-  KeyToOnEndReachedMap,
-  RegisteredListProps,
-  RegisteredDimensionProps,
+import createStore from './state/createStore';
+import BaseImpl from './strategies/BaseImpl';
+import type {
   DimensionsIndexRange,
   GenericItemT,
-  ListGroupChildDimensions,
   IndexToOffsetMap,
+  ItemLayout,
+  KeyToOnEndReachedMap,
+  ListGroupChildDimensions,
+  ListGroupDimensionsProps,
+  ListGroupIndexInfo,
+  ListRangeResult,
+  OnEndReached,
+  RegisteredDimensionProps,
+  RegisteredListProps,
+  ScrollMetrics} from './types';
+import {
+  KeysChangedType
 } from './types';
-import BaseImpl from './strategies/BaseImpl';
-import Inspector from './Inspector';
 import { info } from './utils/logger';
-import defaultBooleanValue from '@x-oasis/default-boolean-value';
-import createStore from './state/createStore';
 
 // TODO: indexRange should be another intervalTree
 /**
@@ -285,8 +287,8 @@ class ListGroupDimensions<
   }
 
   getKeyIndex(key: string, listKey: string) {
-    const listIndex = this.indexKeys.findIndex(
-      (indexKey) => indexKey === listKey
+    const listIndex = this.indexKeys.indexOf(
+      listKey
     );
 
     if (listIndex !== -1) {
@@ -302,8 +304,8 @@ class ListGroupDimensions<
   }
 
   getIndexKey(index: number, listKey: string) {
-    const listIndex = this.indexKeys.findIndex(
-      (indexKey) => indexKey === listKey
+    const listIndex = this.indexKeys.indexOf(
+      listKey
     );
 
     if (listIndex !== -1) {
@@ -418,7 +420,7 @@ class ListGroupDimensions<
   }
 
   removeListDimensions(listKey: string) {
-    const index = this.indexKeys.findIndex((indexKey) => indexKey === listKey);
+    const index = this.indexKeys.indexOf(listKey);
     if (index !== -1) {
       this._dimensionsIntervalTree.remove(index);
       this.deleteDimension(listKey);
@@ -507,15 +509,13 @@ class ListGroupDimensions<
    */
   calculateDimensionsIndexRange() {
     let startIndex = 0;
-    const rangeMap: {
-      [key: string]: number;
-    } = {};
+    const rangeMap: Record<string, number> = {};
     this._dimensionsIndexRange = this.indexKeys.reduce<
       DimensionsIndexRange<ItemT>[]
     >((acc, key) => {
       const dimensions = this.getDimension(key);
       if (!dimensions) return acc;
-      const recyclerType = dimensions.recyclerType;
+      const {recyclerType} = dimensions;
       if (rangeMap[recyclerType] == null) rangeMap[recyclerType] = 0;
 
       const endIndex = startIndex + dimensions.length;
@@ -668,7 +668,7 @@ class ListGroupDimensions<
           KeysChangedType.Add,
           KeysChangedType.Remove,
           KeysChangedType.Append,
-        ].indexOf(changedType) !== -1
+        ].includes(changedType)
       ) {
         // 这个得跟removeItem对应都得做个延迟，不然的话会存在一个可能性，比如替换整个list的数据，
         // remove callback一般会慢，如果不做延迟的话，你会发现data可能存在已经unmount的数据
@@ -883,11 +883,11 @@ class ListGroupDimensions<
 
     if (startPosition === -1 || endPosition === -1) return [];
 
-    const startDimensionIndex = this.indexKeys.findIndex(
-      (key) => key === startPosition.dimensionKey
+    const startDimensionIndex = this.indexKeys.indexOf(
+      startPosition.dimensionKey
     );
-    const endDimensionIndex = this.indexKeys.findIndex(
-      (key) => key === endPosition.dimensionKey
+    const endDimensionIndex = this.indexKeys.indexOf(
+      endPosition.dimensionKey
     );
     const result: ListRangeResult<ItemT> = [];
 

@@ -1,4 +1,7 @@
-import Recycler, { OnRecyclerProcess } from '@x-oasis/recycler';
+import defaultValue from '@x-oasis/default-value';
+import type { OnRecyclerProcess } from '@x-oasis/recycler';
+import Recycler from '@x-oasis/recycler';
+
 // import memoizeOne from 'memoize-one';
 import {
   buildStateTokenIndexKey,
@@ -6,21 +9,20 @@ import {
   RECYCLER_BUFFER_SIZE,
   RECYCLER_RESERVED_BUFFER_PER_BATCH,
 } from '../common';
-import {
-  ListState,
-  RecycleStateResult,
-  RecycleRecycleState,
+import type ItemMeta from '../ItemMeta';
+import type {
   GenericItemT,
-  StateListener,
-  SpaceStateResult,
-  RecycleStateImplProps,
   ListGroupIndexInfo,
+  ListState,
+  RecycleRecycleState,
+  RecycleStateImplProps,
+  RecycleStateResult,
+  SpaceStateResult,
+  StateListener,
 } from '../types';
-import ItemMeta from '../ItemMeta';
-import { resolveToken } from './utils';
-import BaseState from './BaseState';
 import * as log from '../utils/logger';
-import defaultValue from '@x-oasis/default-value';
+import BaseState from './BaseState';
+import { resolveToken } from './utils';
 /**
  * item should be first class data model; item's value reference change will
  * cause recalculation of item key. However, if key is not changed, its itemMeta
@@ -138,8 +140,8 @@ class RecycleStateImpl<
 
       // TODO: when to reset
       if (
-        (this._stateResult as RecycleStateResult<ItemT>).recycleState.length &&
-        !recycleState.length
+        (this._stateResult as RecycleStateResult<ItemT>).recycleState.length > 0 &&
+        recycleState.length === 0
       ) {
         this._recycler.reset();
       }
@@ -164,8 +166,8 @@ class RecycleStateImpl<
     const spaceStateResult = this.resolveRecycleSpaceState();
 
     const stateResult = {
-      recycleState: recycleStateResult.filter((v) => v),
-      spaceState: spaceStateResult.filter((v) => v),
+      recycleState: recycleStateResult.filter(Boolean),
+      spaceState: spaceStateResult.filter(Boolean),
       rangeState: state,
     };
 
@@ -290,7 +292,7 @@ class RecycleStateImpl<
     log.info('target indices ', { ...state }, targetIndices.slice());
 
     targetIndices
-      .filter((v) => v)
+      .filter(Boolean)
       .forEach((info) => {
         const { meta: itemMeta, targetIndex, recyclerKey } = info;
         const item = this.listContainer.getData()[targetIndex];

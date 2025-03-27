@@ -43,7 +43,7 @@ export default class Event<T = any> {
   }
 
   subscribe(listener: EventListener<T>) {
-    if (!this._listeners.length) {
+    if (this._listeners.length === 0) {
       this._onWillAddFirstListener?.();
     }
 
@@ -71,7 +71,7 @@ export default class Event<T = any> {
     this._onWillRemoveListener?.();
 
     this._listeners.splice(index, 1);
-    if (!this._listeners.length) {
+    if (this._listeners.length === 0) {
       this._onDidRemoveLastListener?.();
     }
   }

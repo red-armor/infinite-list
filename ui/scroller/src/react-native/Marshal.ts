@@ -1,7 +1,8 @@
-import { ScrollView } from 'react-native';
+import type { ScrollView } from 'react-native';
+
 import ScrollEventHelper from './ScrollEventHelper';
 import ScrollHelper from './ScrollHelper';
-import {
+import type {
   InfiniteListScrollViewRef,
   MarshalProps,
   ScrollEventHandler,
@@ -238,7 +239,7 @@ class Marshal {
     const children = isReverse
       ? this._reverseOrientationChildren
       : this._children;
-    const index = children.findIndex((t) => t === child);
+    const index = children.indexOf(child);
     if (index === -1) children.push(child);
     return () => {
       this.unregisterAsNestedChild(child, isReverse);
@@ -250,7 +251,7 @@ class Marshal {
       ? this._reverseOrientationChildren
       : this._children;
 
-    const index = children.findIndex((t) => t === child);
+    const index = children.indexOf(child);
     if (index !== -1) children.splice(index, 1);
   }
 }

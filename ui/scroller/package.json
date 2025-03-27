@@ -1,35 +1,51 @@
 {
   "name": "@infinite-list/scroller",
   "version": "2.0.3",
+  "exports": {
+    "./react-native": {
+      "types": "./src/react-native/index.ts",
+      "default": "./dist/react-native/index.mjs"
+    },
+    "./web": {
+      "types": "./src/web/index.ts",
+      "default": "./dist/web/index.mjs"
+    }
+  },
   "main": "./src/react-native/index.ts",
   "types": "./src/react-native/index.ts",
-  "publishConfig": {
-    "access": "public"
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "0.74.1"
   },
-  "exports": {
-    "./web": {
-      "types": "./web.esm.d.ts",
-      "default": "./web.esm.js"
-    },
-    "./react-native": {
-      "types": "./react-native.esm.d.ts",
-      "import": "./react-native.esm.js"
-    }
-  },
   "dependencies": {
+    "@infinite-list/disposable": "workspace:*",
+    "@infinite-list/intersection-observer": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/items-dimensions": "workspace:*",
+    "@infinite-list/scheduler": "workspace:*",
+    "@infinite-list/types": "workspace:*",
+    "@infinite-list/viewable": "workspace:*",
     "@x-oasis/is-ref": "^0.1.35",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14",
     "@x-oasis/shallow-equal": "^0.1.14",
-    "@x-oasis/throttle": "^0.1.35",
-    "@infinite-list/item-meta": "workspace:*",
-    "@infinite-list/scheduler": "workspace:*",
-    "@infinite-list/disposable": "workspace:*",
-    "@infinite-list/items-dimensions": "workspace:*",
-    "@infinite-list/intersection-observer": "workspace:*"
+    "@x-oasis/throttle": "^0.1.35"
+  },
+  "devDependencies": {
+    "@types/node": "18.16.9",
+    "tsup": "^6.6.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "./src/react-native/index.ts",
+    "types": "./src/react-native/index.ts"
   }
 }

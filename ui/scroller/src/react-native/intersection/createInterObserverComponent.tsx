@@ -1,16 +1,19 @@
-import React, {
+import type {
   ComponentProps,
   ComponentType,
   FC,
   ForwardedRef,
   PropsWithChildren,
-  RefObject,
+  RefObject} from 'react';
+import * as React from 'react';
+import {
   useContext,
   useEffect,
   useRef,
 } from 'react';
+
 import ScrollViewContext from '../context/ScrollViewContext';
-import { ObserverComponentProps } from '../types';
+import type { ObserverComponentProps } from '../types';
 
 const createObserverComponent = <T extends ComponentType<any>>(
   Component: T
@@ -30,7 +33,7 @@ const createObserverComponent = <T extends ComponentType<any>>(
       () =>
         intersectionObserver?.observe(componentRef.current, {
           root: marshal!.ownerDocument,
-          observerKey: observerKey,
+          observerKey,
         })?.remover,
       []
     );

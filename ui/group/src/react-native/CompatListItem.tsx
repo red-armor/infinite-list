@@ -1,14 +1,17 @@
+import type { GenericItemT, ItemLayout } from '@infinite-list/types';
+import type {
+  PropsWithChildren} from 'react';
 import {
-  PropsWithChildren,
   useCallback,
   useEffect,
   useMemo,
   useRef,
 } from 'react';
-import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
-import { GenericItemT, ItemLayout } from '@infinite-list/types';
+import type { LayoutChangeEvent} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
 import { measureLayout } from './measure';
-import { CompatListItemProps } from './types';
+import type { CompatListItemProps } from './types';
 
 const CompatListItem = <ItemT extends GenericItemT>(
   props: PropsWithChildren<CompatListItemProps<ItemT>>

@@ -1,9 +1,9 @@
-import type { Meta } from '@storybook/react';
+import { List } from '@infinite-list/list/react';
 import {
   defaultKeyExtractor,
   // type KeyExtractor,
 } from '@infinite-list/utils';
-import { List } from '@infinite-list/list/react';
+import type { Meta } from '@storybook/react';
 import { useRef } from 'react';
 
 const buildData = (count: number) =>
@@ -26,7 +26,7 @@ const meta: Meta<typeof List> = {
           position: 'relative',
         }}
       >
-        <div style={{ height: '150px' }}></div>
+        <div style={{ height: '150px' }} />
         <List
           id="basic"
           initialNumToRender={0}
@@ -38,7 +38,7 @@ const meta: Meta<typeof List> = {
             const { item, itemMeta } = props;
             if (itemMeta.getState().viewable)
               console.log(
-                'item meta ',
+                'item meta',
                 itemMeta.getKey(),
                 itemMeta.getState().viewable
               );

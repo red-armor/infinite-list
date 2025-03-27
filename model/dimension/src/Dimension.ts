@@ -1,15 +1,17 @@
 import { Container as BaseContainer } from '@infinite-list/container';
 import { ItemMeta } from '@infinite-list/item-meta';
-import { IDimension, ItemLayout } from '@infinite-list/types';
+import type { IDimension, ItemLayout } from '@infinite-list/types';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isObject from '@x-oasis/is-object';
 import layoutEqual from '@x-oasis/layout-equal';
+import type SelectValue from '@x-oasis/select-value';
+
 import {
   DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
   INVALID_LENGTH,
 } from './common';
-import {
+import type {
   DimensionProps,
   GenericItemT,
   GetDimensionLength,
@@ -286,7 +288,7 @@ class Dimension<
     return this._meta;
   }
 
-  override getSelectValue() {
+  override getSelectValue(): SelectValue {
     return this._selectValue;
   }
 }

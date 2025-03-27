@@ -7,11 +7,10 @@ import resolveIndexRange from './middleware/resolveIndexRange';
 // import fixInitialBufferedRange from './middleware/fixInitialBufferedRange';
 import resolveInitialState from './middleware/resolveInitialState';
 import resolveMaxIndex from './middleware/resolveMaxIndex';
-import { ReducerAtom } from './types';
-import {
+import type { ReducerAtom } from './types';
+import type {
   Action,
   ActionPayload,
-  ActionType,
   Ctx,
   Enhancer,
   HydrationWithBatchUpdate,
@@ -19,7 +18,9 @@ import {
   Recalculate,
   ReducerResult,
   ScrollDown,
-  ScrollUp,
+  ScrollUp} from './types/types';
+import {
+  ActionType
 } from './types/types';
 
 const initialize = <State extends ReducerResult = ReducerResult>(
@@ -329,23 +330,28 @@ export default <State extends ReducerResult = ReducerResult>(
     const nextEnhancer = enhancer || {};
 
     switch (type) {
-      case ActionType.HydrationWithBatchUpdate:
+      case ActionType.HydrationWithBatchUpdate: {
         return hydrationWithBatchUpdate(
           state,
           payload,
           nextEnhancer[ActionType.HydrationWithBatchUpdate]
         );
-      case ActionType.ScrollDown:
+      }
+      case ActionType.ScrollDown: {
         return scrollDown(state, payload, nextEnhancer[ActionType.ScrollDown]);
-      case ActionType.ScrollUp:
+      }
+      case ActionType.ScrollUp: {
         return scrollUp(state, payload, nextEnhancer[ActionType.ScrollUp]);
-      case ActionType.Initial:
+      }
+      case ActionType.Initial: {
         return initialize(state, payload, nextEnhancer[ActionType.Initial]);
-      case ActionType.Recalculate:
+      }
+      case ActionType.Recalculate: {
         return recalculate(
           state,
           payload,
           nextEnhancer[ActionType.Recalculate]
         );
+      }
     }
   };

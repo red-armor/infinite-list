@@ -1,4 +1,5 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
+
 import { getNow } from './utils';
 
 class TaskRunner {
@@ -51,7 +52,7 @@ class TaskRunner {
   }
 
   flush(...args: any[]) {
-    if (args.length) this._args = args;
+    if (args.length > 0) this._args = args;
     this.cancel();
     this._lastInvokeTime = null;
     return this.invoke();

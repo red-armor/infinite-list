@@ -2,7 +2,7 @@
  * to cache key <-> index value
  */
 class KeyIndexManager {
-  _keyToIndexMap: Map<string, number> = new Map();
+  _keyToIndexMap = new Map<string, number>();
   _indexKeys: Array<string> = [];
 
   get keyToIndexMap() {

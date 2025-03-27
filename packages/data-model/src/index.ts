@@ -1,17 +1,14 @@
-export { default as ItemMeta } from './ItemMeta';
 export { default as Dimension } from './Dimension';
-export { default as ListDimensions } from './ListDimensions';
-export { default as ListGroupDimensions } from './ListGroupDimensions';
-export { default as PseudoListDimensions } from './PseudoListDimensions';
+export * from './exportedUtils';
+export * from './exportedUtils';
+export { default as ItemMeta } from './ItemMeta';
 export { default as ItemMetaExperimental } from './ItemMeta';
 export { default as ItemsDimensions } from './ItemsDimensions';
-
+export { default as ListDimensions } from './ListDimensions';
+export { default as ListGroupDimensions } from './ListGroupDimensions';
 export { default as MasonryDimension } from './masonry/MasonryDimensions';
-
+export { default as PseudoListDimensions } from './PseudoListDimensions';
 export { default as ListSpyUtils } from './utils/ListSpyUtils';
-export * from './exportedUtils';
-
 export * from './viewable/viewabilityUtils';
-export * from './exportedUtils';
 // export { default as ListSpy } from './utils/ListSpy';
 export * from './types';

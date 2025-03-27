@@ -1,16 +1,17 @@
-import {
+import type {
   BaseDimensionsProps,
   KeysChangedType,
 } from '@infinite-list/base-dimensions';
-import {
+import type {
   IListDimensions,
   IListDimensionsModel,
   IListGroupDimensions,
   IMasonryDimensions,
   IMasonryDimensionsModel,
 } from '@infinite-list/types';
-import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
-import { GenericItemT } from './generic.types';
+
+import type { GenericItemT } from './generic.types';
+import type { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 
 export type GetItemSeparatorLength<ItemT> = (
   data: Array<ItemT>,

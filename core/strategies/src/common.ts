@@ -4,7 +4,7 @@ export const LAYOUT_EQUAL_CORRECTION_VALUE = 0.5;
 
 export const isEmpty = (obj: any) => {
   if (Object.prototype.toString.call(obj) === '[object Object]') {
-    return !Object.keys.length;
+    return Object.keys.length === 0;
   }
   return true;
 };

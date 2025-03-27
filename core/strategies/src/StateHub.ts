@@ -1,6 +1,6 @@
 import RecycleStateImpl from './RecycleStateImpl';
 import SpaceStateImpl from './SpaceStateImpl';
-import {
+import type {
   GenericItemT,
   ListState,
   ListStateResult,

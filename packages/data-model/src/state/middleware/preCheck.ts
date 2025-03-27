@@ -1,4 +1,4 @@
-import { ActionPayload, ReducerResult } from '../types';
+import type { ActionPayload, ReducerResult } from '../types';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,

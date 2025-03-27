@@ -1,7 +1,7 @@
 export { Disposable } from './Disposable';
-export { MutableDisposable } from './MutableDisposable';
-export { default as DisposableStore } from './DisposableStore';
 export { default as DisposableService } from './DisposableService';
-export * from './types';
+export { default as DisposableStore } from './DisposableStore';
 export * from './emitter';
+export { MutableDisposable } from './MutableDisposable';
+export * from './types';
 export { shallowEqual } from './utils';

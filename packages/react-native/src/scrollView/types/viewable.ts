@@ -17,6 +17,4 @@ export type GetContainerLayout = () => {
 
 export type TriggerMeasurementType = 'onLayout' | 'onMount';
 
-export type ViewableState = {
-  [key: string]: boolean;
-};
+export type ViewableState = Record<string, boolean>;

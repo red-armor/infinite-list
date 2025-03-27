@@ -1,5 +1,7 @@
-import { CSSProperties, FC, PropsWithChildren, useMemo } from 'react';
-import { CompatStyle } from '../types';
+import type { CSSProperties, FC, PropsWithChildren} from 'react';
+import { useMemo } from 'react';
+
+import type { CompatStyle } from '../types';
 
 /**
  * compatible Component for ReactNative or React usage

@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { View, Text, ScrollView as NativeScrollView } from 'react-native';
-import { IIntersectionObserverEntry } from '@infinite-list/intersection-observer/react-native';
+import type { IIntersectionObserverEntry } from '@infinite-list/intersection-observer/react-native';
 import {
-  ScrollView,
-  IntersectionObserverView,
-  StickyView,
   IntersectionObserverTouchableOpacity,
+  IntersectionObserverView,
+  ScrollView,
   StickyMode,
+  StickyView,
 } from '@infinite-list/scroller/react-native';
+import * as React from 'react';
+import { useCallback, useEffect, useRef } from 'react';
+import type { ScrollView as NativeScrollView } from 'react-native';
+import { Text,View } from 'react-native';
 
 const StickyViewHorizontal = () => {
   const greenRef = useRef<View>(null);
@@ -19,46 +21,46 @@ const StickyViewHorizontal = () => {
 
   useEffect(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestScrollViewRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nestScrollViewRef ref ', x, y, width, height);
+      console.log('nestScrollViewRef ref', x, y, width, height);
     });
   }, []);
 
   const scrollHandler = useCallback(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
   }, []);
   const horizontalScrollHandler = useCallback(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nest ref ', x, y, width, height);
+      console.log('nest ref', x, y, width, height);
     });
   }, []);
   const horizontalScrollHandler2 = useCallback(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nest ref ', x, y, width, height);
+      console.log('nest ref', x, y, width, height);
     });
   }, []);
   const nestVerticalScrollHandler = useCallback(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('green ref ', x, y, width, height);
+      console.log('green ref', x, y, width, height);
     });
     nestRef.current?.measureInWindow((x, y, width, height) => {
-      console.log('nest ref ', x, y, width, height);
+      console.log('nest ref', x, y, width, height);
     });
   }, []);
 
   const intersectionObserverHandler = useCallback(
     (intersectionObserverEntries: IIntersectionObserverEntry[]) => {
-      console.log('intersectionObserverEntries ', intersectionObserverEntries);
+      console.log('intersectionObserverEntries', intersectionObserverEntries);
     },
     []
   );
@@ -121,29 +123,29 @@ const StickyViewHorizontal = () => {
           >
             <View
               style={{ height: 50, width: 200, backgroundColor: 'red' }}
-            ></View>
+             />
             <View
               style={{ height: 30, width: 200, backgroundColor: 'yellow' }}
-            ></View>
+             />
             <View
               style={{ height: 40, width: 200, backgroundColor: 'green' }}
-            ></View>
+             />
             <View
               style={{ height: 100, width: 200, backgroundColor: '#000' }}
-            ></View>
+             />
             <IntersectionObserverView
               observerKey="nest"
               style={{ height: 100, width: 200, backgroundColor: '#fff' }}
-            ></IntersectionObserverView>
+             />
             <View
               style={{ height: 200, width: 200, backgroundColor: '#888' }}
-            ></View>
+             />
             <View
               style={{ height: 70, width: 200, backgroundColor: '#aaa' }}
-            ></View>
+             />
             <View
               style={{ height: 80, width: 200, backgroundColor: '#bbb' }}
-            ></View>
+             />
           </ScrollView>
         </View>
         <StickyView

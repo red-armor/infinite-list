@@ -1,12 +1,12 @@
-import { IListDimensionsModel } from './ListDimensionsModel';
-import { IOnEndReachedHelper } from './OnEndReachedHelper';
-import { GenericItemT } from './generic.types';
-import { IItemMeta } from './itemMeta';
+import type { GenericItemT } from './generic.types';
+import type { IItemMeta } from './itemMeta';
+import type { IListDimensionsModel } from './ListDimensionsModel';
+import type { IOnEndReachedHelper } from './OnEndReachedHelper';
 
 export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
   maxToRenderPerBatch: number;
   onItemLayoutChanged: () => void;
-  onDataSourceChanged(): void;
+  onDataSourceChanged: () => void;
   onEndReachedHelper: IOnEndReachedHelper;
   getFinalKeyIndexInfo: (
     itemKey: string,
@@ -16,33 +16,33 @@ export interface IListDimensions<ItemT extends GenericItemT = GenericItemT> {
   /**
    * for state start
    */
-  getDataLength(): number;
+  getDataLength: () => number;
   initialNumToRender: number;
-  getTotalLength(): number;
-  getBufferSize(): number;
-  computeIndexRange(
+  getTotalLength: () => number;
+  getBufferSize: () => number;
+  computeIndexRange: (
     minOffset: number,
     maxOffset: number
-  ): {
+  ) => {
     startIndex: number;
     endIndex: number;
   };
   // inherit from BaseLayout
-  resolveOffsetRange(
+  resolveOffsetRange: (
     minOffset: number,
     maxOffset: number,
     exclusive?: boolean
-  ): {
+  ) => {
     minOffset: number;
     maxOffset: number;
   };
 
-  getIndexItemMeta(index: number): IItemMeta<ItemT> | undefined | null;
+  getIndexItemMeta: (index: number) => IItemMeta<ItemT> | undefined | null;
 
-  getContainerOffset(): number;
+  getContainerOffset: () => number;
   // getItemKey(item: ItemT, index?: number): string | null;
-  hasUnLayoutItems(): boolean;
-  getOnEndReachedHelper(): IOnEndReachedHelper;
+  hasUnLayoutItems: () => boolean;
+  getOnEndReachedHelper: () => IOnEndReachedHelper;
 
   /**
    * for state end

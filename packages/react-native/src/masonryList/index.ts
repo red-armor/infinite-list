@@ -1,3 +1,5 @@
-import MasonryList from './MasonryList';
 
-export default MasonryList;
+
+
+
+export {default} from './MasonryList';

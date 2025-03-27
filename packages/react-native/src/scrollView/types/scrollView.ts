@@ -1,5 +1,9 @@
-import { ForwardedRef, MutableRefObject, PropsWithChildren } from 'react';
-import {
+import type {
+  ViewabilityConfig,
+  ViewabilityConfigCallbackPairs,
+} from '@infinite-list/data-model';
+import type { ForwardedRef, MutableRefObject, PropsWithChildren } from 'react';
+import type {
   Animated,
   LayoutChangeEvent,
   NativeScrollEvent,
@@ -17,16 +21,12 @@ import {
   ViewStyle,
 } from 'react-native';
 // @ts-ignore
-import PagerView from 'react-native-pager-view';
-import {
-  ViewabilityConfig,
-  ViewabilityConfigCallbackPairs,
-} from '@infinite-list/data-model';
+import type PagerView from 'react-native-pager-view';
 
-import Marshal from '../Marshal';
-import ScrollEventHelper from '../ScrollEventHelper';
-import ScrollHelper from '../ScrollHelper';
-import { StickyMode } from './stickyMarshal';
+import type Marshal from '../Marshal';
+import type ScrollEventHelper from '../ScrollEventHelper';
+import type ScrollHelper from '../ScrollHelper';
+import type { StickyMode } from './stickyMarshal';
 
 export interface ViewRendererProps extends ViewProps {
   ref?: ForwardedRef<View>;

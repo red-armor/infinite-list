@@ -1,12 +1,10 @@
 class Emitter {
-  public subscriptions: {
-    [key: string]: any;
-  } = {};
+  public subscriptions: Record<string, any> = {};
 
   fire(event: string, ...rest: any[]) {
     const cbs = this.subscriptions[event] || [];
-    for (let i = 0; i < cbs.length; i++) {
-      cbs[i].apply(this, rest);
+    for (const cb of cbs) {
+      cb.apply(this, rest);
     }
   }
 

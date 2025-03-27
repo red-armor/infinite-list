@@ -1,12 +1,12 @@
-import { View } from 'react-native';
+import type { View } from 'react-native';
+
 import { computeIntersection } from '../common/intersection';
-import ContainerObserver from './ContainerObserver';
-import IntersectionObserverEntry from './IntersectionObserverEntry';
-import { getNode } from './ReactNativeDocument';
+import type ContainerObserver from './ContainerObserver';
 import { generateRandomKey } from './generateRandom';
+import IntersectionObserverEntry from './IntersectionObserverEntry';
 import { measureLayoutAsync } from './measure';
-import { ClientRect, ItemLayout, ObserverProps, OnRectChange } from './types';
-import { IClientRectReadOnly, IIntersectionObserverEntry } from './types';
+import { getNode } from './ReactNativeDocument';
+import type { ClientRect, IClientRectReadOnly, IIntersectionObserverEntry,ItemLayout, ObserverProps, OnRectChange  } from './types';
 import { convertLayoutToClientRect, getEmptyRect } from './utils';
 
 class Observer {
@@ -155,8 +155,8 @@ class Observer {
    */
   getBoundingClientRect() {
     const containerRect = this.containerObserver.getBoundingClientRect();
-    const scrollOffsetX = this.containerObserver.scrollOffsetX;
-    const scrollOffsetY = this.containerObserver.scrollOffsetY;
+    const {scrollOffsetX} = this.containerObserver;
+    const {scrollOffsetY} = this.containerObserver;
 
     const topRelativeToContainer = this.clientRect.top - scrollOffsetY;
     const topRelativeToViewport = containerRect.top + topRelativeToContainer;

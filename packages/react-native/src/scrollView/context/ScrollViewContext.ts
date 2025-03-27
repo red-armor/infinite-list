@@ -1,10 +1,10 @@
 import { createContext } from 'react';
 
-import Marshal from '../Marshal';
-import ScrollEventHelper from '../ScrollEventHelper';
-import ScrollHelper from '../ScrollHelper';
-import PortalManager from '../portal/Manager';
-import { SpectrumScrollViewRef } from '../types';
+import type Marshal from '../Marshal';
+import type PortalManager from '../portal/Manager';
+import type ScrollEventHelper from '../ScrollEventHelper';
+import type ScrollHelper from '../ScrollHelper';
+import type { SpectrumScrollViewRef } from '../types';
 
 export const defaultScrollViewContext = {
   marshal: null,

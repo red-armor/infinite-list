@@ -1,5 +1,7 @@
-import { ItemMeta } from '@infinite-list/data-model';
-import React, { PropsWithChildren, memo } from 'react';
+import type { ItemMeta } from '@infinite-list/data-model';
+import type {PropsWithChildren } from 'react';
+import * as React from 'react';
+import { memo } from 'react';
 
 const Item = memo<
   PropsWithChildren<{

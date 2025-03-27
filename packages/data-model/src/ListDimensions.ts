@@ -1,15 +1,15 @@
-import BaseImpl from './strategies/BaseImpl';
 import ListDimensionsModel from './ListDimensionsModel';
 import createStore from './state/createStore';
-import {
-  ScrollMetrics,
+import type { ReducerResult } from './state/types';
+import BaseImpl from './strategies/BaseImpl';
+import type {
+  GenericItemT,
+  IndexToOffsetMap,
   ItemLayout,
   ListDimensionsModelProps,
   ListIndexInfo,
-  IndexToOffsetMap,
-  GenericItemT,
+  ScrollMetrics,
 } from './types';
-import { ReducerResult } from './state/types';
 
 class ListDimensions<
   ItemT extends GenericItemT = GenericItemT

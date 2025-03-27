@@ -1,7 +1,9 @@
-import { GenericItemT, ListGroupDimensions } from '@infinite-list/data-model';
-import React, {
-  CSSProperties,
-  FC,
+import type { GenericItemT} from '@infinite-list/data-model';
+import { ListGroupDimensions } from '@infinite-list/data-model';
+import type {
+  CSSProperties} from 'react';
+import * as React from 'react';
+import {
   useCallback,
   // useContext,
   useEffect,
@@ -9,12 +11,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-// import { div, Platform } from 'react-native';
 
-import { ListGroupProps, genericMemo } from './types';
+import ScrollTracker from '../events/ScrollTracker';
 import context from './context';
 import PortalContent from './PortalContent';
-import ScrollTracker from '../events/ScrollTracker';
+// import { div, Platform } from 'react-native';
+import type { ListGroupProps} from './types';
+import { genericMemo } from './types';
 
 // https://stackoverflow.com/a/70890101
 
@@ -107,9 +110,7 @@ const ListGroup = <ItemT extends GenericItemT>(
     []
   );
 
-  const style: {
-    [key: string]: CSSProperties;
-  } = useMemo(
+  const style: Record<string, CSSProperties> = useMemo(
     () => ({
       container: {
         width: '100%',

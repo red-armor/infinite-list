@@ -1,24 +1,26 @@
-import { ItemMeta } from '@infinite-list/item-meta';
-import { IBaseDimensions } from '@infinite-list/types';
+import type { ItemMeta } from '@infinite-list/item-meta';
+import type { IBaseDimensions } from '@infinite-list/types';
 import { KeyIndexManager, log } from '@infinite-list/utils';
 import { ViewabilityConfigTuples } from '@infinite-list/viewable';
 import PrefixIntervalTree from '@x-oasis/prefix-interval-tree';
+
 import BaseLayout from './BaseLayout';
-import {
+import type {
   BaseDimensionsProps,
   BoundInfo,
-  BoundInfoType,
   GenericItemT,
   ItemLayout,
-  KeysChangedType,
-  ScrollMetrics,
+  ScrollMetrics} from './types';
+import {
+  BoundInfoType,
+  KeysChangedType
 } from './types';
 
 abstract class BaseDimensions<ItemT extends GenericItemT = GenericItemT>
   extends BaseLayout
   implements IBaseDimensions<ItemT>
 {
-  _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
+  _keyToMetaMap = new Map<string, ItemMeta<ItemT>>();
   _configTuple: ViewabilityConfigTuples;
 
   _onUpdateItemLayout?: Function;

@@ -1,21 +1,22 @@
-import {
-  useCallback,
-  useState,
-  useRef,
-  useMemo,
-  useEffect,
-  forwardRef as ReactForwardRef,
-  ForwardedRef,
-  CSSProperties,
-} from 'react';
-import {
+import type {
   GenericItemT,
-  MasonryDimension,
-  MasonryStateResults,
+  MasonryStateResults} from '@infinite-list/data-model';
+import {
+  MasonryDimension
 } from '@infinite-list/data-model';
-import { ColumnDimensionInfo, MasonryListProps } from './types';
-import ColumnStateRenderer from './ColumnStateRender';
+import type {
+  CSSProperties,  ForwardedRef} from 'react';
+import {
+  forwardRef as ReactForwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState} from 'react';
+
 import ScrollTracker from '../events/ScrollTracker';
+import ColumnStateRenderer from './ColumnStateRender';
+import type { ColumnDimensionInfo, MasonryListProps } from './types';
 
 let count = 0;
 
@@ -42,7 +43,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
         acc.push(current);
         return acc;
       }
-      const last = acc[acc.length - 1];
+      const last = acc.at(-1);
       if (last) {
         current.left = last.left + last.width;
         current.right = nextWidth - current.left - last.width;
@@ -56,9 +57,7 @@ export const MasonryList = <ItemT extends GenericItemT>(
 
   const listRef = useRef<HTMLDivElement>(null);
 
-  const style: {
-    [key: string]: CSSProperties;
-  } = useMemo(
+  const style: Record<string, CSSProperties> = useMemo(
     () => ({
       container: {
         width: '100%',

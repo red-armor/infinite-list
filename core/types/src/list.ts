@@ -1,14 +1,12 @@
-import { GenericItemT } from './generic.types';
-import { IItemMeta } from './itemMeta';
+import type { GenericItemT } from './generic.types';
+import type { IItemMeta } from './itemMeta';
 
 export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
   item: ItemT;
   itemMeta: IItemMeta<ItemT>;
 };
 
-export type DefaultItemT = {
-  [key: string]: any;
-};
+export type DefaultItemT = Record<string, any>;
 
 // export type RenderItem<ItemT extends DefaultItemT> = (
 //   info: RenderItemInfo<ItemT>

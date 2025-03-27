@@ -1,7 +1,9 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import type { FC} from 'react';
+import * as React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Animated } from 'react-native';
 
-import { SmoothControlProps } from '../types';
+import type { SmoothControlProps } from '../types';
 import RefreshIcon from './RefreshIcon';
 
 const SmoothControl: FC<SmoothControlProps> = (props) => {

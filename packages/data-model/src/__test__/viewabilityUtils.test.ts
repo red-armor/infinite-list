@@ -1,7 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect,it } from 'vitest';
+
 import {
-  isItemViewable,
   isEntirelyVisible,
+  isItemViewable,
 } from '../viewable/viewabilityUtils';
 
 const viewportLength = 926;

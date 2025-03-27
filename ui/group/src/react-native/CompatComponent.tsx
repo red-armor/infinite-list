@@ -1,6 +1,9 @@
-import { FC, PropsWithChildren, useMemo } from 'react';
-import { View, ViewStyle } from 'react-native';
-import { CompatStyle } from '../types';
+import type { FC, PropsWithChildren} from 'react';
+import { useMemo } from 'react';
+import type { ViewStyle } from 'react-native';
+import { View } from 'react-native';
+
+import type { CompatStyle } from '../types';
 
 /**
  * compatible Component for ReactNative or React usage

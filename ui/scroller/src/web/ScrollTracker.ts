@@ -1,4 +1,4 @@
-import { ScrollTrackerProps, TDomNode } from './types';
+import type { ScrollTrackerProps, TDomNode } from './types';
 
 class ScrollTracker {
   private _domNode: TDomNode;
