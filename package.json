@@ -27,8 +27,7 @@
     "prepare": "husky install",
     "preview:docs": "vitepress preview docs",
     "publish": "pnpm publish -r --access public",
-    "test": "nx run-many -t test",
-    "version": "changeset version && pnpm install --no-frozen-lockfile"
+    "version": "bumpp -r --commit --push"
   },
   "dependencies": {
     "@babel/runtime": "^7.25.7",
@@ -43,16 +42,6 @@
     "@changesets/cli": "^2.27.8",
     "@eslint/compat": "1.2.7",
     "@eslint/js": "^9.8.0",
-    "@nx/eslint": "19.8.0",
-    "@nx/eslint-plugin": "19.8.0",
-    "@nx/jest": "19.8.0",
-    "@nx/js": "19.8.0",
-    "@nx/react": "19.8.0",
-    "@nx/react-native": "19.8.0",
-    "@nx/rollup": "20.6.4",
-    "@nx/storybook": "19.8.0",
-    "@nx/vite": "19.8.0",
-    "@nx/web": "19.8.0",
     "@react-native-community/cli-platform-android": "~13.6.6",
     "@react-native/babel-preset": "^0.74.83",
     "@react-native/metro-config": "^0.74.83",
@@ -118,8 +107,5 @@
       "eslint --cache --fix",
       "prettier . --write"
     ]
-  },
-  "nx": {
-    "includedScripts": []
   }
 }
