@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/masonry",
-  "version": "0.4.11-beta.3",
+  "version": "0.4.11-beta.8",
   "exports": {
     "./react": {
       "types": "./react.esm.d.ts",

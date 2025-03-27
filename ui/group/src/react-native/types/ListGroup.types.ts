@@ -21,5 +21,5 @@ export type ContainerRef = RefObject<ScrollView | View | any>;
 
 export type ListGroupProps<ItemT extends GenericItemT> =
   CommonListGroupProps<ItemT> & {
-    containerRef: ContainerRef;
+    containerRef?: ContainerRef;
   };

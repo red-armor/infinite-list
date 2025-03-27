@@ -1,18 +1,26 @@
 {
   "name": "@infinite-list/group",
-  "version": "0.4.11-beta.3",
+  "version": "0.4.11-beta.8",
   "exports": {
     "./react": {
-      "types": "./react.esm.d.ts",
-      "default": "./react.esm.js"
+      "types": "./dist/react/index.d.ts",
+      "default": "./dist/react/index.mjs"
     },
     "./react-native": {
-      "types": "./react-native.esm.d.ts",
-      "import": "./react-native.esm.js"
+      "types": "./dist/react-native/index.d.ts",
+      "default": "./dist/react-native/index.mjs"
     }
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./src/react-native/index.ts",
+  "types": "./src/react-native/index.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "src"
+  ],
   "peerDependencies": {
     "react": "*",
     "react-native": "0.74.1"

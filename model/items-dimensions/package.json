@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/items-dimensions",
-  "version": "0.4.11-beta.3",
+  "version": "0.4.11-beta.8",
   "exports": {
     ".": {
       "types": "./src/index.ts",

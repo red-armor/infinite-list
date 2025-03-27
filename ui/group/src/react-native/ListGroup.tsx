@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { Platform, View } from 'react-native';
+import ScrollViewContext from 'ui/scroller/src/react-native/context/ScrollViewContext';
 import { ListGroupDimensions } from '@infinite-list/group-dimensions';
 import type { GenericItemT } from '@infinite-list/item-meta';
 import PortalContent from '../common/PortalContent';
@@ -27,7 +28,7 @@ const ListGroup = <ItemT extends GenericItemT>(
   const {
     id,
     children,
-    containerRef,
+
     onViewableItemsChanged,
     viewabilityConfig,
     viewabilityConfigCallbackPairs,
@@ -36,6 +37,8 @@ const ListGroup = <ItemT extends GenericItemT>(
     scrollComponentContext,
     ...rest
   } = props;
+  const contextValues = useContext(ScrollViewContext);
+  const containerRef = props.containerRef ?? contextValues.scrollerRef;
   // @ts-ignore
   const { marshal } = useContext(scrollComponentContext);
   const layoutRef = useRef<{

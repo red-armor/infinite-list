@@ -1,6 +1,6 @@
 {
   "name": "infinite-list",
-  "version": "0.4.11-beta.3",
+  "version": "0.4.11-beta.8",
   "private": true,
   "packageManager": "pnpm@9.3.0",
   "description": "Data model for list rendering",
@@ -27,7 +27,7 @@
     "prepare": "husky install",
     "preview:docs": "vitepress preview docs",
     "publish": "pnpm publish -r --access public",
-    "version": "bumpp -r --commit --push"
+    "version": "bumpp -r"
   },
   "dependencies": {
     "@babel/runtime": "^7.25.7",

@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/base-dimensions",
-  "version": "0.4.11-beta.3",
+  "version": "0.4.11-beta.8",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
