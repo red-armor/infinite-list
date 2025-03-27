@@ -22,7 +22,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
     renderItem,
     id,
     data,
-    scrollerRef,
+
     horizontal = false,
     recycleEnabled = true,
     getContainerLayout,
@@ -39,6 +39,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
   const [state, setState] = useState(listModel.getStateResult());
   const contextValues = useContext(ScrollViewContext);
 
+  const scrollerRef = props.scrollerRef ?? contextValues.scrollerRef;
   const dataRef = useRef(data);
 
   if (dataRef.current !== data) {

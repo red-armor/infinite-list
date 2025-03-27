@@ -9,7 +9,9 @@ import { resolveScrollViewKey } from './commons/utils';
 import AnimatedRenderer from './component/AnimatedRenderer';
 import BasicRenderer from './component/BasicRenderer';
 import { defaultViewabilityConfigCallbackPairs } from './constants';
-import ScrollViewContext from './context/ScrollViewContext';
+import ScrollViewContext, {
+  type ScrollViewContextValue,
+} from './context/ScrollViewContext';
 import FooterPortalContainer from './portal/FooterContainer';
 import HeaderPortalContainer from './portal/HeaderContainer';
 import PortalManager from './portal/Manager';
@@ -170,11 +172,13 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
     []
   );
 
-  const nextScrollViewContextValues = useMemo(
+  const nextScrollViewContextValues = useMemo<ScrollViewContextValue>(
     () => ({
       marshal,
       portalManager: portalManager || new PortalManager(),
       intersectionObserver: marshal.intersectionObserver,
+
+      scrollerRef: scrollViewRef,
     }),
     []
   );
