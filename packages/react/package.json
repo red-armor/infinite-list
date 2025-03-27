@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/react",
-  "version": "3.0.1",
+  "version": "0.4.11-beta.1",
   "exports": {
     ".": {
       "types": "./index.d.ts",

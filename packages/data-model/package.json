@@ -1,7 +1,7 @@
 {
   "name": "@infinite-list/data-model",
   "type": "commonjs",
-  "version": "3.0.1",
+  "version": "0.4.11-beta.1",
   "main": "./src/index.ts",
   "files": [
     "dist",

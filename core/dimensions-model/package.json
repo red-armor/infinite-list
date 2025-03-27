@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/dimensions-model",
-  "version": "1.0.2",
+  "version": "0.4.11-beta.1",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

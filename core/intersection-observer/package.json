@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/intersection-observer",
-  "version": "1.0.3",
+  "version": "0.4.11-beta.1",
   "exports": {
     "./react": {
       "types": "./src/react/index.ts",
@@ -13,6 +13,12 @@
   },
   "main": "./src/react-native/index.ts",
   "types": "./src/react-native/index.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "src",
+    "react-native.ts"
+  ],
   "scripts": {
     "build": "tsup"
   },
