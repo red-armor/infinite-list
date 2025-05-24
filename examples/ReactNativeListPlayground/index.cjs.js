@@ -1,14 +1,14 @@
 'use strict';
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 function _interopNamespaceDefault(e) {
-  var n = Object.create(null);
+  const n = Object.create(null);
   if (e) {
     Object.keys(e).forEach(function (k) {
       if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
+        const d = Object.getOwnPropertyDescriptor(e, k);
         Object.defineProperty(n, k, d.get ? d : {
           enumerable: true,
           get: function () { return e[k]; }
@@ -20,11 +20,9 @@ function _interopNamespaceDefault(e) {
   return Object.freeze(n);
 }
 
-var fs__namespace = /*#__PURE__*/_interopNamespaceDefault(fs);
-var path__namespace = /*#__PURE__*/_interopNamespaceDefault(path);
+const fs__namespace = /*#__PURE__*/_interopNamespaceDefault(fs);
+const path__namespace = /*#__PURE__*/_interopNamespaceDefault(path);
 
-const mapping = {};
-const processed = new Set();
 /**
  * 清理包路径，移除不必要的 './' 部分并处理 '../' 回退
  * @param {string} packagePath - 要清理的包路径
@@ -72,8 +70,7 @@ const defaultResolveModulePath = (options, packageName, modulePath)=>{
         if (fs__namespace.existsSync(resolvedModulePath)) {
             mapping[packageName] = resolvedModulePath;
         }
-    }
-    if (main) {
+    } else if (main) {
         const resolvedModulePath = path__namespace.join(modulePath, main);
         if (fs__namespace.existsSync(resolvedModulePath)) {
             mapping[packageName] = resolvedModulePath;
@@ -82,7 +79,7 @@ const defaultResolveModulePath = (options, packageName, modulePath)=>{
     return mapping;
 };
 const resolveModule = (options)=>{
-    const { rootPath, modulePath, resolveModulePath = defaultResolveModulePath } = options;
+    const { rootPath, modulePath, mapping, processed, resolveModulePath = defaultResolveModulePath } = options;
     const packageJsonPath = path__namespace.join(modulePath, 'package.json');
     const packageJson = JSON.parse(fs__namespace.readFileSync(packageJsonPath, 'utf8'));
     const packageName = packageJson.name;
@@ -106,6 +103,8 @@ const resolveModule = (options)=>{
             const dependencyPath = path__namespace.join(rootPath, dependencyName);
             if (fs__namespace.existsSync(dependencyPath)) {
                 resolveModule({
+                    mapping,
+                    processed,
                     rootPath: rootPath,
                     resolveModulePath,
                     modulePath: path__namespace.join(rootPath, dependencyName)
@@ -116,6 +115,8 @@ const resolveModule = (options)=>{
 };
 const resolveModules = (options)=>{
     const { rootPath = path__namespace.join(__dirname), targetDir, resolveModulePath = defaultResolveModulePath } = options || {};
+    const mapping = {};
+    const processed = new Set();
     if (!targetDir) {
         console.error('targetDir is required');
         return undefined;
@@ -127,6 +128,8 @@ const resolveModules = (options)=>{
         }).filter((dirent)=>dirent.isDirectory()).map((dirent)=>dirent.name);
         for (const subdir of subdirs){
             resolveModule({
+                mapping,
+                processed,
                 rootPath: rootPath,
                 resolveModulePath,
                 modulePath: path__namespace.join(rootPath, targetDir, subdir)

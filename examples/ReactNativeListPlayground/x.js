@@ -82,7 +82,7 @@ const b = [
 
 
 
-resolve -----  {
+const resolve =  {
   '@infinite-list/data-model': '/Users/ryuyutyo/Documents/code/red/infinite-list/packages/data-model/src',
   '@x-oasis/batchinator': '/Users/ryuyutyo/Documents/code/red/infinite-list/packages/data-model/node_modules/@x-oasis/batchinator',
   '@x-oasis/is-ref': '/Users/ryuyutyo/Documents/code/red/infinite-list/packages/data-model/node_modules/@x-oasis/is-ref',
@@ -133,3 +133,52 @@ resolve -----  {
   '@infinite-list/group': '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/group/src',
   '@infinite-list/masonry': '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/masonry/src'
 }
+
+const aut = [
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/packages/react-native/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/packages/react-native/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/packages/data-model/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/packages/data-model/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/base-dimensions/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/base-dimensions/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/container/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/container/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/dimensions-model/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/dimensions-model/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/item-meta/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/item-meta/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/state/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/state/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/strategies/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/strategies/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/types/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/types/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/utils/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/utils/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/viewable/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/viewable/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/intersection-observer/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/intersection-observer/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/scheduler/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/scheduler/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/core/disposable/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/dimension/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/dimension/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/group-dimensions/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/group-dimensions/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/items-dimensions/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/items-dimensions/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/list-dimensions/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/list-dimensions/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/masonry-dimensions/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/model/masonry-dimensions/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/group/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/group/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/list/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/list/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/masonry/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/masonry/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/scroller/src',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/ui/scroller/node_modules',
+  '/Users/ryuyutyo/Documents/code/red/infinite-list/node_modules'
+]

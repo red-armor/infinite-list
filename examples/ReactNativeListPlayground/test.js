@@ -65,6 +65,7 @@ const resolveNodeModulesMapping = () => {
       }
     })
   }).forEach(m => {
+    console.log('m-----', m)
     Object.assign(mapping, m)
   })
   return mapping
