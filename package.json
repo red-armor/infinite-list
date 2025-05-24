@@ -8,6 +8,7 @@
   },
   "scripts": {
     "clean": "rm -rf dist && rm -rf .nx && pnpm run -r clean",
+    "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules && pnpm -r exec rm -rf dist",
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
     "lint": "eslint --ext js,ts,tsx .",
@@ -15,7 +16,6 @@
     "prepare": "husky install",
     "version": "changeset version && pnpm install --no-frozen-lockfile",
     "publish": "pnpm publish -r --access public",
-    "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
     "dev:web": "nx storybook react",
     "dev:rn": "cd ./examples/ReactNativeListPlayground && npm run start",
     "dev:docs": "vitepress dev docs --host",
