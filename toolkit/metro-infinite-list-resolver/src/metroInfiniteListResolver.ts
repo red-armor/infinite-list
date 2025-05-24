@@ -1,15 +1,12 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import { 
-  ResolveModuleOptions, 
-  ResolveModulesOptions, 
-  PackageJson, 
-  PkgOptions,
+import * as fs from 'fs';
+import * as path from 'path';
+import {
   MappingRecord,
-} from './types'
-
-const mapping: MappingRecord = {}
-const processed = new Set<string>()
+  PackageJson,
+  PkgOptions,
+  ResolveModuleOptions,
+  ResolveModulesOptions,
+} from './types';
 
 /**
  * 清理包路径，移除不必要的 './' 部分并处理 '../' 回退
@@ -19,11 +16,11 @@ const processed = new Set<string>()
 function cleanPackagePath(packagePath: string): string {
   // 先处理简单的 './' 移除
   const cleaned = packagePath.replace(/\/\.\//g, '/');
-  
+
   // 处理 '../' 回退路径
   const parts = cleaned.split('/');
   const result: string[] = [];
-  
+
   for (const part of parts) {
     if (part === '..') {
       // 回退一级
@@ -43,117 +40,135 @@ function cleanPackagePath(packagePath: string): string {
       result.push(part);
     }
   }
-  
+
   return result.join('/');
 }
 
-const defaultResolveModulePath = (options: PkgOptions, packageName: string, modulePath: string) => {
-  const { exports, module, main } = options
-  const mapping: MappingRecord = {}
+const defaultResolveModulePath = (
+  options: PkgOptions,
+  packageName: string,
+  modulePath: string
+) => {
+  const { exports, module, main } = options;
+  const mapping: MappingRecord = {};
 
   if (exports) {
     for (const exportedKey in exports) {
-      const key = cleanPackagePath(`${packageName}/${exportedKey}`)
-      const rawValue = exports[exportedKey]
-      const value = rawValue.import || rawValue.default
+      const key = cleanPackagePath(`${packageName}/${exportedKey}`);
+      const rawValue = exports[exportedKey];
+      const value = rawValue.import || rawValue.default;
       if (value && fs.existsSync(path.join(modulePath, value))) {
-        mapping[key] = path.join(modulePath, value)
+        mapping[key] = path.join(modulePath, value);
       }
     }
   }
 
   if (module) {
-    const resolvedModulePath = path.join(modulePath, module)
+    const resolvedModulePath = path.join(modulePath, module);
     if (fs.existsSync(resolvedModulePath)) {
-      mapping[packageName] = resolvedModulePath
+      mapping[packageName] = resolvedModulePath;
     }
   } else if (main) {
-    const resolvedModulePath = path.join(modulePath, main)
+    const resolvedModulePath = path.join(modulePath, main);
     if (fs.existsSync(resolvedModulePath)) {
-      mapping[packageName] = resolvedModulePath
+      mapping[packageName] = resolvedModulePath;
     }
   }
 
-  return mapping
-}
-
+  return mapping;
+};
 
 const resolveModule = (options: ResolveModuleOptions): void => {
-  const { 
-    rootPath, 
+  const {
+    rootPath,
     modulePath,
-    resolveModulePath = defaultResolveModulePath
-  } = options
-  const packageJsonPath = path.join(modulePath, 'package.json')
-  const packageJson: PackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
-  const packageName = packageJson.name
+    mapping,
+    processed,
+    resolveModulePath = defaultResolveModulePath,
+  } = options;
+  const packageJsonPath = path.join(modulePath, 'package.json');
+  const packageJson: PackageJson = JSON.parse(
+    fs.readFileSync(packageJsonPath, 'utf8')
+  );
+  const packageName = packageJson.name;
 
   if (processed.has(packageName)) {
-    return
+    return;
   }
 
-  processed.add(packageName)
+  processed.add(packageName);
 
-  const resolvedMapping = resolveModulePath({
-    exports: packageJson.exports,
-    module: packageJson.module,
-    main: packageJson.main,
-  }, packageName, modulePath)
+  const resolvedMapping = resolveModulePath(
+    {
+      exports: packageJson.exports,
+      module: packageJson.module,
+      main: packageJson.main,
+    },
+    packageName,
+    modulePath
+  );
 
   for (const key in resolvedMapping) {
-    mapping[key] = resolvedMapping[key]
+    mapping[key] = resolvedMapping[key];
   }
 
   if (packageJson.dependencies) {
     for (const dependencyName in packageJson.dependencies) {
       if (processed.has(dependencyName)) {
-        continue
+        continue;
       }
-      const dependencyPath = path.join(rootPath, dependencyName)
+      const dependencyPath = path.join(rootPath, dependencyName);
       if (fs.existsSync(dependencyPath)) {
         resolveModule({
+          mapping,
+          processed,
           rootPath: rootPath,
           resolveModulePath,
           modulePath: path.join(rootPath, dependencyName),
-        })
+        });
       }
     }
   }
-}
+};
 
-const resolveModules = (options?: ResolveModulesOptions): MappingRecord | undefined => {
-  const { 
+const resolveModules = (
+  options?: ResolveModulesOptions
+): MappingRecord | undefined => {
+  const {
     rootPath = path.join(__dirname),
     targetDir,
-    resolveModulePath = defaultResolveModulePath
-  } = options || {}
+    resolveModulePath = defaultResolveModulePath,
+  } = options || {};
+
+  const mapping: MappingRecord = {};
+  const processed = new Set<string>();
 
   if (!targetDir) {
-    console.error('targetDir is required')
-    return undefined
+    console.error('targetDir is required');
+    return undefined;
   }
 
   try {
-    const targetPath = path.join(rootPath, targetDir)
-    const subdirs = fs.readdirSync(targetPath, { withFileTypes: true })
-    .filter((dirent: fs.Dirent) => dirent.isDirectory())
-    .map((dirent: fs.Dirent) => dirent.name);
+    const targetPath = path.join(rootPath, targetDir);
+    const subdirs = fs
+      .readdirSync(targetPath, { withFileTypes: true })
+      .filter((dirent: fs.Dirent) => dirent.isDirectory())
+      .map((dirent: fs.Dirent) => dirent.name);
 
     for (const subdir of subdirs) {
       resolveModule({
+        mapping,
+        processed,
         rootPath: rootPath,
         resolveModulePath,
         modulePath: path.join(rootPath, targetDir, subdir),
-      })
+      });
     }
 
-    return mapping
-  } catch(err) {
-    return mapping
+    return mapping;
+  } catch (err) {
+    return mapping;
   }
-}
+};
 
-export {
-  resolveModules,
-  cleanPackagePath,
-}
+export { resolveModules, cleanPackagePath };
