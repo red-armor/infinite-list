@@ -8,7 +8,7 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "0.74.1"
+    "react-native": "*"
   },
   "exports": {
     "./web": {
@@ -29,7 +29,9 @@
     "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/scheduler": "workspace:*",
     "@infinite-list/disposable": "workspace:*",
+    "@infinite-list/types": "workspace:*",
     "@infinite-list/items-dimensions": "workspace:*",
+    "@infinite-list/viewable": "workspace:*",
     "@infinite-list/intersection-observer": "workspace:*"
   }
 }

@@ -2,7 +2,10 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["node"]
+    "types": ["node"],
+    "path": {
+      "@infinite-list/scroller/react-native": ["../scroller/src/react-native"],
+    }
   },
   "exclude": [
     "jest.config.ts",

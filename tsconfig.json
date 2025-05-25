@@ -23,5 +23,6 @@
       "module": "commonjs"
     }
   },
+  "include": ["**/src/**/*"],
   "extends": "./tsconfig.base.json"
 }

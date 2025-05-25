@@ -4,12 +4,16 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    // "paths": {
+    //   "@infinite-list/intersection-observer/react-native": ["core/intersection-observer/src/react-native/index.ts"],
+    // }
   },
   "files": [],
   "include": [],

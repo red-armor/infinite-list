@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "peerDependencies": {
     "react": "*",
-    "react-native": "0.74.1"
+    "react-native": "*"
   },
   "exports": {
     "./react": {
