@@ -21,13 +21,12 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
+import { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
 import { ScrollMetrics } from '@infinite-list/types';
 import {
   ViewabilityConfig,
   ViewabilityConfigCallbackPairs,
 } from '@infinite-list/viewable';
-
-import { IntersectionObserverCallback } from '@infinite-list/intersection-observer/react-native';
 import ScrollHelper from '../ScrollHelper';
 import ScrollerScrollView from '../ScrollView';
 import { StickyMode } from './stickyMarshal';

@@ -137,6 +137,7 @@ class ScrollHelper {
 
     this.ownerDocument = new ReactNativeDocumentBase({
       id,
+      // @ts-expect-error
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
       onIntersectionChange: this.onIntersectionChangeHandler.bind(this),

@@ -8,6 +8,13 @@ module.exports = withNx(
     tsConfig: './tsconfig.lib.json',
     compiler: 'babel',
     format: ['esm'],
+    // babelUpwardRootMode: true,
+    // buildLibsFromSource: false,
+    // external: [
+    //   '@infinite-list/intersection-observer/react-native',
+    //   '@infinite-list/intersection-observer',
+    // ],
+    // generateExportsField: true,
     assets: [{ input: '.', output: '.', glob: '*.md' }],
   },
   {

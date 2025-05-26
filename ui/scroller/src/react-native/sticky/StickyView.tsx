@@ -73,6 +73,7 @@ const StickyView: FC<
   );
 
   useEffect(() => {
+    // @ts-expect-error
     const info = intersectionObserver!.observe(viewRef.current!, {
       root: marshal!.ownerDocument,
       observerKey,
@@ -94,6 +95,7 @@ const StickyView: FC<
     return info?.remover || noop;
   }, []);
 
+  // @ts-expect-error
   const containerStyle = useMemo<StyleProp<ViewStyle>>(() => {
     if (!rectRef.current) return nextStyle;
     const selectedTranslate = selectValue.selectTranslate();

@@ -4,9 +4,11 @@ module.exports = withNx(
   {
     additionalEntryPoints: [],
     outputPath: '../../dist/core/intersection-observer',
+    generateExportsField: true,
     tsConfig: './tsconfig.lib.json',
     compiler: 'babel',
     format: ['esm'],
+    rollupConfig: ['./rollup.raw.config.mjs'],
     assets: [{ input: '.', output: '.', glob: '*.md' }],
   },
   {

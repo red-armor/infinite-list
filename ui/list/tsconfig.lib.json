@@ -3,11 +3,14 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["node"],
-    "path": {
-      "@infinite-list/scroller/react-native": ["../scroller/src/react-native"],
-    }
+    "module": "es2015",
+    "moduleResolution": "bundler"
+    // "paths": {
+    //   "@infinite-list/scroller/react-native": ["../scroller/src/react-native"],
+    // }
   },
   "exclude": [
+    "node_modules",
     "jest.config.ts",
     "src/**/*.spec.ts",
     "src/**/*.spec.tsx",
@@ -15,5 +18,10 @@
     "src/**/*.test.ts",
     "src/test-setup.ts"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": [
+    "./src/**/*.js",
+    "./src/**/*.jsx",
+    "./src/**/*.ts",
+    "./src/**/*.tsx"
+  ]
 }

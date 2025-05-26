@@ -47,6 +47,7 @@ class StickyMarshal {
 
     // console.log('reigster ', itemKey, index)
     if (index === -1)
+      // @ts-expect-error
       this.stickyItemsQueue.push({
         itemKey,
         startOffset: 0,

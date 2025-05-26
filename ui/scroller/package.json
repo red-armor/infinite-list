@@ -13,11 +13,13 @@
   "exports": {
     "./web": {
       "types": "./web.esm.d.ts",
-      "default": "./web.esm.js"
+      "default": "./src/web/index.ts",
+      "import": "./web.esm.js"
     },
     "./react-native": {
       "types": "./react-native.esm.d.ts",
-      "import": "./react-native.esm.js"
+      "import": "./react-native.esm.js",
+      "default": "./src/react-native/index.ts"
     }
   },
   "dependencies": {

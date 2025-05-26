@@ -40,6 +40,7 @@
       "@infinite-list/metro-infinite-list-resolver": [
         "toolkit/metro-infinite-list-resolver/src/index.ts"
       ],
+      "@infinite-list/metro-tsup": ["toolkit/metro-tsup/src/index.ts"],
       "@infinite-list/pseudo-list-dimensions": [
         "model/pseudo-list-dimensions/src/index.ts"
       ],

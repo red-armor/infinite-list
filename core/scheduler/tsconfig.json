@@ -11,7 +11,7 @@
   },
   "files": [],
   // "include": [],
-  "include":  ["./src/**/*"],
+  "include": ["./src/**/*"],
   "references": [
     {
       "path": "./tsconfig.lib.json"
