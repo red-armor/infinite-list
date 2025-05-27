@@ -1,16 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": ["node"],
     "module": "es2015",
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler"
 
     // "moduleResolution": "node",
 
     // "moduleResolution": "node16",
     // "module": "node16",
-
-    "outDir": "../../dist/out-tsc",
-    "types": ["node"]
   },
   "exclude": [
     "node_modules",

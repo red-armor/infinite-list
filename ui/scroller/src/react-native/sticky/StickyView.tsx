@@ -95,7 +95,7 @@ const StickyView: FC<
     return info?.remover || noop;
   }, []);
 
-  // @ts-expect-error
+  // @ts-ignore
   const containerStyle = useMemo<StyleProp<ViewStyle>>(() => {
     if (!rectRef.current) return nextStyle;
     const selectedTranslate = selectValue.selectTranslate();

@@ -2,7 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["node"]
+    "types": ["node"],
+        "module": "es2015",
+    "moduleResolution": "bundler"
   },
   "exclude": [
     "jest.config.ts",
