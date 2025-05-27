@@ -12,6 +12,7 @@
       "@infinite-list/dimension": ["model/dimension/src/index.ts"],
       "@infinite-list/dimensions-model": ["core/dimensions-model/src/index.ts"],
       "@infinite-list/disposable": ["core/disposable/src/index.ts"],
+      "@infinite-list/eslint-config": ["toolkit/eslint-config/src/index.ts"],
       "@infinite-list/group-dimensions": [
         "model/group-dimensions/src/index.ts"
       ],
