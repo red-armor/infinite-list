@@ -73,7 +73,7 @@ const StickyView: FC<
   );
 
   useEffect(() => {
-    // @ts-expect-error
+    // @ts-ignore
     const info = intersectionObserver!.observe(viewRef.current!, {
       root: marshal!.ownerDocument,
       observerKey,

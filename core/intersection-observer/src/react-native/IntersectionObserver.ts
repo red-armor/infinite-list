@@ -181,18 +181,21 @@ class IntersectionObserver implements IIntersectionObserver {
 
     observer = new Observer({
       root: root || this.root,
+      // @ts-ignore
       target: el,
       onRectChange,
       observerKey: nextObserverKey,
       containerObserver: container,
     });
 
+    // @ts-ignore
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);
     container.addObserver(observer);
 
     // this.monitorIntersections(root);
 
+    // @ts-ignore
     this.checkIntersection(el);
 
     return {

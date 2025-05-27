@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["node"],
-        "module": "es2015",
+    "module": "es2015",
     "moduleResolution": "bundler"
   },
   "exclude": [
