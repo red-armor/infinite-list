@@ -5,7 +5,8 @@
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/is-clamped": "^0.1.14",
     "@x-oasis/resolve-changed": "^0.1.14",
-    "@x-oasis/unique-array-object": "^0.1.14"
+    "@x-oasis/unique-array-object": "^0.1.14",
+    "vitest": "*"
   },
   "main": "./index.cjs",
   "module": "./index.js",

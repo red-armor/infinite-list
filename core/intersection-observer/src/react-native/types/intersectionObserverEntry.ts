@@ -23,6 +23,7 @@ export interface IIntersectionObserverEntry {
   readonly isIntersecting: boolean;
   readonly rootBounds: IClientRectReadOnly | null;
   readonly target: View;
+  // @ts-expect-error TODO: fix this
   readonly time: DOMHighResTimeStamp;
   // readonly entryKey: string;
   readonly observer: Observer;

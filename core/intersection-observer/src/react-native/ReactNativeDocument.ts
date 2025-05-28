@@ -47,7 +47,7 @@ class ReactNativeDocumentBase extends ReactNativeDocument {
   addEventListener(
     type: string,
     listener: ScrollEventHandler,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean
   ): { (): void } {
     return this.emitter.on(type, listener);
   }

@@ -20,12 +20,12 @@ import { parseRootMargin } from './utils';
 
 class IntersectionObserver implements IIntersectionObserver {
   // private monitoringDocuments: ReactNativeDocument[] = [];
-  private callback: IntersectionObserverCallback;
+  readonly callback: IntersectionObserverCallback;
   private root: ReactNativeDocument;
-  private rootMargin: string;
-  private threshold?: number | number[];
+  readonly rootMargin: string;
+  readonly threshold?: number | number[];
   private observerMap: WeakMap<View, Observer> = new WeakMap();
-  private ownerDocument: ReactNativeDocument | undefined;
+  readonly ownerDocument: ReactNativeDocument | undefined;
   private keyToObserverMap: Map<string, Observer> = new Map();
   private monitorDisposers: MonitorDisposer[] = [];
   private updateIntersectionsTask: TaskRunner;
@@ -181,21 +181,21 @@ class IntersectionObserver implements IIntersectionObserver {
 
     observer = new Observer({
       root: root || this.root,
-      // @ts-ignore
+      // @ts-expect-error TODO: fix this
       target: el,
       onRectChange,
       observerKey: nextObserverKey,
       containerObserver: container,
     });
 
-    // @ts-ignore
+    // @ts-expect-error TODO: fix this
     this.observerMap.set(el, observer);
     this.keyToObserverMap.set(nextObserverKey, observer);
     container.addObserver(observer);
 
     // this.monitorIntersections(root);
 
-    // @ts-ignore
+    // @ts-expect-error TODO: fix this
     this.checkIntersection(el);
 
     return {

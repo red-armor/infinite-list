@@ -13,6 +13,26 @@
   },
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/core/viewable",
+        "tsConfig": "core/viewable/tsconfig.lib.json",
+        "project": "core/viewable/package.json",
+        "entryFile": "core/viewable/src/index.ts",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "*.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

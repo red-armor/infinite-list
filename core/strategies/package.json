@@ -7,7 +7,12 @@
     "@x-oasis/default-boolean-value": "^0.1.14",
     "@x-oasis/default-value": "^0.1.35",
     "@x-oasis/is-clamped": "^0.1.14",
-    "@x-oasis/recycler": "^0.1.37"
+    "@x-oasis/recycler": "^0.1.37",
+    "@infinite-list/base-dimensions": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/utils": "workspace:*",
+    "@infinite-list/viewable": "workspace:*",
+    "@infinite-list/container": "workspace:*"
   },
   "main": "./index.cjs",
   "module": "./index.js",

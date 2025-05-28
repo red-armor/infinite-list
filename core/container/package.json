@@ -2,7 +2,9 @@
   "name": "@infinite-list/container",
   "version": "1.0.2",
   "dependencies": {
-    "@x-oasis/select-value": "^0.1.14"
+    "@x-oasis/select-value": "^0.1.14",
+    "@infinite-list/types": "workspace:*",
+    "@nx/rollup": "*"
   },
   "main": "./index.cjs",
   "module": "./index.js",

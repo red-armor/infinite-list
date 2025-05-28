@@ -42,7 +42,7 @@ abstract class BaseImpl<
 > extends BaseLayout {
   private _setMetricsBatchinator: Batchinator;
 
-  private _onEndReachedThreshold: number;
+  readonly _onEndReachedThreshold: number;
 
   private _stateHub: StateHub<ItemT>;
 
@@ -256,7 +256,7 @@ abstract class BaseImpl<
 
   setStoreMetrics(scrollMetrics: ScrollMetrics) {
     const state = this._store.dispatchMetrics({
-      // @ts-ignore
+      // @ts-expect-error TODO: fix this
       dimension: this,
       scrollMetrics,
     });
@@ -285,7 +285,7 @@ abstract class BaseImpl<
     if (!scrollMetrics)
       return [this._stateHub.getStateResult(), this._stateHub.getStateResult()];
     const state = this._store.dispatchMetrics({
-      // @ts-ignore
+      // @ts-expect-error TODO: fix this
       dimension: this,
       scrollMetrics,
     });

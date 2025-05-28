@@ -12,14 +12,44 @@
   },
   "tags": [],
   "targets": {
+    // "build": {
+    //   "executor": "@nx/js:tsc",
+    //   "outputs": ["{options.outputPath}"],
+    //   "options": {
+    //     "outputPath": "dist/toolkit/eslint-config",
+    //     "main": "toolkit/eslint-config/src/index.ts",
+    //     "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
+    //     "assets": ["toolkit/eslint-config/*.md"]
+    //   }
+    // },
+
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/toolkit/eslint-config",
-        "main": "toolkit/eslint-config/src/index.ts",
-        "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
-        "assets": ["toolkit/eslint-config/*.md"]
+        "outputPath": "dist/blocks/activity",
+        "tsConfig": "blocks/activity/tsconfig.lib.json",
+        "project": "blocks/activity/package.json",
+        "entryFile": "blocks/activity/src/index.ts",
+        "external": ["react/jsx-runtime", "react-native", "react", "react-dom"],
+        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "assets": [
+          {
+            "glob": "blocks/activity/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "toolkit/eslint-config/**/*.{ts,tsx,js,jsx}",
+          "toolkit/eslint-config/package.json" 
+        ]
       }
     },
     "nx-release-publish": {

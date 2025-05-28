@@ -6,6 +6,38 @@
     "target": "ES2015",
     "module": "commonjs",
     "baseUrl": "./",
+    
+
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "emitDecoratorMetadata": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": false,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "lib": ["es2022"],
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "pretty": true,
+    "removeComments": false,
+    "resolveJsonModule": false,
+    "skipDefaultLibCheck": false,
+    "sourceMap": false,
+    "strict": true,
+    "verbatimModuleSyntax": false,
+    "types": ["node"],
+
+
+
     "paths": {
       "@infinite-list/base-dimensions": ["core/base-dimensions/src/index.ts"],
       "@infinite-list/container": ["core/container/src/index.ts"],
