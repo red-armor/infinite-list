@@ -11,6 +11,8 @@ import {
   GenericItemT,
   ItemLayout,
   KeysChangedType,
+  OnUpdateIntervalTree,
+  OnUpdateItemLayout,
   ScrollMetrics,
 } from './types';
 
@@ -21,8 +23,8 @@ abstract class BaseDimensions<ItemT extends GenericItemT = GenericItemT>
   _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
   _configTuple: ViewabilityConfigTuples;
 
-  _onUpdateItemLayout?: Function;
-  _onUpdateIntervalTree?: Function;
+  _onUpdateItemLayout?: OnUpdateItemLayout;
+  _onUpdateIntervalTree?: OnUpdateIntervalTree;
 
   private _intervalTree: PrefixIntervalTree;
   public keyIndexManager: KeyIndexManager;
@@ -107,8 +109,8 @@ abstract class BaseDimensions<ItemT extends GenericItemT = GenericItemT>
 
   createIntervalTree() {
     const options = {} as {
-      onUpdateItemLayout?: Function;
-      onUpdateIntervalTree?: Function;
+      onUpdateItemLayout?: OnUpdateItemLayout;
+      onUpdateIntervalTree?: OnUpdateIntervalTree;
     };
     if (typeof this._onUpdateItemLayout === 'function')
       options.onUpdateItemLayout = this._onUpdateItemLayout;

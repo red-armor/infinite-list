@@ -6,11 +6,17 @@
     "types": ["node"]
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["vite.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts", "node_modules"],
-  // "references": [
-  //   { "path": "../item-meta" },
-  //   { "path": "../types" },
-  //   { "path": "../utils" },
-  //   { "path": "../viewable" }
-  // ]
+  "exclude": [
+    "vite.config.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "node_modules"
+  ],
+  "references": [
+    { "path": "../item-meta" },
+    { "path": "../types" },
+    { "path": "../utils" },
+    { "path": "../viewable" },
+    { "path": "../container" }
+  ]
 }

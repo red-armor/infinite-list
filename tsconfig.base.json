@@ -6,7 +6,6 @@
     "target": "ES2015",
     "module": "commonjs",
     "baseUrl": "./",
-    
 
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
@@ -35,8 +34,6 @@
     "strict": true,
     "verbatimModuleSyntax": false,
     "types": ["node"],
-
-
 
     "paths": {
       "@infinite-list/base-dimensions": ["core/base-dimensions/src/index.ts"],

@@ -48,7 +48,7 @@
       "options": {
         "lintFilePatterns": [
           "toolkit/eslint-config/**/*.{ts,tsx,js,jsx}",
-          "toolkit/eslint-config/package.json" 
+          "toolkit/eslint-config/package.json"
         ]
       }
     },

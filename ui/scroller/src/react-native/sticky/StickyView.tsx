@@ -22,7 +22,7 @@ import {
   Observer,
 } from '@infinite-list/intersection-observer/react-native';
 import ScrollViewContext from '../context/ScrollViewContext';
-import { InterpolationConfig, StickyItemProps } from '../types';
+import { InterpolationConfig } from '../types';
 
 const noop = () => {
   // do nothing
@@ -73,7 +73,6 @@ const StickyView: FC<
   );
 
   useEffect(() => {
-    // @ts-ignore
     const info = intersectionObserver!.observe(viewRef.current!, {
       root: marshal!.ownerDocument,
       observerKey,
@@ -95,7 +94,6 @@ const StickyView: FC<
     return info?.remover || noop;
   }, []);
 
-  // @ts-ignore
   const containerStyle = useMemo<StyleProp<ViewStyle>>(() => {
     if (!rectRef.current) return nextStyle;
     const selectedTranslate = selectValue.selectTranslate();
