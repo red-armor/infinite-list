@@ -24,7 +24,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
     addItemChangedListener,
     containerRef,
     itemMeta,
-    item,
+    // item,
   } = props;
   const containerStyle = useMemo(
     () => StyleSheet.flatten([_style, { elevation: 0 }]),
@@ -42,7 +42,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
 
   const updateItemLayout = useCallback(() => {
     measureLayout(
-      // @ts-ignore [TODO]
+      // @ts-expect-error [TODO]
       viewRef.current,
       containerRef.current,
       measureLayoutOnSuccessCallback

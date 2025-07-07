@@ -1,5 +1,4 @@
 import {
-  FC,
   PropsWithChildren,
   useCallback,
   useEffect,
@@ -28,7 +27,7 @@ const CompatListItem = <ItemT extends GenericItemT>(
   const viewRef = forwardRef || defaultRef;
 
   const updateItemLayout = useCallback(() => {
-    // @ts-ignore
+    // @ts-expect-error [TODO]
     const rect = viewRef?.current?.getBoundingClientRect();
     if (rect) {
       const { x, y, width, height } = rect;
