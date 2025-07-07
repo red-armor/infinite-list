@@ -27,15 +27,15 @@
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/blocks/activity",
-        "tsConfig": "blocks/activity/tsconfig.lib.json",
-        "project": "blocks/activity/package.json",
-        "entryFile": "blocks/activity/src/index.ts",
+        "outputPath": "dist/toolkit/eslint-config",
+        "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
+        "project": "toolkit/eslint-config/package.json",
+        "entryFile": "toolkit/eslint-config/src/index.ts",
         "external": ["react/jsx-runtime", "react-native", "react", "react-dom"],
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "assets": [
           {
-            "glob": "blocks/activity/README.md",
+            "glob": "toolkit/eslint-config/README.md",
             "input": ".",
             "output": "."
           }
