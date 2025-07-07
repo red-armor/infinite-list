@@ -14,11 +14,11 @@
     { "path": "../../core/types" },
     { "path": "../../core/utils" },
     { "path": "../../core/viewable" },
-    { "path": "../../core/dimensions-model" },    
+    { "path": "../../core/dimensions-model" },
     { "path": "../../core/item-meta" },
     { "path": "../../core/types" },
     { "path": "../../model/list-dimensions" },
-    { "path": "../../ui/scroller" },
+    { "path": "../../ui/scroller" }
   ],
   "exclude": [
     "node_modules",

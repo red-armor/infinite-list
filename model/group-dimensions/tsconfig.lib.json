@@ -19,6 +19,6 @@
     { "path": "../../core/types" },
     { "path": "../../model/dimension" },
     { "path": "../../model/list-dimensions" },
-    { "path": "../../model/items-dimensions" },
+    { "path": "../../model/items-dimensions" }
   ]
 }
