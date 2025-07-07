@@ -20,7 +20,5 @@
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx"
   ],
-  "references": [
-    { "path": "../../core/container" }
-  ]
+  "references": [{ "path": "../../core/container" }]
 }
