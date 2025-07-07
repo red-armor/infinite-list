@@ -2,13 +2,24 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
+    "lib": ["es2015", "dom"],
     "types": ["node"],
     "module": "es2015",
     "moduleResolution": "bundler"
-    // "paths": {
-    //   "@infinite-list/scroller/react-native": ["../scroller/src/react-native"],
-    // }
   },
+  "references": [
+    { "path": "../../core/base-dimensions" },
+    { "path": "../../core/state" },
+    { "path": "../../core/strategies" },
+    { "path": "../../core/types" },
+    { "path": "../../core/utils" },
+    { "path": "../../core/viewable" },
+    { "path": "../../core/dimensions-model" },    
+    { "path": "../../core/item-meta" },
+    { "path": "../../core/types" },
+    { "path": "../../model/list-dimensions" },
+    { "path": "../../ui/scroller" },
+  ],
   "exclude": [
     "node_modules",
     "jest.config.ts",
