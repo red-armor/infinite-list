@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "types": ["node"],
+    "lib": ["es2015", "dom"],
     "module": "es2015",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "isolatedModules": false
   },
   "exclude": [
     "jest.config.ts",
@@ -12,5 +14,21 @@
     "src/**/*.spec.tsx",
     "src/test-setup.ts"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    { "path": "../../core/base-dimensions" },
+    { "path": "../../core/state" },
+    { "path": "../../core/strategies" },
+    { "path": "../../core/types" },
+    { "path": "../../core/utils" },
+    { "path": "../../core/viewable" },
+    { "path": "../../model/masonry-dimensions" },
+    { "path": "../../model/items-dimensions" },
+    { "path": "../../model/list-dimensions" },
+    { "path": "../../model/dimension" },
+    { "path": "../../ui/group" },
+    { "path": "../../ui/list" },
+    { "path": "../../ui/scroller" },
+    { "path": "../../model/masonry-dimensions" }
+  ]
 }
