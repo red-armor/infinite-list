@@ -1,14 +1,15 @@
 // import Dimension from '../../Dimension';
-import { Dimension } from '@infinite-list/dimension';
-import { ListDimensionsModel } from '@infinite-list/dimensions-model';
-import { isValidMetaLayout } from '@infinite-list/item-meta';
+// import { Dimension } from '@infinite-list/dimension';
+// import { ListDimensionsModel } from '@infinite-list/dimensions-model';
+// import { isValidMetaLayout } from '@infinite-list/item-meta';
 // import ListDimensionsModel from '../../ListDimensionsModel';
 // import ListDimensions from '../../ListDimensions';
-import { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
+import type { ActionPayload, Ctx, ReducerResult } from '@infinite-list/state';
+
 // import { isValidMetaLayout } from '../../ItemMeta';
 // import { info } from '../../utils/logger';
-import { log } from '@infinite-list/utils';
-import ListGroupDimensions from '../../ListGroupDimensions';
+// import { log } from '@infinite-list/utils';
+// import ListGroupDimensions from '../../ListGroupDimensions';
 
 export default <State extends ReducerResult = ReducerResult>(
   state: State,
