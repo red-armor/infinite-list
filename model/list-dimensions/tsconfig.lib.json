@@ -16,6 +16,6 @@
     { "path": "../../core/viewable" },
     { "path": "../../core/dimensions-model" },
     { "path": "../../core/item-meta" },
-    { "path": "../../core/types" },
+    { "path": "../../core/types" }
   ]
 }
