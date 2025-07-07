@@ -1,23 +1,4 @@
-import {
-  OnViewableItemsChanged,
-  ViewabilityConfig,
-  ViewabilityConfigCallbackPairs,
-} from '@infinite-list/viewable';
-import { BaseLayoutProps } from './BaseLayout.types';
-
-export interface BaseDimensionsProps extends BaseLayoutProps {
-  ignoredToPerBatch?: boolean;
-
-  lengthPrecision?: number;
-  recyclerType?: string;
-
-  onUpdateItemLayout?: Function;
-  onUpdateIntervalTree?: Function;
-  isIntervalTreeItems?: boolean;
-  viewabilityConfig?: ViewabilityConfig;
-  onViewableItemsChanged?: OnViewableItemsChanged;
-  viewabilityConfigCallbackPairs?: ViewabilityConfigCallbackPairs;
-}
+export type { BaseDimensionsProps } from '@infinite-list/base-dimensions';
 
 export enum KeysChangedType {
   'Initial' = 'initial',

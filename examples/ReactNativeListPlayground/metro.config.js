@@ -447,7 +447,6 @@ const { resolver } = config;
 config.resolver = {
   ...resolver,
   resolveRequest: (context, moduleName, platform) => {
-    // console.log('resolveRequest', moduleName);
     if (moduleName === 'react') {
       return {
         filePath: path.join(__dirname, 'node_modules', 'react', 'index.js'),

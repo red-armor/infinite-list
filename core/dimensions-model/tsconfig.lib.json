@@ -7,5 +7,12 @@
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["vite.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "exclude": ["vite.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
+  "references": [
+    { "path": "../base-dimensions" },
+    { "path": "../item-meta" },
+    { "path": "../types" },
+    { "path": "../utils" },
+    { "path": "../viewable" }
+  ]
 }
