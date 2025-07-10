@@ -19,6 +19,8 @@ import { ScrollViewContext } from '@infinite-list/scroller/react-native';
 const Inner = () => {
   const contextValues = useContext(ScrollViewContext);
 
+  console.log('contextValues ', contextValues);
+
   const refreshingService = useMemo(() => {
     return contextValues.marshal?.getScrollHelper().refreshControlService;
   }, []);
@@ -52,6 +54,8 @@ const StickyViewHorizontal = () => {
   const outsideRef = useRef<ScrollView>(null);
   const nestScrollViewRef = useRef<NativeScrollView>(null);
   const nestVerticalScrollViewRef = useRef<ScrollView>(null);
+
+  return null
 
   useEffect(() => {
     greenRef.current?.measureInWindow((x, y, width, height) => {

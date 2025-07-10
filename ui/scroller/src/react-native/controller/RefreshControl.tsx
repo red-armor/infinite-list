@@ -12,6 +12,9 @@ const RefreshControl: FC<{
   const [isRefreshing, setIsRefreshing] = useState(false);
   const disposable = useMemo(() => new Disposable(), []);
   const { marshal } = useContext(ScrollViewContext);
+
+  console.log('refreshControlService ', marshal);
+
   const refreshControlService =
     marshal!.getScrollHelper().refreshControlService;
 

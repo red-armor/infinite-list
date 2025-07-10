@@ -246,7 +246,7 @@ config.watchFolders = [
   path.join(root, 'core', 'scheduler', 'src'),
   path.join(root, 'core', 'scheduler', 'node_modules'),
   path.join(root, 'core', 'disposable', 'src'),
-  path.join(root, 'core', 'disposable', 'node_modules'),
+  // path.join(root, 'core', 'disposable', 'node_modules'),
 
   /**
    * model
@@ -308,6 +308,14 @@ config.resolver = {
     if (moduleName === 'react') {
       return {
         filePath: path.join(__dirname, 'node_modules', 'react', 'index.js'),
+        // filePath: `${__dirname}/node_modules/graphql-request/build/esm/index.js`,
+        type: 'sourceFile',
+      };
+    }
+    
+    if (moduleName === 'react-dom') {
+      return {
+        filePath: path.join(__dirname, 'node_modules', 'react-dom', 'index.js'),
         // filePath: `${__dirname}/node_modules/graphql-request/build/esm/index.js`,
         type: 'sourceFile',
       };
