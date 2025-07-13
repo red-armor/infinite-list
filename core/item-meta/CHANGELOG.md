@@ -1,5 +1,13 @@
 # @infinite-list/item-meta
 
+## 1.0.3
+
+### Patch Changes
+
+- 1fb2b3b: bump version
+- Updated dependencies [1fb2b3b]
+  - @infinite-list/viewable@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes

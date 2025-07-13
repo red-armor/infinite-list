@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/scheduler",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "dependencies": {
     "@x-oasis/default-boolean-value": "^0.1.14"
   },

@@ -1,5 +1,19 @@
 # @infinite-list/scroller
 
+## 2.0.4
+
+### Patch Changes
+
+- 1fb2b3b: bump version
+- Updated dependencies [1fb2b3b]
+  - @infinite-list/intersection-observer@1.0.4
+  - @infinite-list/items-dimensions@1.0.3
+  - @infinite-list/disposable@1.0.3
+  - @infinite-list/item-meta@1.0.3
+  - @infinite-list/scheduler@1.0.4
+  - @infinite-list/viewable@1.0.3
+  - @infinite-list/types@1.0.3
+
 ## 2.0.3
 
 ### Patch Changes
