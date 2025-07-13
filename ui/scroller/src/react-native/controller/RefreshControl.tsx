@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View, ViewStyle } from 'react-native';
 import { Disposable } from '@infinite-list/disposable';
 import ScrollViewContext from '../context/ScrollViewContext';
@@ -12,6 +12,9 @@ const RefreshControl: FC<{
   const [isRefreshing, setIsRefreshing] = useState(false);
   const disposable = useMemo(() => new Disposable(), []);
   const { marshal } = useContext(ScrollViewContext);
+
+  console.log('refreshControlService ', marshal);
+
   const refreshControlService =
     marshal!.getScrollHelper().refreshControlService;
 

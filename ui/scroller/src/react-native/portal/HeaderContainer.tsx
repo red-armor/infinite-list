@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import ScrollViewContext from '../context/ScrollViewContext';
 
 const Container = () => {
@@ -12,7 +12,8 @@ const Container = () => {
     initialRef.current = false;
     portalManager?.registerHeaderInfoSetter(setInfo);
   }
-  // @ts-ignore
+
+  // @ts-expect-error TODO: fix this
   return <>{info.group.map((i) => i.c)}</>;
 };
 

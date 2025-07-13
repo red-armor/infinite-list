@@ -5,14 +5,8 @@ import {
 } from '@infinite-list/viewable';
 import { BaseLayoutProps } from './BaseLayout.types';
 
-// import ListDimensions from '../ListDimensions';
-// import ListDimensionsModel from '../ListDimensionsModel';
-// import Dimension from '../Dimension';
-// import { GenericItemT } from './generic.types';
-// import { ListGroupChildDimensionsContainer } from './ListDimensionsModel.types';
-// import ListDimensions from '../ListDimensions';
-// import ListGroupDimensions from '../ListGroupDimensions';
-// import Dimension from '../Dimension';
+export type OnUpdateItemLayout = () => void;
+export type OnUpdateIntervalTree = () => void;
 
 export interface BaseDimensionsProps extends BaseLayoutProps {
   ignoredToPerBatch?: boolean;
@@ -20,8 +14,8 @@ export interface BaseDimensionsProps extends BaseLayoutProps {
   lengthPrecision?: number;
   recyclerType?: string;
 
-  onUpdateItemLayout?: Function;
-  onUpdateIntervalTree?: Function;
+  onUpdateItemLayout?: OnUpdateItemLayout;
+  onUpdateIntervalTree?: OnUpdateIntervalTree;
   isIntervalTreeItems?: boolean;
   viewabilityConfig?: ViewabilityConfig;
   onViewableItemsChanged?: OnViewableItemsChanged;

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
+    "rootDir": ".",
     "typeRoots": ["./node_modules/@types"],
     // ---- bullshit why remove comments on default-----
     // "removeComments": true,
@@ -23,5 +24,6 @@
       "module": "commonjs"
     }
   },
+  "include": ["**/src/**/*"],
   "extends": "./tsconfig.base.json"
 }

@@ -43,7 +43,7 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
       onEndReached,
       stateListener,
       persistenceIndices,
-      initialNumToRender,
+      // initialNumToRender,
       onEndReachedThreshold,
       onEndReachedTimeoutThreshold,
       distanceFromEndThresholdValue,
@@ -78,7 +78,7 @@ class MasonryDimensions<ItemT extends GenericItemT = GenericItemT>
       container: this,
       recycleEnabled: true,
       manuallyApplyInitialData: true,
-      // @ts-ignore [TODO]
+      // @ts-expect-error [TODO]
       onListDimensionsModelDataChanged:
         this.onListDimensionsModelDataChanged.bind(this),
       ...props,

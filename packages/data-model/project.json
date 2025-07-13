@@ -13,16 +13,6 @@
   },
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/data-model",
-        "main": "packages/data-model/src/index.ts",
-        "tsConfig": "packages/data-model/tsconfig.lib.json",
-        "assets": ["packages/data-model/*.md"]
-      }
-    },
     "test": {
       "executor": "@nx/vite:test",
         "options": {

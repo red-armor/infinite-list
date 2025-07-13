@@ -4,5 +4,27 @@
   "sourceRoot": "core/intersection-observer/src",
   "projectType": "library",
   "tags": [],
-  "targets": {}
+  "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/core/intersection-observer",
+        "tsConfig": "core/intersection-observer/tsconfig.lib.json",
+        "project": "core/intersection-observer/package.json",
+        "entryFile": "core/intersection-observer/src/index.ts",
+        "compiler": "swc",
+        "rollupConfig": ["core/intersection-observer/rollup.config.js"],
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "*.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    }
+  }
 }

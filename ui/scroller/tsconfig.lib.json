@@ -2,13 +2,21 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["node"]
+    "types": ["node"],
+    "module": "es2015",
+    "moduleResolution": "bundler"
+
+    // "moduleResolution": "node",
+
+    // "moduleResolution": "node16",
+    // "module": "node16",
   },
   "exclude": [
+    "node_modules",
     "jest.config.ts",
     "src/**/*.spec.ts",
     "src/**/*.spec.tsx",
     "src/test-setup.ts"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["./src/**/*.js", "./src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
 }

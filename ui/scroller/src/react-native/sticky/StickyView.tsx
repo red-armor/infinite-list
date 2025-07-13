@@ -22,7 +22,7 @@ import {
   Observer,
 } from '@infinite-list/intersection-observer/react-native';
 import ScrollViewContext from '../context/ScrollViewContext';
-import { InterpolationConfig, StickyItemProps } from '../types';
+import { InterpolationConfig } from '../types';
 
 const noop = () => {
   // do nothing

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import ScrollViewContext from '../context/ScrollViewContext';
 
 const FooterContainer = () => {
@@ -13,7 +13,7 @@ const FooterContainer = () => {
     portalManager?.registerFooterInfoSetter(setInfo);
   }
 
-  // @ts-ignore
+  // @ts-expect-error TODO: fix this
   return <>{info.group.map((i) => i.c)}</>;
 };
 

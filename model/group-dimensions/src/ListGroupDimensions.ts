@@ -1,4 +1,8 @@
 import { KeysChangedType } from '@infinite-list/base-dimensions';
+import type {
+  OnUpdateIntervalTree,
+  OnUpdateItemLayout,
+} from '@infinite-list/base-dimensions';
 import { Dimension } from '@infinite-list/dimension';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import { IndexToOffsetMap, ItemLayout } from '@infinite-list/dimensions-model';
@@ -47,9 +51,9 @@ class ListGroupDimensions<
     ListGroupChildDimensions<ItemT>
   >();
   private _keyToOnEndReachedMap: KeyToOnEndReachedMap = new Map();
-  private _itemsDimensions: ItemsDimensions;
-  private _onUpdateItemLayout?: Function;
-  private _onUpdateIntervalTree?: Function;
+  readonly _itemsDimensions: ItemsDimensions;
+  private _onUpdateItemLayout?: OnUpdateItemLayout;
+  private _onUpdateIntervalTree?: OnUpdateIntervalTree;
   private _onItemsCountChangedBatchinator: Batchinator;
   public recalculateDimensionsIntervalTreeBatchinator: Batchinator;
   /**
@@ -135,8 +139,8 @@ class ListGroupDimensions<
 
   createIntervalTree() {
     const options = {} as {
-      onUpdateItemLayout?: Function;
-      onUpdateIntervalTree?: Function;
+      onUpdateItemLayout?: OnUpdateItemLayout;
+      onUpdateIntervalTree?: OnUpdateIntervalTree;
     };
     if (typeof this._onUpdateItemLayout === 'function')
       options.onUpdateItemLayout = this._onUpdateItemLayout;
@@ -443,7 +447,7 @@ class ListGroupDimensions<
    * @param listDimensionsProps to initialize ListDimensions instance
    * @returns listener remover
    */
-  registerList<ExtraInfo extends {} = {}>(
+  registerList<ExtraInfo extends object = object>(
     listKey: string,
     listDimensionsProps: RegisteredListProps<ItemT>
   ): {
@@ -460,7 +464,7 @@ class ListGroupDimensions<
     // should update indexKeys first !!!
     const dimensions = new ListDimensionsModel<ItemT, ExtraInfo>({
       id: listKey,
-      // @ts-ignore [TODO]
+      // @ts-expect-error [TODO]
       container: this,
       horizontal: this.getHorizontal(),
       isFixedLength: this._isFixedLength,
@@ -475,7 +479,7 @@ class ListGroupDimensions<
 
     dimensions.applyInitialData();
 
-    let onEndReachedCleaner: Function;
+    let onEndReachedCleaner: () => void;
 
     if (listDimensionsProps.onEndReached) {
       onEndReachedCleaner = this.addOnEndReached(
@@ -712,7 +716,7 @@ class ListGroupDimensions<
     for (let index = 0; index < len; index++) {
       const key = this.indexKeys[index];
       const dimension = this.getDimension(key);
-      // @ts-ignore
+      // @ts-expect-error dimension may not have hasKey method, but we want to check if it exists for this type
       if (dimension.hasKey(itemKey)) {
         return dimension;
       }

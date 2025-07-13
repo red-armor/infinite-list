@@ -137,6 +137,7 @@ class ScrollHelper {
 
     this.ownerDocument = new ReactNativeDocumentBase({
       id,
+      // @ts-ignore
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
       onIntersectionChange: this.onIntersectionChangeHandler.bind(this),
@@ -518,10 +519,10 @@ class ScrollHelper {
     if (ref.current.scrollTo) {
       ref.current.scrollTo(options);
     } else if (
-      // @ts-expect-error
+      // @ts-ignore
       ref.current?.getNode
     ) {
-      // @ts-expect-error
+      // @ts-ignore
       ref.current.getNode().scrollTo(options);
     } else {
       (ref as MutableRefObject<ScrollView>).current.scrollTo(options);

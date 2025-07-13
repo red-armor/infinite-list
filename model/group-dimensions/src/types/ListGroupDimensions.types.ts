@@ -1,4 +1,8 @@
-import { BaseLayoutProps } from '@infinite-list/base-dimensions';
+import {
+  BaseLayoutProps,
+  OnUpdateIntervalTree,
+  OnUpdateItemLayout,
+} from '@infinite-list/base-dimensions';
 import { Dimension, DimensionProps } from '@infinite-list/dimension';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import { ListDimensionsModelProps } from '@infinite-list/dimensions-model';
@@ -30,8 +34,8 @@ export interface ListGroupDimensionsProps
   extends BaseLayoutProps,
     OnEndReachedHelperProps,
     ViewabilityConfigTuplesProps {
-  onUpdateItemLayout?: Function;
-  onUpdateIntervalTree?: Function;
+  onUpdateItemLayout?: OnUpdateItemLayout;
+  onUpdateIntervalTree?: OnUpdateIntervalTree;
   recycleEnabled?: boolean;
   recyclerTypes?: Array<string>;
   isFixedLength?: boolean;

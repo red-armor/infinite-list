@@ -47,9 +47,9 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
     refreshControlContentContainerStyle,
     ...restProps
   } = props;
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const contextValues = useContext(ScrollViewContext);
-  const { marshal, intersectionObserver } = contextValues;
+  const { marshal } = contextValues;
   const scrollHelper = marshal!.getScrollHelper();
   const animatedValue = useMemo(() => marshal!.getAnimatedValue(), [marshal]);
   const horizontal = marshal!.isHorizontal();
@@ -167,7 +167,7 @@ const AnimatedScrollRenderer: FC<AnimatedScrollRendererPropsWithForwardRef> = (
       onScroll={Animated.event(
         [
           {
-            // @ts-ignore
+            // @ts-expect-error TODO: fix this
             nativeEvent: { contentOffset },
           },
         ],

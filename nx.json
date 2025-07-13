@@ -45,7 +45,8 @@
     {
       "plugin": "@nx/rollup/plugin",
       "options": {
-        "buildTargetName": "build"
+        "buildTargetName": "build",
+        "analyzeSourceFiles": true
       }
     }
   ],

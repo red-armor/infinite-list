@@ -24,7 +24,7 @@ import {
 
 class ListDimensionsModel<
     ItemT extends GenericItemT = GenericItemT,
-    ExtraInfo extends {} = {},
+    ExtraInfo extends object = object,
   >
   extends BaseDimensions<ItemT>
   implements IListDimensionsModel<ItemT, ExtraInfo>

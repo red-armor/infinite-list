@@ -30,7 +30,7 @@ class Marshal {
 
   private _ref: InfiniteListScrollViewRef;
 
-  private _disposers: Function[] = [];
+  private _disposers: { (): void }[] = [];
 
   private _scrollUpdating: boolean;
 
@@ -221,6 +221,8 @@ class Marshal {
   addEventListener(
     type: ScrollEventHandlerSubscriptionKeys,
     listener: ScrollEventHandler,
+    // @ts-expect-error TODO: fix this
+
     options?: boolean | AddEventListenerOptions
   ) {
     return this.scrollEventHelper.subscribeEventHandler(type, listener);

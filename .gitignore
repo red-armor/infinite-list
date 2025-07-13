@@ -102,3 +102,5 @@ yarn-error.log
 
 docs/.vitepress/dist
 docs/.vitepress/cache
+vite.config.*.timestamp*
+vitest.config.*.timestamp*

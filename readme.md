@@ -39,6 +39,16 @@ npm run docs:dev
 
 open [http://localhost:5173/](http://localhost:5173/)
 
+## How to start examples
+
+### ReactNative
+
+```bash
+$ cd examples/ReactNativeListPlayground
+$ yarn
+$ npm run start
+```
+
 ## How to bump and publish
 
 - merge feature to `next` branch

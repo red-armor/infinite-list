@@ -4,6 +4,30 @@ import getMapKeyByValue from '@x-oasis/get-map-key-by-value';
 import noop from '@x-oasis/noop';
 import { ItemMetaStateEventHelperProps, StateEventListener } from './types';
 
+// Type declarations for Web APIs that might not be available in all environments
+type DOMHighResTimeStamp = number;
+
+interface IdleRequestCallback {
+  (deadline: IdleDeadline): void;
+}
+
+interface IdleDeadline {
+  readonly didTimeout: boolean;
+  timeRemaining(): DOMHighResTimeStamp;
+}
+
+interface IdleRequestOptions {
+  timeout?: number;
+}
+
+declare global {
+  function requestIdleCallback(
+    callback: IdleRequestCallback,
+    options?: IdleRequestOptions
+  ): number;
+  function cancelIdleCallback(id: number): void;
+}
+
 let canIUseRIC = false;
 let finished = false;
 
@@ -12,31 +36,6 @@ setTimeout(() => {
   canIUseRIC = false;
   finished = true;
 });
-
-// interface IdleRequestCallback {
-//   (deadline: IdleDeadline): void;
-// }
-/** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline) */
-// interface IdleDeadline {
-//   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/didTimeout) */
-//   readonly didTimeout: boolean;
-//   /** [MDN Reference](https://developer.mozilla.org/docs/Web/API/IdleDeadline/timeRemaining) */
-//   timeRemaining(): DOMHighResTimeStamp;
-// }
-// interface IdleRequestOptions {
-//   timeout?: number;
-// }
-
-// declare function requestIdleCallback(
-//   callback: IdleRequestCallback,
-//   options?: IdleRequestOptions
-// ): number;
-
-// if (requestIdleCallback)
-//   requestIdleCallback(() => {
-//     canIUseRIC = true;
-//     finished = true;
-//   });
 
 class ItemMetaStateEventHelper {
   private _batchUpdateEnabled: boolean;

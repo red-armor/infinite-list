@@ -1,0 +1,10 @@
+{
+  "name": "@infinite-list/eslint-config",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "dependencies": {
+    "@infinite-list/container": "workspace:*"
+  }
+}

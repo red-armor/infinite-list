@@ -33,7 +33,7 @@ const BasicScrollRenderer: FC<ScrollRendererPropsWithForwardRef> = (props) => {
   } = props;
 
   const contextValues = useContext(ScrollViewContext);
-  const { marshal, intersectionObserver } = contextValues;
+  const { marshal } = contextValues;
   const scrollHelper = marshal!.getScrollHelper();
   const horizontal = marshal!.isHorizontal();
 

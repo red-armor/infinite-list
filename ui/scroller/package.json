@@ -1,23 +1,25 @@
 {
   "name": "@infinite-list/scroller",
   "version": "2.0.3",
-  "main": "./src/react-native/index.ts",
-  "types": "./src/react-native/index.ts",
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "publishConfig": {
     "access": "public"
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "0.74.1"
+    "react-native": "*"
   },
   "exports": {
     "./web": {
       "types": "./web.esm.d.ts",
-      "default": "./web.esm.js"
+      "default": "./src/web/index.ts",
+      "import": "./web.esm.js"
     },
     "./react-native": {
       "types": "./react-native.esm.d.ts",
-      "import": "./react-native.esm.js"
+      "import": "./react-native.esm.js",
+      "default": "./src/react-native/index.ts"
     }
   },
   "dependencies": {
@@ -29,7 +31,9 @@
     "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/scheduler": "workspace:*",
     "@infinite-list/disposable": "workspace:*",
+    "@infinite-list/types": "workspace:*",
     "@infinite-list/items-dimensions": "workspace:*",
+    "@infinite-list/viewable": "workspace:*",
     "@infinite-list/intersection-observer": "workspace:*"
   }
 }

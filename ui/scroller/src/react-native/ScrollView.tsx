@@ -1,14 +1,13 @@
 import React, {
   FC,
-  ForwardedRef,
   MutableRefObject,
-  PropsWithChildren,
   useContext,
   useEffect,
   useMemo,
   useRef,
 } from 'react';
 import { ScrollView as RNScrollView, View as RNView } from 'react-native';
+import { Noop } from '@infinite-list/types';
 import isRefObject from '@x-oasis/is-ref';
 import Marshal from './Marshal';
 import { DEFAULT_SCROLL_EVENT_THROTTLE } from './commons/constants';
@@ -23,7 +22,6 @@ import PortalManager from './portal/Manager';
 import {
   InfiniteListScrollViewProps,
   InfiniteListScrollViewPropsWithForwardRef,
-  InfiniteListScrollViewPropsWithRef,
 } from './types';
 
 const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
@@ -81,8 +79,8 @@ const ScrollView: FC<InfiniteListScrollViewPropsWithForwardRef> = (props) => {
    */
   const scrollViewContextValues = useContext(ScrollViewContext);
 
-  const removeClippedSubviews = false;
-  const scrollHelperDisposerRef = useRef<Function>();
+  // const removeClippedSubviews = false;
+  const scrollHelperDisposerRef = useRef<Noop>();
   const {
     marshal: parentMarshal,
     intersectionObserver,

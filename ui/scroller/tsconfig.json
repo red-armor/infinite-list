@@ -8,8 +8,20 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "removeComments": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
+    // "esModuleInterop": true,
+    // "module": "ESNext",
+    // "moduleResolution": "bundler",
+    // "allowSyntheticDefaultImports": true,
+    // "forceConsistentCasingInFileNames": true,
+    // "strict": true,
+    // "noImplicitReturns": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "paths": {
+    //   "@infinite-list/intersection-observer/react-native": ["core/intersection-observer/src/react-native/index.ts"],
+    // }
   },
   "files": [],
   "include": [],

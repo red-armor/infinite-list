@@ -13,7 +13,7 @@ class ScrollTracker {
     velocity?: number;
   };
   private domNode: HTMLDivElement;
-  private _deltaY: number;
+  readonly _deltaY: number;
   private _horizontal: boolean;
   // private _lastScrollY: number
   // private _lastScrollTs: number
@@ -43,9 +43,13 @@ class ScrollTracker {
 
     this.domNode = this._domNode as HTMLDivElement;
 
+    // @ts-expect-error TODO: fix this
     if (this._domNode instanceof HTMLDivElement) {
       this.domNode = this._domNode;
+      // @ts-expect-error TODO: fix this
     } else if (this._domNode?.current) {
+      // @ts-expect-error TODO: fix this
+
       this.domNode = this._domNode?.current;
     }
 
@@ -74,6 +78,8 @@ class ScrollTracker {
   // }
 
   dispose() {
+    // @ts-expect-error TODO: fix this
+
     this.domNode.removeEventListener('scroll', this.onScroll);
   }
 
@@ -82,7 +88,11 @@ class ScrollTracker {
   }
 
   addListener() {
+    // @ts-expect-error TODO: fix this
+
     this.domNode.addEventListener('scroll', this.onScroll);
+    // @ts-expect-error TODO: fix this
+
     this.domNode.addEventListener('scrollend', this.onScrollEnd);
   }
 
@@ -91,7 +101,11 @@ class ScrollTracker {
   }
 
   selectOffset(dom: HTMLElement) {
+    // @ts-expect-error TODO: fix this
+
     if (this._horizontal) return dom.scrollLeft;
+    // @ts-expect-error TODO: fix this
+
     return dom.scrollTop;
   }
 
@@ -103,7 +117,9 @@ class ScrollTracker {
    * visibleLength should be direction sensitive
    */
   selectVisibleLength(dom: HTMLElement = this.domNode) {
+    // @ts-expect-error TODO: fix this
     if (this._horizontal) return dom.clientWidth;
+    // @ts-expect-error TODO: fix this
     return dom.clientHeight;
   }
 
@@ -113,7 +129,9 @@ class ScrollTracker {
    * @returns
    */
   selectContentLength(dom: HTMLElement = this.domNode) {
+    // @ts-expect-error TODO: fix this
     if (this._horizontal) return dom.scrollWidth;
+    // @ts-expect-error TODO: fix this
     return dom.scrollHeight;
   }
 

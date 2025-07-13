@@ -2,15 +2,31 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "types": ["node"]
+    "lib": ["es2015", "dom"],
+    "types": ["node"],
+    "module": "es2015",
+    "moduleResolution": "bundler"
   },
+  "references": [
+    { "path": "../../core/base-dimensions" },
+    { "path": "../../core/state" },
+    { "path": "../../core/strategies" },
+    { "path": "../../core/types" },
+    { "path": "../../core/utils" },
+    { "path": "../../core/viewable" },
+    { "path": "../../core/dimensions-model" },
+    { "path": "../../core/item-meta" },
+    { "path": "../../core/types" },
+    { "path": "../../model/list-dimensions" },
+    { "path": "../../ui/scroller" }
+  ],
   "exclude": [
+    "node_modules",
     "jest.config.ts",
     "src/**/*.spec.ts",
     "src/**/*.spec.tsx",
-    "src/**/*.test.tsx",
-    "src/**/*.test.ts",
+    "src/**/*.test2.tsx",
     "src/test-setup.ts"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["./src/**/*.js", "./src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
 }

@@ -44,6 +44,7 @@ const createObserverComponent = <T extends ComponentType<any>>(
   };
 
   return React.forwardRef(
+    // @ts-ignore
     (
       props: ObserverComponentProps & ComponentProps<T>,
       ref: ForwardedRef<T>

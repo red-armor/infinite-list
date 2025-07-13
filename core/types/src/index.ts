@@ -13,3 +13,4 @@ export * from './baseDimensions';
 export * from './layout';
 export * from './strategies';
 export * from './scrollView';
+export * from './utils';

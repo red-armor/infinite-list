@@ -6,12 +6,42 @@
     "target": "ES2015",
     "module": "commonjs",
     "baseUrl": "./",
+
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "emitDecoratorMetadata": false,
+    "esModuleInterop": true,
+    "experimentalDecorators": false,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "lib": ["es2022"],
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "pretty": true,
+    "removeComments": false,
+    "resolveJsonModule": false,
+    "skipDefaultLibCheck": false,
+    "sourceMap": false,
+    "strict": true,
+    "verbatimModuleSyntax": false,
+    "types": ["node"],
+
     "paths": {
       "@infinite-list/base-dimensions": ["core/base-dimensions/src/index.ts"],
       "@infinite-list/container": ["core/container/src/index.ts"],
       "@infinite-list/dimension": ["model/dimension/src/index.ts"],
       "@infinite-list/dimensions-model": ["core/dimensions-model/src/index.ts"],
       "@infinite-list/disposable": ["core/disposable/src/index.ts"],
+      "@infinite-list/eslint-config": ["toolkit/eslint-config/src/index.ts"],
       "@infinite-list/group-dimensions": [
         "model/group-dimensions/src/index.ts"
       ],
@@ -37,6 +67,10 @@
       "@infinite-list/masonry/react-native": [
         "ui/masonry/src/react-native/index.ts"
       ],
+      "@infinite-list/metro-infinite-list-resolver": [
+        "toolkit/metro-infinite-list-resolver/src/index.ts"
+      ],
+      "@infinite-list/metro-tsup": ["toolkit/metro-tsup/src/index.ts"],
       "@infinite-list/pseudo-list-dimensions": [
         "model/pseudo-list-dimensions/src/index.ts"
       ],

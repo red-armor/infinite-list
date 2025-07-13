@@ -3,9 +3,8 @@ const { withNx } = require('@nx/rollup/with-nx');
 module.exports = withNx(
   {
     main: './src/index.ts',
-    outputPath: '../../dist/core/strategies',
-    tsConfig: '../../tsconfig.json',
-    // tsConfig: './tsconfig.lib.json',
+    outputPath: '../../dist/toolkit/metro-infinite-list-resolver',
+    tsConfig: './tsconfig.lib.json',
     compiler: 'swc',
     format: ['cjs', 'esm'],
     assets: [{ input: '.', output: '.', glob: '*.md' }],

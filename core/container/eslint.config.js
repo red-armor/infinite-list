@@ -8,11 +8,11 @@ module.exports = [
       '@nx/dependency-checks': [
         'error',
         {
-          checkObsoleteDependencies: false,
           ignoredFiles: [
             '{projectRoot}/eslint.config.{js,cjs,mjs}',
             '{projectRoot}/vite.config.{js,ts,mjs,mts}',
           ],
+          ignoredDependencies: ['@nx/rollup'],
         },
       ],
     },
