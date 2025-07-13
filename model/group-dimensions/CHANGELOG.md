@@ -1,5 +1,19 @@
 # @infinite-list/group-dimensions
 
+## 1.0.3
+
+### Patch Changes
+
+- 1fb2b3b: bump version
+- Updated dependencies [1fb2b3b]
+  - @infinite-list/items-dimensions@1.0.3
+  - @infinite-list/base-dimensions@1.0.3
+  - @infinite-list/strategies@1.0.3
+  - @infinite-list/dimension@1.0.3
+  - @infinite-list/item-meta@1.0.3
+  - @infinite-list/state@1.0.3
+  - @infinite-list/utils@1.0.3
+
 ## 1.0.2
 
 ### Patch Changes
