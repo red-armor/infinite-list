@@ -25,7 +25,7 @@ import { resolveModules } from '@infinite-list/metro-infinite-list-resolver';
 
 const mapping = resolveModules({
   rootPath: '/path/to/your/project',
-  targetDir: 'packages'
+  targetDir: 'packages',
 });
 
 console.log(mapping);
@@ -43,7 +43,7 @@ import { resolveModules } from '@infinite-list/metro-infinite-list-resolver';
 
 const customResolveModulePath = (pkgOptions, packageName, modulePath) => {
   const mapping = {};
-  
+
   // Custom logic for resolving modules
   if (pkgOptions.exports) {
     for (const [key, value] of Object.entries(pkgOptions.exports)) {
@@ -52,14 +52,14 @@ const customResolveModulePath = (pkgOptions, packageName, modulePath) => {
       }
     }
   }
-  
+
   return mapping;
 };
 
 const mapping = resolveModules({
   rootPath: '/path/to/your/project',
   targetDir: 'packages',
-  resolveModulePath: customResolveModulePath
+  resolveModulePath: customResolveModulePath,
 });
 ```
 
@@ -144,15 +144,17 @@ This resolver is designed to work with Metro bundler's `resolver.alias` configur
 
 ```javascript
 // metro.config.js
-const { resolveModules } = require('@infinite-list/metro-infinite-list-resolver');
+const {
+  resolveModules,
+} = require('@infinite-list/metro-infinite-list-resolver');
 
 module.exports = {
   resolver: {
     alias: resolveModules({
       rootPath: __dirname,
-      targetDir: 'packages'
-    })
-  }
+      targetDir: 'packages',
+    }),
+  },
 };
 ```
 
@@ -189,6 +191,7 @@ my-project/
 ## Error Handling
 
 The resolver gracefully handles:
+
 - Missing target directories
 - Invalid package.json files
 - Non-existent dependency paths
