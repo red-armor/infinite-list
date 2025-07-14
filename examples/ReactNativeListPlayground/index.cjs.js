@@ -96,12 +96,17 @@ const resolveModule = (options)=>{
         mapping[key] = resolvedMapping[key];
     }
     if (packageJson.dependencies) {
+        console.log('packageJson.dependencies ', packageJson.dependencies)
+
         for(const dependencyName in packageJson.dependencies){
             if (processed.has(dependencyName)) {
                 continue;
             }
             const dependencyPath = path__namespace.join(rootPath, dependencyName);
+
+            console.log('dependencyPath---- ', dependencyPath)
             if (fs__namespace.existsSync(dependencyPath)) {
+                console.log('dependencyPath ', dependencyPath)
                 resolveModule({
                     mapping,
                     processed,

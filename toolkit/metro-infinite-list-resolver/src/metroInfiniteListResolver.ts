@@ -44,6 +44,27 @@ function cleanPackagePath(packagePath: string): string {
   return result.join('/');
 }
 
+/**
+ *
+ * @param options
+ * @param packageName
+ * @param modulePath
+ * @returns
+ *
+ * 基于package.json的exports、module、main字段，生成模块路径映射；
+ * 比如：
+ * // package.json
+ * {
+ *  "name": "@infinite-list/data-model",
+ *  "exports": {
+ *    "./index": "./src/index.ts"
+ *  }
+ * }
+ *
+ *  ==> {
+ *    "@infinite-list/data-model/index": "/xxx/infinite-list/packages/data-model/src/index.ts"
+ *  }
+ */
 const defaultResolveModulePath = (
   options: PkgOptions,
   packageName: string,
@@ -112,6 +133,26 @@ const resolveModule = (options: ResolveModuleOptions): void => {
     mapping[key] = resolvedMapping[key];
   }
 
+  /**
+   * 这个逻辑目前只处理了 package.json 的 dependencies 字段，它只有当下面的结构才能够生效
+   * - node_modules
+   *   - @infinite-list/data-model
+   *     - node_modules
+   *     - package.json
+   *       - dependencies
+   *         - @x-oasis/noop: ^1.0.0
+   *   - @x-oasis/noop
+   *     - package.json
+   *
+   * 假如说，我们现在在 examples/ReactNativeListPlayground 目录下，中使用的话，这段逻辑其实
+   * 执行为空；但是你最后发现程序也能够正常运行，这个是因为 我们把 @infinite-list/data-model 的
+   * node_modules 放到 watch Files中；
+   *
+   * 其实现在能够得到的结论是，对于extraModule的设置，它是代表一个mapping表；假如说我们没有明确指出
+   * 的话，需要将node_modules 下的所有依赖都放到 watch Files中；分别对比，debug source code以及
+   * @infinite-list 作为单独的模块被引入
+   *
+   */
   if (packageJson.dependencies) {
     for (const dependencyName in packageJson.dependencies) {
       if (processed.has(dependencyName)) {

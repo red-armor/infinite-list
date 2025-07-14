@@ -1,10 +1,10 @@
-const { resolveModules, cleanPackagePath } = require('./index.cjs')
+const { resolveModules } = require('./index.cjs')
 const path = require('path')
 const fs = require('fs')
 
 const root = path.resolve(__dirname, '..', '..');
 const resolver = (options, packageName, modulePath) => {
-  const { exports, module, main } = options
+  const { module, main } = options
   const mapping = {}
 
   // if (exports) {
@@ -50,14 +50,11 @@ const resolveModuleMapping = () => {
 const resolveNodeModulesMapping = () => {
   const mapping = {};
   ['core', 'model', 'ui'].map(dir =>  {
-    console.log('tsting ---------')
-
-    return    resolveModules({
+    return resolveModules({
       rootPath: path.join(root),
       targetDir: dir,
       resolveModulePath: (options, packageName, modulePath) => {
         const targetPath = path.join(modulePath, 'node_modules')
-        console.log('target- ---- ', targetPath)
         if (fs.existsSync(targetPath)) {
           mapping[packageName] = targetPath
         }
@@ -65,13 +62,10 @@ const resolveNodeModulesMapping = () => {
       }
     })
   }).forEach(m => {
-    console.log('m-----', m)
     Object.assign(mapping, m)
   })
   return mapping
 }
-
-// console.log('resolveNodeModulesMapping ', resolveNodeModulesMapping())
 
 module.exports = {
   resolveModuleMapping,
