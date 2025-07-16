@@ -3,3 +3,4 @@ packages:
   - core/**
   - model/**
   - playground/**
+  - toolkit/**
