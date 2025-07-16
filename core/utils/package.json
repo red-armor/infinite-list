@@ -2,6 +2,7 @@
   "name": "@infinite-list/utils",
   "version": "1.0.2",
   "dependencies": {
+    "@infinite-list/types": "workspace:*",
     "@x-oasis/batchinate-last": "^0.1.14"
   },
   "main": "./index.cjs",
