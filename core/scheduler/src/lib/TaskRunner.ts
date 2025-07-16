@@ -1,11 +1,13 @@
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import { getNow } from './utils';
 
+type Fn = (...args: any[]) => any;
+
 class TaskRunner {
   readonly _delayMS: number;
   private _args: Array<any>;
 
-  private _callback: Function;
+  private _callback: Fn;
 
   readonly _leading: boolean;
   readonly _trailing: boolean;
@@ -16,7 +18,7 @@ class TaskRunner {
   private _hasOverlappedTask: boolean;
 
   constructor(
-    cb: Function,
+    cb: Fn,
     delayMS: number,
     options?: {
       leading?: boolean;

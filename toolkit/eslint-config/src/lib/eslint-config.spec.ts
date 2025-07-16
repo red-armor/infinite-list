@@ -1,4 +1,4 @@
-import { eslintConfig } from './eslint-config';
+import { eslintConfig } from '../eslint-config';
 
 describe('eslintConfig', () => {
   it('should work', () => {
