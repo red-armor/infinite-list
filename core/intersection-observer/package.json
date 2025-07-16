@@ -3,7 +3,10 @@
   "version": "1.0.4",
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "@nx/rollup": "*",
+    "rollup-plugin-copy": "*",
+    "@testing-library/jest-native": "*"
   },
   "exports": {
     "./react": {
@@ -20,7 +23,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/items-dimensions": "workspace:*",
     "@infinite-list/scheduler": "workspace:*"
   },
