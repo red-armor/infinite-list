@@ -11,6 +11,28 @@
       "options": {
         "jestConfig": "ui/list/jest.config.ts"
       }
+    },
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/ui/list",
+        "tsConfig": "ui/list/tsconfig.lib.json",
+        "project": "ui/list/package.json",
+        "rollupConfig": "ui/list/rollup.config.js",
+        "entryFile": "ui/list/src/react-native/index.ts",
+        "additionalEntryPoints": ["ui/list/src/react/index.ts"],
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "*.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
     }
   }
 }

@@ -2,6 +2,7 @@
   "name": "@infinite-list/types",
   "version": "1.0.2",
   "dependencies": {
+    "@nx/rollup": "*",
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14"
   },

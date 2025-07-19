@@ -4,6 +4,7 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "dependencies": {
+    "@nx/rollup": "*",
     "@infinite-list/container": "workspace:*"
   },
   "publishConfig": {

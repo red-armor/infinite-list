@@ -3,7 +3,10 @@
   "version": "2.0.3",
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "@nx/rollup": "*",
+    "@testing-library/jest-native": "*",
+    "@testing-library/react-native": "*"
   },
   "dependencies": {
     "@infinite-list/dimensions-model": "workspace:*",
@@ -12,7 +15,6 @@
     "@infinite-list/scroller": "workspace:*",
     "@infinite-list/strategies": "workspace:*",
     "@infinite-list/types": "workspace:*",
-    "@infinite-list/utils": "workspace:*",
     "@x-oasis/select-value": "^0.1.14"
   },
   "exports": {
