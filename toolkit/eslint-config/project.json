@@ -15,6 +15,7 @@
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
       "options": {
         "outputPath": "dist/toolkit/eslint-config",
         "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
