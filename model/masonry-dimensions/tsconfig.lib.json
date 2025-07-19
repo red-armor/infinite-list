@@ -10,6 +10,6 @@
   "references": [
     { "path": "../../core/strategies" },
     { "path": "../../core/dimensions-model" },
-    { "path": "../../core/state" },
+    { "path": "../../core/state" }
   ]
 }
