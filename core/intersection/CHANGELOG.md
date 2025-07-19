@@ -1,5 +1,11 @@
 # @infinite-list/intersection
 
+## 1.1.1
+
+### Patch Changes
+
+- e1385bf: bump version
+
 ## 1.0.2
 
 ### Patch Changes

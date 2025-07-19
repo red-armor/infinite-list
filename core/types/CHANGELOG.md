@@ -1,5 +1,11 @@
 # @infinite-list/types
 
+## 1.1.1
+
+### Patch Changes
+
+- e1385bf: bump version
+
 ## 1.0.3
 
 ### Patch Changes

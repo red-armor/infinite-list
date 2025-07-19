@@ -1,5 +1,11 @@
 # @infinite-list/scheduler
 
+## 1.1.1
+
+### Patch Changes
+
+- e1385bf: bump version
+
 ## 1.0.4
 
 ### Patch Changes
