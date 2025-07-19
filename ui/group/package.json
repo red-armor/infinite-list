@@ -3,7 +3,9 @@
   "version": "2.0.4",
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "@testing-library/jest-native": "*",
+    "@nx/rollup": "*"
   },
   "exports": {
     "./react": {
@@ -12,24 +14,26 @@
     },
     "./react-native": {
       "types": "./react-native.esm.d.ts",
-      "import": "./react-native.esm.js"
+      "import": "./react-native.esm.js",
+      "default": "./react-native.esm.js"
     }
   },
   "dependencies": {
+    "@infinite-list/dimension": "workspace:*",
     "@infinite-list/dimensions-model": "workspace:*",
     "@infinite-list/group-dimensions": "workspace:*",
     "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/list-dimensions": "workspace:*",
     "@infinite-list/scroller": "workspace:*",
     "@infinite-list/strategies": "workspace:*",
     "@infinite-list/types": "workspace:*",
     "@infinite-list/utils": "workspace:*",
-    "@x-oasis/noop": "^0.1.14",
-    "@x-oasis/select-value": "^0.1.14",
-    "@x-oasis/shallow-equal": "^0.1.14"
+    "@infinite-list/viewable": "workspace:*",
+    "@x-oasis/noop": "^0.1.14"
   },
   "publishConfig": {
     "access": "public"
   },
-  "main": "./index.js",
-  "types": "./index.d.ts"
+  "main": "./react-native.esm.js",
+  "types": "./react-native.esm.d.ts"
 }
