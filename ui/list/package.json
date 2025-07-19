@@ -4,7 +4,6 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "@nx/rollup": "*",
     "@testing-library/jest-native": "*",
     "@testing-library/react-native": "*"
   },
@@ -25,12 +24,12 @@
     "./react-native": {
       "types": "./react-native.esm.d.ts",
       "import": "./react-native.esm.js",
-      "default": "./src/react-native/index.ts"
+      "default": "./react-native.esm.js"
     }
   },
   "publishConfig": {
     "access": "public"
   },
-  "main": "./src/react-native/index.ts",
-  "types": "./src/react-native/index.ts"
+  "main": "./react-native.esm.js",
+  "types": "./react-native.esm.d.ts"
 }
