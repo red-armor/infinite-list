@@ -54,12 +54,14 @@ jobs:
         # https://dev.to/jmcdo29/automating-your-package-deployment-in-an-nx-monorepo-with-changeset-4em8
       # - name: Modify Workspace File
       #   run: sed "s/packages\//dist\/packages\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
-      - name: Modify ui workspace
+      - name: ui workspace
         run: sed "s/ui\//dist\/ui\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
-      - name: Modify ui workspace
+      - name: core workspace
         run: sed "s/core\//dist\/core\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
-      - name: Modify ui workspace
+      - name: model workspace
         run: sed "s/model\//dist\/model\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
+      - name: toolkit workspace
+        run: sed "s/toolkit\//dist\/toolkit\//g" pnpm-workspace.yaml > pnpm-new.yaml && mv pnpm-new.yaml pnpm-workspace.yaml
 
         # https://github.com/jmcdo29/ogma/blob/main/.github/workflows/release.yml#L45
       - name: Update workspace deps

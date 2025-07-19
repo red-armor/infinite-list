@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@infinite-list/metro-infinite-list-resolver": "^0.0.3",
+    "@infinite-list/metro-infinite-list-resolver": "^0.0.4",
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",

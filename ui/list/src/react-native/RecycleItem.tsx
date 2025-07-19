@@ -43,7 +43,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
       top: 0,
       right: 0,
     };
-  }, [offset]);
+  }, [offset, horizontal]);
 
   useEffect(() => {
     const onMeasureSuccess = (
@@ -74,7 +74,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
         onMeasureFailed
       );
     });
-  }, [itemMeta]);
+  }, [itemMeta, dimensions, scrollerRef]);
 
   return (
     <View ref={itemRef} key={key} style={style} data-id={key}>
