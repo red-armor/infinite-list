@@ -1,5 +1,11 @@
 # @infinite-list/pseudo-list-dimensions
 
+## 1.1.3
+
+### Patch Changes
+
+- e8c1772: bump version
+
 ## 1.1.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/metro-infinite-list-resolver",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "dependencies": {
     "@nx/rollup": "*"
   },

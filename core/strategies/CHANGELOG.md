@@ -1,5 +1,18 @@
 # @infinite-list/strategies
 
+## 1.1.3
+
+### Patch Changes
+
+- e8c1772: bump version
+- Updated dependencies [e8c1772]
+  - @infinite-list/base-dimensions@1.1.3
+  - @infinite-list/container@1.1.3
+  - @infinite-list/item-meta@1.1.3
+  - @infinite-list/viewable@1.1.3
+  - @infinite-list/types@1.1.3
+  - @infinite-list/utils@1.1.3
+
 ## 1.1.2
 
 ### Patch Changes

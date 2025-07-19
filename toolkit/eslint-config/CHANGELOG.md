@@ -1,5 +1,13 @@
 # @infinite-list/eslint-config
 
+## 0.0.4
+
+### Patch Changes
+
+- e8c1772: bump version
+- Updated dependencies [e8c1772]
+  - @infinite-list/container@1.1.3
+
 ## 0.0.3
 
 ### Patch Changes

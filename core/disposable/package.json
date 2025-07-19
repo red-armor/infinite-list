@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/disposable",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "dependencies": {
     "@nx/rollup": "21.1.2"
   },
