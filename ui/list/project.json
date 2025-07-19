@@ -20,9 +20,8 @@
         "outputPath": "dist/ui/list",
         "tsConfig": "ui/list/tsconfig.lib.json",
         "project": "ui/list/package.json",
-        "rollupConfig": "ui/list/rollup.config.js",
         "entryFile": "ui/list/src/react-native/index.ts",
-        "additionalEntryPoints": ["ui/list/src/react/index.ts"],
+        "rollupConfig": ["ui/list/rollup.config.js"],
         "compiler": "swc",
         "format": ["cjs", "esm"],
         "assets": [
