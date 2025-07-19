@@ -1,6 +1,5 @@
 const path = require('path');
-const { resolveModules } = require('../../dist/toolkit/metro-infinite-list-resolver');
-// const { resolveModules } = require('@infinite-list/metro-infinite-list-resolver');
+const { resolveModules } = require('@infinite-list/metro-infinite-list-resolver');
 const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);

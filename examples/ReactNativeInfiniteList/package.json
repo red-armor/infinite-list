@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
-    "@infinite-list/list": "^2.1.2",
+    "@infinite-list/list": "^2.1.5",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@infinite-list/metro-infinite-list-resolver": "^0.0.5",
+    "@infinite-list/metro-infinite-list-resolver": "^0.0.6",
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
