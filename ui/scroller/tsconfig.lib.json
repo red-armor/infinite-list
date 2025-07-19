@@ -18,5 +18,14 @@
     "src/**/*.spec.tsx",
     "src/test-setup.ts"
   ],
-  "include": ["./src/**/*.js", "./src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["./src/**/*.js", "./src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    { "path": "../../core/item-meta" },
+    { "path": "../../core/scheduler" },
+    { "path": "../../core/disposable" },
+    { "path": "../../core/types" },
+    { "path": "../../core/items-dimensions" },
+    { "path": "../../core/viewable" },
+    { "path": "../../core/intersection-observer" }
+  ]
 }

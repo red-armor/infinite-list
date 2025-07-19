@@ -20,13 +20,6 @@
     { "path": "../../model/list-dimensions" },
     { "path": "../../ui/scroller" }
   ],
-  "exclude": [
-    "node_modules",
-    "jest.config.ts",
-    "src/**/*.spec.ts",
-    "src/**/*.spec.tsx",
-    "src/**/*.test2.tsx",
-    "src/test-setup.ts"
-  ],
+  "exclude": ["node_modules", "jest.config.ts", "src/**/*.spec.ts"],
   "include": ["./src/**/*.js", "./src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
 }

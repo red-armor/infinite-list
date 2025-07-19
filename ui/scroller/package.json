@@ -1,8 +1,8 @@
 {
   "name": "@infinite-list/scroller",
   "version": "2.0.3",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./react-native.esm.js",
+  "types": "./react-native.esm.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -13,26 +13,22 @@
   "exports": {
     "./web": {
       "types": "./web.esm.d.ts",
-      "default": "./src/web/index.ts",
-      "import": "./web.esm.js"
+      "default": "./web.esm.js"
     },
     "./react-native": {
       "types": "./react-native.esm.d.ts",
       "import": "./react-native.esm.js",
-      "default": "./src/react-native/index.ts"
+      "default": "./react-native.esm.js"
     }
   },
   "dependencies": {
     "@x-oasis/is-ref": "^0.1.35",
     "@x-oasis/noop": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14",
-    "@x-oasis/shallow-equal": "^0.1.14",
     "@x-oasis/throttle": "^0.1.35",
-    "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/scheduler": "workspace:*",
     "@infinite-list/disposable": "workspace:*",
     "@infinite-list/types": "workspace:*",
-    "@infinite-list/items-dimensions": "workspace:*",
     "@infinite-list/viewable": "workspace:*",
     "@infinite-list/intersection-observer": "workspace:*"
   }

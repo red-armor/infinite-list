@@ -12,17 +12,6 @@
   },
   "tags": [],
   "targets": {
-    // "build": {
-    //   "executor": "@nx/js:tsc",
-    //   "outputs": ["{options.outputPath}"],
-    //   "options": {
-    //     "outputPath": "dist/toolkit/eslint-config",
-    //     "main": "toolkit/eslint-config/src/index.ts",
-    //     "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
-    //     "assets": ["toolkit/eslint-config/*.md"]
-    //   }
-    // },
-
     "build": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}"],
