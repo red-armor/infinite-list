@@ -148,7 +148,8 @@
 
 
 import { useCallback, useMemo, useRef } from 'react';
-import { List } from '@infinite-list/list/react-native';
+import { List, RenderItemInfo } from '@infinite-list/list/react-native';
+import { KeyExtractor } from '@infinite-list/dimensions-model';
 import { ScrollView } from '@infinite-list/scroller/react-native';
 import { ScrollView as NativeScrollView, Text, View } from 'react-native';
 
@@ -162,7 +163,7 @@ const PlayList = () => {
   const data = useMemo(() => buildData(1000), []);
   const scrollViewRef = useRef<NativeScrollView>(null);
 
-  const renderItem = useCallback((props: { item }) => {
+  const renderItem = useCallback((props: RenderItemInfo) => {
     const { item, itemMeta } = props;
     if (itemMeta.getState().viewable)
       console.log(
@@ -178,7 +179,7 @@ const PlayList = () => {
     );
   }, []);
 
-  const keyExtractor = useCallback((item) => {
+  const keyExtractor: KeyExtractor = useCallback((item) => {
     return item.key;
   }, []);
 
