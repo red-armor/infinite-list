@@ -1,7 +1,9 @@
 {
   "name": "@infinite-list/disposable",
   "version": "1.0.3",
-  "dependencies": {},
+  "dependencies": {
+    "@nx/rollup": "21.1.2"
+  },
   "main": "./index.cjs",
   "module": "./index.js",
   "publishConfig": {
