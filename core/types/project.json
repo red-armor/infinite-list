@@ -17,6 +17,26 @@
       "options": {
         "packageRoot": "dist/{projectRoot}"
       }
-    }
+    },
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/core/types",
+        "tsConfig": "core/types/tsconfig.lib.json",
+        "project": "core/types/package.json",
+        "entryFile": "core/types/src/index.ts",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "*.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
   }
 }

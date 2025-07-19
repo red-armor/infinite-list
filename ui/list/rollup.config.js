@@ -13,7 +13,7 @@ module.exports = withNx(
     assets: [{ input: '.', output: '.', glob: '*.md' }],
   },
   {
-    input: ['./src/react-native', './src/react'],
+    input: ['./src/react-native/index.ts', './src/react/index.ts'],
     output: {
       entryFileNames: (chunk) => {
         if (chunk.facadeModuleId.endsWith('src/react-native/index.ts')) {
