@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/list",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
