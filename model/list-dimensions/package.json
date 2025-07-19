@@ -1,12 +1,20 @@
 {
   "name": "@infinite-list/list-dimensions",
   "version": "1.0.3",
+  "peerDependencies": {
+    "@nx/rollup": "*",
+    "vitest": "*"
+  },
   "dependencies": {
     "@infinite-list/dimensions-model": "workspace:*",
     "@infinite-list/state": "workspace:*",
     "@infinite-list/strategies": "workspace:*",
     "@x-oasis/batchinator": "^0.1.14",
-    "@x-oasis/prefix-interval-tree": "^0.2.4"
+    "@x-oasis/prefix-interval-tree": "^0.2.4",
+    "@infinite-list/types": "workspace:*",
+    "@infinite-list/base-dimensions": "workspace:*",
+    "@infinite-list/item-meta": "workspace:*",
+    "@infinite-list/utils": "workspace:*"
   },
   "main": "./index.cjs",
   "module": "./index.js",
