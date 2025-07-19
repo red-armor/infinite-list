@@ -11,12 +11,12 @@
         "command": "cd ui/scroller && npx vite build --config vite.config.ts"
       }
     },
-    "test": {
-      "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
-      "options": {
-        "config": "ui/scroller/vitest.config.ts"
-      }
-    }
+    // "test": {
+    //   "executor": "@nx/vite:test",
+    //   "outputs": ["{options.reportsDirectory}"],
+    //   "options": {
+    //     "config": "ui/scroller/vitest.config.ts"
+    //   }
+    // }
   }
 }

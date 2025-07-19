@@ -657,7 +657,7 @@ importers:
         version: link:../../core/item-meta
       '@infinite-list/scroller':
         specifier: workspace:*
-        version: link:../scroller/dist
+        version: link:../scroller
       '@infinite-list/strategies':
         specifier: workspace:*
         version: link:../../core/strategies
@@ -696,7 +696,7 @@ importers:
         version: link:../../model/list-dimensions
       '@infinite-list/scroller':
         specifier: workspace:*
-        version: link:../scroller/dist
+        version: link:../scroller
       '@infinite-list/strategies':
         specifier: workspace:*
         version: link:../../core/strategies
@@ -729,7 +729,7 @@ importers:
         version: link:../../model/masonry-dimensions
       '@infinite-list/scroller':
         specifier: workspace:*
-        version: link:../scroller/dist
+        version: link:../scroller
       '@infinite-list/strategies':
         specifier: workspace:*
         version: link:../../core/strategies
@@ -763,42 +763,6 @@ importers:
       '@infinite-list/viewable':
         specifier: workspace:*
         version: link:../../core/viewable
-      '@x-oasis/is-ref':
-        specifier: ^0.1.35
-        version: 0.1.35
-      '@x-oasis/noop':
-        specifier: ^0.1.14
-        version: 0.1.35
-      '@x-oasis/select-value':
-        specifier: ^0.1.14
-        version: 0.1.35
-      '@x-oasis/throttle':
-        specifier: ^0.1.35
-        version: 0.1.35
-      react:
-        specifier: 19.0.0
-        version: 19.0.0
-      react-native:
-        specifier: 0.79.5
-        version: 0.79.5(@babel/core@7.27.3)(@react-native-community/cli@15.0.1(typescript@5.7.3))(@types/react@18.3.22)(react@19.0.0)
-
-  ui/scroller/dist:
-    dependencies:
-      '@infinite-list/disposable':
-        specifier: workspace:*
-        version: link:../../../core/disposable
-      '@infinite-list/intersection-observer':
-        specifier: workspace:*
-        version: link:../../../core/intersection-observer
-      '@infinite-list/scheduler':
-        specifier: workspace:*
-        version: link:../../../core/scheduler
-      '@infinite-list/types':
-        specifier: workspace:*
-        version: link:../../../core/types
-      '@infinite-list/viewable':
-        specifier: workspace:*
-        version: link:../../../core/viewable
       '@x-oasis/is-ref':
         specifier: ^0.1.35
         version: 0.1.35

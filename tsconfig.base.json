@@ -77,7 +77,7 @@
       "@infinite-list/react": ["packages/react/src/index.ts"],
       "@infinite-list/scheduler": ["core/scheduler/src/index.ts"],
       "@infinite-list/scroller/react-native": ["ui/scroller/src/react-native"],
-      "@infinite-list/scroller/web": ["ui/scroller/src/web/index.ts"],
+      "@infinite-list/scroller/web": ["ui/scroller/src/web"],
       "@infinite-list/state": ["core/state/src/index.ts"],
       "@infinite-list/strategies": ["core/strategies/src/index.ts"],
       "@infinite-list/types": ["core/types/src/index.ts"],

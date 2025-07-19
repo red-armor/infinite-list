@@ -24,7 +24,6 @@
     { "path": "../../core/scheduler" },
     { "path": "../../core/disposable" },
     { "path": "../../core/types" },
-    { "path": "../../core/items-dimensions" },
     { "path": "../../core/viewable" },
     { "path": "../../core/intersection-observer" }
   ]

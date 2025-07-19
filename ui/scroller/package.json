@@ -13,6 +13,7 @@
   "exports": {
     "./web": {
       "types": "./web.esm.d.ts",
+      "import": "./web.esm.js",
       "default": "./web.esm.js"
     },
     "./react-native": {

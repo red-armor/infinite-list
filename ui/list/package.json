@@ -19,6 +19,7 @@
   "exports": {
     "./react": {
       "types": "./react.esm.d.ts",
+      "import": "./react.esm.js",
       "default": "./react.esm.js"
     },
     "./react-native": {
