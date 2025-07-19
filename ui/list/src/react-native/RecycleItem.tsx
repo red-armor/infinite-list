@@ -68,7 +68,7 @@ const RecycleItem = <ItemT extends GenericItemT>(
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
-        // @ts-expect-error
+        // @ts-expect-error TODO: fix this
         scrollerRef.current,
         onMeasureSuccess,
         onMeasureFailed

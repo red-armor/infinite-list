@@ -41,7 +41,7 @@ const Item = <ItemT extends GenericItemT>(props: SpaceItemProps<ItemT>) => {
 
     setTimeout(() => {
       itemRef.current?.measureLayout(
-        // @ts-expect-error
+        // @ts-expect-error TODO: fix this
         scrollerRef.current,
         onMeasureSuccess,
         onMeasureFailed
