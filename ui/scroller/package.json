@@ -1,6 +1,6 @@
 {
   "name": "@infinite-list/scroller",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "main": "./react-native.esm.js",
   "types": "./react-native.esm.d.ts",
   "publishConfig": {
