@@ -5,8 +5,9 @@
     "@infinite-list/types": "workspace:*",
     "@x-oasis/batchinate-last": "^0.1.14"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts",
   "publishConfig": {
     "access": "public"
   }

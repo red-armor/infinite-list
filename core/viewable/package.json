@@ -8,8 +8,9 @@
     "@x-oasis/unique-array-object": "^0.1.14",
     "vitest": "*"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts",
   "publishConfig": {
     "access": "public"
   }

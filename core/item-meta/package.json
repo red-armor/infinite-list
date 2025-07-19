@@ -9,8 +9,9 @@
     "@x-oasis/noop": "^0.1.14",
     "@infinite-list/viewable": "workspace:*"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts",
   "publishConfig": {
     "access": "public"
   }

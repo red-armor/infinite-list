@@ -11,12 +11,13 @@
   "exports": {
     "./react": {
       "types": "./react.esm.d.ts",
-      "default": "./react.esm.js"
+      "import": "./react.esm.js",
+      "require": "./react.cjs.js"
     },
     "./react-native": {
       "types": "./react-native.esm.d.ts",
       "import": "./react-native.esm.js",
-      "default": "./src/react-native/index.ts"
+      "require": "./react-native.cjs.js"
     }
   },
   "publishConfig": {
@@ -26,6 +27,7 @@
     "@infinite-list/items-dimensions": "workspace:*",
     "@infinite-list/scheduler": "workspace:*"
   },
-  "main": "./index.js",
-  "types": "./index.d.ts"
+  "main": "./react-native.esm.js",
+  "types": "./react-native.esm.d.ts",
+  "module": "./react-native.esm.js"
 }

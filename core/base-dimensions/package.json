@@ -12,6 +12,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts"
 }
