@@ -13,7 +13,7 @@ export type MeasurementShape = {
   height?: number;
 };
 
-export type SetMeasureLayoutHandler = (handler: Function) => void;
+export type SetMeasureLayoutHandler = (handler: OnMeasureLayout) => void;
 export type GetMetaOnViewableItemsChanged = () => {
   [key: string]: any;
 };

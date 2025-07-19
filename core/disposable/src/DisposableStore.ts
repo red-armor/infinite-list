@@ -1,6 +1,6 @@
 import { isDisposable } from './Disposable';
 import { is } from './assertion/iterable';
-import { isArray } from './assertion/types';
+import { isArray } from './assertion/type';
 // import { Iterable } from './assertion/iterable';
 import type { IDisposable } from './types/disposable';
 

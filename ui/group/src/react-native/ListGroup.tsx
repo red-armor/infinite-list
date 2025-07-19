@@ -36,7 +36,7 @@ const ListGroup = <ItemT extends GenericItemT>(
     scrollComponentContext,
     ...rest
   } = props;
-  // @ts-ignore
+  // @ts-expect-error - scrollComponentContext type mismatch
   const { marshal } = useContext(scrollComponentContext);
   const layoutRef = useRef<{
     x: number;

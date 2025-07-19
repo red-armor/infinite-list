@@ -3,7 +3,9 @@
   "version": "2.0.4",
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "@testing-library/jest-native": "*",
+    "@testing-library/react-native": "*"
   },
   "dependencies": {
     "@infinite-list/dimensions-model": "workspace:*",
@@ -12,7 +14,6 @@
     "@infinite-list/scroller": "workspace:*",
     "@infinite-list/strategies": "workspace:*",
     "@infinite-list/types": "workspace:*",
-    "@infinite-list/utils": "workspace:*",
     "@x-oasis/select-value": "^0.1.14"
   },
   "exports": {
@@ -23,12 +24,12 @@
     "./react-native": {
       "types": "./react-native.esm.d.ts",
       "import": "./react-native.esm.js",
-      "default": "./src/react-native/index.ts"
+      "default": "./react-native.esm.js"
     }
   },
   "publishConfig": {
     "access": "public"
   },
-  "main": "./src/react-native/index.ts",
-  "types": "./src/react-native/index.ts"
+  "main": "./react-native.esm.js",
+  "types": "./react-native.esm.d.ts"
 }

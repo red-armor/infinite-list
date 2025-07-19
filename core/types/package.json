@@ -2,11 +2,13 @@
   "name": "@infinite-list/types",
   "version": "1.0.3",
   "dependencies": {
+    "@nx/rollup": "*",
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/select-value": "^0.1.14"
   },
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts",
   "publishConfig": {
     "access": "public"
   }

@@ -4,4 +4,8 @@ import {
   PortalContextProps,
 } from '../../types/PortalContext.types';
 
-export { PortalContextProps, GroupRecycleContentProps, GroupSpaceContentProps };
+export type {
+  PortalContextProps,
+  GroupRecycleContentProps,
+  GroupSpaceContentProps,
+};

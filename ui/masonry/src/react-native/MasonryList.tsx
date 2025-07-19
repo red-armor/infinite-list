@@ -94,7 +94,7 @@ const MasonryList = <ItemT extends GenericItemT>(
      */
     if (contextValues.marshal?.getScrollHelper?.().getRef?.().current) {
       listRef.current?.measureLayout(
-        // @ts-ignore
+        // @ts-expect-error TODO: fix this
         contextValues.marshal?.getScrollHelper?.().getRef().current,
         (x, y, width, height) => {
           containerLayoutRef.current = {

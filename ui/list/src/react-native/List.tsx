@@ -71,7 +71,6 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
 
   useEffect(() => {
     listModel.addStateListener((newState) => {
-      // @ts-ignore
       setState(newState);
     });
   }, []);
@@ -93,7 +92,7 @@ const List = <ItemT extends GenericItemT>(props: ListProps<ItemT>) => {
      */
     if (contextValues.marshal?.getScrollHelper?.().getRef?.().current) {
       listRef.current?.measureLayout(
-        // @ts-ignore
+        // @ts-expect-error TODO: fix this
         contextValues.marshal?.getScrollHelper?.().getRef().current,
         (x, y, width, height) => {
           containerLayoutRef.current = {

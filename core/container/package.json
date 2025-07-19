@@ -6,8 +6,9 @@
     "@infinite-list/types": "workspace:*",
     "@nx/rollup": "*"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts",
   "publishConfig": {
     "access": "public"
   }

@@ -20,8 +20,7 @@
     "@infinite-list/masonry-dimensions": "workspace:*",
     "@infinite-list/scroller": "workspace:*",
     "@infinite-list/strategies": "workspace:*",
-    "@infinite-list/types": "workspace:*",
-    "@x-oasis/select-value": "^0.1.14"
+    "@infinite-list/types": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

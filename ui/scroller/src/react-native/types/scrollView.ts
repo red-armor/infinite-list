@@ -12,11 +12,11 @@ import {
   ScrollView,
   ScrollViewProps,
   View,
-  // @ts-ignore
+  // @ts-expect-error - ViewPagerAndroidOnPageScrollEventData may not be available in all React Native versions
   ViewPagerAndroidOnPageScrollEventData,
-  // @ts-ignore
+  // @ts-expect-error - ViewPagerAndroidOnPageSelectedEventData may not be available in all React Native versions
   ViewPagerAndroidOnPageSelectedEventData,
-  // @ts-ignore
+  // @ts-expect-error - ViewPagerAndroidProps may not be available in all React Native versions
   ViewPagerAndroidProps,
   ViewProps,
   ViewStyle,

@@ -6,7 +6,7 @@ import { ContainerRef } from './ListGroup.types';
 export interface CompatListItemProps<ItemT extends GenericItemT>
   extends Omit<ListItemProps<ItemT>, 'ListItemWrapper'> {
   setDimensionItemLayout(key: string, values: ItemLayout): void;
-  addItemChangedListener(fn: Function): void;
+  addItemChangedListener(fn: () => void): void;
   style?: ViewStyle;
   containerRef: ContainerRef;
 }

@@ -1,5 +1,4 @@
 import uniqueArrayObject from '@x-oasis/unique-array-object';
-import ViewabilityItemMeta from './ViewabilityItemMeta';
 import ViewablityHelper from './ViewablityHelper';
 import { DEFAULT_VIEWABILITY_CONFIG } from './constants';
 import {
@@ -9,8 +8,6 @@ import {
   ViewabilityConfigCallbackPairs,
   ViewabilityScrollMetrics,
 } from './types';
-// TODO ------
-import { ItemMeta } from './types';
 
 class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   private _tuple: ViewabilityConfigCallbackPairs = [];
@@ -57,22 +54,22 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
       this._tuple.push({
         onViewableItemsChanged,
         viewabilityConfig: {
-          // @ts-expect-error
+          // @ts-expect-error - name property is being added to viewabilityConfig object
           name: 'viewable',
           ...viewabilityConfig,
         },
       });
     } else if (viewabilityConfig) {
-      this.tuple.push({
+      this._tuple.push({
         viewabilityConfig: {
-          // @ts-expect-error
+          // @ts-expect-error - name property is being added to viewabilityConfig object
           name: 'viewable',
           ...viewabilityConfig,
         },
       });
     }
 
-    // @ts-expect-error
+    // @ts-expect-error - uniqueArrayObject expects specific type but we're using generic config
     this._tuple = uniqueArrayObject(
       this._tuple,
       (config) => config.viewabilityConfig.name
@@ -108,9 +105,9 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
   }
 
   resolveItemMetaState(
-    itemMeta: ItemMeta<ItemT>,
+    itemMeta: any,
     viewabilityScrollMetrics?: ViewabilityScrollMetrics,
-    getItemOffset?: (itemMeta: ItemMeta<ItemT> | ViewabilityItemMeta) => number
+    getItemOffset?: (itemMeta: any) => number
   ) {
     if (!viewabilityScrollMetrics || !itemMeta)
       return itemMeta.getState() || {};
@@ -119,7 +116,6 @@ class ViewabilityConfigTuples<ItemT extends GenericItemT = GenericItemT> {
       [key: string]: boolean;
     }>((value, helper) => {
       const falsy = helper.checkItemViewability(
-        // @ts-ignore [TODO]
         itemMeta,
         viewabilityScrollMetrics,
         getItemOffset

@@ -13,6 +13,26 @@
   },
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/model/masonry-dimensions",
+        "tsConfig": "model/masonry-dimensions/tsconfig.lib.json",
+        "project": "model/masonry-dimensions/package.json",
+        "entryFile": "model/masonry-dimensions/src/index.ts",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "model/masonry-dimensions/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

@@ -6,7 +6,7 @@ import type {
 import { Dimension } from '@infinite-list/dimension';
 import { ListDimensionsModel } from '@infinite-list/dimensions-model';
 import { IndexToOffsetMap, ItemLayout } from '@infinite-list/dimensions-model';
-import { ItemMeta } from '@infinite-list/item-meta';
+import { IndexInfo, ItemMeta } from '@infinite-list/item-meta';
 import { ItemsDimensions } from '@infinite-list/items-dimensions';
 import { BaseImpl } from '@infinite-list/strategies';
 import { log } from '@infinite-list/utils';
@@ -345,7 +345,7 @@ class ListGroupDimensions<
   getFinalKeyIndexInfo(
     itemKey: string,
     listKey: string
-  ): ListGroupIndexInfo<ItemT> | null {
+  ): IndexInfo<ItemT> | null {
     const dimensions = this.getDimension(listKey);
     if (dimensions) {
       const info = this.dimensionsIndexRange.find(
@@ -359,7 +359,7 @@ class ListGroupDimensions<
           index: indexInDimensions,
           indexInRecycler: startIndexInRecycler + indexInDimensions,
           indexInGroup: startIndex + indexInDimensions,
-        };
+        } as IndexInfo<ItemT>;
       }
     }
 

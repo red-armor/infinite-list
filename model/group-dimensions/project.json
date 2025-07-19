@@ -13,6 +13,26 @@
   },
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/model/group-dimensions",
+        "tsConfig": "model/group-dimensions/tsconfig.lib.json",
+        "project": "model/group-dimensions/package.json",
+        "entryFile": "model/group-dimensions/src/index.ts",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "model/group-dimensions/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

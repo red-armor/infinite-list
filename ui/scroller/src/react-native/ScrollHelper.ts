@@ -85,7 +85,7 @@ class ScrollHelper {
 
   public hasInteraction: boolean;
 
-  private onRefreshListeners: Function[] = [];
+  private onRefreshListeners: (() => void)[] = [];
 
   private _intersection: IClientRectReadOnly | null = null;
 
@@ -137,7 +137,6 @@ class ScrollHelper {
 
     this.ownerDocument = new ReactNativeDocumentBase({
       id,
-      // @ts-ignore
       node: this._ref,
       ownerDocument: parentMarshal ? parentMarshal.ownerDocument : null,
       onIntersectionChange: this.onIntersectionChangeHandler.bind(this),
@@ -177,7 +176,7 @@ class ScrollHelper {
 
   addEventListener(
     eventName: ScrollEventHandlerSubscriptionKeys,
-    handler: Function
+    handler: (...args: any[]) => void
   ) {
     return this._marshal
       .getScrollEventHelper()
@@ -186,7 +185,7 @@ class ScrollHelper {
 
   addListener(
     eventName: ScrollEventHandlerSubscriptionKeys,
-    handler: Function
+    handler: (...args: any[]) => void
   ) {
     return this._marshal
       .getScrollEventHelper()
@@ -202,7 +201,7 @@ class ScrollHelper {
     this.onScrollMetricsChange();
   }
 
-  addOnRefreshListener(fn: Function) {
+  addOnRefreshListener(fn: () => void) {
     const index = this.onRefreshListeners.findIndex(
       (listener) => fn === listener
     );
@@ -319,7 +318,7 @@ class ScrollHelper {
   ) {
     this._scrollEventHelpers.forEach((helper) => {
       if (helper.marshal.scrollUpdateEnabled) {
-        // @ts-ignore
+        // @ts-expect-error - Dynamic method call with variable arguments
         helper[handlerName](...rest);
       }
     });
@@ -519,10 +518,10 @@ class ScrollHelper {
     if (ref.current.scrollTo) {
       ref.current.scrollTo(options);
     } else if (
-      // @ts-ignore
+      // @ts-expect-error - getNode method may not exist on all ref types
       ref.current?.getNode
     ) {
-      // @ts-ignore
+      // @ts-expect-error - getNode method may not exist on all ref types
       ref.current.getNode().scrollTo(options);
     } else {
       (ref as MutableRefObject<ScrollView>).current.scrollTo(options);

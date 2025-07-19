@@ -13,6 +13,7 @@
     { "path": "../item-meta" },
     { "path": "../types" },
     { "path": "../utils" },
-    { "path": "../viewable" }
+    { "path": "../viewable" },
+    { "path": "../strategies" }
   ]
 }

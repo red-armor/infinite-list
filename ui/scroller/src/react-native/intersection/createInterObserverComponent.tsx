@@ -36,7 +36,7 @@ const createObserverComponent = <T extends ComponentType<any>>(
     );
 
     return (
-      // @ts-ignore
+      // @ts-expect-error - Component type mismatch with ref
       <Component ref={componentRef} {...rest}>
         {props.children}
       </Component>
@@ -44,7 +44,7 @@ const createObserverComponent = <T extends ComponentType<any>>(
   };
 
   return React.forwardRef(
-    // @ts-ignore
+    // @ts-expect-error - ForwardedRef type mismatch
     (
       props: ObserverComponentProps & ComponentProps<T>,
       ref: ForwardedRef<T>

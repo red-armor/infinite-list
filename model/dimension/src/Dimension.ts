@@ -4,6 +4,7 @@ import { IDimension, ItemLayout } from '@infinite-list/types';
 import defaultBooleanValue from '@x-oasis/default-boolean-value';
 import isObject from '@x-oasis/is-object';
 import layoutEqual from '@x-oasis/layout-equal';
+import SelectValue from '@x-oasis/select-value';
 import {
   DEFAULT_DIMENSION_ITEM_APPROXIMATE_LENGTH,
   DEFAULT_RECYCLER_TYPE,
@@ -23,12 +24,12 @@ import {
  */
 class Dimension<
     ItemT extends GenericItemT = GenericItemT,
-    ExtraInfo extends {} = {},
+    ExtraInfo extends object = Record<string, never>,
   >
   extends BaseContainer
   implements IDimension<ItemT, ExtraInfo>
 {
-  private _meta: ItemMeta<ItemT>;
+  private _meta: ItemMeta<ItemT, ExtraInfo>;
   readonly _container: ListGroupChildDimensionsContainer<ItemT>;
   readonly _ignoredToPerBatch: boolean;
   private _offsetInListGroup = 0;
@@ -108,7 +109,7 @@ class Dimension<
     return layout ? 1 : 0;
   }
 
-  createItemMeta() {
+  createItemMeta(): ItemMeta<ItemT, ExtraInfo> {
     const meta = ItemMeta.spawn<ItemT, ExtraInfo>({
       key: this.id,
       isListItem: false,
@@ -125,7 +126,7 @@ class Dimension<
       this._selectValue.setLength(meta.getLayout()!, length);
       if (this._isFixedLength) meta.isApproximateLayout = false;
       this.triggerOwnerRecalculateLayout();
-      return meta;
+      return meta as ItemMeta<ItemT, ExtraInfo>;
     }
 
     if (this._approximateMode && meta.isApproximateLayout) {
@@ -137,10 +138,10 @@ class Dimension<
 
       this.triggerOwnerRecalculateLayout();
 
-      return meta;
+      return meta as ItemMeta<ItemT, ExtraInfo>;
     }
 
-    return meta;
+    return meta as ItemMeta<ItemT, ExtraInfo>;
   }
 
   hasUnLayoutItems() {
@@ -226,7 +227,7 @@ class Dimension<
     return this._meta;
   }
 
-  setMeta(meta: ItemMeta<ItemT>) {
+  setMeta(meta: ItemMeta<ItemT, ExtraInfo>) {
     this._meta = meta;
   }
 
@@ -286,7 +287,7 @@ class Dimension<
     return this._meta;
   }
 
-  override getSelectValue() {
+  override getSelectValue(): SelectValue {
     return this._selectValue;
   }
 }

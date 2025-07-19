@@ -2,14 +2,16 @@
   "name": "@infinite-list/item-meta",
   "version": "1.0.3",
   "dependencies": {
+    "@infinite-list/types": "workspace:*",
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/default-boolean-value": "^0.1.14",
     "@x-oasis/get-map-key-by-value": "^0.1.34",
     "@x-oasis/noop": "^0.1.14",
     "@infinite-list/viewable": "workspace:*"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts",
   "publishConfig": {
     "access": "public"
   }

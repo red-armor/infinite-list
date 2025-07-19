@@ -6,7 +6,7 @@ import context, { ContextType } from '../context';
 export default <ItemT extends GenericItemT>(
   props: GroupDimensionItemProps<ItemT>
 ) => {
-  const disposerRef = useRef<Function>();
+  const disposerRef = useRef<(() => void) | undefined>();
   const initialRef = useRef(true);
   const listGroupDimensions =
     useContext<ContextType<ItemT>>(context).listGroupDimensions;
@@ -27,13 +27,13 @@ export default <ItemT extends GenericItemT>(
 
   useMemo(() => {
     const clonedChildren = children
-      ? // @ts-ignore [TODO]
+      ? // @ts-expect-error - React.cloneElement type mismatch
         React.cloneElement(children, {
           itemMeta: dimensionRef.current?.getMeta(),
         })
       : children;
 
-    // @ts-ignore [TODO]
+    // @ts-expect-error - renderItem property assignment type mismatch
     dimensionRef.current!.renderItem = clonedChildren;
   }, [children]);
 

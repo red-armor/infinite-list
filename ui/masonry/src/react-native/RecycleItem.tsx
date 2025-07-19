@@ -11,7 +11,6 @@ const RecycleItem = <ItemT extends GenericItemT = GenericItemT>(
     dimensions,
     renderItem: RenderItem,
     columnDimension,
-    // @ts-ignore
     containerRef,
   } = props;
   const itemRef = useRef<View>(null);

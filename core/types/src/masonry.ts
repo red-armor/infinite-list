@@ -3,7 +3,6 @@ import { IOnEndReachedHelper } from './OnEndReachedHelper';
 import { GenericItemT } from './generic.types';
 
 export interface IMasonryDimensions<ItemT extends GenericItemT = GenericItemT> {
-  // getItemKey(item: ItemT, index?: number): string | null;
   onItemLayoutChanged(): void;
   onDataSourceChanged(): void;
   onEndReachedHelper: IOnEndReachedHelper;

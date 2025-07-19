@@ -4,14 +4,10 @@
     "outDir": "../../dist/out-tsc",
     "declaration": true,
     "types": ["node"]
-    // "paths": {
-    //   "@infinite-list/viewable": ["../viewable/src/index.ts"]
-    // }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["vite.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
   "references": [
-    { "path": "../item-meta" },
     { "path": "../types" },
     { "path": "../utils" },
     { "path": "../viewable" }

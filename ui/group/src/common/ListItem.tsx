@@ -39,7 +39,7 @@ const ListItem = <ItemT extends DefaultItemT>(
   } = props;
 
   const itemMetaRef = useRef(itemMeta);
-  const itemChangeHandlerRef = useRef<Function | null>();
+  const itemChangeHandlerRef = useRef<(() => void) | null>();
 
   // note!!!!: has a condition, viewableItemHelperKey not change but itemMeta change..
   // reuse position with same data source..
@@ -59,7 +59,7 @@ const ListItem = <ItemT extends DefaultItemT>(
     }
   }, [itemMeta]);
 
-  const addItemChangedListener = useCallback((fn: Function) => {
+  const addItemChangedListener = useCallback((fn: () => void) => {
     itemChangeHandlerRef.current = fn;
     return () => {
       itemChangeHandlerRef.current = null;

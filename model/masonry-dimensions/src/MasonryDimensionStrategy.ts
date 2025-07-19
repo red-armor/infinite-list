@@ -123,6 +123,7 @@ class MasonryDimensionStrategy<
 
   getFinalKeyIndexInfo(key: string): MasonryIndexInfo<ItemT> {
     return {
+      // @ts-expect-error TODO: fix this
       dimensions: this._dataModel,
       index: this._dataModel
         .getColumnKeyIndexManager(this.columnIndex)

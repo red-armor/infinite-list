@@ -1,6 +1,9 @@
 {
   "name": "@infinite-list/pseudo-list-dimensions",
   "version": "1.0.3",
+  "peerDependencies": {
+    "@nx/rollup": "*"
+  },
   "dependencies": {},
   "main": "./index.cjs",
   "module": "./index.js",

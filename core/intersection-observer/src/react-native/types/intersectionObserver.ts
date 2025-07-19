@@ -29,7 +29,7 @@ export interface ClientRect extends IClientRectReadOnly {
   height: number;
 }
 
-export type ClientRectVerbose = {};
+export type ClientRectVerbose = Record<string, never>;
 
 export type MonitorDisposer = () => void;
 

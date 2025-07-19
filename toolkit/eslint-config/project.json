@@ -12,36 +12,26 @@
   },
   "tags": [],
   "targets": {
-    // "build": {
-    //   "executor": "@nx/js:tsc",
-    //   "outputs": ["{options.outputPath}"],
-    //   "options": {
-    //     "outputPath": "dist/toolkit/eslint-config",
-    //     "main": "toolkit/eslint-config/src/index.ts",
-    //     "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
-    //     "assets": ["toolkit/eslint-config/*.md"]
-    //   }
-    // },
-
-    // "build": {
-    //   "executor": "@nx/rollup:rollup",
-    //   "outputs": ["{options.outputPath}"],
-    //   "options": {
-    //     "outputPath": "dist/toolkit/eslint-config",
-    //     "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
-    //     "project": "toolkit/eslint-config/package.json",
-    //     "entryFile": "toolkit/eslint-config/src/index.ts",
-    //     "external": ["react/jsx-runtime", "react-native", "react", "react-dom"],
-    //     "rollupConfig": "@nx/react/plugins/bundle-rollup",
-    //     "assets": [
-    //       {
-    //         "glob": "toolkit/eslint-config/README.md",
-    //         "input": ".",
-    //         "output": "."
-    //       }
-    //     ]
-    //   }
-    // },
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/toolkit/eslint-config",
+        "tsConfig": "toolkit/eslint-config/tsconfig.lib.json",
+        "project": "toolkit/eslint-config/package.json",
+        "entryFile": "toolkit/eslint-config/src/index.ts",
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "external": ["react/jsx-runtime", "react-native", "react", "react-dom"],
+        "assets": [
+          {
+            "glob": "toolkit/eslint-config/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],

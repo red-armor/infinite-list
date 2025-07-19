@@ -7,7 +7,7 @@ import layoutEqual from '@x-oasis/layout-equal';
 import SortedItems from './SortedItems';
 import { ItemLayout, ItemsDimensionsProps, ScrollMetrics } from './types';
 
-class ItemsDimensions<ExtraInfo extends {} = {}>
+class ItemsDimensions<ExtraInfo extends object = Record<string, never>>
   extends BaseDimensions
   implements IItemDimensions<ExtraInfo>
 {
@@ -73,7 +73,7 @@ class ItemsDimensions<ExtraInfo extends {} = {}>
         key,
         ItemMeta.spawn({
           key,
-          owner: this,
+          owner: this as any,
           canIUseRIC: this.canIUseRIC,
         })
       );

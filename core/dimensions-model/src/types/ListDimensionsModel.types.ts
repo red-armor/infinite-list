@@ -2,7 +2,6 @@ import {
   BaseDimensionsProps,
   KeysChangedType,
 } from '@infinite-list/base-dimensions';
-import { RecyclerProps } from '@infinite-list/strategies';
 import {
   IListDimensions,
   IListDimensionsModel,
@@ -11,6 +10,7 @@ import {
   IMasonryDimensionsModel,
 } from '@infinite-list/types';
 import { IDefaultKeyExtra } from '@infinite-list/utils';
+import { RecyclerProps } from '@x-oasis/recycler';
 import { ListBaseDimensionsProps } from './ListBaseDimensions.types';
 import { GenericItemT } from './generic.types';
 

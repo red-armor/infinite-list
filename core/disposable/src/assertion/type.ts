@@ -2,7 +2,7 @@ export function isObject(thing: any): thing is object {
   return typeof thing === 'object' && thing !== null;
 }
 
-export function isFunction(thing: any): thing is Function {
+export function isFunction(thing: any): thing is (...args: any[]) => any {
   return typeof thing === 'function';
 }
 

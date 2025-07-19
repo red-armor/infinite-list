@@ -80,7 +80,7 @@ const RecycleContent = <ItemT extends GenericItemT = GenericItemT>(
       {state.map((stateResult) => {
         const { key, itemMeta, item, ...stateResultRest } = stateResult;
         const metaOwner = itemMeta!.getOwner();
-        const info = metaOwner.extraInfo as ExtraInfo<ItemT>;
+        const info = metaOwner.extraInfo as any as ExtraInfo<ItemT>;
         return (
           <RecycleContentItem
             key={key}
@@ -117,7 +117,7 @@ const SpaceContent = <ItemT extends GenericItemT = GenericItemT>(
         const { isSpace, key, item, length, itemMeta } = stateResult;
 
         const metaOwner = itemMeta?.getOwner();
-        const info = metaOwner?.extraInfo as ExtraInfo<ItemT>;
+        const info = metaOwner?.extraInfo as any as ExtraInfo<ItemT>;
 
         return isSpace ? (
           <SpaceRendererComponent key={key} style={{ height: length }} />

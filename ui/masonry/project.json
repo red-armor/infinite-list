@@ -4,5 +4,34 @@
   "sourceRoot": "ui/masonry/src",
   "projectType": "library",
   "tags": [],
-  "targets": {}
+  "targets": {
+    // "test": {
+    //   "executor": "@nx/jest:jest",
+    //   "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+    //   "options": {
+    //     "jestConfig": "ui/masonry/jest.config.ts"
+    //   }
+    // },
+    "build": {
+      "executor": "@nx/rollup:rollup",
+      "outputs": ["{options.outputPath}"],
+      "dependsOn": ["^build"],
+      "options": {
+        "outputPath": "dist/ui/masonry",
+        "tsConfig": "ui/masonry/tsconfig.lib.json",
+        "project": "ui/masonry/package.json",
+        "entryFile": "ui/masonry/src/react-native/index.ts",
+        "rollupConfig": ["ui/masonry/rollup.config.js"],
+        "compiler": "swc",
+        "format": ["cjs", "esm"],
+        "assets": [
+          {
+            "glob": "*.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    }
+  }
 }

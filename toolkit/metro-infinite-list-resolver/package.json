@@ -2,6 +2,7 @@
   "name": "@infinite-list/metro-infinite-list-resolver",
   "version": "0.0.1",
   "dependencies": {},
-  "main": "./index.cjs",
-  "module": "./index.js"
+  "main": "./index.cjs.js",
+  "module": "./index.esm.js",
+  "types": "./index.esm.d.ts"
 }

@@ -5,7 +5,7 @@ import { DefaultItemT, GroupListProps } from '../../types';
 import context, { ContextType } from '../context';
 
 export default <ItemT extends DefaultItemT>(props: GroupListProps<ItemT>) => {
-  const disposerRef = useRef<Function>();
+  const disposerRef = useRef<(() => void) | undefined>();
   const initialRef = useRef(true);
 
   const { listGroupDimensions } = useContext<ContextType<ItemT>>(context);
