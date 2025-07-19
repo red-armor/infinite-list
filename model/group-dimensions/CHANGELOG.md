@@ -1,5 +1,21 @@
 # @infinite-list/group-dimensions
 
+## 1.1.4
+
+### Patch Changes
+
+- 8054321: bump version
+- Updated dependencies [8054321]
+  - @infinite-list/items-dimensions@1.1.4
+  - @infinite-list/dimensions-model@1.1.4
+  - @infinite-list/base-dimensions@1.1.4
+  - @infinite-list/strategies@1.1.4
+  - @infinite-list/dimension@1.1.4
+  - @infinite-list/item-meta@1.1.4
+  - @infinite-list/viewable@1.1.4
+  - @infinite-list/state@1.1.4
+  - @infinite-list/utils@1.1.4
+
 ## 1.1.3
 
 ### Patch Changes

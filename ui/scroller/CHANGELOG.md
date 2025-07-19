@@ -1,5 +1,17 @@
 # @infinite-list/scroller
 
+## 2.1.4
+
+### Patch Changes
+
+- 8054321: bump version
+- Updated dependencies [8054321]
+  - @infinite-list/intersection-observer@1.1.4
+  - @infinite-list/disposable@1.1.4
+  - @infinite-list/scheduler@1.1.4
+  - @infinite-list/viewable@1.1.4
+  - @infinite-list/types@1.1.4
+
 ## 2.1.3
 
 ### Patch Changes

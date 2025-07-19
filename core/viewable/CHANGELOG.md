@@ -1,5 +1,11 @@
 # @infinite-list/viewable
 
+## 1.1.4
+
+### Patch Changes
+
+- 8054321: bump version
+
 ## 1.1.3
 
 ### Patch Changes
