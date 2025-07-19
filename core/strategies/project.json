@@ -24,6 +24,19 @@
         "entryFile": "core/strategies/src/index.ts",
         "compiler": "swc",
         "format": ["cjs", "esm"],
+        "external": [
+          "@infinite-list/types",
+          "@infinite-list/base-dimensions",
+          "@infinite-list/item-meta",
+          "@infinite-list/utils",
+          "@infinite-list/viewable",
+          "@infinite-list/container",
+          "@x-oasis/batchinator",
+          "@x-oasis/default-boolean-value",
+          "@x-oasis/default-value",
+          "@x-oasis/is-clamped",
+          "@x-oasis/recycler"
+        ],
         "assets": [
           {
             "glob": "*.md",

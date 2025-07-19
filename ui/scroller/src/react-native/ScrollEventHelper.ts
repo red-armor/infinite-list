@@ -16,7 +16,7 @@ import {
  * the ScrollEventHelper event is actually triggered by root ScrollHelper.
  */
 class ScrollEventHelper {
-  private _disposer: Function;
+  private _disposer: () => void;
   readonly marshal: Marshal;
   private _onScroll: SyntheticEventHandler | undefined;
   private _onScrollEndDrag: SyntheticEventHandler | undefined;
@@ -107,12 +107,12 @@ class ScrollEventHelper {
     });
   }
 
-  // @ts-ignore
+  // @ts-expect-error - Dynamic event dispatch with variable arguments
   _dispatchEvent(eventName: ScrollEventHandlerSubscriptionKeys, ...rest) {
     const handlers = this._subscriptions[eventName];
 
     handlers.forEach((handler) => {
-      // @ts-ignore
+      // @ts-expect-error - Dynamic function call with variable arguments
       if (typeof handler === 'function') handler.apply(this, rest);
       // if (typeof handler === 'function') handler.apply(this, rest);
     });
@@ -159,7 +159,7 @@ class ScrollEventHelper {
 
   subscribeEventHandler(
     eventName: ScrollEventHandlerSubscriptionKeys,
-    handler: Function
+    handler: (...args: any[]) => void
   ) {
     const target = this._subscriptions[eventName];
     if (target) {

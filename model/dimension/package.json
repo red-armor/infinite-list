@@ -11,7 +11,8 @@
     "@x-oasis/select-value": "^0.1.14",
     "@infinite-list/item-meta": "workspace:*",
     "@infinite-list/container": "workspace:*",
-    "@infinite-list/types": "workspace:*"
+    "@infinite-list/types": "workspace:*",
+    "@x-oasis/select-value": "^0.1.14"
   },
   "main": "./index.cjs",
   "module": "./index.js",

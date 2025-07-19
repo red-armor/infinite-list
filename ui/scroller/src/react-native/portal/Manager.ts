@@ -1,17 +1,17 @@
 class Manager {
-  private _setHeaderInfo: Function | null;
-  private _setFooterInfo: Function | null;
+  private _setHeaderInfo: ((info: any) => void) | null;
+  private _setFooterInfo: ((info: any) => void) | null;
 
   constructor() {
     this._setHeaderInfo = null;
     this._setFooterInfo = null;
   }
 
-  registerHeaderInfoSetter(setInfo: Function) {
+  registerHeaderInfoSetter(setInfo: (info: any) => void) {
     this._setHeaderInfo = setInfo;
   }
 
-  registerFooterInfoSetter(setInfo: Function) {
+  registerFooterInfoSetter(setInfo: (info: any) => void) {
     this._setFooterInfo = setInfo;
   }
 

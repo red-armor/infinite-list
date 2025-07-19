@@ -35,7 +35,7 @@ export const resetContext = () => {
  */
 class ItemMeta<
     ItemT extends GenericItemT = GenericItemT,
-    ItemMetaOwnerExtraInfo extends {} = {},
+    ItemMetaOwnerExtraInfo extends object = Record<string, never>,
   >
   extends ViewabilityItemMeta
   implements IItemMeta<ItemT, ItemMetaOwnerExtraInfo>
@@ -99,16 +99,17 @@ class ItemMeta<
 
   static spawn<
     T extends GenericItemT = GenericItemT,
-    SpawnItemMetaOwnerExtraInfo extends {} = {},
+    SpawnItemMetaOwnerExtraInfo extends object = Record<string, never>,
   >(props: ItemMetaProps<T>) {
     const ancestor = context[props.key];
     if (ancestor) {
       const layout = ancestor.getLayout();
       const spawnProps: {
-        [key: string]: any;
+        [key: string]: ItemMetaStateEventHelperProps;
       } = {};
       for (const [key, value] of ancestor._stateEventSubscriptions) {
         const _props = ItemMetaStateEventHelper.spawn(value);
+        // @ts-expect-error TODO: Fix type issue with _props
         if (_props) spawnProps[key] = _props;
       }
 
@@ -290,7 +291,7 @@ class ItemMeta<
     callback: StateEventListener,
     triggerOnceIfTrue?: boolean
   ): {
-    remover: Function;
+    remover: () => void;
   } {
     if (typeof callback !== 'function')
       return {
@@ -323,7 +324,7 @@ class ItemMeta<
     callback: StateEventListener,
     triggerOnceIfTrue?: boolean
   ): {
-    remover: Function;
+    remover: () => void;
   } {
     if (typeof callback !== 'function')
       return {
@@ -357,7 +358,7 @@ class ItemMeta<
     callback: StateEventListener,
     triggerOnceIfTrue?: boolean
   ): {
-    remover: Function;
+    remover: () => void;
   } {
     if (typeof callback !== 'function')
       return {

@@ -10,8 +10,8 @@ export type OnEndReachedHelperProps = {
 
 export type OnEndReached = (props: {
   distanceFromEnd: number;
-  cb: Function;
-  releaseHandlerMutex?: Function;
+  cb: () => void;
+  releaseHandlerMutex?: () => void;
 }) => void;
 
 export type SendOnEndReachedDistanceFromBottomStack = Array<{

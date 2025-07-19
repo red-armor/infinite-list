@@ -1,11 +1,11 @@
 import DisposableStore from './DisposableStore';
-import { isFunction, isObject } from './assertion/types';
+import { isFunction, isObject } from './assertion/type';
 import type { DisposableFunction, IDisposable } from './types/disposable';
 
 export function isDisposable<T extends object>(
   thing: T
 ): thing is T & IDisposable {
-  return isObject(thing) && isFunction((thing as IDisposable).dispose);
+  return Boolean(isObject(thing) && isFunction((thing as IDisposable).dispose));
 }
 
 export function toDisposable(fn: DisposableFunction): IDisposable {

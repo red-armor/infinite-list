@@ -8,7 +8,7 @@ import { ItemLayout } from './layout';
 
 export type IItemMeta<
   ItemT extends GenericItemT = GenericItemT,
-  ItemMetaOwnerExtraInfo extends {} = {},
+  ItemMetaOwnerExtraInfo extends object = Record<string, never>,
 > = {
   isApproximateLayout: boolean;
   getLayout(): ItemLayout | undefined;
@@ -16,7 +16,7 @@ export type IItemMeta<
 
 export type ItemMetaOwner<
   ItemT extends GenericItemT = GenericItemT,
-  ItemMetaOwnerExtraInfo extends {} = {},
+  ItemMetaOwnerExtraInfo extends object = Record<string, never>,
 > =
   | IListDimensionsModel<ItemT, ItemMetaOwnerExtraInfo>
   | IDimension<ItemT, ItemMetaOwnerExtraInfo>

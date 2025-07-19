@@ -237,11 +237,9 @@ class ViewablityHelper {
       });
     });
 
-    // @ts-ignore [TODO]
     for (const [itemMeta, state] of itemMetaStateMap) {
-      // @ts-ignore TODO, should reconsider.
-      // it only used for itemDimensions.....
-      itemMeta?.setItemMetaState(state);
+      // Cast to concrete type that has setItemMetaState method
+      (itemMeta as any)?.setItemMetaState(state);
     }
   }
 }

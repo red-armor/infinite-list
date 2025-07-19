@@ -1,7 +1,7 @@
 export interface IScrollHelper {
   addEventListener: (
     eventName: string,
-    listener: Function
+    listener: (...args: unknown[]) => void
   ) => {
     (): void;
   };

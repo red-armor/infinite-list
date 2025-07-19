@@ -45,7 +45,7 @@ export interface ListItemProps<ItemT extends GenericItemT> {
 export interface CompatListItemProps<ItemT extends GenericItemT>
   extends Omit<ListItemProps<ItemT>, 'ListItemWrapper'> {
   setDimensionItemLayout(key: string, values: ItemLayout): void;
-  addItemChangedListener(fn: Function): void;
+  addItemChangedListener(fn: () => void): void;
 }
 
 export type ListItemWrapper<ItemT extends GenericItemT> = FC<

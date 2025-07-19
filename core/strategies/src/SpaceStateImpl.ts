@@ -191,7 +191,7 @@ export default class SpaceStateImpl<
   }
 
   setState(state: ListState) {
-    // @ts-ignore
+    // @ts-expect-error - resolveSpaceState method signature mismatch
     const stateResult = this.resolveSpaceState(state);
     this.applyStateResult(stateResult);
   }
@@ -201,7 +201,7 @@ export default class SpaceStateImpl<
   ): [SpaceStateResult<ItemT>, SpaceStateResult<ItemT>] {
     // return [] as any
     const oldStateResult = [...this._stateResult];
-    // @ts-ignore
+    // @ts-expect-error - resolveSpaceState method signature mismatch
     const stateResult = this.resolveSpaceState(state);
     return [stateResult, oldStateResult];
   }

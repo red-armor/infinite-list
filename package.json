@@ -11,7 +11,7 @@
     "clean-modules": "rm -rf node_modules && pnpm -r exec rm -rf node_modules && pnpm -r exec rm -rf dist",
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
-    "lint:fix": "nx run-many -t lint --fix",
+    "lint:fix": "nx run-many -t lint",
     "lint": "eslint --ext js,ts,tsx .",
     "format": "nx run-many -t prettier --write ",
     "prepare": "husky install",

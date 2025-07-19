@@ -1,6 +1,16 @@
 {
   "name": "@infinite-list/strategies",
   "version": "1.0.3",
+  "main": "./index.cjs",
+  "module": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "types": "./index.d.ts"
+    }
+  },
   "dependencies": {
     "@infinite-list/types": "workspace:*",
     "@x-oasis/batchinator": "^0.1.14",
@@ -14,8 +24,6 @@
     "@infinite-list/viewable": "workspace:*",
     "@infinite-list/container": "workspace:*"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
   "publishConfig": {
     "access": "public"
   }

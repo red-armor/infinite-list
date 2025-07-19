@@ -1,8 +1,8 @@
 class EnabledSelector {
   private _dispatchScrollMetricsEnabled = true;
-  private _onEnabled?: Function;
+  private _onEnabled?: () => void;
 
-  constructor(props?: { onEnabled?: Function }) {
+  constructor(props?: { onEnabled?: () => void }) {
     const { onEnabled } = props || {};
     this._onEnabled = onEnabled;
   }

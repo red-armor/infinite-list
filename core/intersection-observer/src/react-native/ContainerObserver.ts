@@ -44,7 +44,7 @@ class ContainerObserver {
   private keyToObserverMap: Map<string, Observer> = new Map();
   private records: IIntersectionObserverEntry[] = [];
   updateIntersectionTaskRunner: TaskRunner;
-  private listenersDisposers: Function[] = [];
+  private listenersDisposers: (() => void)[] = [];
 
   constructor(props: ContainerObserverProps) {
     this.doc = props.doc;

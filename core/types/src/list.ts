@@ -7,7 +7,7 @@ export type RenderItemInfo<ItemT extends GenericItemT = GenericItemT> = {
 };
 
 export type DefaultItemT = {
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 // export type RenderItem<ItemT extends DefaultItemT> = (

@@ -2,7 +2,7 @@ import BatchinateLast from '@x-oasis/batchinate-last';
 
 class StillnessHelper {
   private _thresholdValueMS: number;
-  private _handler: Function;
+  private _handler: (...args: any[]) => void;
   private _isStill: boolean;
 
   public startClockBatchinateLast: BatchinateLast;

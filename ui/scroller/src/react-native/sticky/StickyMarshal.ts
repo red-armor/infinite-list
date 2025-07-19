@@ -47,12 +47,9 @@ class StickyMarshal {
 
     // console.log('reigster ', itemKey, index)
     if (index === -1)
-      // @ts-ignore
       this.stickyItemsQueue.push({
         itemKey,
         startOffset: 0,
-        // @ts-ignore
-        startCorrection: 0,
         ...nextInfo,
       });
 
@@ -204,7 +201,7 @@ class StickyMarshal {
       } = {};
 
       if (checkValidInputRange(nextConfig.inputRange)) {
-        // @ts-ignore
+        // @ts-expect-error - prevConfig type mismatch with nextConfig
         if (!this.interpolatedConfigEqual(prevConfig, nextConfig)) {
           current.interpolationConfig = nextConfig;
           config.interpolationConfig = nextConfig;
@@ -214,7 +211,7 @@ class StickyMarshal {
       if (checkValidInputRange(nextAnimatedValueConfig.inputRange)) {
         if (
           !this.interpolatedConfigEqual(
-            // @ts-ignore
+            // @ts-expect-error - prevAnimatedValueConfig type mismatch with nextAnimatedValueConfig
             prevAnimatedValueConfig,
             nextAnimatedValueConfig
           )

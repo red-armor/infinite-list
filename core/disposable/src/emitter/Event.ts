@@ -55,7 +55,7 @@ export default class Event<T = any> {
       if (this._listeners.length === 1) this._onDidAddFirstListener?.();
       this._onDidAddListener?.();
       if (this._coldTrigger && this._cacheCurrentValue) {
-        // @ts-expect-error
+        // @ts-expect-error - listener function signature mismatch with cached values
         listener(...this._cacheCurrentValue);
       }
     }
@@ -86,7 +86,7 @@ export default class Event<T = any> {
       this._cacheCurrentValue = args;
     }
     for (const listener of this._listeners) {
-      // @ts-expect-error
+      // @ts-expect-error - listener function signature mismatch with args
       listener(...args);
     }
   }

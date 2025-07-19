@@ -28,7 +28,10 @@ export type ItemMetaState = {
   [key: string]: boolean;
 };
 
-export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
+export type ItemMetaProps<
+  ItemT extends GenericItemT = GenericItemT,
+  ExtraInfo extends object = any,
+> = {
   /**
    * indicate including separatorLength on return item length
    */
@@ -38,9 +41,9 @@ export type ItemMetaProps<ItemT extends GenericItemT = GenericItemT> = {
   key: string;
   separatorLength?: number;
   layout?: ItemLayout;
-  owner: ItemMetaOwner<ItemT>;
+  owner: ItemMetaOwner<ItemT, ExtraInfo>;
   isListItem?: boolean;
-  setState?: Function;
+  setState?: () => void;
   state?: ItemMetaState;
   isInitialItem?: boolean;
   canIUseRIC?: boolean;
