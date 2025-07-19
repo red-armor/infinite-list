@@ -1,6 +1,9 @@
 {
   "name": "@infinite-list/group-dimensions",
   "version": "1.1.4",
+  "peerDependencies": {
+    "vitest": "*"
+  },
   "dependencies": {
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/default-boolean-value": "^0.1.14",
@@ -16,8 +19,7 @@
     "@infinite-list/state": "workspace:*",
     "@infinite-list/utils": "workspace:*",
     "@infinite-list/dimensions-model": "workspace:*",
-    "@infinite-list/viewable": "workspace:*",
-    "vitest": "*"
+    "@infinite-list/viewable": "workspace:*"
   },
   "main": "./index.cjs",
   "module": "./index.js",

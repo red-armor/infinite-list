@@ -78,8 +78,37 @@ const defaultResolveModulePath = (
       const key = cleanPackagePath(`${packageName}/${exportedKey}`);
       const rawValue = exports[exportedKey];
       const value = rawValue.import || rawValue.default;
-      if (value && fs.existsSync(path.join(modulePath, value))) {
-        mapping[key] = path.join(modulePath, value);
+      /**
+       * for example: the exports in vitest package.json
+       *
+       *   "exports": {
+       *       ".": {
+       *        "import": {
+       *            "types": "./dist/index.d.ts",
+       *            "default": "./dist/index.js"
+       *          },
+       *          "require": {
+       *            "types": "./index.d.cts",
+       *            "default": "./index.cjs"
+       *          }
+       *        },
+       *    }
+       */
+      try {
+        if (
+          value &&
+          typeof value === 'string' &&
+          fs.existsSync(path.join(modulePath, value))
+        ) {
+          mapping[key] = path.join(modulePath, value);
+        }
+      } catch (err) {
+        console.error(
+          '[metro-infinite-list-resolver] error in resolveModulePath ',
+          err,
+          modulePath,
+          value
+        );
       }
     }
   }
@@ -158,7 +187,13 @@ const resolveModule = (options: ResolveModuleOptions): void => {
       if (processed.has(dependencyName)) {
         continue;
       }
+
+      if (dependencyName.startsWith('@nx')) {
+        continue;
+      }
+
       const dependencyPath = path.join(rootPath, dependencyName);
+
       if (fs.existsSync(dependencyPath)) {
         resolveModule({
           mapping,
@@ -197,13 +232,20 @@ const resolveModules = (
       .map((dirent: fs.Dirent) => dirent.name);
 
     for (const subdir of subdirs) {
-      resolveModule({
-        mapping,
-        processed,
-        rootPath: rootPath,
-        resolveModulePath,
-        modulePath: path.join(rootPath, targetDir, subdir),
-      });
+      try {
+        resolveModule({
+          mapping,
+          processed,
+          rootPath: rootPath,
+          resolveModulePath,
+          modulePath: path.join(rootPath, targetDir, subdir),
+        });
+      } catch (err) {
+        console.error(
+          '[metro-infinite-list-resolver] error in resolveModules ',
+          err
+        );
+      }
     }
 
     return mapping;

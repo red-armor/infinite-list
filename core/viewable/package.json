@@ -1,12 +1,14 @@
 {
   "name": "@infinite-list/viewable",
   "version": "1.1.4",
+  "peerDependencies": {
+    "vitest": "*"
+  },
   "dependencies": {
     "@x-oasis/batchinator": "^0.1.14",
     "@x-oasis/is-clamped": "^0.1.14",
     "@x-oasis/resolve-changed": "^0.1.14",
-    "@x-oasis/unique-array-object": "^0.1.14",
-    "vitest": "*"
+    "@x-oasis/unique-array-object": "^0.1.14"
   },
   "main": "./index.cjs.js",
   "module": "./index.esm.js",

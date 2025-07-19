@@ -1,10 +1,12 @@
 {
   "name": "@infinite-list/container",
   "version": "1.1.4",
+  "peerDependencies": {
+    "@nx/rollup": "*"
+  },
   "dependencies": {
     "@x-oasis/select-value": "^0.1.14",
-    "@infinite-list/types": "workspace:*",
-    "@nx/rollup": "*"
+    "@infinite-list/types": "workspace:*"
   },
   "main": "./index.cjs.js",
   "module": "./index.esm.js",
