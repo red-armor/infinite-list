@@ -340,7 +340,7 @@ importers:
   core/disposable:
     dependencies:
       '@nx/rollup':
-        specifier: 21.1.2
+        specifier: '*'
         version: 21.1.2(@babel/core@7.27.3)(@babel/traverse@7.27.3)(@swc-node/register@1.9.2(@swc/core@1.5.29(@swc/helpers@0.5.17))(@swc/types@0.1.21)(typescript@5.8.2))(@swc/core@1.5.29(@swc/helpers@0.5.17))(@types/babel__core@7.20.5)(nx@21.1.2(@swc-node/register@1.9.2(@swc/core@1.5.29(@swc/helpers@0.5.17))(@swc/types@0.1.21)(typescript@5.8.2))(@swc/core@1.5.29(@swc/helpers@0.5.17)))(ts-node@10.9.1(@swc/core@1.5.29(@swc/helpers@0.5.17))(@types/node@18.16.9)(typescript@5.8.2))(typescript@5.8.2)(verdaccio@6.1.2(encoding@0.1.13)(typanion@3.14.0))
 
   core/intersection:
