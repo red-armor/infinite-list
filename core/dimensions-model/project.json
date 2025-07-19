@@ -24,6 +24,19 @@
         "entryFile": "core/dimensions-model/src/index.ts",
         "compiler": "swc",
         "format": ["cjs", "esm"],
+        "external": [
+          "@infinite-list/types",
+          "@infinite-list/base-dimensions",
+          "@infinite-list/item-meta",
+          "@infinite-list/utils",
+          "@infinite-list/viewable",
+          "@infinite-list/container",
+          "@infinite-list/strategies",
+          "@x-oasis/default-boolean-value",
+          "@x-oasis/layout-equal",
+          "@x-oasis/prefix-interval-tree",
+          "@x-oasis/recycler"
+        ],
         "assets": [
           {
             "glob": "*.md",

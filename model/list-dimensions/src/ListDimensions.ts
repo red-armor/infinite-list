@@ -152,6 +152,7 @@ class ListDimensions<ItemT extends GenericItemT = GenericItemT>
 
   getFinalKeyIndexInfo(key: string): ListIndexInfo<ItemT> {
     return {
+      // @ts-expect-error TODO: fix this
       dimensions: this._dataModel,
       index: this._dataModel.getKeyIndex(key) || 0,
     };

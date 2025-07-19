@@ -320,9 +320,6 @@ importers:
       '@infinite-list/item-meta':
         specifier: workspace:*
         version: link:../item-meta
-      '@infinite-list/strategies':
-        specifier: workspace:*
-        version: link:../strategies
       '@infinite-list/types':
         specifier: workspace:*
         version: link:../types

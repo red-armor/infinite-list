@@ -20,7 +20,7 @@ abstract class BaseDimensions<ItemT extends GenericItemT = GenericItemT>
   extends BaseLayout
   implements IBaseDimensions<ItemT>
 {
-  _keyToMetaMap: Map<string, ItemMeta<ItemT>> = new Map();
+  _keyToMetaMap: Map<string, ItemMeta<ItemT, any>> = new Map();
   _configTuple: ViewabilityConfigTuples;
 
   _onUpdateItemLayout?: OnUpdateItemLayout;
@@ -144,7 +144,7 @@ abstract class BaseDimensions<ItemT extends GenericItemT = GenericItemT>
     return this._keyToMetaMap.set(key, meta);
   }
 
-  setKeyMeta(key: string, meta: ItemMeta<ItemT>) {
+  setKeyMeta(key: string, meta: ItemMeta<ItemT, any>) {
     return this._setKeyMeta(key, meta);
   }
 

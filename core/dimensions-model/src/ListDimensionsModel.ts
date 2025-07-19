@@ -175,11 +175,14 @@ class ListDimensionsModel<
    * @returns ItemMeta
    */
   ensureKeyMeta(key: string) {
-    let meta = this.getKeyMeta(key);
+    let meta = this.getKeyMeta(key) as ItemMeta<ItemT, ExtraInfo>;
     if (meta) return meta;
     const index = this.getKeyIndex(key);
 
-    meta = this.createItemMeta(key, this.getData(), index);
+    meta = this.createItemMeta(key, this.getData(), index) as ItemMeta<
+      ItemT,
+      ExtraInfo
+    >;
 
     const data = this.getData();
     const len = data.length;
@@ -463,7 +466,7 @@ class ListDimensionsModel<
   pump(
     _data: Array<ItemT>,
     baseIndex = 0,
-    keyToMetaMap: Map<string, ItemMeta<ItemT>>,
+    keyToMetaMap: Map<string, ItemMeta<ItemT, ExtraInfo>>,
     intervalTree: PrefixIntervalTree
   ) {
     const data = _data.slice(baseIndex);
@@ -474,9 +477,11 @@ class ListDimensionsModel<
       const currentIndex = index + baseIndex;
       const itemKey = this.getItemKey(item, currentIndex);
       if (!itemKey) continue;
-      const meta =
-        this.getKeyMeta(itemKey) ||
-        this.createItemMeta(itemKey, _data, currentIndex);
+      const meta = (this.getKeyMeta(itemKey) ||
+        this.createItemMeta(itemKey, _data, currentIndex)) as ItemMeta<
+        ItemT,
+        ExtraInfo
+      >;
 
       if (meta.getLayout()) {
         // const itemLength = this._selectValue.selectLength(meta.getLayout());

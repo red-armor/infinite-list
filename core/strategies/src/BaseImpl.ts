@@ -1,6 +1,5 @@
 import { BaseLayout } from '@infinite-list/base-dimensions';
-import { ItemMeta } from '@infinite-list/item-meta';
-import { IndexInfo } from '@infinite-list/item-meta';
+import { IndexInfo, ItemMeta } from '@infinite-list/item-meta';
 import {
   EnabledSelector,
   ListSpyUtils,
