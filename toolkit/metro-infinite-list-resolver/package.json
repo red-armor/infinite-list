@@ -4,5 +4,8 @@
   "dependencies": {},
   "main": "./index.cjs.js",
   "module": "./index.esm.js",
-  "types": "./index.esm.d.ts"
+  "types": "./index.esm.d.ts",
+  "publishConfig": {
+    "access": "public"
+  }
 }
