@@ -1,5 +1,13 @@
 # @infinite-list/eslint-config
 
+## 0.0.6
+
+### Patch Changes
+
+- 5d77d43: bump version
+- Updated dependencies [5d77d43]
+  - @infinite-list/container@1.1.5
+
 ## 0.0.5
 
 ### Patch Changes

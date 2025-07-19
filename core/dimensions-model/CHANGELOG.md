@@ -1,5 +1,18 @@
 # @infinite-list/dimensions-model
 
+## 1.1.5
+
+### Patch Changes
+
+- 5d77d43: bump version
+- Updated dependencies [5d77d43]
+  - @infinite-list/base-dimensions@1.1.5
+  - @infinite-list/container@1.1.5
+  - @infinite-list/item-meta@1.1.5
+  - @infinite-list/viewable@1.1.5
+  - @infinite-list/types@1.1.5
+  - @infinite-list/utils@1.1.5
+
 ## 1.1.4
 
 ### Patch Changes

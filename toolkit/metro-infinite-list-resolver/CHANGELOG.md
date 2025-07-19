@@ -1,5 +1,11 @@
 # @infinite-list/metro-infinite-list-resolver
 
+## 0.0.6
+
+### Patch Changes
+
+- 5d77d43: bump version
+
 ## 0.0.5
 
 ### Patch Changes
