@@ -9,13 +9,6 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
-    // "forceConsistentCasingInFileNames": true,
-    // "strict": true,
-    // "importHelpers": true,
-    // "noImplicitOverride": true,
-    // "noImplicitReturns": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true
   },
   "files": [],
   "include": [],
