@@ -1,5 +1,17 @@
 # @infinite-list/items-dimensions
 
+## 1.1.1
+
+### Patch Changes
+
+- e1385bf: bump version
+- Updated dependencies [e1385bf]
+  - @infinite-list/base-dimensions@1.1.1
+  - @infinite-list/container@1.1.1
+  - @infinite-list/item-meta@1.1.1
+  - @infinite-list/types@1.1.1
+  - @infinite-list/utils@1.1.1
+
 ## 1.0.3
 
 ### Patch Changes

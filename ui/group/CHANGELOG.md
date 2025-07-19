@@ -1,5 +1,22 @@
 # @infinite-list/group
 
+## 2.1.1
+
+### Patch Changes
+
+- e1385bf: bump version
+- Updated dependencies [e1385bf]
+  - @infinite-list/group-dimensions@1.1.1
+  - @infinite-list/dimensions-model@1.1.1
+  - @infinite-list/list-dimensions@1.1.1
+  - @infinite-list/strategies@1.1.1
+  - @infinite-list/dimension@1.1.1
+  - @infinite-list/item-meta@1.1.1
+  - @infinite-list/viewable@1.1.1
+  - @infinite-list/scroller@2.1.1
+  - @infinite-list/types@1.1.1
+  - @infinite-list/utils@1.1.1
+
 ## 2.0.4
 
 ### Patch Changes

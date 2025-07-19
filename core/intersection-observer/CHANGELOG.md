@@ -1,5 +1,14 @@
 # @infinite-list/intersection-observer
 
+## 1.1.1
+
+### Patch Changes
+
+- e1385bf: bump version
+- Updated dependencies [e1385bf]
+  - @infinite-list/items-dimensions@1.1.1
+  - @infinite-list/scheduler@1.1.1
+
 ## 1.0.4
 
 ### Patch Changes
