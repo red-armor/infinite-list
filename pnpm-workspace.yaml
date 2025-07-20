@@ -2,5 +2,5 @@ packages:
   - ui/**
   - core/**
   - model/**
-  - playground/**
+  - examples/**
   - toolkit/**

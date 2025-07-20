@@ -1,6 +1,5 @@
 import type { Meta } from '@storybook/react';
 import { defaultKeyExtractor } from '@infinite-list/utils';
-import { KeyExtractor } from '@infinite-list/dimensions-model';
 import { RenderItemInfo } from '@infinite-list/types';
 import { useRef } from 'react';
 
