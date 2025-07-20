@@ -9,8 +9,6 @@ const mapping = resolveModules({
   targetDir: '@infinite-list',
 })
 
-console.log('mapping ==== ', mapping);
-
 config.resolver.extraNodeModules = {
   ...mapping,
 };
@@ -30,7 +28,5 @@ config.resolver = {
     return context.resolveRequest(context, moduleName, platform);
   },
 };
-
-console.log('confing ==== ', config.resolver.extraNodeModules);
 
 module.exports = config;

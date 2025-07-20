@@ -41,22 +41,22 @@ function nav(): DefaultTheme.NavItem[] {
       link: '/react-native/introduction',
       activeMatch: '/react-native/',
     },
-    {
-      text: 'platform',
-      // link: '/zh/react-native/introduction',
-      items: [
-        {
-          text: 'react',
-          link: '/react/introduction',
-          activeMatch: '/react/',
-        },
-        {
-          text: 'react-native',
-          link: '/react-native/introduction',
-          activeMatch: '/react-native/',
-        },
-      ],
-    },
+    // {
+    //   text: 'platform',
+    //   // link: '/zh/react-native/introduction',
+    //   items: [
+    //     {
+    //       text: 'react',
+    //       link: '/react/introduction',
+    //       activeMatch: '/react/',
+    //     },
+    //     {
+    //       text: 'react-native',
+    //       link: '/react-native/introduction',
+    //       activeMatch: '/react-native/',
+    //     },
+    //   ],
+    // },
     {
       text: '0.0.1',
       // text: pkg.version,
